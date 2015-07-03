@@ -24,16 +24,16 @@ public class propertyPrototypeExample {
         p1.addChangeEventListener(listener);
         p2.addChangeEventListener(listener);
         p3.addChangeEventListener(listener);
+        f1.addChangeEventListener(listener);
         p2.bindReadProperty(p1);
         p2.bindWriteProperty(p3);
         p3.bindWriteProperty(p2);
+        f1.bindReadNumberProperty(p1);
+        f1.bindWriteNumberProperty(p2);
         p1.setValue(10);
         p1.setValue(20);
         p1.setValue(30);
-        f1.bindReadNumberProperty(p1);
-        f1.bindWriteNumberProperty(p2);
-        Number n=new Integer(5);
-        Float m=n.floatValue();
+
 
     }
 }

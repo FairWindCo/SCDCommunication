@@ -97,7 +97,7 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
 
     public void bindReadProperty(AbstractValueProperty<? extends T> property){
             if (property != null) {
-                synchronized (bindedReadPoperty) {
+                synchronized (readerlistener) {
                     if(bindedReadPoperty!=null) unbindReadProperty();
                     this.bindedReadPoperty = property;
                     setValue(property.getValue());
@@ -108,7 +108,7 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
 
     public void bindWriteProperty(AbstractValueProperty<? super T> property){
         if(property!=null) {
-            synchronized (bindedWritePoperty) {
+            synchronized (readerlistener) {
                 if (bindedWritePoperty != null) unbindWriteProperty();
                 this.bindedWritePoperty = property;
                 property.bindReadProperty(this);
@@ -117,7 +117,7 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
     }
 
     public  void unbindReadProperty(){
-        synchronized (bindedReadPoperty) {
+        synchronized (readerlistener) {
             if (this.bindedReadPoperty != null) {
                 this.bindedReadPoperty.removeChangeEventListener(readerlistener);
                 this.bindedReadPoperty = null;
@@ -126,7 +126,7 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
     }
 
     public  void unbindWriteProperty(){
-        synchronized (bindedWritePoperty) {
+        synchronized (readerlistener) {
             if (this.bindedWritePoperty != null) {
                 this.bindedWritePoperty.unbindReadProperty();
                 this.bindedReadPoperty = null;

@@ -37,16 +37,21 @@ public abstract class AbstractNumberProperty<M extends Number & Comparable<? sup
 
     public void bindReadNumberProperty(AbstractNumberProperty<? extends Number> property) {
         if(property!=null){
-            setValue(convertFromNumber(property.getValue()));
-            property.addChangeEventListener(readlistener);
-            readnumproperty=property;
+            synchronized (readlistener) {
+                if(readnumproperty!=null) ubindReadNumberProperty();
+                setValue(convertFromNumber(property.getValue()));
+                property.addChangeEventListener(readlistener);
+                readnumproperty = property;
+            }
         }
     }
 
     public void bindWriteNumberProperty(AbstractNumberProperty<? extends Number> property){
         if(property!=null){
-            property.bindReadNumberProperty(this);
-            writenumproperty=property;
+            synchronized (readlistener) {
+                property.bindReadNumberProperty(this);
+                writenumproperty = property;
+            }
         }
     }
 
@@ -54,9 +59,20 @@ public abstract class AbstractNumberProperty<M extends Number & Comparable<? sup
 
 
     public void ubindReadNumberProperty() {
-        if(readnumproperty!=null){
-            readnumproperty.removeChangeEventListener(readlistener);
-            readnumproperty=null;
+        synchronized (readlistener) {
+            if (readnumproperty != null) {
+                readnumproperty.removeChangeEventListener(readlistener);
+                readnumproperty = null;
+            }
+        }
+    }
+
+    public void ubindWriteNumberProperty() {
+        synchronized (readlistener) {
+            if (readnumproperty != null) {
+                writenumproperty.ubindReadNumberProperty();
+                readnumproperty = null;
+            }
         }
     }
 
