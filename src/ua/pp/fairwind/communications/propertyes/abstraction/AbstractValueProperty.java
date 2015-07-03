@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Created by Сергей on 30.06.2015.
+ * Created by РЎРµСЂРіРµР№ on 30.06.2015.
  */
 public abstract class AbstractValueProperty<T extends Comparable<? super T>> extends AbstractProperty implements ReadWriteProperty<T> {
     final CopyOnWriteArrayList<ValueChangeListener<? super T>> eventDispatcher=new CopyOnWriteArrayList<>();
