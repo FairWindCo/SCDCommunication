@@ -5,6 +5,9 @@ import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
 import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftIntegerProperty;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 /**
  * Created by Сергей on 01.07.2015.
  */
@@ -33,7 +36,14 @@ public class propertyPrototypeExample {
         p1.setValue(10);
         p1.setValue(20);
         p1.setValue(30);
-
+        DecimalFormat fm=new DecimalFormat("delta ##.###");
+        String str=fm.format(53.45);
+        System.out.println(str);
+        try {
+            System.out.println(fm.parse(str));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
     }
 }

@@ -6,5 +6,6 @@ package ua.pp.fairwind.communications.propertyes.event;
 public enum EventType {
     ELEMENT_CHANGE,
     NEED_READ_VALUE,
-    NEED_WRITE_VALUE
+    NEED_WRITE_VALUE,
+    PARSE_ERROR,
 }

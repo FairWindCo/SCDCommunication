@@ -1,12 +1,12 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
 import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
-import ua.pp.fairwind.communications.propertyes.abstraction.AbstractNumberProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 /**
  * Created by Сергей on 01.07.2015.
  */
-public class SoftFloatProperty extends AbstractNumberProperty<Float> {
+public class SoftFloatProperty extends NumberProperty<Float> {
     public SoftFloatProperty(String name, MessageSubSystem centralSystem) {
         super(name, centralSystem);
     }
@@ -33,5 +33,11 @@ public class SoftFloatProperty extends AbstractNumberProperty<Float> {
 
     protected Float convertFromNumber(Number value){
       if(value!=null) return value.floatValue();return null;
+    }
+
+    @Override
+    protected Float convertFromString(String value, int radix) {
+        if(value!=null) return Float.parseFloat(value);
+        return null;
     }
 }

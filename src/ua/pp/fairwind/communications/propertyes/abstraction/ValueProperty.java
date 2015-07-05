@@ -11,12 +11,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Created by Сергей on 30.06.2015.
  */
-public abstract class AbstractValueProperty<T extends Comparable<? super T>> extends AbstractProperty implements ReadWriteProperty<T> {
-    final CopyOnWriteArrayList<ValueChangeListener<? super T>> eventDispatcher=new CopyOnWriteArrayList<>();
-    volatile T value;
-    volatile Date lastChangeTime;
-    volatile AbstractValueProperty<? extends T> bindedReadPoperty;
-    volatile AbstractValueProperty<? super T> bindedWritePoperty;
+public abstract class ValueProperty<T extends Comparable<? super T>> extends AbstractProperty implements ValuePropertyInterface<T> {
+    private final CopyOnWriteArrayList<ValueChangeListener<? super T>> eventDispatcher=new CopyOnWriteArrayList<>();
+    private volatile T value;
+    private volatile Date lastChangeTime;
+    private ValueProperty<? extends T> bindedReadPoperty;
+    private ValueProperty<? super T> bindedWritePoperty;
     final private ValueChangeListener<T> readerlistener=new ValueChangeListener<T>() {
         @Override
         public void valueChange(ValueChangeEvent event) {
@@ -24,29 +24,29 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
         }
     };
 
-    public AbstractValueProperty(String name,MessageSubSystem centralSystem) {
+    public ValueProperty(String name, MessageSubSystem centralSystem) {
         super(name,centralSystem);
     }
 
-    public AbstractValueProperty(String name, String description,MessageSubSystem centralSystem) {
+    public ValueProperty(String name, String description, MessageSubSystem centralSystem) {
         super(name, description,centralSystem);
     }
 
-    public AbstractValueProperty(String name, String uuid, String description,MessageSubSystem centralSystem) {
+    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
         super(name, uuid, description,centralSystem);
     }
 
-    public AbstractValueProperty(String name,MessageSubSystem centralSystem,T value) {
+    public ValueProperty(String name, MessageSubSystem centralSystem, T value) {
         super(name,centralSystem);
         this.value=value;
     }
 
-    public AbstractValueProperty(String name, String description,MessageSubSystem centralSystem,T value) {
+    public ValueProperty(String name, String description, MessageSubSystem centralSystem, T value) {
         super(name, description,centralSystem);
         this.value=value;
     }
 
-    public AbstractValueProperty(String name, String uuid, String description,MessageSubSystem centralSystem,T value) {
+    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, T value) {
         super(name, uuid, description,centralSystem);
         this.value=value;
     }
@@ -71,6 +71,7 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
         }
     }
 
+    @Override
     public Date getLastChangeTime() {
         return lastChangeTime;
     }
@@ -86,16 +87,19 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
         }
     }
 
+    @Override
     public void addChangeEventListener(ValueChangeListener<? super T> listener){
           eventDispatcher.add(listener);
     }
 
 
+    @Override
     public void removeChangeEventListener(ValueChangeListener<? super T> listener){
           eventDispatcher.remove(listener);
     }
 
-    public void bindReadProperty(AbstractValueProperty<? extends T> property){
+    @Override
+    public void bindReadProperty(ValueProperty<? extends T> property){
             if (property != null) {
                 synchronized (readerlistener) {
                     if(bindedReadPoperty!=null) unbindReadProperty();
@@ -106,7 +110,8 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
             }
     }
 
-    public void bindWriteProperty(AbstractValueProperty<? super T> property){
+    @Override
+    public void bindWriteProperty(ValueProperty<? super T> property){
         if(property!=null) {
             synchronized (readerlistener) {
                 if (bindedWritePoperty != null) unbindWriteProperty();
@@ -116,6 +121,7 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
         }
     }
 
+    @Override
     public  void unbindReadProperty(){
         synchronized (readerlistener) {
             if (this.bindedReadPoperty != null) {
@@ -125,6 +131,7 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
         }
     }
 
+    @Override
     public  void unbindWriteProperty(){
         synchronized (readerlistener) {
             if (this.bindedWritePoperty != null) {
@@ -142,5 +149,13 @@ public abstract class AbstractValueProperty<T extends Comparable<? super T>> ext
         } else {
             return ((value==null)?0:1);
         }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        eventDispatcher.clear();
+        unbindReadProperty();
+        unbindWriteProperty();
     }
 }
