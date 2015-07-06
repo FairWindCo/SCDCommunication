@@ -11,13 +11,10 @@ import java.text.ParseException;
  * Created by Сергей on 01.07.2015.
  */
 public abstract class NumberProperty<M extends Number & Comparable<? super M>> extends ValueProperty<M> implements NumberPropertyInterface<M>,ValuePropertyInterface<M> {
-    private NumberPropertyInterface<? extends Number> readnumproperty;
-    private NumberPropertyInterface<? extends Number> writenumproperty;
-    private final ValueChangeListener<Number> readlistener=event->setValue(convertFromNumber((Number)event.getNewValue()));
-    private StringPropertyInterface readstrproperty;
-    private StringPropertyInterface writestrproperty;
     volatile private int readradix=10;
     volatile private String readformat;
+    volatile private int writeradix=10;
+    volatile private String writeformat;
 
     private final ValueChangeListener<String> readstrlistener=event -> {
      if(readformat==null){
@@ -62,137 +59,114 @@ public abstract class NumberProperty<M extends Number & Comparable<? super M>> e
 
     @Override
     public void bindReadNumberProperty(NumberProperty<? extends Number> property) {
-        if(property!=null){
-            synchronized (readlistener) {
-                if(readnumproperty!=null) unbindReadNumberProperty();
-                setValue(convertFromNumber(property.getValue()));
-                property.addChangeEventListener(readlistener);
-                readnumproperty = property;
-            }
-        }
+        bindPropertyForRead(property);
     }
 
     @Override
     public void bindWriteNumberProperty(NumberProperty<? extends Number> property){
-        if(property!=null){
-            synchronized (readlistener) {
-                property.bindReadNumberProperty(this);
-                writenumproperty = property;
-            }
-        }
+        bindPropertyForWrite(property);
     }
 
     abstract protected M convertFromNumber(Number value);
     abstract protected M convertFromString(String value,int radix);
 
     @Override
-    public void unbindReadNumberProperty() {
-        synchronized (readlistener) {
-            if (readnumproperty != null) {
-                readnumproperty.removeChangeEventListener(readlistener);
-                readnumproperty = null;
-            }
-        }
-    }
-
-    @Override
-    public void unbindWriteNumberProperty() {
-        synchronized (readlistener) {
-            if (readnumproperty != null) {
-                writenumproperty.unbindReadNumberProperty();
-                readnumproperty = null;
-            }
-        }
-    }
-
-    @Override
-    public void bindReadStringProperty(StringPropertyInterface property) {
-        if(property!=null){
-            synchronized (readstrlistener){
-                if(readstrproperty!=null){
-                    unbindReadStringProperty();
+    protected M convertValue(Object value) {
+        if(value instanceof Number){
+            return convertFromNumber((Number)value);
+        } else if (value instanceof String){
+            if(readformat==null) {
+                try {
+                    return convertFromString((String) value, readradix);
+                } catch (NumberFormatException ex){
+                    fireEvent(EventType.PARSE_ERROR,ex.getLocalizedMessage());
+                    return null;
                 }
-                property.addChangeEventListener(readstrlistener);
-                readstrproperty=property;
-            }
-        }
-    }
-
-    @Override
-    public void bindWriteStringProperty(StringPropertyInterface property) {
-        if(property!=null){
-            synchronized (readstrlistener){
-                if(writestrproperty!=null){
-                    unbindWriteStringProperty();
+            } else {
+                DecimalFormat frm=new DecimalFormat(readformat);
+                try {
+                    return convertFromNumber(frm.parse((String) value));
+                } catch (ParseException e) {
+                    fireEvent(EventType.PARSE_ERROR,e.getLocalizedMessage());
+                    return null;
                 }
-                property.bindReadNumberProperty(this,10);
-                writestrproperty=property;
             }
         }
+        return super.convertValue(value);
     }
 
     @Override
     public void bindReadStringProperty(StringPropertyInterface property, int radix) {
-        if(property!=null){
-            this.readradix=radix;
-            this.readformat=null;
-            bindReadStringProperty(property);
+        this.readradix=radix;
+        this.readformat=null;
+        bindPropertyForRead((AbstractProperty) property);
+    }
+
+    @Override
+    protected void writeBindingOpearion(AbstractProperty property) {
+        if(property instanceof NumberPropertyInterface<?>){
+            ((NumberPropertyInterface<?>)property).bindReadNumberProperty(this);
+        } else if(property instanceof StringPropertyInterface){
+            if(writeformat==null) {
+                ((StringPropertyInterface) property).bindReadNumberProperty(this, writeradix);
+            } else {
+                ((StringPropertyInterface) property).bindReadNumberProperty(this, writeformat);
+            }
+        } else {
+            super.writeBindingOpearion(property);
         }
     }
 
     @Override
     public void bindWriteStringProperty(StringPropertyInterface property, int radix) {
-        if(property!=null){
-            synchronized (readstrlistener){
-                if(writestrproperty!=null){
-                    unbindWriteStringProperty();
-                }
-                property.bindReadNumberProperty(this,radix);
-                writestrproperty=property;
-            }
-        }
+        this.writeradix=radix;
+        this.writeformat=null;
+        bindPropertyForWrite((AbstractProperty)property);
     }
 
     @Override
     public void bindReadStringProperty(StringPropertyInterface property, String format) {
-        if(property!=null){
-            this.readformat=format;
-            bindReadStringProperty(property);
-        }
+        bindPropertyForRead((AbstractProperty) property);
+        this.readformat=format;
     }
 
     @Override
     public void bindWriteStringProperty(StringPropertyInterface property, String format) {
-        if(property!=null){
-            synchronized (readstrlistener){
-                if(writestrproperty!=null){
-                    unbindWriteStringProperty();
-                }
-                property.bindReadNumberProperty(this,format);
-                writestrproperty=property;
-            }
-        }
+        bindPropertyForWrite((AbstractProperty)property);
+        writeformat=format;
+    }
+
+    @Override
+    public void bindReadStringProperty(StringPropertyInterface property) {
+        bindPropertyForRead((AbstractProperty)property);
+    }
+
+    @Override
+    public void bindWriteStringProperty(StringPropertyInterface property) {
+        this.writeformat=null;
+        bindPropertyForWrite((AbstractProperty)property);
+    }
+
+    @Override
+    public void unbindReadNumberProperty() {
+        unbindPropertyForRead();
+    }
+
+    @Override
+    public void unbindWriteNumberProperty() {
+        unbindPropertyForWrite();
     }
 
     @Override
     public void unbindReadStringProperty() {
-        synchronized (readstrlistener){
-            if(readstrproperty!=null){
-                readstrproperty.removeChangeEventListener(readstrlistener);
-                readstrproperty=null;
-                readformat=null;
-            }
-        }
+        readformat=null;
+        unbindPropertyForRead();
     }
 
     @Override
     public void unbindWriteStringProperty() {
-        synchronized (readstrlistener){
-            if(writestrproperty!=null){
-                writestrproperty.unbindReadNumberProperty();
-                writestrproperty=null;
-            }
-        }
+        writeformat=null;
+        unbindPropertyForWrite();
     }
 
     @Override

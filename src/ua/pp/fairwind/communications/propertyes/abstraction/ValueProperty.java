@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
 import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
@@ -15,14 +16,73 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     private final CopyOnWriteArrayList<ValueChangeListener<? super T>> eventDispatcher=new CopyOnWriteArrayList<>();
     private volatile T value;
     private volatile Date lastChangeTime;
-    private ValueProperty<? extends T> bindedReadPoperty;
-    private ValueProperty<? super T> bindedWritePoperty;
-    final private ValueChangeListener<T> readerlistener=new ValueChangeListener<T>() {
-        @Override
-        public void valueChange(ValueChangeEvent event) {
-            setValue((T)event.getNewValue());
+    private AbstractProperty bindedForReadPoperty;
+    private AbstractProperty bindedForWritePoperty;
+
+    final private ElementEventListener elementevent=(element,typeEvent,params)->{
+        if(typeEvent==EventType.ELEMENT_CHANGE && params!=null){
+            T newValue=convertValue(params);
+            if(newValue!=null) setValue(newValue);
         }
     };
+
+    protected T convertValue(Object value){
+        try {
+            T resultValue = (T) value;
+            return resultValue;
+        }catch (ClassCastException ex){
+            fireEvent(EventType.PARSE_ERROR,ex.getLocalizedMessage());
+            return null;
+        }
+    }
+
+    protected void bindPropertyForRead(AbstractProperty property){
+        if(property!=null){
+            synchronized (elementevent) {
+                if(bindedForReadPoperty!=null) unbindPropertyForRead();
+                this.bindedForReadPoperty = property;
+                if(property instanceof ValueProperty) {
+                    setValue(convertValue(((ValueProperty<T>) property).getValue()));
+                }
+                property.addEventListener(elementevent);
+            }
+        }
+    }
+
+    protected void bindPropertyForWrite(AbstractProperty property){
+        if(property!=null){
+            synchronized (elementevent) {
+                if(bindedForWritePoperty!=null) unbindPropertyForWrite();
+                this.bindedForWritePoperty = property;
+                writeBindingOpearion(property);
+            }
+        }
+    }
+
+
+    protected void writeBindingOpearion(AbstractProperty property){
+        if(property!=null){
+                property.bindPropertyForRead(this);
+        }
+    }
+
+    protected void unbindPropertyForRead(){
+        synchronized (elementevent) {
+            if(bindedForWritePoperty!=null){
+                bindedForWritePoperty.removeEventListener(elementevent);
+                bindedForWritePoperty=null;
+            }
+        }
+    }
+
+    protected void unbindPropertyForWrite(){
+        synchronized (elementevent) {
+            if(bindedForReadPoperty!=null){
+                bindedForReadPoperty.removeEventListener(elementevent);
+                bindedForReadPoperty=null;
+            }
+        }
+    }
 
     public ValueProperty(String name, MessageSubSystem centralSystem) {
         super(name,centralSystem);
@@ -82,9 +142,9 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
             listener.valueChange(event);
         }
         fireEvent(EventType.ELEMENT_CHANGE, newValue);
-        if(bindedWritePoperty!=null){
+        /*if(bindedWritePoperty!=null){
             bindedWritePoperty.setValue(newValue);
-        }
+        }*/
     }
 
     @Override
@@ -100,45 +160,22 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public void bindReadProperty(ValueProperty<? extends T> property){
-            if (property != null) {
-                synchronized (readerlistener) {
-                    if(bindedReadPoperty!=null) unbindReadProperty();
-                    this.bindedReadPoperty = property;
-                    setValue(property.getValue());
-                    property.addChangeEventListener(readerlistener);
-                }
-            }
+        bindPropertyForRead(property);
     }
 
     @Override
     public void bindWriteProperty(ValueProperty<? super T> property){
-        if(property!=null) {
-            synchronized (readerlistener) {
-                if (bindedWritePoperty != null) unbindWriteProperty();
-                this.bindedWritePoperty = property;
-                property.bindReadProperty(this);
-            }
-        }
+        bindPropertyForWrite(property);
     }
 
     @Override
     public  void unbindReadProperty(){
-        synchronized (readerlistener) {
-            if (this.bindedReadPoperty != null) {
-                this.bindedReadPoperty.removeChangeEventListener(readerlistener);
-                this.bindedReadPoperty = null;
-            }
-        }
+        unbindPropertyForRead();
     }
 
     @Override
     public  void unbindWriteProperty(){
-        synchronized (readerlistener) {
-            if (this.bindedWritePoperty != null) {
-                this.bindedWritePoperty.unbindReadProperty();
-                this.bindedReadPoperty = null;
-            }
-        }
+        unbindPropertyForWrite();
     }
 
 

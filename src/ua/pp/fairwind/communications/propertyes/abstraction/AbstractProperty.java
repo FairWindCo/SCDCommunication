@@ -17,7 +17,7 @@ public abstract class AbstractProperty extends SystemEllement{
     }
 
     public AbstractProperty(String name, String uuid, String description,MessageSubSystem centralSystem) {
-        super(name, uuid, description,centralSystem);
+        super(name, uuid, description, centralSystem);
     }
 
     public void readVelue(){
@@ -27,4 +27,11 @@ public abstract class AbstractProperty extends SystemEllement{
     public void writeVelue(){
         fireEvent(EventType.NEED_WRITE_VALUE, null);
     }
+
+    abstract protected void bindPropertyForRead(AbstractProperty property);
+    abstract protected void bindPropertyForWrite(AbstractProperty property);
+    abstract protected void writeBindingOpearion(AbstractProperty property);
+    abstract protected void unbindPropertyForRead();
+    abstract protected void unbindPropertyForWrite();
+
 }

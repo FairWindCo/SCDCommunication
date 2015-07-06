@@ -66,4 +66,29 @@ public class StaticGroupProperty extends AbstractProperty {
             propertiesUUID.remove(property.getUUIDString());
         }
     }
+
+    @Override
+    protected void bindPropertyForRead(AbstractProperty property) {
+
+    }
+
+    @Override
+    protected void bindPropertyForWrite(AbstractProperty property) {
+
+    }
+
+    @Override
+    protected void unbindPropertyForRead() {
+
+    }
+
+    @Override
+    protected void unbindPropertyForWrite() {
+
+    }
+
+    @Override
+    protected void writeBindingOpearion(AbstractProperty property) {
+
+    }
 }
