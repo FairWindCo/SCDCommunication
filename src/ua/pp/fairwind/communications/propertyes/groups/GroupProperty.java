@@ -4,16 +4,9 @@ import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 
 /**
- * Created by Сергей on 30.06.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 30.06.2015.
  */
 public class GroupProperty extends StaticGroupProperty {
-    public GroupProperty(String name, MessageSubSystem centralSystem, AbstractProperty... propertyList) {
-        super(name, centralSystem, propertyList);
-    }
-
-    public GroupProperty(String name, String description, MessageSubSystem centralSystem, AbstractProperty... propertyList) {
-        super(name, description, centralSystem, propertyList);
-    }
 
     public GroupProperty(String name, String uuid, String description, MessageSubSystem centralSystem, AbstractProperty... propertyList) {
         super(name, uuid, description, centralSystem, propertyList);

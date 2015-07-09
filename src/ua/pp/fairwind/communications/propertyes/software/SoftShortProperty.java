@@ -4,31 +4,63 @@ import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 /**
- * Created by Сергей on 01.07.2015.
+ * Created by FairWindCo on 07.07.2015
  */
 public class SoftShortProperty extends NumberProperty<Short> {
-    public SoftShortProperty(String name, MessageSubSystem centralSystem) {
-        super(name, centralSystem);
+    public SoftShortProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly) {
+        super(name, uuid, description, centralSystem, readonly, writeonly);
     }
 
-    public SoftShortProperty(String name, String description, MessageSubSystem centralSystem) {
-        super(name, description, centralSystem);
+    public SoftShortProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly, Short value) {
+        super(name, uuid, description, centralSystem, readonly, writeonly, value);
     }
 
     public SoftShortProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
         super(name, uuid, description, centralSystem);
     }
 
-    public SoftShortProperty(String name, MessageSubSystem centralSystem, Short value) {
-        super(name, centralSystem, value);
+    public SoftShortProperty(String name, String description, MessageSubSystem centralSystem) {
+        super(name, description, centralSystem);
+    }
+
+    public SoftShortProperty(String name, MessageSubSystem centralSystem) {
+        super(name, centralSystem);
+    }
+
+    public SoftShortProperty(String name, String uuid, String description) {
+        super(name, uuid, description);
+    }
+
+    public SoftShortProperty(String name, String description) {
+        super(name, description);
+    }
+
+    public SoftShortProperty(String name) {
+        super(name);
+    }
+
+    public SoftShortProperty(String name, String uuid, String description, MessageSubSystem centralSystem, Short value) {
+        super(name, uuid, description, centralSystem, value);
     }
 
     public SoftShortProperty(String name, String description, MessageSubSystem centralSystem, Short value) {
         super(name, description, centralSystem, value);
     }
 
-    public SoftShortProperty(String name, String uuid, String description, MessageSubSystem centralSystem, Short value) {
-        super(name, uuid, description, centralSystem, value);
+    public SoftShortProperty(String name, MessageSubSystem centralSystem, Short value) {
+        super(name, centralSystem, value);
+    }
+
+    public SoftShortProperty(String name, String uuid, String description, Short value) {
+        super(name, uuid, description, value);
+    }
+
+    public SoftShortProperty(String name, String description, Short value) {
+        super(name, description, value);
+    }
+
+    public SoftShortProperty(String name, Short value) {
+        super(name, value);
     }
 
     protected Short convertFromNumber(Number value){

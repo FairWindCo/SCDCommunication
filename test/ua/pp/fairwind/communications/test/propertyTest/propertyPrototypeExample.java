@@ -9,15 +9,15 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 
 /**
- * Created by Сергей on 01.07.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 01.07.2015.
  */
 public class propertyPrototypeExample {
 
     public static void main(String[] args) {
-        SoftIntegerProperty p1=new SoftIntegerProperty("test 1",null);
-        SoftIntegerProperty p2=new SoftIntegerProperty("bind test 1",null);
-        SoftIntegerProperty p3=new SoftIntegerProperty("bind test 2",null);
-        SoftFloatProperty f1=new SoftFloatProperty("bind float 1",null);
+        SoftIntegerProperty p1=new SoftIntegerProperty("test 1");
+        SoftIntegerProperty p2=new SoftIntegerProperty("bind test 1");
+        SoftIntegerProperty p3=new SoftIntegerProperty("bind test 2");
+        SoftFloatProperty f1=new SoftFloatProperty("bind float 1");
         ValueChangeListener<Number> listener=new ValueChangeListener<Number>() {
             @Override
             public void valueChange(ValueChangeEvent event) {
@@ -44,6 +44,7 @@ public class propertyPrototypeExample {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        /**/
 
     }
 }

@@ -1,7 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
 import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
@@ -15,17 +14,79 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class ValueProperty<T extends Comparable<? super T>> extends AbstractProperty implements ValuePropertyInterface<T> {
     private final CopyOnWriteArrayList<ValueChangeListener<? super T>> eventDispatcher=new CopyOnWriteArrayList<>();
     private volatile T value;
-    private volatile Date lastChangeTime;
-    private AbstractProperty bindedForReadPoperty;
-    private AbstractProperty bindedForWritePoperty;
+    private volatile long lastChangeTime;
+    protected final boolean readonly;
+    protected final boolean writeonly;
 
-    final private ElementEventListener elementevent=(element,typeEvent,params)->{
-        if(typeEvent==EventType.ELEMENT_CHANGE && params!=null){
-            T newValue=convertValue(params);
-            if(newValue!=null) setValue(newValue);
-        }
-    };
+    //КОНСТРУКТОР
+    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly) {
+        super(name, uuid, description, centralSystem);
+        this.readonly = readonly;
+        this.writeonly = writeonly;
+    }
 
+    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly,T value) {
+        super(name, uuid, description, centralSystem);
+        this.readonly = readonly;
+        this.writeonly = writeonly;
+        this.value=value;
+    }
+
+    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
+        super(name, uuid, description, centralSystem);
+        this.readonly = false;
+        this.writeonly = false;
+    }
+
+    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem,T value) {
+        super(name, uuid, description, centralSystem);
+        this.readonly = false;
+        this.writeonly = false;
+        this.value=value;
+    }
+
+    public ValueProperty(String name, String uuid, String description) {
+        super(name, uuid, description, null);
+        this.readonly = false;
+        this.writeonly = false;
+    }
+
+    public ValueProperty(String name, String uuid, String description,T value) {
+        super(name, uuid, description, null);
+        this.readonly = false;
+        this.writeonly = false;
+        this.value=value;
+    }
+
+    public ValueProperty(String name, String description) {
+        super(name, null, description, null);
+        this.readonly = false;
+        this.writeonly = false;
+    }
+
+    public ValueProperty(String name, String description,T value) {
+        super(name, null, description, null);
+        this.readonly = false;
+        this.writeonly = false;
+        this.value=value;
+    }
+
+    public ValueProperty(String name) {
+        super(name, null, null, null);
+        this.readonly = false;
+        this.writeonly = false;
+    }
+
+    public ValueProperty(String name, T value) {
+        super(name, null, null, null);
+        this.readonly = false;
+        this.writeonly = false;
+        this.value=value;
+    }
+
+
+    //Метод преобразует полученное значение в значение хранимого типа
+    //Вызывается внутри обработчика сигнала об изменении значениея другого свойства при связывании.
     protected T convertValue(Object value){
         try {
             T resultValue = (T) value;
@@ -36,115 +97,91 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         }
     }
 
-    protected void bindPropertyForRead(AbstractProperty property){
-        if(property!=null){
-            synchronized (elementevent) {
-                if(bindedForReadPoperty!=null) unbindPropertyForRead();
-                this.bindedForReadPoperty = property;
-                if(property instanceof ValueProperty) {
-                    setValue(convertValue(((ValueProperty<T>) property).getValue()));
-                }
-                property.addEventListener(elementevent);
+
+    @Override
+    protected void reciveValueFromBindingWrite(AbstractProperty property, Object valueForWtite, String formatForWrite, int radixForWrite, int positionForWrite, int lengthForWrite, boolean convertBoolToBinaryForWrite) {
+        if(valueForWtite!=null){
+            T newVal=convertValue(valueForWtite);
+            if(newVal!=null) setValue(newVal);
+        } else {
+            if (property!=null && property instanceof ValueProperty<?>) {
+                setValue(convertValue(((ValueProperty<T>) property).getValue()));
             }
         }
-    }
-
-    protected void bindPropertyForWrite(AbstractProperty property){
-        if(property!=null){
-            synchronized (elementevent) {
-                if(bindedForWritePoperty!=null) unbindPropertyForWrite();
-                this.bindedForWritePoperty = property;
-                writeBindingOpearion(property);
-            }
-        }
-    }
-
-
-    protected void writeBindingOpearion(AbstractProperty property){
-        if(property!=null){
-                property.bindPropertyForRead(this);
-        }
-    }
-
-    protected void unbindPropertyForRead(){
-        synchronized (elementevent) {
-            if(bindedForWritePoperty!=null){
-                bindedForWritePoperty.removeEventListener(elementevent);
-                bindedForWritePoperty=null;
-            }
-        }
-    }
-
-    protected void unbindPropertyForWrite(){
-        synchronized (elementevent) {
-            if(bindedForReadPoperty!=null){
-                bindedForReadPoperty.removeEventListener(elementevent);
-                bindedForReadPoperty=null;
-            }
-        }
-    }
-
-    public ValueProperty(String name, MessageSubSystem centralSystem) {
-        super(name,centralSystem);
-    }
-
-    public ValueProperty(String name, String description, MessageSubSystem centralSystem) {
-        super(name, description,centralSystem);
-    }
-
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description,centralSystem);
-    }
-
-    public ValueProperty(String name, MessageSubSystem centralSystem, T value) {
-        super(name,centralSystem);
-        this.value=value;
-    }
-
-    public ValueProperty(String name, String description, MessageSubSystem centralSystem, T value) {
-        super(name, description,centralSystem);
-        this.value=value;
-    }
-
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, T value) {
-        super(name, uuid, description,centralSystem);
-        this.value=value;
     }
 
     @Override
-    public T getValue() {
+    protected void reciveValueFromBindingRead(AbstractProperty property, Object valueForWtite) {
+        if(valueForWtite!=null){
+            T newVal=convertValue(valueForWtite);
+            if(newVal!=null) setValue(newVal);
+        } else {
+            if (property!=null && property instanceof ValueProperty<?>) {
+                setValue(convertValue(((ValueProperty<T>) property).getValue()));
+            }
+        }
+    }
+
+
+    T getInternalValue() {
         return value;
     }
 
+
     @Override
-    public void setValue(final T value) {
+    public T getValue() {
+        if(writeonly){
+            fireEvent(EventType.ERROR,"Property is WRITEONLY!");
+            return null;
+        }
+        return getInternalValue();
+    }
+
+    void setInternalValue(final T value) {
+
         if(this.value==null && value!=null){
             this.value = value;
-            lastChangeTime = new Date();
+            lastChangeTime = System.currentTimeMillis();
             fireChangeEvent(null, value);
         } else
         if(value!=null && value.compareTo(this.value)!=0) {
             T old=this.value;
             this.value = value;
-            lastChangeTime = new Date();
+            lastChangeTime = System.currentTimeMillis();
             fireChangeEvent(old, value);
         }
     }
 
     @Override
+    public void setValue(final T value) {
+        if(readonly){
+            fireEvent(EventType.ERROR,"Property is READONLY!");
+            return;
+        }
+        setInternalValue(value);
+    }
+
+    @Override
+    public boolean isValidProperty() {
+        if(value==null) return false;
+        if(dataLifeTime>=0 && System.currentTimeMillis()-lastChangeTime>dataLifeTime) return false;
+        return true;
+    }
+
+    @Override
     public Date getLastChangeTime() {
-        return lastChangeTime;
+        return new Date(lastChangeTime);
     }
 
     private void fireChangeEvent(T oldValue,T newValue){
-        final ValueChangeEvent<T> event=new ValueChangeEvent<>(this.getUUIDString(),this.getName(),this,oldValue,newValue);
-        for(ValueChangeListener<? super T> listener:eventDispatcher){
-            listener.valueChange(event);
+        if(eventactive) {
+            final ValueChangeEvent<T> event = new ValueChangeEvent<>(this.getUUIDString(), this.getName(), this, oldValue, newValue);
+            for (ValueChangeListener<? super T> listener : eventDispatcher) {
+                listener.valueChange(event);
+            }
+            fireEvent(EventType.ELEMENT_CHANGE, newValue);
+            writeBinding(newValue);
         }
-        fireEvent(EventType.ELEMENT_CHANGE, newValue);
-        /*if(bindedWritePoperty!=null){
-            bindedWritePoperty.setValue(newValue);
-        }*/
     }
 
     @Override
@@ -165,7 +202,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public void bindWriteProperty(ValueProperty<? super T> property){
-        bindPropertyForWrite(property);
+        bindPropertyForWrite(property,null,10,-1,0,false);
     }
 
     @Override
@@ -194,5 +231,16 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         eventDispatcher.clear();
         unbindReadProperty();
         unbindWriteProperty();
+    }
+
+
+    @Override
+    public boolean isReadAccepted() {
+        return !writeonly;
+    }
+
+    @Override
+    public boolean isWriteAccepted() {
+        return !readonly;
     }
 }

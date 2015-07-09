@@ -9,7 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by Сергей on 26.06.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 26.06.2015.
  */
 public class StaticGroupProperty extends AbstractProperty {
     final private Map<String,AbstractProperty> properties;
@@ -23,26 +23,13 @@ public class StaticGroupProperty extends AbstractProperty {
         return propertiesUUID.get(name);
     };
 
-    public StaticGroupProperty(String name,MessageSubSystem centralSystem,AbstractProperty... propertyList) {
-        super(name,centralSystem);
+    public StaticGroupProperty(String name, String uuid, String description, MessageSubSystem centralSystem,AbstractProperty... propertyList) {
+        super(name, uuid, description, centralSystem);
         properties =new ConcurrentHashMap<>();
         propertiesUUID =new ConcurrentHashMap<>();
         addPropertyies(propertyList);
     }
 
-    public StaticGroupProperty(String name, String description,MessageSubSystem centralSystem,AbstractProperty... propertyList) {
-        super(name, description,centralSystem);
-        properties =new ConcurrentHashMap<>();
-        propertiesUUID =new ConcurrentHashMap<>();
-        addPropertyies(propertyList);
-    }
-
-    public StaticGroupProperty(String name, String uuid, String description,MessageSubSystem centralSystem,AbstractProperty... propertyList) {
-        super(name, uuid, description,centralSystem);
-        properties =new ConcurrentHashMap<>();
-        propertiesUUID =new ConcurrentHashMap<>();
-        addPropertyies(propertyList);
-    }
 
     protected void addPropertyies(final AbstractProperty... propertyList){
         if(propertyList!=null && propertyList.length>0){
@@ -68,27 +55,12 @@ public class StaticGroupProperty extends AbstractProperty {
     }
 
     @Override
-    protected void bindPropertyForRead(AbstractProperty property) {
+    protected void reciveValueFromBindingWrite(AbstractProperty property, Object valueForWtite, String formatForWrite, int radixForWrite, int positionForWrite, int lengthForWrite, boolean convertBoolToBinaryForWrite) {
 
     }
 
     @Override
-    protected void bindPropertyForWrite(AbstractProperty property) {
-
-    }
-
-    @Override
-    protected void unbindPropertyForRead() {
-
-    }
-
-    @Override
-    protected void unbindPropertyForWrite() {
-
-    }
-
-    @Override
-    protected void writeBindingOpearion(AbstractProperty property) {
+    protected void reciveValueFromBindingRead(AbstractProperty property, Object valueForWtite) {
 
     }
 }

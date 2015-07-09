@@ -6,7 +6,7 @@ import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
 import java.util.Date;
 
 /**
- * Created by Сергей on 04.07.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 04.07.2015.
  */
 public interface ValuePropertyInterface<T extends Comparable<? super T>> extends ElementInterface, ReadWriteProperty<T> {
     @Override
@@ -34,4 +34,10 @@ public interface ValuePropertyInterface<T extends Comparable<? super T>> extends
 
     @Override
     void destroy();
+
+    void readValueRequest();
+    void writeValueRequest();
+
+    boolean isReadAccepted();
+    boolean isWriteAccepted();
 }

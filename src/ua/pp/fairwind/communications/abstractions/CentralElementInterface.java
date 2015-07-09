@@ -8,6 +8,7 @@ public interface CentralElementInterface extends ElementInterface {
     boolean isMessageBrookerExist();
 
     void addElement(ElementInterface element);
+    void removeElement(ElementInterface element);
 
 
 }
