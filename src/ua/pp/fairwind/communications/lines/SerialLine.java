@@ -6,43 +6,28 @@ import ua.pp.fairwind.communications.abstractions.SystemEllement;
 /**
  * Created by Сергей on 09.07.2015.
  */
-public class SerialLine extends SystemEllement implements LineInterface {
-    public SerialLine(String name, MessageSubSystem centralSystem) {
-        super(name, centralSystem);
-    }
-
-    public SerialLine(String name, String description, MessageSubSystem centralSystem) {
-        super(name, description, centralSystem);
-    }
-
-    public SerialLine(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+public class SerialLine extends AbstractLine {
+    public SerialLine(String name, String uuid, String description, MessageSubSystem centralSystem, long maxTransactionTime) {
+        super(name, uuid, description, centralSystem, maxTransactionTime);
     }
 
     @Override
-    public void startTransaction() throws TrunsactionError {
+    protected void sendMessage(byte[] data, LineParameters params) {
 
     }
 
     @Override
-    public void endTransaction() {
-
-    }
-
-    @Override
-    public void sendMessage(byte[] data, LineParameters params) throws TrunsactionError {
-
-    }
-
-    @Override
-    public byte[] reciveMessage(int timeOut, LineParameters params) throws TrunsactionError {
+    protected byte[] reciveMessage(long timeOut, LineParameters params) throws LineErrorException, LineTimeOutException {
         return new byte[0];
     }
 
     @Override
-    public void async_communicate(CommunicationProtocol request) {
+    protected void onStartTrunsaction() {
 
     }
 
+    @Override
+    protected void onEndTrunsaction() {
 
+    }
 }

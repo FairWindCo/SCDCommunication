@@ -7,6 +7,7 @@ public class TrunsactionError extends IllegalAccessException {
     public enum TrunsactionErrorType{
             ANOTHER_TRUNSACTION_EXECUTE,
             TRUNSACTION_TIMEOUT,
+            TRUNSACTION_ERROR
     }
 
     private final TrunsactionErrorType type;
