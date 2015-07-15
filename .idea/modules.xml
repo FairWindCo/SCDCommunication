@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SCDCommunication.iml" filepath="$PROJECT_DIR$/SCDCommunication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SCDVisual/SCDVisual.iml" filepath="$PROJECT_DIR$/SCDVisual/SCDVisual.iml" />
     </modules>
   </component>
 </project>

@@ -1,0 +1,110 @@
+#mainPanel{
+    -fx-background-color:
+        linear-gradient(rgb(35,35,80), rgb(81, 95, 200), rgb(35,36,80));
+}
+
+#basePanel{
+    -fx-background-color:
+    linear-gradient(rgb(35,35,80),rgb(50,50,100), rgb(35,36,80));
+}
+
+#globalMenu{
+    -fx-background-color:
+    linear-gradient(rgb(15,29,50),rgb(35,49,90));
+    -fx-text-fill: white;
+}
+
+#globalMenu .menu-item .label{
+	-fx-text-fill: black;
+}
+
+.chart-legend .label{
+    -fx-text-fill: black;
+}
+
+#globalMenu .label{
+    -fx-text-fill: white;
+}
+
+.label{
+    -fx-text-fill: white;
+    -fx-font-size: 14;
+}
+
+#logoLabel{
+	-fx-font-size: 35;
+	-fx-text-fill: white;
+	-fx-text-alignment: center;
+}
+
+.scrollLabel{
+ -fx-text-fill: white;
+ -fx-font-size: 14;
+}
+
+
+.basePanel{
+    -fx-background-color:
+    linear-gradient(rgb(35,35,80),rgb(50,50,100), rgb(35,36,80));
+}
+.scrollPanel{
+    -fx-background-color: rgb(35,49,80);
+    -fx-border-color: white;
+    -fx-border-width: 2px;
+}
+.scrollPanel .viewport{
+    -fx-background-color: rgb(35,49,80);
+}
+
+.viewport{
+    -fx-background-color: linear-gradient(rgb(35,35,80),rgb(50,50,100), rgb(35,36,80));
+}
+
+.tooltip {
+    -fx-background-color: linear-gradient(#e2ecfe, #99bcfd);
+}
+.page-corner {
+    -fx-background-color: linear-gradient(from 0% 0% to 50% 50%,#3278fa,#99bcfd);
+}
+
+.table-view .column-header {
+    -fx-background-color: rgb(23, 55, 80);
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #5782D0;
+}
+
+.table-row-cell:empty {
+    -fx-background-color: lightyellow;
+}
+
+.table-row-cell:empty .table-cell {
+    -fx-border-width: 0px;
+}
+
+#formGrid{
+    -fx-background-color: rgb(35,49,80);
+}
+
+#headerPanel{
+    -fx-background-color: rgb(35,49,80);
+    -fx-background-image: url("top-bar.png");
+    -fx-background-position: center top;
+    -fx-background-size: stretch;
+    -fx-background-repeat: no-repeat;
+    -fx-border-color: rgb(150,150,230) rgb(150,150,230) rgb(35,49,80) rgb(35,49,80);
+    -fx-border-width: 1;
+}
+
+#buttomPanel{
+    -fx-background-color: rgb(35,49,80);
+    -fx-background-image: url("bottom-bar.png");
+    -fx-background-position: center top;
+    -fx-background-repeat: repeat-x;
+    -fx-border-width: 1;
+}
+#mainWindow{
+    -fx-background-color:
+        linear-gradient(rgb(35,49,80),rgb(50,50,100), rgb(35,49,80));
+}
