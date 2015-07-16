@@ -1,7 +1,7 @@
 package ua.pp.fairwind.io.javafx.propertys;
 
+import ua.pp.fairwind.communications.propertyes.software.stringlike.StringValuedPropertry;
 import ua.pp.fairwind.io.javafx.propertys.base.AbstractFXPropertyAdapter;
-import ua.pp.fairwind.io.property.composite.valuesProperty.StringValuedPropertry;
 
 /**
  * Created by Wind on 29.07.2014.

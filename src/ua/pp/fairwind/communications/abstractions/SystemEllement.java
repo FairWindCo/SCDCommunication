@@ -105,4 +105,9 @@ public class SystemEllement implements ElementInterface{
     public int hashCode() {
         return uuid != null ? uuid.hashCode() : 0;
     }
+
+    @Override
+    public String getHardwareName() {
+        return this.getClass().getSimpleName()+"("+name+","+uuid.toString()+")";
+    }
 }

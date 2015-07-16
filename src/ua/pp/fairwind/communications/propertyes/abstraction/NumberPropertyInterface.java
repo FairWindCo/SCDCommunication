@@ -3,7 +3,7 @@ package ua.pp.fairwind.communications.propertyes.abstraction;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 
 /**
- * Created by Сергей on 04.07.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 04.07.2015.
  */
 public interface NumberPropertyInterface<M extends Number & Comparable<? super M>> extends ElementInterface, ValuePropertyInterface<M>,ReadWriteProperty<M> {
     void bindReadNumberProperty(NumberProperty<? extends Number> property);

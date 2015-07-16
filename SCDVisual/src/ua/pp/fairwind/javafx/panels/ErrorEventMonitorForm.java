@@ -13,11 +13,12 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import ua.pp.fairwind.io.node.HardwareNodeEvent;
-import ua.pp.fairwind.io.node.HardwareNodeListener;
+import ua.pp.fairwind.communications.abstractions.ElementInterface;
+import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
+import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
 
-public class ErrorEventMonitorForm extends SimpleView implements HardwareNodeListener{
+public class ErrorEventMonitorForm extends SimpleView implements ElementEventListener{
 	private ObservableList<HardwareNodeEvent> events=FXCollections.observableArrayList();
 	private int maxSize=100;
 	
@@ -44,8 +45,8 @@ public class ErrorEventMonitorForm extends SimpleView implements HardwareNodeLis
 		time.setCellValueFactory(new PropertyValueFactory<>("time"));
 		//object.setCellValueFactory(new PropertyValueFactory<ErrorEvent,String>("source"));
 		object.setCellValueFactory(arg0 -> {
-            if(arg0!=null && arg0.getValue()!=null && arg0.getValue().getSource()!=null){
-                return new SimpleStringProperty(arg0.getValue().getSource().getClass().getSimpleName());
+            if(arg0!=null && arg0.getValue()!=null && arg0.getValue().getElementName()!=null){
+                return new SimpleStringProperty(arg0.getValue().getElementName());
             } else{
                 return new SimpleStringProperty("null");
             }
@@ -109,11 +110,11 @@ public class ErrorEventMonitorForm extends SimpleView implements HardwareNodeLis
 
 	
 	synchronized public void println(String message){
-		errorRecived(new HardwareNodeEvent(null, message, HardwareNodeEvent.EventLevel.ERROR));
+		errorRecived(new HardwareNodeEvent(null, EventType.ERROR,message));
 	}
 	
-	synchronized public void println(String message,HardwareNodeEvent.EventLevel level){
-		errorRecived(new HardwareNodeEvent(null, message,level));
+	synchronized public void println(String message,EventType level){
+		errorRecived(new HardwareNodeEvent(null, level,message));
 	}
 
 
@@ -145,8 +146,9 @@ public class ErrorEventMonitorForm extends SimpleView implements HardwareNodeLis
 		}
 	}
 
-    @Override
-    public void eventFromHardwareNode(HardwareNodeEvent event) {
-        errorRecived(event);
-    }
+	@Override
+	public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
+		errorRecived(new HardwareNodeEvent(element!=null?element.getName():null,typeEvent,params));
+	}
+
 }

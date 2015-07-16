@@ -3,17 +3,12 @@ package ua.pp.fairwind.javafx.panels;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.io.node.HardwareNodeEvent;
+import ua.pp.fairwind.communications.abstractions.ElementInterface;
+import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.javafx.guiElements.ButtonPanel;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  * Created by Сергей on 24.09.2014.
@@ -60,51 +55,31 @@ public class InfoBar extends ButtonPanel {
     protected void constructAdditionalElements() {
     }
 
-    private void updateInfo(ElementEventListener event){
-        if(event!=null){
-            Instant tim=Instant.ofEpochMilli(event.getTime());
-            time.setText(LocalDateTime.ofInstant(tim, ZoneId.systemDefault()).format(formater));
-            if(event.getLevel()!=null){
-                level.setText(event.getLevel().name());
-            } else {
-                level.setText("");
+    private void updateInfo(ElementInterface element,EventType eventType,Object parameters){
+            time.setText(LocalDateTime.now().format(formater));
+            if(eventType!=null) {
+                level.setText(eventType.name());
             }
-            if(event.getMessage()!=null){
-                info.setText(event.getMessage());
+            if(parameters!=null){
+                info.setText(parameters.toString());
             } else {
                 info.setText("");
             }
-            if(event.getSource()!=null){
-                String id=event.getSource().getHardwareID();
-                if(event.getParent()!=null){
-                    HardwareNodeEvent parent=event.getParent();
-                    while (parent.getParent()!=null){
-                        parent=parent.getParent();
-                    }
-                    if(parent.getSource()!=null){
-                        id=parent.getSource().getHardwareID();
-                    }
-                }
+            if(element!=null){
+                String id=element.getHardwareName();
                 object.setText(id);
             } else {
                 object.setText("");
             }
             message.setText("");
-        } else {
-            time.setText(LocalDateTime.now().format(formater));
-            level.setText("");
-            message.setText("");
-            info.setText("");
-            object.setText("");
-        }
     }
 
-    public void setMessage(HardwareNodeEvent event){
+    public void setMessage(ElementInterface element,EventType eventType,Object parameters){
         if(Platform.isFxApplicationThread()){
-            updateInfo(event);
+            updateInfo(element,eventType,parameters);
         } else {
             try {
-                Platform.runLater(() -> updateInfo(event));
+                Platform.runLater(() -> updateInfo(element,eventType,parameters));
             }catch (Exception ignore){
                 ignore.printStackTrace();
             }

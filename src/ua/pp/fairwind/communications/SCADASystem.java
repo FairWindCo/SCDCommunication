@@ -8,7 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Created by Сергей on 30.06.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 30.06.2015.
  */
 public class SCADASystem implements ElementInterface{
     final private String name;
@@ -81,5 +81,10 @@ public class SCADASystem implements ElementInterface{
     @Override
     public void destroy() {
         eventDispatcher.clear();
+    }
+
+    @Override
+    public String getHardwareName() {
+        return this.getClass().getSimpleName()+"("+name+","+uuid.toString()+")";
     }
 }

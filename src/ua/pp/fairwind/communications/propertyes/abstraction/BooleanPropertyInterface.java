@@ -15,4 +15,5 @@ public interface BooleanPropertyInterface extends ValuePropertyInterface<Boolean
     void bindWriteStringProperty(StringPropertyInterface property,boolean binformat);
     void unbindWriteStringProperty();
     void unbindReadStringProperty();
+
 }

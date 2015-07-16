@@ -7,14 +7,18 @@ import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
 
 import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created by Сергей on 30.06.2015.
  */
 public abstract class ValueProperty<T extends Comparable<? super T>> extends AbstractProperty implements ValuePropertyInterface<T> {
     private final CopyOnWriteArrayList<ValueChangeListener<? super T>> eventDispatcher=new CopyOnWriteArrayList<>();
-    private volatile T value;
-    private volatile long lastChangeTime;
+    final private AtomicReference<T> value=new AtomicReference<>();
+    final private AtomicLong lastChangeTime=new AtomicLong();
+    //private volatile T value;
+    //private volatile long lastChangeTime;
     protected final boolean readonly;
     protected final boolean writeonly;
 
@@ -29,7 +33,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         super(name, uuid, description, centralSystem);
         this.readonly = readonly;
         this.writeonly = writeonly;
-        this.value=value;
+        this.value.set(value);
     }
 
     public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
@@ -42,7 +46,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         super(name, uuid, description, centralSystem);
         this.readonly = false;
         this.writeonly = false;
-        this.value=value;
+        this.value.set(value);
     }
 
     public ValueProperty(String name, String uuid, String description) {
@@ -55,7 +59,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         super(name, uuid, description, null);
         this.readonly = false;
         this.writeonly = false;
-        this.value=value;
+        this.value.set(value);
     }
 
     public ValueProperty(String name, String description) {
@@ -68,7 +72,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         super(name, null, description, null);
         this.readonly = false;
         this.writeonly = false;
-        this.value=value;
+        this.value.set(value);
     }
 
     public ValueProperty(String name) {
@@ -81,7 +85,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         super(name, null, null, null);
         this.readonly = false;
         this.writeonly = false;
-        this.value=value;
+        this.value.set(value);
     }
 
 
@@ -124,7 +128,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
 
     T getInternalValue() {
-        return value;
+        return value.get();
     }
 
 
@@ -139,15 +143,17 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     void setInternalValue(final T value) {
 
-        if(this.value==null && value!=null){
-            this.value = value;
-            lastChangeTime = System.currentTimeMillis();
+        if(this.value.get()==null && value!=null){
+            this.value.set(value);
+            //lastChangeTime = System.currentTimeMillis();
+            lastChangeTime.set(System.currentTimeMillis());
             fireChangeEvent(null, value);
         } else
-        if(value!=null && value.compareTo(this.value)!=0) {
-            T old=this.value;
-            this.value = value;
-            lastChangeTime = System.currentTimeMillis();
+        if(value!=null && value.compareTo(this.value.get())!=0) {
+            T old=this.value.get();
+            this.value.set(value);
+            //lastChangeTime = System.currentTimeMillis();
+            lastChangeTime.set(System.currentTimeMillis());
             fireChangeEvent(old, value);
         }
     }
@@ -164,13 +170,14 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     @Override
     public boolean isValidProperty() {
         if(value==null) return false;
-        if(dataLifeTime>=0 && System.currentTimeMillis()-lastChangeTime>dataLifeTime) return false;
+        long lastchange=lastChangeTime.get();
+        if(dataLifeTime>=0 && System.currentTimeMillis()-lastchange>dataLifeTime) return false;
         return true;
     }
 
     @Override
     public Date getLastChangeTime() {
-        return new Date(lastChangeTime);
+        return new Date(lastChangeTime.get());
     }
 
     private void fireChangeEvent(T oldValue,T newValue){
@@ -202,7 +209,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public void bindWriteProperty(ValueProperty<? super T> property){
-        bindPropertyForWrite(property,null,10,-1,0,false);
+        bindPropertyForWrite(property, null, 10, -1, 0, false);
     }
 
     @Override
@@ -219,7 +226,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     @Override
     public int compareTo(T o) {
         if(o!=null){
-            return o.compareTo(value);
+            return o.compareTo(value.get());
         } else {
             return ((value==null)?0:1);
         }
@@ -243,4 +250,6 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     public boolean isWriteAccepted() {
         return !readonly;
     }
+
+
 }

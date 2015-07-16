@@ -1,7 +1,7 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
 /**
- * Created by Сергей on 04.07.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 04.07.2015.
  */
 public interface StringPropertyInterface extends ValuePropertyInterface<String> {
     void bindReadNumberProperty(NumberProperty<?> property,int radix);

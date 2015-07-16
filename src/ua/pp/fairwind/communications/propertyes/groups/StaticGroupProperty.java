@@ -4,9 +4,11 @@ package ua.pp.fairwind.communications.propertyes.groups;
 import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 /**
  * Created by ������ on 26.06.2015.
@@ -17,11 +19,26 @@ public class StaticGroupProperty extends AbstractProperty {
 
     public AbstractProperty get(String name){
         return properties.get(name);
-    };
+    }
 
     public AbstractProperty getByUUID(String name){
         return propertiesUUID.get(name);
-    };
+    }
+
+
+    public Stream<AbstractProperty> getStream(){
+        return properties.values().stream();
+    }
+
+    public AbstractProperty getPopertyByIndex(int index){
+        Collection<AbstractProperty> list=properties.values();
+        int in=0;
+        for(AbstractProperty prp:list){
+            if(in==index) return prp;
+            in++;
+        }
+        return null;
+    }
 
     public StaticGroupProperty(String name, String uuid, String description, MessageSubSystem centralSystem,AbstractProperty... propertyList) {
         super(name, uuid, description, centralSystem);
@@ -53,6 +70,7 @@ public class StaticGroupProperty extends AbstractProperty {
             propertiesUUID.remove(property.getUUIDString());
         }
     }
+
 
     @Override
     protected void reciveValueFromBindingWrite(AbstractProperty property, Object valueForWtite, String formatForWrite, int radixForWrite, int positionForWrite, int lengthForWrite, boolean convertBoolToBinaryForWrite) {

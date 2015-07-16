@@ -9,5 +9,6 @@ public enum EventType {
     NEED_WRITE_VALUE,
     PARSE_ERROR,
     ERROR,
+    FATAL_ERROR,
     TIMEOUT
 }

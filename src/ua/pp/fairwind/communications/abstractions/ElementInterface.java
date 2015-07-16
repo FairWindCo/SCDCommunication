@@ -5,7 +5,7 @@ import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import java.util.UUID;
 
 /**
- * Created by Сергей on 30.06.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 30.06.2015.
  */
 public interface ElementInterface {
     String getName();
@@ -16,4 +16,5 @@ public interface ElementInterface {
     void addEventListener(ElementEventListener listener);
     void removeEventListener(ElementEventListener listener);
     void destroy();
+    String getHardwareName();
 }

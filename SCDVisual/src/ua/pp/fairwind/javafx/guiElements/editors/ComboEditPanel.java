@@ -7,8 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
+import ua.pp.fairwind.communications.propertyes.software.stringlike.StringValuedPropertry;
 import ua.pp.fairwind.io.javafx.propertys.StringPropertyFXAdapter;
-import ua.pp.fairwind.io.property.composite.valuesProperty.StringValuedPropertry;
 import ua.pp.fairwind.javafx.guiElements.MyBaseResourceLoader;
 
 public class ComboEditPanel extends Pane{
