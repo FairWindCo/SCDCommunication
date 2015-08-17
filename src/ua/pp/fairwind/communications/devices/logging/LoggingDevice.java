@@ -2,6 +2,7 @@ package ua.pp.fairwind.communications.devices.logging;
 
 import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
+import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.lines.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.CommunicationProtocol;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
@@ -31,12 +32,12 @@ public class LoggingDevice extends AbstractDevice {
     }
 
     @Override
-    protected byte[] formReadRequest(HardWarePropertyInfo property) {
+    protected RequestInformation formReadRequest(HardWarePropertyInfo property) {
         return null;
     }
 
     @Override
-    protected byte[] formWriteRequest(HardWarePropertyInfo property) {
+    protected RequestInformation formWriteRequest(HardWarePropertyInfo property) {
         return null;
     }
 
@@ -52,7 +53,6 @@ public class LoggingDevice extends AbstractDevice {
                 LineMonitoringEvent event=new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.WRITE,request!=null?request.getBytesForSend():null,answer.getCommunicateOverLine(),request!=null?request.getSenderDevice():null);
                 monitorInterface.monitor(event);
             }
-
         }
     }
 }

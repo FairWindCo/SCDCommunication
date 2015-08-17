@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SCDCommunication.iml" filepath="$PROJECT_DIR$/SCDCommunication.iml" />
       <module fileurl="file://$PROJECT_DIR$/SCDVisual/SCDVisual.iml" filepath="$PROJECT_DIR$/SCDVisual/SCDVisual.iml" />
+      <module fileurl="file://$PROJECT_DIR$/VisualAplication/VisualAplication.iml" filepath="$PROJECT_DIR$/VisualAplication/VisualAplication.iml" />
     </modules>
   </component>
 </project>

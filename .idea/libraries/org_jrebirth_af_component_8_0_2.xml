@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="org.jrebirth.af:component:8.0.2" type="repository">
+    <properties maven-id="org.jrebirth.af:component:8.0.2" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jrebirth/af/component/8.0.2/component-8.0.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/jrebirth/af/core/8.0.2/core-8.0.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/jrebirth/af/api/8.0.2/api-8.0.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/jre/jre/lib/javaws.jar!/" />
+      <root url="jar://$APPLICATION_HOME_DIR$/jre/jre/lib/deploy.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/jrebirth/af/preloader/8.0.2/preloader-8.0.2.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.0.13/logback-classic-1.0.13.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/1.0.13/logback-core-1.0.13.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
