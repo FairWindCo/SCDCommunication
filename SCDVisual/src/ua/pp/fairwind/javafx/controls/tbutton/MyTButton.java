@@ -16,13 +16,7 @@ package ua.pp.fairwind.javafx.controls.tbutton;
  */
 
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ObjectPropertyBase;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
@@ -128,7 +122,7 @@ public class MyTButton extends Control {
 
 
     // ******************** Style related *************************************
-    @Override protected String getUserAgentStylesheet() {
+    @Override public String getUserAgentStylesheet() {
         return getClass().getResource(getClass().getSimpleName().toLowerCase() + ".css").toExternalForm();
     }
 

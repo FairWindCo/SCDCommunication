@@ -5,8 +5,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import ua.pp.fairwind.io.node.HardwareNode;
-import ua.pp.fairwind.io.node.HardwareNodesHolders;
 import ua.pp.fairwind.javafx.guiElements.MyBaseResourceLoader;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
 import ua.pp.fairwind.javafx.guiElements.menu.PrefferedSize;
@@ -21,7 +19,6 @@ public class SimpleHardWareView implements ApplicationView {
 	private boolean resizable=true;
 	private MenuExecutor executr;
 	private MyBaseResourceLoader resloader;
-    private final HardwareNodesHolders<HardwareNode> hardwareNodesHolders;
 	@Override
 	public String getTitle() {
 		return title;
@@ -40,81 +37,71 @@ public class SimpleHardWareView implements ApplicationView {
 		return executr;
 	}
 
-	public SimpleHardWareView(String title, Image icon, PrefferedSize prefferedSize,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+	public SimpleHardWareView(String title, Image icon, PrefferedSize prefferedSize) {
 		super();
 		this.title = title;
 		this.icon = icon;
 		this.prefferedSize = prefferedSize;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
 	public SimpleHardWareView(String title, Image icon, PrefferedSize prefferedSize,
-                              Scene view,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+                              Scene view) {
 		super();
 		this.title = title;
 		this.icon = icon;
 		this.prefferedSize = prefferedSize;
 		this.view = view;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
-	public SimpleHardWareView(String title, Image icon,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+	public SimpleHardWareView(String title, Image icon) {
 		super();
 		this.title = title;
 		this.icon = icon;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
-	public SimpleHardWareView(String title,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+	public SimpleHardWareView(String title) {
 		super();
 		this.title = title;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
-	public SimpleHardWareView(HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+	public SimpleHardWareView() {
 		super();
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
-	public SimpleHardWareView(String title, Image icon, PrefferedSize prefferedSize, MyBaseResourceLoader resloader,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+	public SimpleHardWareView(String title, Image icon, PrefferedSize prefferedSize, MyBaseResourceLoader resloader) {
 		super();
 		this.title = title;
 		this.icon = icon;
 		this.prefferedSize = prefferedSize;
 		this.resloader=resloader;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
 	public SimpleHardWareView(String title, Image icon, PrefferedSize prefferedSize,
-                              Scene view, MyBaseResourceLoader resloader,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+                              Scene view, MyBaseResourceLoader resloader) {
 		super();
 		this.title = title;
 		this.icon = icon;
 		this.prefferedSize = prefferedSize;
 		this.view = view;
 		this.resloader=resloader;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
-	public SimpleHardWareView(String title, Image icon, MyBaseResourceLoader resloader,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+	public SimpleHardWareView(String title, Image icon, MyBaseResourceLoader resloader) {
 		super();
 		this.title = title;
 		this.icon = icon;
 		this.resloader=resloader;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
-	public SimpleHardWareView(String title, MyBaseResourceLoader resloader,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+	public SimpleHardWareView(String title, MyBaseResourceLoader resloader) {
 		super();
 		this.title = title;
 		this.resloader=resloader;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
-	public SimpleHardWareView(MyBaseResourceLoader resloader,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+	public SimpleHardWareView(MyBaseResourceLoader resloader) {
 		super();
 		this.resloader=resloader;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
 	@Override
@@ -148,24 +135,22 @@ public class SimpleHardWareView implements ApplicationView {
 	}
 
 	public SimpleHardWareView(String title, Image icon, PrefferedSize prefferedSize,
-                              boolean resizable,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+                              boolean resizable) {
 		super();
 		this.title = title;
 		this.icon = icon;
 		this.prefferedSize = prefferedSize;
 		this.resizable = resizable;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
 	public SimpleHardWareView(String title, Image icon, PrefferedSize prefferedSize,
-                              Scene view, boolean resizable,HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+                              Scene view, boolean resizable) {
 		super();
 		this.title = title;
 		this.icon = icon;
 		this.prefferedSize = prefferedSize;
 		this.view = view;
 		this.resizable = resizable;
-        this.hardwareNodesHolders=hardwareNodesHolders;
 	}
 
 	public void setResizable(boolean resizable) {

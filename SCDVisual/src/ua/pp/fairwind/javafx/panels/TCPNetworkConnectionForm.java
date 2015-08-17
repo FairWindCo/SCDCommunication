@@ -12,8 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
-import ua.pp.fairwind.io.lines.Line;
-import ua.pp.fairwind.io.lines.adapters.TCPCommunicationLineAdapter;
+import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
+import ua.pp.fairwind.communications.lines.LineParameters;
 import ua.pp.fairwind.javafx.guiElements.editors.IntegerInputText;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
 import ua.pp.fairwind.javafx.guiElements.menu.PrefferedSize;
@@ -21,46 +22,44 @@ import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
 
 
 public class TCPNetworkConnectionForm  extends SimpleView {
-	Line comline;
 	StringProperty address=new SimpleStringProperty();
 	IntegerProperty port=new SimpleIntegerProperty();
-	TCPCommunicationLineAdapter adapter=null;
+	DeviceInterface dev=null;
+	LineParameters safeparams;
 	
 	public TCPNetworkConnectionForm(String title, Image icon,
-			PrefferedSize prefferedSize, Line comline) {
+			PrefferedSize prefferedSize, DeviceInterface comuunicateDevice) {
 		super(title, icon, prefferedSize);
-		this.comline = comline;
+		this.dev = comuunicateDevice;
 	}
 		
 	
-	public TCPNetworkConnectionForm(String title,Line comline) {
+	public TCPNetworkConnectionForm(String title, DeviceInterface comuunicateDevice) {
 		super(title, null,(PrefferedSize) null);
-		this.comline = comline;
+		this.dev = comuunicateDevice;
 	}
 	
 	@Override
 	public void onShow(MenuExecutor executr) {
-		if(comline!=null){
-			if(comline.getCommunicationAdapter() instanceof TCPCommunicationLineAdapter){
-				adapter=(TCPCommunicationLineAdapter) comline.getCommunicationAdapter();
-                address.setValue(adapter.getAddress());
-                port.setValue(adapter.getPort());
-                //port.setValue(1000);
-				//comline.stop();
+		if(dev!=null){
+			safeparams=dev.getLineParameters();
+			if(safeparams!=null){
+                address.setValue(safeparams.getLineParameter(LineParameters.ParametersName.IP_ADDRESS.name()).toString());
+                port.setValue((Integer)safeparams.getLineParameter(LineParameters.ParametersName.IP_PORT.name()));
 			}
 		} else {
-			adapter=null;
+			dev=null;
 		}
 		super.onShow(executr);
 	}
 
 	@Override
 	public void onHide() {
-		if(comline!=null){
-			if(adapter!=null){
+		if(dev!=null){
+			if(dev!=null){
 				//comline.start();
 			}
-			adapter=null;
+			dev=null;
 		}
 		super.onHide();
 	}
@@ -69,7 +68,7 @@ public class TCPNetworkConnectionForm  extends SimpleView {
 	
 	@Override
 	protected Node createView() {
-		if(comline!=null){
+		if(dev!=null){
 		GridPane pane= new GridPane();
         pane.setId("formGrid");
 		pane.setAlignment(Pos.CENTER);
@@ -90,27 +89,19 @@ public class TCPNetworkConnectionForm  extends SimpleView {
 		pane.add(prt, 1, 1);
 		Button ok=new Button("SAVE");
 		ok.onActionProperty().setValue(arg0 -> {
-            if(comline!=null){
-                comline.stop();
-                if(comline.getCommunicationAdapter() instanceof TCPCommunicationLineAdapter){
-                    adapter=(TCPCommunicationLineAdapter) comline.getCommunicationAdapter();
-                    adapter.disconnect();
-                }
-                adapter=new TCPCommunicationLineAdapter(address.getValue(), port.intValue());
-                comline.setCommunicationAdapter(adapter);
-                //comline.setLineInPause(true);
-                comline.start();
+            if(dev!=null){
+				CommunicationLineParameters newparams=new CommunicationLineParameters(address.getValue(), port.intValue(),0);
+				dev.setLineParameters(newparams);
                 closeWindow();
             }
-
         });
-		Button cancel=new Button("RELOAD");
+		Button cancel=new Button("CANCEL");
 		cancel.onActionProperty().setValue(arg0 -> {
-            if(comline.getCommunicationAdapter() instanceof TCPCommunicationLineAdapter){
-                adapter=(TCPCommunicationLineAdapter) comline.getCommunicationAdapter();
-                address.setValue(adapter.getAddress());
-                port.setValue(adapter.getPort());
-            }
+			if(dev!=null){
+				//CommunicationLineParameters newparams=new CommunicationLineParameters(address.getValue(), port.intValue(),0);
+				dev.setLineParameters(safeparams);
+				closeWindow();
+			}
         });
 		pane.add(ok, 0, 2);
 		pane.add(cancel, 1, 2);

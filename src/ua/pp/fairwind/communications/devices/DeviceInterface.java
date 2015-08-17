@@ -37,4 +37,7 @@ public interface DeviceInterface extends ElementInterface{
 
     void setLineParameters(LineParameters params);
     LineParameters getLineParameters();
+
+    void setActivete(boolean activeted);
+    boolean isActive();
 }

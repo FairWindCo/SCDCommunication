@@ -15,4 +15,12 @@ public class HardWareValuePropertyInfo<T extends Comparable<? super T>> extends 
     public void setInternalValue(T value) {
         ((ValueProperty<T>)property).setInternalValue(value);
     }
+
+    public T getValue(){
+        return ((ValueProperty<T>)property).getValue();
+    }
+
+    public void setValue(T value){
+        ((ValueProperty<T>)property).setValue(value);
+    }
 }

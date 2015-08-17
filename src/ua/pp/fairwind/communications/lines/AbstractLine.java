@@ -3,7 +3,11 @@ package ua.pp.fairwind.communications.lines;
 import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
 import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
+import ua.pp.fairwind.communications.propertyes.event.EventType;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,10 +20,12 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     private final AtomicBoolean threadRunned=new AtomicBoolean(false);
     private final AtomicBoolean threadCreated=new AtomicBoolean(false);
     private final AtomicBoolean transuction=new AtomicBoolean(false);
+    private final AtomicBoolean threadPaused=new AtomicBoolean(false);
     private volatile long startTrunsactionTime=-1;
     private volatile UUID trunsactionUUID;
     private final long maxTransactionTime;
-
+    private final Set<DeviceInterface> readmonitoring=new HashSet<>();
+    private final Set<DeviceInterface> writemonitoring=new HashSet<>();
 
     public AbstractLine(String name, String uuid, String description, MessageSubSystem centralSystem,long maxTransactionTime) {
         super(name, uuid, description, centralSystem);
@@ -69,8 +75,8 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
-    abstract protected void sendMessage(byte[] data, LineParameters params);
-    abstract protected byte[] reciveMessage(long timeOut, LineParameters params) throws LineErrorException,LineTimeOutException;
+    abstract protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException,LineTimeOutException;
+    abstract protected byte[] reciveMessage(long timeOut,long bytesForReadCount, LineParameters params) throws LineErrorException,LineTimeOutException;
     abstract protected void onStartTrunsaction();
     abstract protected void onEndTrunsaction();
 
@@ -83,36 +89,62 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     }
 
     @Override
-    public void sendMessage(UUID uuid,byte[] data, LineParameters params) throws TrunsactionError {
+    public void sendMessage(UUID uuid,final byte[] data, LineParameters params) throws TrunsactionError,LineErrorException,LineTimeOutException {
         if(!isTrunsactionActive(uuid)){
-            sendMessage(data,params);
+            sendMessage(data, params);
+            writemonitor(data,null);
         } else {
             throw new TrunsactionError("Another transaction started!", TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
+        }
+    }
+
+    private void readmonitor(final byte[] data,final CommunicationProtocol request){
+        if(data!=null && data.length>0) {
+            fireEvent(EventType.READ_MONITOR,new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.READ,data,this,request!=null?request.getSenderDevice():null));
+            if (readmonitoring.size() > 0) {
+                CommunicationAnswer comans = new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.READ_MONITOR, data, null, this);
+                readmonitoring.parallelStream().forEach(dev -> dev.processRecivedMessage(comans));
+            }
+        }
+    }
+
+    private void writemonitor(final byte[] data,final CommunicationProtocol request){
+        if(data!=null && data.length>0) {
+            fireEvent(EventType.WRITE_MONITOR,new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.WRITE,data,this,request!=null?request.getSenderDevice():null));
+            if (writemonitoring.size() > 0 && data != null && data.length > 0) {
+                final CommunicationAnswer comans = new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.READ_MONITOR, data, null, this);
+                writemonitoring.parallelStream().forEach(dev -> dev.processRecivedMessage(comans));
+            }
         }
     }
 
     @Override
-    public byte[] reciveMessage(UUID uuid,long timeOut, LineParameters params) throws TrunsactionError,LineTimeOutException,LineErrorException {
+    public byte[] reciveMessage(UUID uuid,long timeOut,long bytesForReadCount, LineParameters params) throws TrunsactionError,LineTimeOutException,LineErrorException {
         if(!isTrunsactionActive(uuid)){
-            return reciveMessage(timeOut,params);
+            final byte[] data=reciveMessage(timeOut,bytesForReadCount,params);
+            readmonitor(data,null);
+            return data;
         } else {
             throw new TrunsactionError("Another transaction started!", TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
         }
     }
 
-    private CommunicationAnswer processRequest(CommunicationProtocol request){
+    private CommunicationAnswer processRequest(final CommunicationProtocol request){
         if(request!=null){
+            try {
             sendMessage(
                     request.getBytesForSend(),
                     request.getParameters());
+            writemonitor(request.getBytesForSend(),request);
             if(request.getPauseBeforeRead()>0)
                 try {
                     Thread.sleep(request.getPauseBeforeRead());
                 } catch (InterruptedException e) {
                     //nothing to do
                 }
-            try {
-                byte[] buf=reciveMessage(request.getTimeOut(),request.getParameters());
+
+                final byte[] buf=reciveMessage(request.getTimeOut(),request.getBytesForReadCount(),request.getParameters());
+                readmonitor(buf,request);
                 CommunicationAnswer answ=new CommunicationAnswer(request, buf,this);
                 return answ;
             } catch (LineErrorException e) {
@@ -139,10 +171,12 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                     threadRunned.set(true);
                     while (threadRunned.get()){
                         CommunicationProtocol request=requests.peek();
-                        CommunicationAnswer answer=processRequest(request);
-                        if(request.getSenderDevice()!=null){
-                            DeviceInterface dev=request.getSenderDevice();
-                            dev.processRecivedMessage(answer);
+                        if(request!=null && !threadPaused.get()) {
+                            CommunicationAnswer answer = processRequest(request);
+                            if (request.getSenderDevice() != null) {
+                                DeviceInterface dev = request.getSenderDevice();
+                                dev.processRecivedMessage(answer);
+                            }
                         }
                     }
                     threadCreated.set(false);
@@ -150,5 +184,35 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             });
             processor.start();
         }
+    }
+
+    @Override
+    public void addReadMonitoringDevice(DeviceInterface device) {
+        readmonitoring.add(device);
+    }
+
+    @Override
+    public void addWriteMonitoringDevice(DeviceInterface device) {
+        writemonitoring.add(device);
+    }
+
+    @Override
+    public void removeReadMonitoringDevice(DeviceInterface device) {
+        readmonitoring.remove(device);
+    }
+
+    @Override
+    public void removeWriteMonitoringDevice(DeviceInterface device) {
+        writemonitoring.remove(device);
+    }
+
+    @Override
+    public boolean isPaused() {
+        return threadPaused.get();
+    }
+
+    @Override
+    public void setPaused(boolean pause) {
+        threadPaused.set(pause);
     }
 }

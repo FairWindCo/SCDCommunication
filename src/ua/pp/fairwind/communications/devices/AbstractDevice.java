@@ -31,6 +31,7 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
     protected final HardLongProperty deviceTimeOutPause;
     protected final HardLongProperty deviceLastTryCommunicateTime;
     protected final HardLongProperty deviceLastSuccessCommunicateTime;
+    protected final HardBoolProperty activate;
     private final HardBoolProperty lastCommunicationStatus;
     private final HardBoolProperty errorCommunicationStatus;
     private final HardBoolProperty lastCommunicationStatusLine1;
@@ -58,9 +59,9 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
                     if(type == EventType.ELEMENT_CHANGE && !hardwarePoperty.isImidiatlyVrite()){
                         return;
                     }
-                    readProperty(hardwarePoperty);
-                } else if (type == EventType.NEED_READ_VALUE) {
                     writeProperty(hardwarePoperty);
+                } else if (type == EventType.NEED_READ_VALUE) {
+                    readProperty(hardwarePoperty);
                 }
             }
         }
@@ -91,6 +92,11 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         return command;
     }
 
+    protected HardBoolProperty formBoolProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids,boolean initialValue){
+        HardBoolProperty command=new HardBoolProperty(address,name,getUiidFromMap(name,uuids),description,centralSystem,true,true,initialValue);
+        return command;
+    }
+
     public AbstractDevice(long address,String name, String uuid, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids) {
         super(name, uuid, description, centralSystem);
         deviceAddress=new HardLongProperty(-1,"Address",getUiidFromMap("Address",uuids),"The Device Address used for communication",centralSystem,address);
@@ -108,7 +114,8 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         lastCommunicationStatusLine1 =  formIndicatorProperty(-8,"COMMUNICATION_STATUS_LINE_1","Status indicator of error during last comminication on line 1",centralSystem,uuids,false);
         lastCommunicationStatusLine2  =  formIndicatorProperty(-9,"COMMUNICATION_STATUS_LINE_2","Status indicator of error during last comminication on line 2",centralSystem,uuids,false);
         errorCommunicationStatusLine1 =  formIndicatorProperty(-10,"LAST_COMMUNICATION_STATUS_LINE1","Status indicator of error comminication with validation on line 1",centralSystem,uuids,false);
-        errorCommunicationStatusLine2 =  formIndicatorProperty(-11,"LAST_COMMUNICATION_STATUS_LINE2","Status indicator of error comminication with validation on line 2",centralSystem,uuids,false);
+        errorCommunicationStatusLine2 =  formIndicatorProperty(-11, "LAST_COMMUNICATION_STATUS_LINE2", "Status indicator of error comminication with validation on line 2", centralSystem, uuids, false);
+        activate = formBoolProperty(-12,"ACTIVATE DEVICE","Status indicator of error comminication with validation on line 2",centralSystem,uuids,true);
         ArrayList<HardWarePropertyInfo> list=new ArrayList<>();
         list.add(deviceAddress);
         list.add(deviceTimeOut);
@@ -121,6 +128,7 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         list.add(lastCommunicationStatusLine2);
         list.add(errorCommunicationStatusLine1);
         list.add(errorCommunicationStatusLine2);
+        list.add(activate);
         listOfPropertyes.addAll(list);
 
         ArrayList<DeviceNamedCommandProperty> cmds=new ArrayList<>();
@@ -132,9 +140,9 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         listOfCommands.addAll(cmds);
     }
 
-    protected void sendBuffer(byte[] buffer,AbstractProperty property){
+    protected void sendBuffer(byte[] buffer,long needReadByteCount,AbstractProperty property){
         if(buffer!=null){
-            CommunicationProtocol request=new CommunicationProtocol(buffer,this,deviceTimeOut.getInternalValue(),deviceTimeOutPause.getInternalValue(),lineparams,primaryLine!=null?secondaryLine:null);
+            CommunicationProtocol request=new CommunicationProtocol(buffer,needReadByteCount,this,deviceTimeOut.getInternalValue(),deviceTimeOutPause.getInternalValue(),lineparams,primaryLine!=null?secondaryLine:null);
             if(primaryLine!=null){
                 deviceLastTryCommunicateTime.setInternalValue(System.currentTimeMillis());
                 primaryLine.async_communicate(request);
@@ -146,21 +154,21 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
     }
 
     protected void readProperty(HardWarePropertyInfo property){
-        byte[] buffer=formReadRequest(property);
-        sendBuffer(buffer,property.getProperty());
+        RequestInformation req=formReadRequest(property);
+        if(req!=null) sendBuffer(req.getBufferForWrite(),req.getNeddedByteForRead(),property.getProperty());
     }
 
     protected void writeProperty(HardWarePropertyInfo property){
-        byte[] buffer=formWriteRequest(property);
-        sendBuffer(buffer,property.getProperty());
+        RequestInformation req=formWriteRequest(property);
+        if(req!=null) sendBuffer(req.getBufferForWrite(),req.getNeddedByteForRead(),property.getProperty());
     }
 
     protected void executeCommandName(DeviceNamedCommandProperty property){
-        byte[] buffer=processCommandRequest(property.getName());
-        if(buffer==null){
+        RequestInformation req=processCommandRequest(property.getName());
+        if(req==null){
             property.executed();
         } else {
-            sendBuffer(buffer,property);
+            sendBuffer(req.getBufferForWrite(),req.getNeddedByteForRead(),property);
         }
     }
 
@@ -207,11 +215,11 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         }
     }
     protected abstract void processRecivedMessage(final byte[] recivedMessage,final byte[] sendMessage,final AbstractProperty property);
-    protected abstract byte[] formReadRequest(HardWarePropertyInfo property);
-    protected abstract byte[] formWriteRequest(HardWarePropertyInfo property);
+    protected abstract RequestInformation formReadRequest(HardWarePropertyInfo property);
+    protected abstract RequestInformation formWriteRequest(HardWarePropertyInfo property);
 
-    protected byte[] processCommandRequest(String commandName){
-        byte[] result=null;
+    protected RequestInformation processCommandRequest(String commandName){
+        RequestInformation result=null;
         switch(commandName){
             case "REFRESH":{
                 break;
@@ -409,5 +417,15 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
     public void validateErrorLine2(){
         validateErrorCommandLine2.activate();
+    }
+
+    @Override
+    public void setActivete(boolean activeted) {
+        activate.setValue(activeted);
+    }
+
+    @Override
+    public boolean isActive() {
+        return false;
     }
 }

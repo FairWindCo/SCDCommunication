@@ -4,13 +4,10 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import ua.pp.fairwind.io.lines.Line;
-import ua.pp.fairwind.io.lines.adapters.TCPCommunicationLineAdapter;
+import javafx.scene.layout.*;
+import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
+import ua.pp.fairwind.communications.lines.LineParameters;
 import ua.pp.fairwind.javafx.I18N.I18N_monitor;
 
 public class TCPConnectPanel extends StackPane{
@@ -18,14 +15,14 @@ public class TCPConnectPanel extends StackPane{
 	private TextField ipaddress=new TextField("127.0.0.1");
 	private Label ipLabel=new Label(I18N_monitor.COMMON.getString("IPPort"));
 	private TextField ipport=new TextField("9000");
-    private TCPCommunicationLineAdapter lineAdapter;
-	private Line line;
 	private int pauseBeforeCommand=0;
+	DeviceInterface dev=null;
+	LineParameters safeparams;
 
-	public TCPConnectPanel(Line line) {
+	public TCPConnectPanel(DeviceInterface comuunicateDevice) {
 		super();
-		this.line = line;
-        if(line==null) throw new IllegalArgumentException("NULL Line not allowed!");
+		this.dev = comuunicateDevice;
+        if(dev==null) throw new IllegalArgumentException("NULL Device not allowed!");
         initConrols();
 	}
 
@@ -46,40 +43,24 @@ public class TCPConnectPanel extends StackPane{
 		hbox.setPadding(new Insets(15, 12, 15, 12));
 		hbox.setSpacing(10);
 		hbox.setStyle("-fx-background-color: #336699;");
-        Button buttonConnect = new Button(I18N_monitor.COMMON.getString("CONNECT"));
+        Button buttonConnect = new Button(I18N_monitor.COMMON.getString("SAVE"));
 		buttonConnect.setPrefSize(100, 20);
-        Button buttonDisconnect = new Button(I18N_monitor.COMMON.getString("DISCONNECT"));
-		buttonDisconnect.setPrefSize(100, 20);
-		buttonDisconnect.setDisable(true);
-		hbox.getChildren().addAll(buttonConnect, buttonDisconnect);
+		hbox.getChildren().addAll(buttonConnect);
 		vbox.getChildren().add(hbox);
 		apanel.getChildren().add(vbox);
 		this.getChildren().add(apanel);
 		
 		
 		buttonConnect.setOnAction(event -> {
-            lineAdapter = new TCPCommunicationLineAdapter(ipaddress.getText(), Integer.valueOf(ipport.getText()));
-            line.setCommunicationAdapter(lineAdapter);
-            line.start();
+			if(dev!=null){
+				CommunicationLineParameters newparams=new CommunicationLineParameters(ipaddress.getText(), Integer.valueOf(ipport.getText()),0);
+				dev.setLineParameters(newparams);
+			}
         });
-		
-		buttonDisconnect.setOnAction(event -> line.stop());
+
   }
 	
 	public void abort(){
-		if(line!=null) {
-			line.stop();
-		}
-	}
 
-	public Line getLine() {
-		return line;
 	}
-
-	public void setLine(Line line) {
-		this.line = line;
-	}
-	
-	
-
 }

@@ -10,5 +10,7 @@ public enum EventType {
     PARSE_ERROR,
     ERROR,
     FATAL_ERROR,
-    TIMEOUT
+    TIMEOUT,
+    READ_MONITOR,
+    WRITE_MONITOR
 }

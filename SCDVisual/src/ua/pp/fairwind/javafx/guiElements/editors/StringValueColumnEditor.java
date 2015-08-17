@@ -7,8 +7,8 @@ import javafx.scene.control.Cell;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.Tooltip;
+import ua.pp.fairwind.communications.propertyes.software.stringlike.StringValuedPropertry;
 import ua.pp.fairwind.io.javafx.propertys.StringValuedPropertyFXAdapter;
-import ua.pp.fairwind.io.property.composite.valuesProperty.StringValuedPropertry;
 
 public class StringValueColumnEditor extends TableCell<StringValuedPropertyFXAdapter,String> {
 	

@@ -10,5 +10,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="eu.hansolo.enzo:Enzo:0.2.5" level="project" />
     <orderEntry type="module" module-name="SCDCommunication" />
+    <orderEntry type="library" name="org.scream3r:jssc:2.8.0" level="project" />
   </component>
 </module>

@@ -1,7 +1,5 @@
 package ua.pp.fairwind.javafx.guiElements.windows;
 
-import java.util.List;
-
 import images.MyResourceLoader;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -10,7 +8,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.javafx.guiElements.ButtonPanel;
@@ -19,6 +19,8 @@ import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuHolder;
 import ua.pp.fairwind.javafx.guiElements.menu.PrefferedSize;
 import ua.pp.fairwind.javafx.panels.InfoBar;
+
+import java.util.List;
 
 
 public class AppWindow extends SimpleView implements ApplicationWindow {
@@ -242,7 +244,7 @@ public class AppWindow extends SimpleView implements ApplicationWindow {
 
         public void setMessage(ElementEventListener event){
             if(buttonPanel instanceof InfoBar){
-                ((InfoBar) buttonPanel).setMessage(event);
+                ((InfoBar) buttonPanel).setMessage(event.toString());
             }
         }
 

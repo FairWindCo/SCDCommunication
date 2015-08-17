@@ -261,7 +261,7 @@ public class CommunicationUtils {
         if(bits==-1){
             return Float.NaN;
         } else {
-            return Float.intBitsToFloat((int)bits);
+            return Float.intBitsToFloat((int) bits);
         }
     }
 
@@ -295,7 +295,7 @@ public class CommunicationUtils {
         int len=buffer.length/4;
         res=new long[len];
         for(int i=0;i<len;i++){
-            res[i]=getDoubleWord(buffer, i*4);
+            res[i]=getDoubleWord(buffer, i * 4);
         }
         return res;
     }
@@ -312,7 +312,7 @@ public class CommunicationUtils {
         int len=buffer.length/4;
         res=new float[len];
         for(int i=0;i<len;i++){
-            res[i]=getFloat(buffer, i*4);
+            res[i]=getFloat(buffer, i * 4);
         }
         return res;
     }
@@ -532,7 +532,7 @@ public class CommunicationUtils {
         if(buf==null){
             return;
         }
-        showBuffer(buf,buf.length);
+        showBuffer(buf, buf.length);
     }
 
     static public boolean[] convertFromByteToBool(int value){
@@ -763,5 +763,38 @@ public class CommunicationUtils {
     public static byte[] convertFloatToBytesPID(Float value) {
         return convertDoubleWordToBytesPID(Float.floatToIntBits(value));
     }
+
+    public static void RealThreadPause(long pause_milis){
+        boolean pause_finished=true;
+        do {
+            long neddedTime = System.currentTimeMillis()+Math.abs(pause_milis);
+            try {
+                Thread.sleep(pause_milis);
+            }catch (InterruptedException ex){
+                long curent_time=System.currentTimeMillis();
+                if(curent_time<neddedTime) {
+                    pause_finished = false;
+                    pause_milis=neddedTime-curent_time;
+                }
+            }
+        } while(!pause_finished);
+
+    }
+
+    public static byte[] hexStringToByteArray(String str){
+        if(str==null || str.length()==0) return null;
+        int len=str.length();
+        byte[] buffer=new byte[len/2+((len%2>0)?1:0)];
+        for(int i=0;i<len;i+=2){
+            if(i+1<len){
+                buffer[i/2]=(byte)((Character.digit(str.charAt(i),16)<<4)+(Character.digit(str.charAt(i+1),16)));
+            } else {
+                buffer[i/2]=(byte)((Character.digit(str.charAt(i),16)<<4));
+            }
+        }
+        return buffer;
+    }
+
+
 
 }

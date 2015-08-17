@@ -5,18 +5,10 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import jssc.SerialPort;
-import jssc.SerialPortException;
+import javafx.scene.layout.*;
 import jssc.SerialPortList;
-import ua.pp.fairwind.io.lines.Line;
-import ua.pp.fairwind.io.lines.adapters.RSCommunicationLineAdapter;
-import ua.pp.fairwind.io.node.HardwareNode;
-import ua.pp.fairwind.io.node.HardwareNodesHolders;
+import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
 import ua.pp.fairwind.javafx.I18N.I18N_monitor;
 
 public class RSConnectPanel extends StackPane{
@@ -30,15 +22,14 @@ public class RSConnectPanel extends StackPane{
 	private ComboBox<ValueHolder> portstopBits=new ComboBox<>();
 	private Label parityLabel=new Label(I18N_monitor.COMMON.getString("parity"));
 	private ComboBox<ValueHolder> portparity=new ComboBox<>();
-    private RSCommunicationLineAdapter lineAdapter;
-	private Line line;
+	private DeviceInterface dev;
 	private int pauseBeforeCommand=0;
 
 
-	public RSConnectPanel(Line line, HardwareNodesHolders<HardwareNode> hardwareNodesHolders) {
+	public RSConnectPanel(DeviceInterface deviceInterface) {
 		super();
-		this.line = line;
-        if(line==null) throw new IllegalArgumentException("NULL Line not allowed!");
+		this.dev = deviceInterface;
+        if(dev==null) throw new IllegalArgumentException("NULL Line not allowed!");
         initConrols();
 	}
 
@@ -71,9 +62,7 @@ public class RSConnectPanel extends StackPane{
 		hbox.setStyle("-fx-background-color: #336699;");
         Button buttonConnect = new Button(I18N_monitor.COMMON.getString("CONNECT"));
 		buttonConnect.setPrefSize(100, 20);
-        Button buttonDisconnect = new Button(I18N_monitor.COMMON.getString("DISCONNECT"));
-		buttonDisconnect.setPrefSize(100, 20);
-		buttonDisconnect.setDisable(true);
+
 		String[] names=getPorts();
 		ports.itemsProperty().setValue(FXCollections.observableArrayList(names));
 		/*public static final int BAUDRATE_110 = 110;
@@ -129,39 +118,23 @@ public class RSConnectPanel extends StackPane{
 		 * */
 		portparity.itemsProperty().setValue(FXCollections.observableArrayList(new ValueHolder(0,"PARITY_NONE"),new ValueHolder(1,"PARITY_ODD"),new ValueHolder(2,"PARITY_EVEN"),new ValueHolder(3,"PARITY_MARK"),new ValueHolder(4,"PARITY_SPACE")));
 		portparity.setValue(new ValueHolder(0,"PARITY_NONE"));
-		hbox.getChildren().addAll(buttonConnect, buttonDisconnect);
+		hbox.getChildren().addAll(buttonConnect);
 		vbox.getChildren().add(hbox);
 		apanel.getChildren().add(vbox);
 		this.getChildren().add(apanel);
 		
 		
 		buttonConnect.setOnAction(event -> {
-            try {
-                lineAdapter = new RSCommunicationLineAdapter(new SerialPort(ports.getValue()));
-                lineAdapter.setPortCommand(portBaud.getValue().getCode(), portdataBits.getValue().getCode(), portparity.getValue().getCode(), portstopBits.getValue().getCode());
-            } catch (SerialPortException e1) {
-                return;
-            }
-            line.setCommunicationAdapter(lineAdapter);
-            line.start();
+			CommunicationLineParameters newparams=new CommunicationLineParameters(portBaud.getValue().getCode(), portdataBits.getValue().getCode(), portparity.getValue().getCode(), portstopBits.getValue().getCode());
+			dev.setLineParameters(newparams);
         });
-		
-		buttonDisconnect.setOnAction(event -> line.stop());
+
   }
 	
 	public void abort(){
-		if(line!=null) {
-			line.stop();
-		}
+
 	}
 
-	public Line getLine() {
-		return line;
-	}
-
-	public void setLine(Line line) {
-		this.line = line;
-	}
 	
 	private class ValueHolder{
 		private int code;

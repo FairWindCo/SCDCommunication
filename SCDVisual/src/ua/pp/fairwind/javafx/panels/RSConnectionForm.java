@@ -9,16 +9,16 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
-import jssc.SerialPortException;
-import ua.pp.fairwind.io.lines.Line;
-import ua.pp.fairwind.io.lines.adapters.RSCommunicationLineAdapter;
+import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
+import ua.pp.fairwind.communications.lines.LineParameters;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
 import ua.pp.fairwind.javafx.guiElements.menu.PrefferedSize;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
 
 public class RSConnectionForm  extends SimpleView {
-	final Line comline;
-	RSCommunicationLineAdapter adapter=null;
+	final DeviceInterface dev;
+	LineParameters safeparams;
     final private ComboBox<String> ports=new ComboBox<>();
     final private ComboBox<ValueHolder> portBaud=new ComboBox<>();
     final private ComboBox<ValueHolder> portdataBits=new ComboBox<>();
@@ -26,41 +26,33 @@ public class RSConnectionForm  extends SimpleView {
     final private ComboBox<ValueHolder> portparity=new ComboBox<>();
 	
 	public RSConnectionForm(String title, Image icon,
-			PrefferedSize prefferedSize, Line comline) {
+			PrefferedSize prefferedSize, DeviceInterface comuunicateDevice) {
 		super(title, icon, prefferedSize);
-		this.comline = comline;
+		this.dev = comuunicateDevice;
 		formControlElements();
 	}
 		
 	
-	public RSConnectionForm(String title,Line comline) {
+	public RSConnectionForm(String title,DeviceInterface comuunicateDevice) {
 		super(title, null,(PrefferedSize) null);
-		this.comline = comline;
+		this.dev = comuunicateDevice;
 		formControlElements();
 	}
 	
 	@Override
 	public void onShow(MenuExecutor executr) {
-		ports.itemsProperty().setValue(FXCollections.observableArrayList(RSCommunicationLineAdapter.getAllPortsName()));
-		if(comline!=null){
-			if(comline.getCommunicationAdapter() instanceof RSCommunicationLineAdapter){
-				adapter=(RSCommunicationLineAdapter) comline.getCommunicationAdapter();
-				adapter.setPortCommand(portBaud.getValue().getCode(), portdataBits.getValue().getCode(), portparity.getValue().getCode(), portstopBits.getValue().getCode());
-			}
-		} else {
-			adapter=null;
+		if(dev!=null){
+			safeparams=dev.getLineParameters();
+			setBaud(((CommunicationLineParameters) safeparams).getBaoudrate());
+			setDataBit(((CommunicationLineParameters) safeparams).getDatabits());
+			setParity(((CommunicationLineParameters) safeparams).getParitytype());
+			setStopBit(((CommunicationLineParameters) safeparams).getStopbit());
 		}
 		super.onShow(executr);
 	}
 
 	@Override
 	public void onHide() {
-		if(comline!=null){
-			if(adapter!=null){
-				//comline.start();
-			}
-			adapter=null;
-		}
 		super.onHide();
 	}
 
@@ -128,7 +120,7 @@ public class RSConnectionForm  extends SimpleView {
     
 	@Override
 	protected Node createView() {
-		if(comline!=null){
+		if(dev!=null){
 		GridPane pane=new GridPane();
         pane.setId("formGrid");
 		pane.setAlignment(Pos.CENTER);
@@ -167,20 +159,10 @@ public class RSConnectionForm  extends SimpleView {
 		
 		Button ok=new Button("SAVE");
 		ok.onActionProperty().setValue(arg0 -> {
-//comline.stop();
-try {
-adapter=new RSCommunicationLineAdapter(RSCommunicationLineAdapter.getPortFromName(ports.getValue()));
-} catch (SerialPortException e) {
-System.out.println(e.getLocalizedMessage());
-return;
-}
-adapter.setPortCommand(portBaud.getValue().getCode(), portdataBits.getValue().getCode(), portparity.getValue().getCode(), portstopBits.getValue().getCode());
-comline.setCommunicationAdapter(adapter);
-//comline.setLineInPause(true);
-//comline.start();
-closeWindow();
-
-});
+			CommunicationLineParameters newparams=new CommunicationLineParameters(portBaud.getValue().getCode(), portdataBits.getValue().getCode(), portparity.getValue().getCode(), portstopBits.getValue().getCode());
+			dev.setLineParameters(newparams);
+			closeWindow();
+		});
 		Button cancel=new Button("CANCEL");
 		cancel.onActionProperty().setValue(arg0 -> {
             MenuExecutor exec=getExecutr();

@@ -7,7 +7,9 @@ public class CommunicationAnswer {
     public enum CommunicationResult{
         SUCCESS,
         ERROR,
-        TIMEOUT
+        TIMEOUT,
+        READ_MONITOR,
+        WRITE_MONITOR
     }
     private final long executeTime=System.currentTimeMillis();
     private final CommunicationProtocol request;
