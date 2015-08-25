@@ -7,6 +7,7 @@ import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
 
 import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -17,6 +18,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     private final CopyOnWriteArrayList<ValueChangeListener<? super T>> eventDispatcher=new CopyOnWriteArrayList<>();
     final private AtomicReference<T> value=new AtomicReference<>();
     final private AtomicLong lastChangeTime=new AtomicLong();
+    final private AtomicBoolean active=new AtomicBoolean(true);
     //private volatile T value;
     //private volatile long lastChangeTime;
     protected final boolean readonly;
@@ -127,7 +129,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     }
 
 
-    T getInternalValue() {
+    public T getInternalValue() {
         return value.get();
     }
 
@@ -141,7 +143,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         return getInternalValue();
     }
 
-    void setInternalValue(final T value) {
+    public void setInternalValue(final T value) {
 
         if(this.value.get()==null && value!=null){
             this.value.set(value);
@@ -251,5 +253,18 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         return !readonly;
     }
 
+    @Override
+    public boolean isActive() {
+        return active.get();
+    }
 
+    @Override
+    public void setActive(boolean active) {
+        this.active.set(active);
+    }
+
+    @Override
+    public String toString() {
+        return "P{Name:"+getName()+", Value:"+value.get()+" ,U:"+getUUIDString()+",D:"+getDescription()+"}";
+    }
 }

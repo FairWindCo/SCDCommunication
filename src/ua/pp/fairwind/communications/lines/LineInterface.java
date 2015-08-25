@@ -17,7 +17,7 @@ public interface LineInterface  extends ElementInterface {
 
 
 
-    void async_communicate(CommunicationProtocol request);
+    void async_communicate(CommunicationProtocolRequest request);
 
     void addReadMonitoringDevice(DeviceInterface device);
     void addWriteMonitoringDevice(DeviceInterface device);

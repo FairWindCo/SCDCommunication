@@ -7,7 +7,7 @@ import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 /**
  * Created by Сергей on 09.07.2015.
  */
-public class CommunicationProtocol {
+public class CommunicationProtocolRequest {
     final private byte[] bytesForSend;
     private final long createTime=System.currentTimeMillis();
     private final long timeOut;
@@ -17,8 +17,9 @@ public class CommunicationProtocol {
     private final LineParameters parameters;
     private final AbstractProperty property;
     private final LineInterface nextLine;
+    private final long tryCount;
 
-    public CommunicationProtocol(byte[] bytesForSend,long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead,LineParameters parameters, AbstractProperty property,LineInterface nextLine) {
+    public CommunicationProtocolRequest(byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, LineParameters parameters, AbstractProperty property, LineInterface nextLine) {
         if(senderDevice==null) throw new IllegalArgumentException("senderDevice cannot be NULL!!!!");
         this.bytesForSend = bytesForSend;
         this.senderDevice = senderDevice;
@@ -28,9 +29,10 @@ public class CommunicationProtocol {
         this.pauseBeforeRead=pauseBeforeRead;
         this.nextLine=nextLine;
         this.bytesForReadCount=bytesForReadCount;
+        tryCount=0;
     }
 
-    public CommunicationProtocol(byte[] bytesForSend,long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead,LineParameters parameters,LineInterface nextLine) {
+    public CommunicationProtocolRequest(byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, LineParameters parameters, LineInterface nextLine) {
         if(senderDevice==null) throw new IllegalArgumentException("senderDevice cannot be NULL!!!!");
         this.bytesForSend = bytesForSend;
         this.senderDevice = senderDevice;
@@ -40,9 +42,10 @@ public class CommunicationProtocol {
         this.pauseBeforeRead=pauseBeforeRead;
         this.nextLine=nextLine;
         this.bytesForReadCount=bytesForReadCount;
+        tryCount=0;
     }
 
-    public CommunicationProtocol(long bytesForReadCount,DeviceInterface senderDevice, long timeOut, long pauseBeforeRead,LineParameters parameters,LineInterface nextLine) {
+    public CommunicationProtocolRequest(long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, LineParameters parameters, LineInterface nextLine) {
         if(senderDevice==null) throw new IllegalArgumentException("senderDevice cannot be NULL!!!!");
         this.senderDevice = senderDevice;
         this.timeOut = timeOut;
@@ -52,6 +55,19 @@ public class CommunicationProtocol {
         this.pauseBeforeRead=pauseBeforeRead;
         this.nextLine=nextLine;
         this.bytesForReadCount=bytesForReadCount;
+        tryCount=0;
+    }
+
+    public CommunicationProtocolRequest(CommunicationProtocolRequest notSuccessRequest){
+        this.bytesForSend = notSuccessRequest.bytesForSend;
+        this.senderDevice = notSuccessRequest.senderDevice;
+        this.timeOut = notSuccessRequest.timeOut;
+        this.parameters = notSuccessRequest.parameters;
+        this.property = notSuccessRequest.property;
+        this.pauseBeforeRead=notSuccessRequest.pauseBeforeRead;
+        this.nextLine=notSuccessRequest.nextLine;
+        this.bytesForReadCount=notSuccessRequest.bytesForReadCount;
+        this.tryCount=notSuccessRequest.tryCount+1;
     }
 
     public byte[] getBytesForSend() {
@@ -90,8 +106,8 @@ public class CommunicationProtocol {
         return bytesForReadCount;
     }
 
-    public CommunicationProtocol formRequestForNextLine(){
-        return new CommunicationProtocol(bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,parameters,property,null);
+    public CommunicationProtocolRequest formRequestForNextLine(){
+        return new CommunicationProtocolRequest(bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,parameters,property,null);
     }
 
     public void sendRequestOverReservLine(){
@@ -99,5 +115,9 @@ public class CommunicationProtocol {
             nextLine.async_communicate(formRequestForNextLine());
         }
 
+    }
+
+    public long getTryCount() {
+        return tryCount;
     }
 }

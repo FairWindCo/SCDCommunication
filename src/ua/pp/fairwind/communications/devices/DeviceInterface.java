@@ -6,7 +6,6 @@ import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.lines.LineParameters;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
-import ua.pp.fairwind.communications.propertyes.abstraction.HardwareProperty;
 
 /**
  * Created by Сергей on 07.07.2015.
@@ -15,7 +14,7 @@ public interface DeviceInterface extends ElementInterface{
     String[] getCommandsName();
     String[] getPropertyesName();
     AbsractCommandProperty getCommand(String name);
-    HardwareProperty getPropertyInfo(String name);
+    AbstractProperty getPropertyInfo(String name);
     AbstractProperty getProperty(String name);
 
     void processRecivedMessage(CommunicationAnswer answer);

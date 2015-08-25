@@ -5,6 +5,9 @@ import ua.pp.fairwind.communications.abstractions.SystemEllement;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Created by FairWindCo on 07.07.2015
  */
@@ -17,7 +20,7 @@ public abstract class AbstractProperty extends SystemEllement{
     private int lengthForWrite=0;
     private boolean convertBoolToBinaryForWrite=false;
     protected volatile long dataLifeTime=-1;
-
+    private final Map<String,Object> additionalParameters=new ConcurrentHashMap<>();
 
 
 
@@ -123,6 +126,14 @@ public abstract class AbstractProperty extends SystemEllement{
                 convertBoolToBinaryForWrite=false;
             }
         }
+    }
+
+    public void setAdditionalInfo(String paramsName,Object value){
+        additionalParameters.put(paramsName,value);
+    }
+
+    public Object getAdditionalInfo(String paramsName){
+        return additionalParameters.get(paramsName);
     }
 
 }

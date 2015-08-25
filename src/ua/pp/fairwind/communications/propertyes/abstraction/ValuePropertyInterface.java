@@ -40,4 +40,7 @@ public interface ValuePropertyInterface<T extends Comparable<? super T>> extends
 
     boolean isReadAccepted();
     boolean isWriteAccepted();
+
+    boolean isActive();
+    void setActive(boolean active);
 }

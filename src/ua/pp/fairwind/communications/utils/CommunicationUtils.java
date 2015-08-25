@@ -50,6 +50,14 @@ public class CommunicationUtils {
         }
     }
 
+    static public byte getHalfByteHex(long b){
+        byte val=(byte)(b & 0xF);
+        if(val<10) {return (byte)(val+'0');
+        } else {
+            return (byte)(val-10+'A');
+        }
+    }
+
     static public byte getHalfByteFromChar(char c){
         switch (c) {
             case '0':

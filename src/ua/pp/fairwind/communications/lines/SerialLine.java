@@ -17,18 +17,23 @@ public class SerialLine extends AbstractLine {
     }
 
     @Override
-    protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException, LineTimeOutException  {
+    synchronized protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException, LineTimeOutException  {
         try {
             if (!port.isOpened()) port.openPort();
             setLineParameters(params);
             port.writeBytes(data);
         }catch (SerialPortException portexception){
+            try {
+                if(port.isOpened())port.closePort();
+            } catch (SerialPortException prp){
+                //nothing
+            }
             throw new LineErrorException(portexception.getMessage(),portexception);
         }
     }
 
     @Override
-    protected byte[] reciveMessage(long timeOut,long bytesForReadCount, LineParameters params) throws LineErrorException, LineTimeOutException {
+    synchronized protected byte[] reciveMessage(long timeOut,long bytesForReadCount, LineParameters params) throws LineErrorException, LineTimeOutException {
         if(bytesForReadCount==0) return null;
         try {
             if (!port.isOpened()) port.openPort();
@@ -60,15 +65,20 @@ public class SerialLine extends AbstractLine {
     }
 
     private void setLineParameters(LineParameters parameters) throws SerialPortException{
-        int speed=(int)parameters.getLineParameter("RS_SPEED");
-        int databit=(int)parameters.getLineParameter("RS_DATABIT");
-        int stopbit=(int)parameters.getLineParameter("RS_STOBIT");
-        int parity=(int)parameters.getLineParameter("RS_PARITY");
-        int flowcontrol=(int)parameters.getLineParameter("RS_FLOWCONTROL");
-        boolean dtr=(boolean)parameters.getLineParameter("RS_DTR");
-        boolean rts=(boolean)parameters.getLineParameter("RS_RTS");
-        port.setParams(speed,databit,stopbit,parity,rts,dtr);
-        port.setFlowControlMode(flowcontrol);
+        if(parameters!=null) {
+            int speed = (int) (parameters.getLineParameter("RS_SPEED")!=null?parameters.getLineParameter("RS_SPEED"):SerialPort.BAUDRATE_9600);
+            int databit = (int) (parameters.getLineParameter("RS_DATABIT")!=null?parameters.getLineParameter("RS_DATABIT"):SerialPort.DATABITS_8);
+            int stopbit = (int) (parameters.getLineParameter("RS_STOBIT")!=null?parameters.getLineParameter("RS_STOBIT"):SerialPort.STOPBITS_1);
+            int parity = (int) (parameters.getLineParameter("RS_PARITY")!=null?parameters.getLineParameter("RS_PARITY"):SerialPort.PARITY_NONE);
+            int flowcontrol = (int) (parameters.getLineParameter("RS_FLOWCONTROL")!=null?parameters.getLineParameter("RS_FLOWCONTROL"):SerialPort.FLOWCONTROL_NONE);
+            boolean dtr = (boolean) (parameters.getLineParameter("RS_DTR")!=null?parameters.getLineParameter("RS_DTR"):false);
+            boolean rts = (boolean) (parameters.getLineParameter("RS_RTS")!=null?parameters.getLineParameter("RS_RTS"):false);
+            port.setParams(speed, databit, stopbit, parity, rts, dtr);
+            port.setFlowControlMode(flowcontrol);
+        } else {
+            port.setParams(SerialPort.BAUDRATE_9600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE,false,false);
+            port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+        }
     }
 
     @Override
@@ -82,7 +92,7 @@ public class SerialLine extends AbstractLine {
     }
 
     @Override
-    public void destroy() {
+    synchronized public void destroy() {
         super.destroy();
         try {
             if (port.isOpened())

@@ -16,7 +16,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by Сергей on 10.07.2015.
  */
 abstract  public class AbstractLine extends SystemEllement implements LineInterface  {
-    private final ConcurrentLinkedQueue<CommunicationProtocol> requests=new ConcurrentLinkedQueue<>();
+    public static final String PROPERTY_DEVICE_ADDRESS="propertyAddress";
+    private final ConcurrentLinkedQueue<CommunicationProtocolRequest> requests=new ConcurrentLinkedQueue<>();
     private final AtomicBoolean threadRunned=new AtomicBoolean(false);
     private final AtomicBoolean threadCreated=new AtomicBoolean(false);
     private final AtomicBoolean transuction=new AtomicBoolean(false);
@@ -98,7 +99,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
-    private void readmonitor(final byte[] data,final CommunicationProtocol request){
+    private void readmonitor(final byte[] data,final CommunicationProtocolRequest request){
         if(data!=null && data.length>0) {
             fireEvent(EventType.READ_MONITOR,new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.READ,data,this,request!=null?request.getSenderDevice():null));
             if (readmonitoring.size() > 0) {
@@ -108,7 +109,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
-    private void writemonitor(final byte[] data,final CommunicationProtocol request){
+    private void writemonitor(final byte[] data,final CommunicationProtocolRequest request){
         if(data!=null && data.length>0) {
             fireEvent(EventType.WRITE_MONITOR,new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.WRITE,data,this,request!=null?request.getSenderDevice():null));
             if (writemonitoring.size() > 0 && data != null && data.length > 0) {
@@ -129,7 +130,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
-    private CommunicationAnswer processRequest(final CommunicationProtocol request){
+    private CommunicationAnswer processRequest(final CommunicationProtocolRequest request){
         if(request!=null){
             try {
             sendMessage(
@@ -161,7 +162,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
 
     @Override
-    public void async_communicate(CommunicationProtocol request) {
+    public void async_communicate(CommunicationProtocolRequest request) {
         requests.add(request);
         if(!threadCreated.get()){
             Thread processor=new Thread(new Runnable() {
@@ -170,12 +171,15 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                     threadCreated.set(true);
                     threadRunned.set(true);
                     while (threadRunned.get()){
-                        CommunicationProtocol request=requests.peek();
+                        CommunicationProtocolRequest request=requests.poll();
                         if(request!=null && !threadPaused.get()) {
                             CommunicationAnswer answer = processRequest(request);
                             if (request.getSenderDevice() != null) {
                                 DeviceInterface dev = request.getSenderDevice();
                                 dev.processRecivedMessage(answer);
+                            }
+                            if(answer.getStatus()== CommunicationAnswer.CommunicationResult.TIMEOUT && request.getTryCount()<1){
+                                requests.add(new CommunicationProtocolRequest(request));
                             }
                         }
                     }

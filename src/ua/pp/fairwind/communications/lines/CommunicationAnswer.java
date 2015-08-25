@@ -12,13 +12,13 @@ public class CommunicationAnswer {
         WRITE_MONITOR
     }
     private final long executeTime=System.currentTimeMillis();
-    private final CommunicationProtocol request;
+    private final CommunicationProtocolRequest request;
     private final CommunicationResult status;
     private final byte[] recivedMessage;
     private final String informationMesssage;
     private final LineInterface communicateOverLine;
 
-    public CommunicationAnswer(CommunicationProtocol request, CommunicationResult status, byte[] recivedMessage, String informationMesssage,LineInterface communicateOverLine) {
+    public CommunicationAnswer(CommunicationProtocolRequest request, CommunicationResult status, byte[] recivedMessage, String informationMesssage,LineInterface communicateOverLine) {
         this.request = request;
         this.status = status;
         this.recivedMessage = recivedMessage;
@@ -26,7 +26,7 @@ public class CommunicationAnswer {
         this.communicateOverLine=communicateOverLine;
     }
 
-    public CommunicationAnswer(CommunicationProtocol request, byte[] recivedMessage,LineInterface communicateOverLine) {
+    public CommunicationAnswer(CommunicationProtocolRequest request, byte[] recivedMessage,LineInterface communicateOverLine) {
         this.request = request;
         this.status = CommunicationResult.SUCCESS;
         this.recivedMessage = recivedMessage;
@@ -38,7 +38,7 @@ public class CommunicationAnswer {
         return executeTime;
     }
 
-    public CommunicationProtocol getRequest() {
+    public CommunicationProtocolRequest getRequest() {
         return request;
     }
 
