@@ -9,7 +9,7 @@ import java.util.UUID;
  * Created by Сергей on 07.07.2015.
  */
 public interface LineInterface  extends ElementInterface {
-    void startTransaction(UUID uuid) throws TrunsactionError;
+    void startTransaction(UUID uuid,long waitTime) throws TrunsactionError;
     void endTransaction(UUID uuid);
 
     void sendMessage(UUID uuid,byte[] data,LineParameters params) throws TrunsactionError,LineTimeOutException,LineErrorException;

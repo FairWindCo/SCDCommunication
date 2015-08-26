@@ -5,6 +5,8 @@ package ua.pp.fairwind.communications.propertyes.event;
  */
 public enum EventType {
     ELEMENT_CHANGE,
+    ELEMENT_CHANGE_FROM_HARDWARE,
+    INVALIDATE,
     NEED_READ_VALUE,
     NEED_WRITE_VALUE,
     PARSE_ERROR,

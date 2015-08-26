@@ -38,23 +38,29 @@ public class SerialLine extends AbstractLine {
         try {
             if (!port.isOpened()) port.openPort();
             setLineParameters(params);
+            long starttime=System.currentTimeMillis();
             if(bytesForReadCount<=0){
                 CommunicationUtils.RealThreadPause(timeOut);
                 int recivedByteCount=port.getInputBufferBytesCount();
-                if(recivedByteCount>Math.abs(bytesForReadCount)){
+                if(recivedByteCount>=Math.abs(bytesForReadCount)){
                     return port.readBytes(recivedByteCount);
                 } else {
-                    throw new LineTimeOutException();
+                    throw new LineTimeOutException(starttime,System.currentTimeMillis()-starttime);
                 }
             } else {
                 try {
-                    return port.readBytes((int) bytesForReadCount, (int) timeOut);
+
+                    //System.out.print("START READ:"+ new Date(starttime)+" LENGTH:");
+                    byte[] buf=port.readBytes((int) bytesForReadCount, (int) timeOut);
+                    //System.out.println(System.currentTimeMillis()-starttime);
+                    return buf;
                 }catch (SerialPortTimeoutException timeoutex){
                     int recivedByteCount=port.getInputBufferBytesCount();
                     if(recivedByteCount>Math.abs(bytesForReadCount)){
                         return port.readBytes(recivedByteCount);
                     } else {
-                        throw new LineTimeOutException();
+                        //System.out.println(System.currentTimeMillis()-starttime);
+                        throw new LineTimeOutException(starttime,System.currentTimeMillis()-starttime);
                     }
                 }
 

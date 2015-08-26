@@ -17,8 +17,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class ValueProperty<T extends Comparable<? super T>> extends AbstractProperty implements ValuePropertyInterface<T> {
     private final CopyOnWriteArrayList<ValueChangeListener<? super T>> eventDispatcher=new CopyOnWriteArrayList<>();
     final private AtomicReference<T> value=new AtomicReference<>();
+    final private AtomicReference<T> oldvalue=new AtomicReference<>();
     final private AtomicLong lastChangeTime=new AtomicLong();
     final private AtomicBoolean active=new AtomicBoolean(true);
+    final private AtomicBoolean valide=new AtomicBoolean(false);
     //private volatile T value;
     //private volatile long lastChangeTime;
     protected final boolean readonly;
@@ -143,20 +145,39 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         return getInternalValue();
     }
 
-    public void setInternalValue(final T value) {
+    public void setHardWareInternalValue(final T value) {
+        setInternalValue(value,false,true);
+    }
 
-        if(this.value.get()==null && value!=null){
+    public void setSilentInternalValue(final T value) {
+        setInternalValue(value,true,false);
+    }
+
+    public void setInternalValue(final T value) {
+        setInternalValue(value,false,false);
+    }
+
+    void setInternalValue(final T value,boolean silent,boolean fromHardWare) {
+        if(value==null) return;
+        this.valide.set(true);
+        if(silent){
             this.value.set(value);
             //lastChangeTime = System.currentTimeMillis();
             lastChangeTime.set(System.currentTimeMillis());
-            fireChangeEvent(null, value);
-        } else
-        if(value!=null && value.compareTo(this.value.get())!=0) {
-            T old=this.value.get();
-            this.value.set(value);
-            //lastChangeTime = System.currentTimeMillis();
-            lastChangeTime.set(System.currentTimeMillis());
-            fireChangeEvent(old, value);
+        } else {
+            if (this.value.get() == null) {
+                this.value.set(value);
+                //lastChangeTime = System.currentTimeMillis();
+                lastChangeTime.set(System.currentTimeMillis());
+                fireChangeEvent(null, value,fromHardWare);
+            } else if (value.compareTo(this.value.get()) != 0) {
+                T old = this.value.get();
+                this.value.set(value);
+                this.oldvalue.set(old);
+                //lastChangeTime = System.currentTimeMillis();
+                lastChangeTime.set(System.currentTimeMillis());
+                fireChangeEvent(old, value,fromHardWare);
+            }
         }
     }
 
@@ -166,12 +187,14 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
             fireEvent(EventType.ERROR,"Property is READONLY!");
             return;
         }
-        setInternalValue(value);
+        setInternalValue(value,false,false);
     }
 
     @Override
     public boolean isValidProperty() {
-        if(value==null) return false;
+        if(!valide.get()) return false;
+        if(value.get()==null) return false;
+
         long lastchange=lastChangeTime.get();
         if(dataLifeTime>=0 && System.currentTimeMillis()-lastchange>dataLifeTime) return false;
         return true;
@@ -182,13 +205,17 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         return new Date(lastChangeTime.get());
     }
 
-    private void fireChangeEvent(T oldValue,T newValue){
+    private void fireChangeEvent(T oldValue,T newValue,boolean fromHardWare){
         if(eventactive) {
             final ValueChangeEvent<T> event = new ValueChangeEvent<>(this.getUUIDString(), this.getName(), this, oldValue, newValue);
             for (ValueChangeListener<? super T> listener : eventDispatcher) {
                 listener.valueChange(event);
             }
-            fireEvent(EventType.ELEMENT_CHANGE, newValue);
+            if(fromHardWare){
+                fireEvent(EventType.ELEMENT_CHANGE_FROM_HARDWARE, newValue);
+            } else {
+                fireEvent(EventType.ELEMENT_CHANGE, newValue);
+            }
             writeBinding(newValue);
         }
     }
@@ -266,5 +293,19 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     @Override
     public String toString() {
         return "P{Name:"+getName()+", Value:"+value.get()+" ,U:"+getUUIDString()+",D:"+getDescription()+"}";
+    }
+
+    public T getOldValue() {
+        return oldvalue.get();
+    }
+
+    public void rollback(){
+        invalidate();
+        setInternalValue(oldvalue.get());
+    }
+
+    public void invalidate(){
+        valide.set(false);
+        fireEvent(EventType.INVALIDATE,null);
     }
 }

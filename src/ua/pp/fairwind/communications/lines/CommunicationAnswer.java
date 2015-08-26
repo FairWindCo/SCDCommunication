@@ -1,5 +1,7 @@
 package ua.pp.fairwind.communications.lines;
 
+import java.util.Date;
+
 /**
  * Created by Сергей on 09.07.2015.
  */
@@ -17,21 +19,27 @@ public class CommunicationAnswer {
     private final byte[] recivedMessage;
     private final String informationMesssage;
     private final LineInterface communicateOverLine;
+    private final long startWaiting;
+    private final long waitTime;
 
-    public CommunicationAnswer(CommunicationProtocolRequest request, CommunicationResult status, byte[] recivedMessage, String informationMesssage,LineInterface communicateOverLine) {
+    public CommunicationAnswer(CommunicationProtocolRequest request, CommunicationResult status, byte[] recivedMessage, String informationMesssage,LineInterface communicateOverLine,long startWaiting,long waitTime) {
         this.request = request;
         this.status = status;
         this.recivedMessage = recivedMessage;
         this.informationMesssage = informationMesssage;
         this.communicateOverLine=communicateOverLine;
+        this.startWaiting=startWaiting;
+        this.waitTime=waitTime;
     }
 
-    public CommunicationAnswer(CommunicationProtocolRequest request, byte[] recivedMessage,LineInterface communicateOverLine) {
+    public CommunicationAnswer(CommunicationProtocolRequest request, byte[] recivedMessage,LineInterface communicateOverLine,long startWaiting,long waitTime) {
         this.request = request;
         this.status = CommunicationResult.SUCCESS;
         this.recivedMessage = recivedMessage;
         this.informationMesssage = "SUCCESS";
         this.communicateOverLine=communicateOverLine;
+        this.startWaiting=startWaiting;
+        this.waitTime=waitTime;
     }
 
     public long getExecuteTime() {
@@ -51,7 +59,11 @@ public class CommunicationAnswer {
     }
 
     public String getInformationMesssage() {
-        return informationMesssage;
+        if(status==CommunicationResult.TIMEOUT){
+            return informationMesssage+" WAIT_TIME:"+waitTime+" START_WAIT:"+new Date(startWaiting);
+        } else {
+            return informationMesssage;
+        }
     }
 
     public LineInterface getCommunicateOverLine() {
@@ -66,6 +78,12 @@ public class CommunicationAnswer {
     public void sendOverReservLine(){
         if(request!=null){
             request.sendRequestOverReservLine();
+        }
+    }
+
+    public void invalidate(){
+        if(request!=null){
+            request.invalidate();
         }
     }
 }

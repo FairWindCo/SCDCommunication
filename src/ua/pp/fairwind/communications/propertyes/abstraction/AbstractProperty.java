@@ -12,6 +12,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by FairWindCo on 07.07.2015
  */
 public abstract class AbstractProperty extends SystemEllement{
+    final public static String PROPERTY_READ_TIME_OUT_ADDON="PROPERTY_READ_TIME_OUT_ADDON";
+    final public static String PROPERTY_PAUSE_BEFORE_READ_ADDON="PROPERTY_PAUSE_BEFORE_READ_ADDON";
+    final public static String PROPERTY_PAUSE_BEFORE_WRITE_ADDON="PROPERTY_PAUSE_BEFORE_WRITE_ADDON";
+    final public static String PROPERTY_READ_TIME_OUT="PROPERTY_READ_TIME_OUT";
+    final public static String PROPERTY_PAUSE_BEFORE_READ="PROPERTY_PAUSE_BEFORE_READ";
+    final public static String PROPERTY_PAUSE_BEFORE_WRITE="PROPERTY_PAUSE_BEFORE_WRITE";
     private AbstractProperty bindedForReadPoperty;
     private AbstractProperty bindedForWritePoperty;
     private String formatForWrite=null;
@@ -134,6 +140,62 @@ public abstract class AbstractProperty extends SystemEllement{
 
     public Object getAdditionalInfo(String paramsName){
         return additionalParameters.get(paramsName);
+    }
+
+
+    public long getPropertyPauseBeforeReadAddon(){
+        if(additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ_ADDON)==null) return 0;
+        return (long)additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ_ADDON);
+    }
+
+    public long getPropertyPauseBeforeRead(){
+        if(additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ)==null) return 0;
+        return (long)additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ);
+    }
+
+    public long getPropertyTimeOutReadAddon(){
+        if(additionalParameters.get(PROPERTY_READ_TIME_OUT_ADDON)==null) return 0;
+        return (long)additionalParameters.get(PROPERTY_READ_TIME_OUT_ADDON);
+    }
+
+    public long getPropertyTimeOutRead(){
+        if(additionalParameters.get(PROPERTY_READ_TIME_OUT)==null) return 0;
+        return (long)additionalParameters.get(PROPERTY_READ_TIME_OUT);
+    }
+
+    public long getPropertyPauseBeforeWriteAddon(){
+        if(additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE_ADDON)==null) return 0;
+        return (long)additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE_ADDON);
+    }
+
+    public long getPropertyPauseBeforeWrite(){
+        if(additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE)==null) return 0;
+        return (long)additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE);
+    }
+
+    //
+    public void setPropertyPauseBeforeReadAddon(long value){
+        additionalParameters.put(PROPERTY_PAUSE_BEFORE_READ_ADDON, value);
+    }
+
+    public void setPropertyPauseBeforeRead(long value){
+        additionalParameters.put(PROPERTY_PAUSE_BEFORE_READ, value);
+    }
+
+    public void setPropertyTimeOutReadAddon(long value){
+        additionalParameters.put(PROPERTY_READ_TIME_OUT_ADDON, value);
+    }
+
+    public void setPropertyTimeOutRead(long value){
+        additionalParameters.put(PROPERTY_READ_TIME_OUT, value);
+    }
+
+    public void setPropertyPauseBeforeWriteAddon(long value){
+        additionalParameters.put(PROPERTY_PAUSE_BEFORE_WRITE_ADDON, value);
+    }
+
+    public void setPropertyPauseBeforeWrite(long value){
+        additionalParameters.put(PROPERTY_PAUSE_BEFORE_WRITE, value);
     }
 
 }
