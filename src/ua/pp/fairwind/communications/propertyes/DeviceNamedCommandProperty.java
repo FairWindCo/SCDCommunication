@@ -1,7 +1,6 @@
 package ua.pp.fairwind.communications.propertyes;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 
 /**
  * Created by FairWindCo on 07.07.2015
@@ -14,7 +13,8 @@ public class DeviceNamedCommandProperty extends AbsractCommandProperty {
     }
 
     public void activate(){
-        fireEvent(EventType.ELEMENT_CHANGE, getName());
+        super.activate();
+        //fireEvent(EventType.ELEMENT_CHANGE, getName());
     }
 
 }

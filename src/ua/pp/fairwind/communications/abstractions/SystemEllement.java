@@ -1,10 +1,11 @@
 package ua.pp.fairwind.communications.abstractions;
 
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystemSimple;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 
 import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by FairWindCo on 30.06.2015.
@@ -12,8 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class SystemEllement implements ElementInterface{
     final private String name;
     final private UUID uuid;
-    final private MessageSubSystem centralSystem;
-    final CopyOnWriteArrayList<ElementEventListener> eventDispatcher=new CopyOnWriteArrayList<>();
+    final protected MessageSubSystem centralSystem;
     final private String description;
     protected volatile boolean eventactive=true;
 
@@ -21,7 +21,7 @@ public class SystemEllement implements ElementInterface{
         if(name==null || name.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
         this.name = name;
         this.uuid=UUID.randomUUID();
-        this.centralSystem=centralSystem;
+        this.centralSystem=centralSystem!=null?centralSystem:new MessageSubSystemSimple();
         this.description="";
     }
 
@@ -30,14 +30,14 @@ public class SystemEllement implements ElementInterface{
         this.name = name;
         this.description = description;
         this.uuid=UUID.randomUUID();
-        this.centralSystem=centralSystem;
+        this.centralSystem=centralSystem!=null?centralSystem:new MessageSubSystemSimple();
     }
 
 
     public SystemEllement(String name, String uuid,String description,MessageSubSystem centralSystem) {
         this.name = name;
         this.description = description;
-        this.centralSystem=centralSystem;
+        this.centralSystem=centralSystem!=null?centralSystem:new MessageSubSystemSimple();
         if(name==null || name.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
         UUID uid=null;
         if(uuid!=null) uid = UUID.fromString(uuid);
@@ -65,29 +65,22 @@ public class SystemEllement implements ElementInterface{
     }
 
     protected void fireEvent(EventType type,Object param){
-        if(centralSystem!=null) centralSystem.sendMessage(this,param);
-        for(ElementEventListener listener:eventDispatcher){
-            listener.elementEvent(this,type,param);
-        }
+        centralSystem.fireEvent(this,type,param);
     }
 
     @Override
     public void addEventListener(ElementEventListener listener) {
-        if(listener!=null){
-            eventDispatcher.add(listener);
-        }
+        centralSystem.addEventListener(listener);
     }
 
     @Override
     public void removeEventListener(ElementEventListener listener) {
-        if(listener!=null){
-            eventDispatcher.remove(listener);
-        }
+        centralSystem.removeEventListener(listener);
     }
 
     @Override
     public void destroy() {
-        eventDispatcher.clear();
+        centralSystem.clear();
     }
 
     @Override

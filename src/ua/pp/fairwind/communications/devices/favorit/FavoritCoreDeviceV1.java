@@ -1,9 +1,9 @@
 package ua.pp.fairwind.communications.devices.favorit;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
 import ua.pp.fairwind.communications.devices.DeviceInterface;
 import ua.pp.fairwind.communications.devices.RequestInformation;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
@@ -53,25 +53,25 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
     }
 
     protected SoftBoolProperty formDIProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
-        SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem,true,true);
+        SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         command.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, address);
         return command;
     }
 
     protected SoftBoolProperty formDOProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
-        SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem,false,false);
+        SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         command.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, address);
         return command;
     }
 
     protected SoftFloatProperty formAOProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
-        SoftFloatProperty command=new SoftFloatProperty(name,getUiidFromMap(name,uuids),description,centralSystem,false,false);
+        SoftFloatProperty command=new SoftFloatProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         command.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, address);
         return command;
     }
 
     protected SoftFloatProperty formAIProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
-        SoftFloatProperty command=new SoftFloatProperty(name,getUiidFromMap(name,uuids),description,centralSystem,true,true);
+        SoftFloatProperty command=new SoftFloatProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         command.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, address);
         return command;
     }
@@ -102,13 +102,13 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
         analogOutChanelN3=formAOProperty(203, "ANALOG_OUT_3", "Аналоговый выход", centralSystem, uuids);
         analogOutChanelN4=formAOProperty(204, "ANALOG_OUT_4", "Аналоговый выход", centralSystem, uuids);
 
-        lineSelect=new SoftLongProperty("RS_LINE_SELECT",getUiidFromMap("RS_LINE_SELECT",uuids),"Выбор внешней RS линии",centralSystem,false,false);
+        lineSelect=new SoftLongProperty("RS_LINE_SELECT",getUiidFromMap("RS_LINE_SELECT",uuids),"Выбор внешней RS линии",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         lineSelect.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 501L);
 
-        configdeviceAddress=new SoftShortProperty("CONFIGURE_DEVICE_ADDRESS",getUiidFromMap("CONFIGURE_DEVICE_ADDRESS",uuids),"Установка адреса кстройства",centralSystem,false,false);
+        configdeviceAddress=new SoftShortProperty("CONFIGURE_DEVICE_ADDRESS",getUiidFromMap("CONFIGURE_DEVICE_ADDRESS",uuids),"Установка адреса кстройства",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         configdeviceAddress.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 001L);
 
-        configdeviceSpeed=new SoftShortProperty("CONFIGURE_DEVICE_SPEED",getUiidFromMap("CONFIGURE_DEVICE_SPEED",uuids),"Установка скорости устройства",centralSystem,false,false);
+        configdeviceSpeed=new SoftShortProperty("CONFIGURE_DEVICE_SPEED",getUiidFromMap("CONFIGURE_DEVICE_SPEED",uuids),"Установка скорости устройства",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         configdeviceSpeed.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 002L);
 
         addPropertys(configdeviceAddress);
@@ -683,5 +683,10 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
 
     public SoftShortProperty getConfigdeviceSpeed() {
         return configdeviceSpeed;
+    }
+
+    @Override
+    public String getDeviceType() {
+        return "Favorit Ventil Device";
     }
 }

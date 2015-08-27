@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.propertyes;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
@@ -23,7 +23,8 @@ abstract public class AbsractCommandProperty extends SoftBoolProperty {
 
     @Override
     protected void fireEvent(EventType type, Object param) {
-        if(getValue()==true) {
+        Boolean val=getValue();
+        if(val!=null && val==true) {
             super.fireEvent(type, getName());
         }
     }

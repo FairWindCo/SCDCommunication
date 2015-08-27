@@ -6,6 +6,7 @@ import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
 import ua.pp.fairwind.communications.lines.SerialLine;
+import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OperationTrunsactionReadWriteSeparate;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 
@@ -49,6 +50,7 @@ public class LineConsoleTest {
         fav.getAnalogOutChanelN3().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
         fav.getAnalogOutChanelN4().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
         fav.getLineSelect().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
+        fav.getLineSelect().setRequestTrunsaction(new OperationTrunsactionReadWriteSeparate());
 
         fav.getDigitalOutChanelN1().setAdditionalInfo(FavoritCoreDeviceV1.IMIDIATLY_WRITE_FLAG, true);
         fav.getDigitalOutChanelN2().setAdditionalInfo(FavoritCoreDeviceV1.IMIDIATLY_WRITE_FLAG, true);
@@ -88,7 +90,7 @@ public class LineConsoleTest {
         fav.getAnalogOutChanelN1().writeValueRequest();
         fav.getDigitalOutChanelN3().setValue(true);
         fav.getLineSelect().readValueRequest();
-        fav.getLineSelect().setValue(2l);
+        fav.getLineSelect().setValue(3l);
         fav.getLineSelect().writeValueRequest();
 
         /*

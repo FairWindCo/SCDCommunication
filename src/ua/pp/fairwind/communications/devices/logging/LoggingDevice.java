@@ -1,10 +1,10 @@
 package ua.pp.fairwind.communications.devices.logging;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.lines.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.CommunicationProtocolRequest;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 
 import java.util.HashMap;
@@ -53,5 +53,10 @@ public class LoggingDevice extends AbstractDevice {
                 monitorInterface.monitor(event);
             }
         }
+    }
+
+    @Override
+    public String getDeviceType() {
+        return "LOGGING DEVICE";
     }
 }

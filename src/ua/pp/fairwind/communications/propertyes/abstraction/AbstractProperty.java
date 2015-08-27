@@ -1,7 +1,10 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OPERATION_TYPE;
+import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OperationTrunsactions;
+import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OperationTrunsactionsSingle;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 
@@ -26,7 +29,9 @@ public abstract class AbstractProperty extends SystemEllement{
     private int lengthForWrite=0;
     private boolean convertBoolToBinaryForWrite=false;
     protected volatile long dataLifeTime=-1;
-    private final Map<String,Object> additionalParameters=new ConcurrentHashMap<>();
+    volatile private OperationTrunsactions requestTrunsaction=new OperationTrunsactionsSingle();
+
+    protected final Map<String,Object> additionalParameters=new ConcurrentHashMap<>();
 
 
 
@@ -198,4 +203,27 @@ public abstract class AbstractProperty extends SystemEllement{
         additionalParameters.put(PROPERTY_PAUSE_BEFORE_WRITE, value);
     }
 
+    public boolean isMultiRequestEnabled(OPERATION_TYPE type){
+        return requestTrunsaction.isMultiRequestEnabled(type);
+    }
+
+    public void setMultiRequestEnabled(OPERATION_TYPE type,boolean state){
+        requestTrunsaction.setMultiRequestEnabled(type,state);
+    }
+
+    public boolean isRequestActive(OPERATION_TYPE type){
+        return requestTrunsaction.isRequestActive(type);
+    }
+
+    public boolean startRequest(OPERATION_TYPE type){
+        return requestTrunsaction.startRequest(type);
+    }
+
+    public void endRequest(OPERATION_TYPE type){
+        requestTrunsaction.endRequest(type);
+    }
+
+    public void setRequestTrunsaction(OperationTrunsactions requestTrunsaction) {
+        this.requestTrunsaction = requestTrunsaction;
+    }
 }

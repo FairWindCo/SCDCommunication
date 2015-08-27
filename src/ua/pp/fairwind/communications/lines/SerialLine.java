@@ -3,7 +3,9 @@ package ua.pp.fairwind.communications.lines;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortTimeoutException;
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
+import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
 /**
@@ -17,7 +19,7 @@ public class SerialLine extends AbstractLine {
     }
 
     @Override
-    synchronized protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException, LineTimeOutException  {
+    synchronized protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException, LineTimeOutException {
         try {
             if (!port.isOpened()) port.openPort();
             setLineParameters(params);

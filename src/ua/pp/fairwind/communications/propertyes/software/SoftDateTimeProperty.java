@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.DatePropertyInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.StringPropertyInterface;
@@ -12,12 +12,12 @@ import java.util.Date;
  * Created by ������ on 06.07.2015.
  */
 public class SoftDateTimeProperty extends ValueProperty<Date> implements DatePropertyInterface{
-    public SoftDateTimeProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly) {
-        super(name, uuid, description, centralSystem, readonly, writeonly);
+    public SoftDateTimeProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, description, centralSystem, softOperationType);
     }
 
-    public SoftDateTimeProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly, Date value) {
-        super(name, uuid, description, centralSystem, readonly, writeonly, value);
+    public SoftDateTimeProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, Date value) {
+        super(name, uuid, description, centralSystem, softOperationType, value);
     }
 
     public SoftDateTimeProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {

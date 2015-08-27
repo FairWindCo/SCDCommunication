@@ -1,18 +1,18 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 /**
  * Created by FairWindCo on 07.07.2015
  */
 public class SoftByteProperty extends NumberProperty<Byte> {
-    public SoftByteProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly) {
-        super(name, uuid, description, centralSystem, readonly, writeonly);
+    public SoftByteProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, description, centralSystem, softOperationType);
     }
 
-    public SoftByteProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly, Byte value) {
-        super(name, uuid, description, centralSystem, readonly, writeonly, value);
+    public SoftByteProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, Byte value) {
+        super(name, uuid, description, centralSystem, softOperationType, value);
     }
 
     public SoftByteProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {

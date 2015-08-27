@@ -1,18 +1,18 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 /**
  * Created by FairWindCo on 07.07.2015
  */
 public class SoftDoubleProperty extends NumberProperty<Double>{
-    public SoftDoubleProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly) {
-        super(name, uuid, description, centralSystem, readonly, writeonly);
+    public SoftDoubleProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, description, centralSystem, softOperationType);
     }
 
-    public SoftDoubleProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly, Double value) {
-        super(name, uuid, description, centralSystem, readonly, writeonly, value);
+    public SoftDoubleProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, Double value) {
+        super(name, uuid, description, centralSystem,softOperationType, value);
     }
 
     public SoftDoubleProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {

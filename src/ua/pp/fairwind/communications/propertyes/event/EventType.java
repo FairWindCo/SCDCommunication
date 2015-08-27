@@ -14,5 +14,8 @@ public enum EventType {
     FATAL_ERROR,
     TIMEOUT,
     READ_MONITOR,
-    WRITE_MONITOR
+    WRITE_MONITOR,
+    PERFORMANCE,
+    VALIDATION_ERROR,
+    TRASHHOL
 }

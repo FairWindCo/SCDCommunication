@@ -1,12 +1,11 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
 
 import java.util.Date;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -15,7 +14,15 @@ import java.util.concurrent.atomic.AtomicReference;
  * Created by Сергей on 30.06.2015.
  */
 public abstract class ValueProperty<T extends Comparable<? super T>> extends AbstractProperty implements ValuePropertyInterface<T> {
-    private final CopyOnWriteArrayList<ValueChangeListener<? super T>> eventDispatcher=new CopyOnWriteArrayList<>();
+    public static enum SOFT_OPERATION_TYPE{
+        READ_ONLY,
+        WRITE_ONLY,
+        READ_WRITE
+    }
+    final public static String MIN_VALUE="PROPERTY_MIN_VALUE";
+    final public static String MAX_VALUE="PROPERTY_MAX_VALUE";
+    final public static String VALUE_VALIDATOR="PROPERTY_VALUE_VALIDATOR";
+
     final private AtomicReference<T> value=new AtomicReference<>();
     final private AtomicReference<T> oldvalue=new AtomicReference<>();
     final private AtomicLong lastChangeTime=new AtomicLong();
@@ -23,72 +30,62 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     final private AtomicBoolean valide=new AtomicBoolean(false);
     //private volatile T value;
     //private volatile long lastChangeTime;
-    protected final boolean readonly;
-    protected final boolean writeonly;
+    protected final SOFT_OPERATION_TYPE softOperationType;
+
 
     //КОНСТРУКТОР
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly) {
+    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, description, centralSystem);
-        this.readonly = readonly;
-        this.writeonly = writeonly;
+        this.softOperationType = softOperationType;
     }
 
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly,T value) {
+    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType,T value) {
         super(name, uuid, description, centralSystem);
-        this.readonly = readonly;
-        this.writeonly = writeonly;
+        this.softOperationType = softOperationType;
         this.value.set(value);
     }
 
     public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
         super(name, uuid, description, centralSystem);
-        this.readonly = false;
-        this.writeonly = false;
+        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
     public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem,T value) {
         super(name, uuid, description, centralSystem);
-        this.readonly = false;
-        this.writeonly = false;
+        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);
     }
 
     public ValueProperty(String name, String uuid, String description) {
         super(name, uuid, description, null);
-        this.readonly = false;
-        this.writeonly = false;
+        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
     public ValueProperty(String name, String uuid, String description,T value) {
         super(name, uuid, description, null);
-        this.readonly = false;
-        this.writeonly = false;
         this.value.set(value);
+        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
     public ValueProperty(String name, String description) {
         super(name, null, description, null);
-        this.readonly = false;
-        this.writeonly = false;
+        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
     public ValueProperty(String name, String description,T value) {
         super(name, null, description, null);
-        this.readonly = false;
-        this.writeonly = false;
+        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);
     }
 
     public ValueProperty(String name) {
         super(name, null, null, null);
-        this.readonly = false;
-        this.writeonly = false;
+        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
     public ValueProperty(String name, T value) {
         super(name, null, null, null);
-        this.readonly = false;
-        this.writeonly = false;
+        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);
     }
 
@@ -138,7 +135,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public T getValue() {
-        if(writeonly){
+        if(softOperationType==SOFT_OPERATION_TYPE.WRITE_ONLY){
             fireEvent(EventType.ERROR,"Property is WRITEONLY!");
             return null;
         }
@@ -146,7 +143,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     }
 
     public void setHardWareInternalValue(final T value) {
-        setInternalValue(value,false,true);
+        setInternalValue(value, false, true);
     }
 
     public void setSilentInternalValue(final T value) {
@@ -154,7 +151,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     }
 
     public void setInternalValue(final T value) {
-        setInternalValue(value,false,false);
+        setInternalValue(value, false, false);
     }
 
     void setInternalValue(final T value,boolean silent,boolean fromHardWare) {
@@ -183,11 +180,25 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public void setValue(final T value) {
-        if(readonly){
+        if(softOperationType==SOFT_OPERATION_TYPE.READ_ONLY){
             fireEvent(EventType.ERROR,"Property is READONLY!");
             return;
         }
-        setInternalValue(value,false,false);
+        Object setupedvalidator=getAdditionalInfo(VALUE_VALIDATOR);
+
+        if(setupedvalidator!=null && setupedvalidator instanceof ValueValidator) {
+            try {
+                ValueValidator<T> valueValidator=(ValueValidator<T>)setupedvalidator;
+                T validate=valueValidator==null?value:valueValidator.validateNewValue(this.value.get(), value, additionalParameters,(event,param)->fireEvent(event,param));
+                if(validate!=null) {
+                    setInternalValue(validate, false, false);
+                }
+            } catch (ClassCastException ex){
+                setInternalValue(value, false, false);
+            }
+        } else {
+            setInternalValue(value, false, false);
+        }
     }
 
     @Override
@@ -208,9 +219,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     private void fireChangeEvent(T oldValue,T newValue,boolean fromHardWare){
         if(eventactive) {
             final ValueChangeEvent<T> event = new ValueChangeEvent<>(this.getUUIDString(), this.getName(), this, oldValue, newValue);
-            for (ValueChangeListener<? super T> listener : eventDispatcher) {
-                listener.valueChange(event);
-            }
+            centralSystem.fireEvent(event);
             if(fromHardWare){
                 fireEvent(EventType.ELEMENT_CHANGE_FROM_HARDWARE, newValue);
             } else {
@@ -222,13 +231,13 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public void addChangeEventListener(ValueChangeListener<? super T> listener){
-          eventDispatcher.add(listener);
+        centralSystem.addChangeEventListener(listener);
     }
 
 
     @Override
     public void removeChangeEventListener(ValueChangeListener<? super T> listener){
-          eventDispatcher.remove(listener);
+          centralSystem.removeChangeEventListener(listener);
     }
 
     @Override
@@ -264,7 +273,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     @Override
     public void destroy() {
         super.destroy();
-        eventDispatcher.clear();
+        centralSystem.clear();
         unbindReadProperty();
         unbindWriteProperty();
     }
@@ -272,12 +281,12 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public boolean isReadAccepted() {
-        return !writeonly;
+        return softOperationType==SOFT_OPERATION_TYPE.READ_ONLY;
     }
 
     @Override
     public boolean isWriteAccepted() {
-        return !readonly;
+        return softOperationType==SOFT_OPERATION_TYPE.WRITE_ONLY;
     }
 
     @Override
@@ -308,4 +317,5 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         valide.set(false);
         fireEvent(EventType.INVALIDATE,null);
     }
+
 }

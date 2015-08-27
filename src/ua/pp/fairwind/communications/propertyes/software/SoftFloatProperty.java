@@ -1,18 +1,18 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 /**
  * Created by FairWindCo on 07.07.2015
  */
 public class SoftFloatProperty extends NumberProperty<Float> {
-    public SoftFloatProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly) {
-        super(name, uuid, description, centralSystem, readonly, writeonly);
+    public SoftFloatProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, description, centralSystem, softOperationType);
     }
 
-    public SoftFloatProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly, Float value) {
-        super(name, uuid, description, centralSystem, readonly, writeonly, value);
+    public SoftFloatProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, Float value) {
+        super(name, uuid, description, centralSystem, softOperationType, value);
     }
 
     public SoftFloatProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {

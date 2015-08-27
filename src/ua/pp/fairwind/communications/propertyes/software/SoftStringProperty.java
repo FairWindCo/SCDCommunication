@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.StringPropertyInterface;
@@ -121,12 +121,12 @@ public class SoftStringProperty extends ValueProperty<String> implements StringP
         bindPropertyForWrite((AbstractProperty)property, format, 10, 0, -1, false);
     }
 
-    public SoftStringProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly) {
-        super(name, uuid, description, centralSystem, readonly, writeonly);
+    public SoftStringProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, description, centralSystem, softOperationType);
     }
 
-    public SoftStringProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly, String value) {
-        super(name, uuid, description, centralSystem, readonly, writeonly, value);
+    public SoftStringProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, String value) {
+        super(name, uuid, description, centralSystem, softOperationType, value);
     }
 
     public SoftStringProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {

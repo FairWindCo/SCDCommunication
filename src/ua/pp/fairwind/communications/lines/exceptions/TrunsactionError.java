@@ -1,4 +1,4 @@
-package ua.pp.fairwind.communications.lines;
+package ua.pp.fairwind.communications.lines.exceptions;
 
 /**
  * Created by Сергей on 09.07.2015.

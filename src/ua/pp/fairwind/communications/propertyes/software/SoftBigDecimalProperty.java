@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 import java.math.BigDecimal;
@@ -9,12 +9,12 @@ import java.math.BigDecimal;
  * Created by Сергей on 07.07.2015.
  */
 public class SoftBigDecimalProperty extends NumberProperty<BigDecimal> {
-    public SoftBigDecimalProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly) {
-        super(name, uuid, description, centralSystem, readonly, writeonly);
+    public SoftBigDecimalProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, description, centralSystem, softOperationType);
     }
 
-    public SoftBigDecimalProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly, BigDecimal value) {
-        super(name, uuid, description, centralSystem, readonly, writeonly, value);
+    public SoftBigDecimalProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, BigDecimal value) {
+        super(name, uuid, description, centralSystem, softOperationType, value);
     }
 
     public SoftBigDecimalProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {

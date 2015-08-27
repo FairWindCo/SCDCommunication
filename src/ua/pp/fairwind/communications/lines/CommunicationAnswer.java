@@ -75,9 +75,21 @@ public class CommunicationAnswer {
         return request.isExistReservLine();
     }
 
-    public void sendOverReservLine(){
+    public void sendOverReservLine() {
         if(request!=null){
             request.sendRequestOverReservLine();
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        destroy();
+        super.finalize();
+    }
+
+    public void destroy(){
+        if(request!=null){
+            request.destroy();
         }
     }
 

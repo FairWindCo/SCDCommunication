@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 
 import java.text.DecimalFormat;
@@ -13,60 +13,60 @@ public abstract class NumberProperty<M extends Number & Comparable<? super M>> e
     volatile private int readradix=10;
     volatile private String readformat;
 
-    public NumberProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly) {
-        super(name, uuid, description, centralSystem, readonly, writeonly);
+    public NumberProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, description, centralSystem, softOperationType);
     }
 
-    public NumberProperty(String name, String uuid, String description, MessageSubSystem centralSystem, boolean readonly, boolean writeonly, M value) {
-        super(name, uuid, description, centralSystem, readonly, writeonly, value);
+    public NumberProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, M value) {
+        super(name, uuid, description, centralSystem, softOperationType, value);
     }
 
     public NumberProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        this(name, uuid, description, centralSystem, false, false);
+        this(name, uuid, description, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE);
     }
 
     public NumberProperty(String name, String description, MessageSubSystem centralSystem) {
-        this(name, null, description, centralSystem, false, false);
+        this(name, null, description, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE);
     }
 
     public NumberProperty(String name, MessageSubSystem centralSystem) {
-        this(name, null, null, centralSystem, false, false);
+        this(name, null, null, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE);
     }
 
     public NumberProperty(String name, String uuid, String description) {
-        this(name, uuid, description, null, false, false);
+        this(name, uuid, description, null, SOFT_OPERATION_TYPE.READ_WRITE);
     }
 
     public NumberProperty(String name, String description) {
-        this(name, null, description, null, false, false);
+        this(name, null, description, null, SOFT_OPERATION_TYPE.READ_WRITE);
     }
 
     public NumberProperty(String name) {
-        this(name, null, null, null, false, false);
+        this(name, null, null, null, SOFT_OPERATION_TYPE.READ_WRITE);
     }
 
     public NumberProperty(String name, String uuid, String description, MessageSubSystem centralSystem, M value) {
-        this(name, uuid, description, centralSystem, false, false,value);
+        this(name, uuid, description, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE,value);
     }
 
     public NumberProperty(String name, String description, MessageSubSystem centralSystem, M value) {
-        this(name, null, description, centralSystem, false, false,value);
+        this(name, null, description, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE,value);
     }
 
     public NumberProperty(String name, MessageSubSystem centralSystem, M value) {
-        this(name, null, null, centralSystem, false, false,value);
+        this(name, null, null, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE,value);
     }
 
     public NumberProperty(String name, String uuid, String description, M value) {
-        this(name, uuid, description, null, false, false,value);
+        this(name, uuid, description, null, SOFT_OPERATION_TYPE.READ_WRITE,value);
     }
 
     public NumberProperty(String name, String description, M value) {
-        this(name, null, description, null, false, false, value);
+        this(name, null, description, null, SOFT_OPERATION_TYPE.READ_WRITE, value);
     }
 
     public NumberProperty(String name, M value) {
-        this(name, null, null, null, false, false, value);
+        this(name, null, null, null, SOFT_OPERATION_TYPE.READ_WRITE, value);
     }
 
     @Override

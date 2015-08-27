@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software.stringlike;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 
 /**
  * Created by Wind on 28.07.2014.

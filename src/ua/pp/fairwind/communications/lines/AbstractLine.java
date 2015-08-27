@@ -1,9 +1,15 @@
 package ua.pp.fairwind.communications.lines;
 
-import ua.pp.fairwind.communications.abstractions.MessageSubSystem;
+import ua.pp.fairwind.communications.abstractions.LineSelector;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
 import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.devices.LineSelectDevice;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
+import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
+import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
+import ua.pp.fairwind.communications.lines.exceptions.TrunsactionError;
+import ua.pp.fairwind.communications.lines.performance.PerformanceMonitorEventData;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
@@ -11,6 +17,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,12 +27,12 @@ import java.util.concurrent.locks.ReentrantLock;
  * Created by Сергей on 10.07.2015.
  */
 abstract  public class AbstractLine extends SystemEllement implements LineInterface  {
-    public static final String PROPERTY_DEVICE_ADDRESS="propertyAddress";
     private final ConcurrentLinkedQueue<CommunicationProtocolRequest> requests=new ConcurrentLinkedQueue<>();
     private final AtomicBoolean threadRunned=new AtomicBoolean(false);
     private final AtomicBoolean threadCreated=new AtomicBoolean(false);
     private final AtomicBoolean transuction=new AtomicBoolean(false);
     private final AtomicBoolean threadPaused=new AtomicBoolean(false);
+    private final AtomicBoolean performanceMonitor=new AtomicBoolean(false);
     private final AtomicBoolean threadTrunsactionPaused=new AtomicBoolean(false);
     private volatile long startTrunsactionTime=-1;
     private volatile UUID trunsactionUUID;
@@ -32,6 +40,8 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     private final Set<DeviceInterface> readmonitoring=new HashSet<>();
     private final Set<DeviceInterface> writemonitoring=new HashSet<>();
     private final ReentrantLock lock = new ReentrantLock();
+    private final ExecutorService service= Executors.newCachedThreadPool();
+    private volatile LineSelectDevice lineSelector;
 
     public AbstractLine(String name, String uuid, String description, MessageSubSystem centralSystem,long maxTransactionTime) {
         super(name, uuid, description, centralSystem);
@@ -52,6 +62,13 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
+    private void perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE typeExecute,long time){
+        if(performanceMonitor.get()) {
+            PerformanceMonitorEventData data=new PerformanceMonitorEventData(typeExecute,time);
+            fireEvent(EventType.PERFORMANCE,data);
+        }
+    }
+
     synchronized private boolean isTrunsactionActive(UUID uuid){
         if(uuid==null) return false;
         if(transuction.get()){
@@ -66,6 +83,8 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             return false;
         }
     }
+
+
 
 
     @Override
@@ -89,6 +108,42 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
+    public boolean lineSelectorExecute(Object selectLine){
+        if(lineSelector!=null&&selectLine!=null) {
+            return lineSelectorExecute(lineSelector.selectLine(selectLine));
+        }
+        return true;
+    }
+
+    public boolean lineSelectorExecute(LineSelector selectData){
+        if(selectData==null) return false;
+        if(!selectData.isAlreadySelect()){
+            try{
+                byte[] send=selectData.getSendbuffer();
+                if(send!=null && send.length>0) {
+                    selectData.getPauseBeforeWrite();
+                    sendMessage(send, selectData.getLineParam());
+                }
+                if(selectData.neededByteCount()>0) {
+                    selectData.getPauseBeforeRead();
+                    byte[] readed = reciveMessage(selectData.getReadTimeOut(),selectData.neededByteCount(),selectData.getLineParam());
+                    return selectData.compare(readed);
+                }
+            } catch (LineErrorException|LineTimeOutException ex){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean lineSelectorExecute(LineParameters params){
+        if(lineSelector!=null) {
+            Object selectedline = params.getLineParameter("SUB_LINE_NUMBER");
+            return lineSelectorExecute(selectedline);
+        }
+        return true;
+    }
+
     abstract protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException,LineTimeOutException;
     abstract protected byte[] reciveMessage(long timeOut,long bytesForReadCount, LineParameters params) throws LineErrorException,LineTimeOutException;
     abstract protected void onStartTrunsaction();
@@ -107,7 +162,9 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     @Override
     public void sendMessage(UUID uuid,final byte[] data, LineParameters params) throws TrunsactionError,LineErrorException,LineTimeOutException {
         if(!isTrunsactionActive(uuid)){
+            long starttime=System.currentTimeMillis();
             sendMessage(data, params);
+            perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION,System.currentTimeMillis()-starttime);
             writemonitor(data,null);
         } else {
             throw new TrunsactionError("Another transaction started!", TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
@@ -137,7 +194,9 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     @Override
     public byte[] reciveMessage(UUID uuid,long timeOut,long bytesForReadCount, LineParameters params) throws TrunsactionError,LineTimeOutException,LineErrorException {
         if(!isTrunsactionActive(uuid)){
+            long starttime=System.currentTimeMillis();
             final byte[] data=reciveMessage(timeOut,bytesForReadCount,params);
+            perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION,System.currentTimeMillis()-starttime);
             readmonitor(data,null);
             return data;
         } else {
@@ -147,16 +206,25 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     private CommunicationAnswer processRequest(final CommunicationProtocolRequest request){
         if(request!=null){
-            if(request.getPauseBeforeWrite()>0) CommunicationUtils.RealThreadPause(request.getPauseBeforeWrite());
+            if(request.getPauseBeforeWrite()>0) {
+                CommunicationUtils.RealThreadPause(request.getPauseBeforeWrite());
+                perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.BEFORE_WRITE_PAUSE, request.getPauseBeforeWrite());
+            }
             try {
-            sendMessage(
+                long starttime=System.currentTimeMillis();
+                sendMessage(
                     request.getBytesForSend(),
                     request.getParameters());
-            writemonitor(request.getBytesForSend(),request);
-            if(request.getPauseBeforeRead()>0) CommunicationUtils.RealThreadPause(request.getPauseBeforeRead());
+                perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION, System.currentTimeMillis() - starttime);
+                writemonitor(request.getBytesForSend(),request);
+            if(request.getPauseBeforeRead()>0) {
+                perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.BEFORE_READ_PAUSE,request.getPauseBeforeRead());
+                CommunicationUtils.RealThreadPause(request.getPauseBeforeRead());
+            }
                 long startTime=System.currentTimeMillis();
                 final byte[] buf=reciveMessage(request.getTimeOut(), request.getBytesForReadCount(), request.getParameters());
                 long waitTime=System.currentTimeMillis()-startTime;
+                perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.READ_OPERATION, waitTime);
                 readmonitor(buf,request);
                 CommunicationAnswer answ=new CommunicationAnswer(request, buf,this,startTime,waitTime);
                 return answ;
@@ -188,14 +256,45 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                                 lock.lock();
                                 CommunicationProtocolRequest request = requests.poll();
                                 if (request != null) {
-                                    System.out.println(request);
-                                    CommunicationAnswer answer = processRequest(request);
-                                    if (request.getSenderDevice() != null) {
-                                        DeviceInterface dev = request.getSenderDevice();
-                                        dev.processRecivedMessage(answer);
-                                    }
-                                    if (answer.getStatus() == CommunicationAnswer.CommunicationResult.TIMEOUT && request.getTryCount() < 1) {
-                                        requests.add(new CommunicationProtocolRequest(request));
+                                    try {
+                                        System.out.println(request);
+                                        if(!lineSelectorExecute(request.getParameters())){
+                                            if(request.isCanTry()){
+                                                CommunicationProtocolRequest newRequest = CommunicationProtocolRequest.createReuest(request);
+                                                if (newRequest != null) requests.add(newRequest);
+                                            } else {
+                                                request.invalidate();
+                                            }
+                                        } else {
+                                            CommunicationAnswer answer = processRequest(request);
+                                            if (answer.getStatus() == CommunicationAnswer.CommunicationResult.TIMEOUT && request.isCanTry()) {
+                                                //request.destroy();
+                                                CommunicationProtocolRequest newRequest = CommunicationProtocolRequest.createReuest(request);
+                                                if (newRequest != null) requests.add(newRequest);
+                                            } else {
+                                                DeviceInterface dev = request.getSenderDevice();
+                                                if (dev != null && threadRunned.get()) {
+                                                    service.submit(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            try {
+                                                                long starttime=System.currentTimeMillis();
+                                                                dev.processRecivedMessage(answer);
+                                                                perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.ANALISE_OPERATINO, System.currentTimeMillis() - starttime);
+                                                            } catch (Exception e) {
+                                                                fireEvent(EventType.ERROR, e);
+                                                            } finally {
+                                                                answer.destroy();
+                                                            }
+                                                        }
+                                                    });
+                                                } else {
+                                                    answer.destroy();
+                                                }
+                                            }
+                                        }
+                                    }catch (Exception all_ex){
+                                        request.destroy();
                                     }
                                 }
                             } catch (Exception ex){
@@ -255,4 +354,20 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     public String toString() {
         return "LINE{Name:"+getName()+" ,U:"+getUUIDString()+",D:"+getDescription()+"}";
     }
+
+    @Override
+    public void destroy(){
+        super.destroy();
+        threadRunned.set(false);
+        service.shutdown();
+    }
+
+    public boolean isPerformanceMonitor() {
+        return performanceMonitor.get();
+    }
+
+    public void setPerformanceMonitor(boolean state) {
+        performanceMonitor.set(state);
+    }
+
 }
