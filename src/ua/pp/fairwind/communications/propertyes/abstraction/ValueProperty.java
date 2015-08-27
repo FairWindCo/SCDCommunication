@@ -310,7 +310,13 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     public void rollback(){
         invalidate();
-        setInternalValue(oldvalue.get());
+        //setHardWareInternalValue(oldvalue.get());
+        T newVal = this.oldvalue.get();
+        T oldVel = this.value.get();
+        this.value.set(newVal);
+        //lastChangeTime = System.currentTimeMillis();
+        lastChangeTime.set(System.currentTimeMillis());
+        fireChangeEvent(oldVel, newVal, true);
     }
 
     public void invalidate(){
@@ -318,4 +324,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         fireEvent(EventType.INVALIDATE,null);
     }
 
+    public void checkValide(){
+        if(isValidProperty()) fireEvent(EventType.INVALIDATE,null);
+    }
 }

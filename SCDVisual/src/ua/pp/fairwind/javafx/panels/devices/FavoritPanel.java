@@ -18,6 +18,7 @@ import ua.pp.fairwind.io.javafx.propertys.BooleanPropertyFXAdapter;
 import ua.pp.fairwind.io.javafx.propertys.FloatPropertyFXAdapter;
 import ua.pp.fairwind.io.javafx.propertys.base.LongPropertyFXAdapter;
 import ua.pp.fairwind.javafx.I18N.I18N_monitor;
+import ua.pp.fairwind.javafx.panels.dialogs.PropertyConfigDialog;
 
 /**
  * Created by Сергей on 27.08.2015.
@@ -183,7 +184,7 @@ public class FavoritPanel extends HBox {
     }
 
     private Button createConfigureProppearty(AbstractProperty command){
-        return new Button(I18N_monitor.COMMON.getStringEx("CONFIG"));
+        return PropertyConfigDialog.crateConfigButton(command);
     }
 
     private Button createCommandExecuteButton(DeviceNamedCommandProperty command){

@@ -21,6 +21,8 @@ public abstract class AbstractProperty extends SystemEllement{
     final public static String PROPERTY_READ_TIME_OUT="PROPERTY_READ_TIME_OUT";
     final public static String PROPERTY_PAUSE_BEFORE_READ="PROPERTY_PAUSE_BEFORE_READ";
     final public static String PROPERTY_PAUSE_BEFORE_WRITE="PROPERTY_PAUSE_BEFORE_WRITE";
+    final public static String TIMER="TIMER";
+    final public static String TIMERS="TIMERS";
     private AbstractProperty bindedForReadPoperty;
     private AbstractProperty bindedForWritePoperty;
     private String formatForWrite=null;
@@ -140,7 +142,12 @@ public abstract class AbstractProperty extends SystemEllement{
     }
 
     public void setAdditionalInfo(String paramsName,Object value){
-        additionalParameters.put(paramsName,value);
+        if(paramsName==null)return;
+        if(value==null) {
+            additionalParameters.remove(paramsName);
+        } else {
+            additionalParameters.put(paramsName, value);
+        }
     }
 
     public Object getAdditionalInfo(String paramsName){
