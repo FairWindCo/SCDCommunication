@@ -93,6 +93,7 @@ public class PropertyTimer extends TimerTask{
 
     public void destroy(){
         if(cancel()){
+            timerService.purge();
             synchronized (property){
                 PropertyTimer oneTimer=(PropertyTimer)property.getAdditionalInfo(AbstractProperty.TIMER);
                 if(oneTimer==null){
@@ -110,5 +111,9 @@ public class PropertyTimer extends TimerTask{
     @Override
     public String toString() {
         return "TIMER " +timerAction +" period=" + period +" ms";
+    }
+
+    public static void stopWork(){
+        timerService.cancel();
     }
 }

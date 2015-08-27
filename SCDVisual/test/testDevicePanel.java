@@ -7,6 +7,7 @@ import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.timeaction.PropertyTimer;
 import ua.pp.fairwind.javafx.panels.DeviceConfigPanel;
 import ua.pp.fairwind.javafx.panels.devices.FavoritPanel;
 
@@ -47,6 +48,7 @@ public class testDevicePanel extends Application {
     @Override
     public void stop() throws Exception {
         if(line!=null)line.destroy();
+        PropertyTimer.stopWork();
         ms.destroy();
         super.stop();
     }
