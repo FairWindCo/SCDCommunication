@@ -17,7 +17,7 @@ public class MessageSubSystemSimple implements MessageSubSystem{
 
     protected void fireEventExecute(ElementInterface element,EventType type,Object param){
         for(ElementEventListener listener:eventDispatcher){
-            listener.elementEvent(element,type,param);
+            listener.elementEvent(element, type, param);
         }
     }
 
@@ -73,5 +73,15 @@ public class MessageSubSystemSimple implements MessageSubSystem{
 
     public void removeChangeEventListener(ValueChangeListener<?> listener){
         calueEventDispatcher.remove(listener);
+    }
+
+    @Override
+    public void destroyService() {
+
+    }
+
+    @Override
+    public MessageSubSystem getNewChild() {
+        return new MessageSubSystemSimple();
     }
 }

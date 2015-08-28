@@ -57,6 +57,11 @@ public class CommunicationProtocolRequest {
         return new CommunicationProtocolRequest(requestType,bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,property,nextLine,needRollBack,maxTryCount);
     }
 
+    public static CommunicationProtocolRequest createReuestNextLine(REQUEST_TYPE requestType,byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite,LineParameters parameters, AbstractProperty property, LineInterface nextLine,boolean needRollBack,long maxTryCount){
+        if(senderDevice==null) return null;
+        return new CommunicationProtocolRequest(requestType,bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,property,nextLine,needRollBack,maxTryCount);
+    }
+
 
     private CommunicationProtocolRequest(REQUEST_TYPE requestType,byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite,LineParameters parameters, AbstractProperty property, LineInterface nextLine,boolean needRollBack,long maxTryCount){
         this.bytesForSend = bytesForSend;
@@ -145,21 +150,22 @@ public class CommunicationProtocolRequest {
     }
 
     public CommunicationProtocolRequest formRequestForNextLine(){
-        return createReuest(requestType,bytesForSend, bytesForReadCount, senderDevice, timeOut, pauseBeforeRead, pauseBeforeWrite, parameters, property, null, needRollBack,maxTryCount);
+        return createReuestNextLine(requestType,bytesForSend, bytesForReadCount, senderDevice, timeOut, pauseBeforeRead, pauseBeforeWrite, parameters, property, null, needRollBack,maxTryCount);
     }
 
-    public void sendRequestOverReservLine(){
+    public boolean sendRequestOverReservLine(){
         if(nextLine!=null){
             if(property!=null && property instanceof ValueProperty){
                 if(property.startRequest(requestType.propertyOperationType)){
                     CommunicationProtocolRequest newRequest=formRequestForNextLine();
-                    nextLine.async_communicate(newRequest);
+                    if(newRequest!=null) {
+                        nextLine.async_communicate(newRequest);
+                        return true;
+                    }
                 }
             }
-        } else {
-            //if(property!=null && property instanceof ValueProperty) ((ValueProperty)property).invalidate();
         }
-
+        return false;
     }
 
     public long getTryCount() {

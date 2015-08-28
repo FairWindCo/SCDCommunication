@@ -2,17 +2,32 @@ package ua.pp.fairwind.communications.lines;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
+import jssc.SerialPortList;
 import jssc.SerialPortTimeoutException;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Сергей on 09.07.2015.
  */
 public class SerialLine extends AbstractLine {
     final SerialPort port;
+
+    public static List<LineInterface> getSerialLines(MessageSubSystem centralSystem, long maxTransactionTime){
+        String[] portnames=SerialPortList.getPortNames();
+        if(portnames!=null){
+            List<LineInterface> list=new ArrayList<>(portnames.length);
+            for(String portName:portnames)list.add(new SerialLine(portName,portName,null,"RS 232 SERIAL PORT",centralSystem,maxTransactionTime));
+            return list;
+        }else return null;
+    }
+
     public SerialLine(String comportName,String name, String uuid, String description, MessageSubSystem centralSystem, long maxTransactionTime) {
         super(name, uuid, description, centralSystem, maxTransactionTime);
         port=new SerialPort(comportName);
@@ -21,8 +36,11 @@ public class SerialLine extends AbstractLine {
     @Override
     synchronized protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException, LineTimeOutException {
         try {
-            if (!port.isOpened()) port.openPort();
-            setLineParameters(params);
+            if (!port.isOpened()) {
+                port.openPort();
+                setLineParameters(params);
+            }
+            //setLineParameters(params);
             port.writeBytes(data);
         }catch (SerialPortException portexception){
             try {
@@ -38,8 +56,11 @@ public class SerialLine extends AbstractLine {
     synchronized protected byte[] reciveMessage(long timeOut,long bytesForReadCount, LineParameters params) throws LineErrorException, LineTimeOutException {
         if(bytesForReadCount==0) return null;
         try {
-            if (!port.isOpened()) port.openPort();
-            setLineParameters(params);
+            if (!port.isOpened()) {
+                port.openPort();
+                setLineParameters(params);
+            }
+            //setLineParameters(params);
             long starttime=System.currentTimeMillis();
             if(bytesForReadCount<=0){
                 CommunicationUtils.RealThreadPause(timeOut);
@@ -72,7 +93,7 @@ public class SerialLine extends AbstractLine {
         }
     }
 
-    private void setLineParameters(LineParameters parameters) throws SerialPortException{
+    protected boolean setLineParameters(LineParameters parameters){
         if(parameters!=null) {
             int speed = (int) (parameters.getLineParameter("RS_SPEED")!=null?parameters.getLineParameter("RS_SPEED"):SerialPort.BAUDRATE_9600);
             int databit = (int) (parameters.getLineParameter("RS_DATABIT")!=null?parameters.getLineParameter("RS_DATABIT"):SerialPort.DATABITS_8);
@@ -81,11 +102,25 @@ public class SerialLine extends AbstractLine {
             int flowcontrol = (int) (parameters.getLineParameter("RS_FLOWCONTROL")!=null?parameters.getLineParameter("RS_FLOWCONTROL"):SerialPort.FLOWCONTROL_NONE);
             boolean dtr = (boolean) (parameters.getLineParameter("RS_DTR")!=null?parameters.getLineParameter("RS_DTR"):false);
             boolean rts = (boolean) (parameters.getLineParameter("RS_RTS")!=null?parameters.getLineParameter("RS_RTS"):false);
-            port.setParams(speed, databit, stopbit, parity, rts, dtr);
-            port.setFlowControlMode(flowcontrol);
+            try {
+                if (!port.isOpened()) port.openPort();
+                port.setParams(speed, databit, stopbit, parity, rts, dtr);
+                port.setFlowControlMode(flowcontrol);
+                return true;
+            } catch (SerialPortException e){
+                fireEvent(EventType.ERROR,e.getLocalizedMessage());
+                return false;
+            }
         } else {
-            port.setParams(SerialPort.BAUDRATE_9600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE,false,false);
-            port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+            try {
+                if (!port.isOpened()) port.openPort();
+                port.setParams(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE, false, false);
+                port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
+                return true;
+            }catch (SerialPortException e){
+                fireEvent(EventType.ERROR,e);
+                return false;
+            }
         }
     }
 

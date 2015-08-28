@@ -39,7 +39,7 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
     private final SoftBoolProperty errorCommunicationStatusLine1;
     private final SoftBoolProperty lastCommunicationStatusLine2;
     private final SoftBoolProperty errorCommunicationStatusLine2;
-    private final DeviceNamedCommandProperty refreshCommand;
+    protected final DeviceNamedCommandProperty refreshCommand;
     private final DeviceNamedCommandProperty validateErrorCommand;
     private final DeviceNamedCommandProperty validateErrorCommandLine1;
     private final DeviceNamedCommandProperty validateErrorCommandLine2;
@@ -61,7 +61,7 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
                     if(type == EventType.ELEMENT_CHANGE && !isImidiatlyWrite){
                         return;
                     }
-                    writeProperty(hardwarePoperty);
+                    if(hardwarePoperty.getInternalValue()!=null)writeProperty(hardwarePoperty);
                 } else if (type == EventType.NEED_READ_VALUE) {
                     readProperty(hardwarePoperty);
                 }
@@ -212,6 +212,7 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
     }
 
 
+
     private void setLine1Error(){
         (lastCommunicationStatus).setInternalValue(false);
         (errorCommunicationStatus).setInternalValue(true);
@@ -253,7 +254,9 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
                         setLine2Error();
                     }
                 }
-                answer.sendOverReservLine();
+                if(!line.equals(secondaryLine)) {
+                    if(!answer.sendOverReservLine()) setLine2Error();
+                }
                 if(answer.getStatus()== CommunicationAnswer.CommunicationResult.TIMEOUT){
                     fireEvent(EventType.TIMEOUT, answer.getInformationMesssage());
                 } else {
@@ -262,7 +265,6 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
             } else {
                 LineInterface line=answer.getCommunicateOverLine();
                 if(line!=null){
-                    answer.destroy();
                     if(line.equals(primaryLine)){
                         byte[] readBuf=answer.getRecivedMessage();
                         byte[] sendBuf=answer.getRequest()==null?null:answer.getRequest().getBytesForSend();
@@ -272,26 +274,39 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
                             byte[] readBuf1=answer.getRecivedMessage();
                             byte[] sendBuf1=answer.getRequest()==null?null:answer.getRequest().getBytesForSend();
                             AbstractProperty property1=answer.getRequest()==null?null:answer.getRequest().getProperty();
-                            if(!processRecivedMessage(readBuf1,sendBuf1,property1)){
+                            try {
+                                if (!processRecivedMessage(readBuf1, sendBuf1, property1)) {
+                                    setLine1Error();
+                                    if(!line.equals(secondaryLine)) {
+                                        if(!answer.sendOverReservLine()) setLine2Error();
+                                    }
+                                } else {
+                                    setLine2Success();
+                                }
+                            }catch (Exception e){
                                 setLine1Error();
-                                answer.sendOverReservLine();
-                            } else {
-                                setLine2Success();
+                                answer.invalidate();
+                                fireEvent(EventType.FATAL_ERROR,e);
                             }
                         } else {
                             setLine1Success();
                         }
 
-                    }
-                    if(line.equals(secondaryLine)){
+                    } else if(line.equals(secondaryLine)){
                         byte[] readBuf=answer.getRecivedMessage();
                         byte[] sendBuf=answer.getRequest()==null?null:answer.getRequest().getBytesForSend();
                         AbstractProperty property=answer.getRequest()==null?null:answer.getRequest().getProperty();
-                        if(!processRecivedMessage(readBuf,sendBuf,property)){
-                            setLine2Error();
+                        try{
+                            if(!processRecivedMessage(readBuf,sendBuf,property)){
+                                setLine2Error();
+                                answer.invalidate();
+                            } else {
+                                setLine2Success();
+                            }
+                        }catch (Exception e){
+                            setLine1Error();
                             answer.invalidate();
-                        } else {
-                            setLine2Success();
+                            fireEvent(EventType.FATAL_ERROR,e);
                         }
                     }
                 }
@@ -300,6 +315,8 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         }catch (Exception ex){
             answer.invalidate();
             fireEvent(EventType.FATAL_ERROR,ex);
+        }finally {
+            answer.destroy();
         }
     }
     protected abstract boolean processRecivedMessage(final byte[] recivedMessage,final byte[] sendMessage,final AbstractProperty property);
@@ -578,5 +595,13 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
     public DeviceNamedCommandProperty getValidateAllErrorCommand() {
         return validateAllErrorCommand;
+    }
+
+    public LineInterface getPrimaryLine() {
+        return primaryLine;
+    }
+
+    public LineInterface getSecondaryLine() {
+        return secondaryLine;
     }
 }

@@ -146,6 +146,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     abstract protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException,LineTimeOutException;
     abstract protected byte[] reciveMessage(long timeOut,long bytesForReadCount, LineParameters params) throws LineErrorException,LineTimeOutException;
+    abstract protected boolean setLineParameters(LineParameters params);
     abstract protected void onStartTrunsaction();
     abstract protected void onEndTrunsaction();
 
@@ -162,10 +163,12 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     @Override
     public void sendMessage(UUID uuid,final byte[] data, LineParameters params) throws TrunsactionError,LineErrorException,LineTimeOutException {
         if(!isTrunsactionActive(uuid)){
-            long starttime=System.currentTimeMillis();
-            sendMessage(data, params);
-            perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION,System.currentTimeMillis()-starttime);
-            writemonitor(data,null);
+            if(setLineParameters(params)) {
+                long starttime = System.currentTimeMillis();
+                sendMessage(data, params);
+                perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION, System.currentTimeMillis() - starttime);
+                writemonitor(data, null);
+            }
         } else {
             throw new TrunsactionError("Another transaction started!", TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
         }
@@ -194,11 +197,15 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     @Override
     public byte[] reciveMessage(UUID uuid,long timeOut,long bytesForReadCount, LineParameters params) throws TrunsactionError,LineTimeOutException,LineErrorException {
         if(!isTrunsactionActive(uuid)){
-            long starttime=System.currentTimeMillis();
-            final byte[] data=reciveMessage(timeOut,bytesForReadCount,params);
-            perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION,System.currentTimeMillis()-starttime);
-            readmonitor(data,null);
-            return data;
+            if(setLineParameters(params)) {
+                long starttime = System.currentTimeMillis();
+                final byte[] data = reciveMessage(timeOut, bytesForReadCount, params);
+                perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION, System.currentTimeMillis() - starttime);
+                readmonitor(data, null);
+                return data;
+            } else {
+                return null;
+            }
         } else {
             throw new TrunsactionError("Another transaction started!", TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
         }
@@ -206,6 +213,9 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     private CommunicationAnswer processRequest(final CommunicationProtocolRequest request){
         if(request!=null){
+            if(!setLineParameters(request.getParameters())){
+                CommunicationAnswer answ=new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.ERROR,null,"CAN`T SET LINE PARAMETERS",this,0,0);
+            }
             if(request.getPauseBeforeWrite()>0) {
                 CommunicationUtils.RealThreadPause(request.getPauseBeforeWrite());
                 perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.BEFORE_WRITE_PAUSE, request.getPauseBeforeWrite());
@@ -257,7 +267,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                                 CommunicationProtocolRequest request = requests.poll();
                                 if (request != null) {
                                     try {
-                                        System.out.println(request);
+                                        //System.out.println(request);
                                         if(!lineSelectorExecute(request.getParameters())){
                                             if(request.isCanTry()){
                                                 CommunicationProtocolRequest newRequest = CommunicationProtocolRequest.createReuest(request);

@@ -21,7 +21,7 @@ public class SystemEllement implements ElementInterface{
         if(name==null || name.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
         this.name = name;
         this.uuid=UUID.randomUUID();
-        this.centralSystem=centralSystem!=null?centralSystem:new MessageSubSystemSimple();
+        this.centralSystem=centralSystem!=null?centralSystem.getNewChild():new MessageSubSystemSimple();
         this.description="";
     }
 
@@ -30,14 +30,14 @@ public class SystemEllement implements ElementInterface{
         this.name = name;
         this.description = description;
         this.uuid=UUID.randomUUID();
-        this.centralSystem=centralSystem!=null?centralSystem:new MessageSubSystemSimple();
+        this.centralSystem=centralSystem!=null?centralSystem.getNewChild():new MessageSubSystemSimple();
     }
 
 
     public SystemEllement(String name, String uuid,String description,MessageSubSystem centralSystem) {
         this.name = name;
         this.description = description;
-        this.centralSystem=centralSystem!=null?centralSystem:new MessageSubSystemSimple();
+        this.centralSystem=centralSystem!=null?centralSystem.getNewChild():new MessageSubSystemSimple();
         if(name==null || name.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
         UUID uid=null;
         if(uuid!=null) uid = UUID.fromString(uuid);

@@ -20,7 +20,7 @@ public class MessageSubSystemMultiDipatch extends MessageSubSystemSimple{
         for(ElementEventListener listener:eventDispatcher){
             service.submit(() -> {
                 try {
-                    System.out.println("EVENT "+type+" FROM "+element +" PARAM: "+param);
+                    //System.out.println("EVENT "+type+" FROM "+element +" PARAM: "+param);
                     listener.elementEvent(element, type, param);
                 }catch (Exception ex){
                     System.err.println(ex.toString());
@@ -33,7 +33,7 @@ public class MessageSubSystemMultiDipatch extends MessageSubSystemSimple{
         for(ValueChangeListener listener:calueEventDispatcher){
             service.submit(() -> {
                 try {
-                    System.out.println("EVENT FROM" + event);
+                    //System.out.println("EVENT FROM" + event);
                     listener.valueChange(event);
                 } catch (Exception ex) {
                     System.err.println(ex.toString());
@@ -43,9 +43,19 @@ public class MessageSubSystemMultiDipatch extends MessageSubSystemSimple{
         }
     }
 
+
     @Override
-    public void destroy() {
-        super.destroy();
+    public void destroyService() {
         service.shutdownNow();
     }
+
+    public static void destroyAllService() {
+        service.shutdownNow();
+    }
+
+    @Override
+    public MessageSubSystem getNewChild() {
+        return new MessageSubSystemMultiDipatch();
+    }
+
 }

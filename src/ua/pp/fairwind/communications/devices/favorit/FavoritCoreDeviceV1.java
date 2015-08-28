@@ -4,6 +4,7 @@ import ua.pp.fairwind.communications.devices.AbstractDevice;
 import ua.pp.fairwind.communications.devices.DeviceInterface;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
@@ -45,6 +46,13 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
     private final SoftLongProperty lineSelect;
     private final SoftShortProperty configdeviceAddress;
     private final SoftShortProperty configdeviceSpeed;
+
+    private final DeviceNamedCommandProperty readAllAI;
+    private final DeviceNamedCommandProperty readAllAO;
+    private final DeviceNamedCommandProperty readAllDI;
+    private final DeviceNamedCommandProperty readAllDO;
+    private final DeviceNamedCommandProperty writeAllAO;
+    private final DeviceNamedCommandProperty writeAllDO;
 
 
 
@@ -111,6 +119,19 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
         configdeviceSpeed=new SoftShortProperty("CONFIGURE_DEVICE_SPEED",getUiidFromMap("CONFIGURE_DEVICE_SPEED",uuids),"Установка скорости устройства",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         configdeviceSpeed.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 002L);
 
+        readAllDI=formCommandNameProperty("READ_ALL_DI", "READ ALL DIGITAL INs", centralSystem, uuids);
+        readAllDO=formCommandNameProperty("READ_ALL_DO", "READ ALL DIGITAL OUTs", centralSystem, uuids);
+        readAllAI=formCommandNameProperty("READ_ALL_AI", "READ ALL ANALOG INs", centralSystem, uuids);
+        readAllAO=formCommandNameProperty("READ_ALL_AO", "READ ALL ANALOG OUTs", centralSystem, uuids);
+        writeAllDO=formCommandNameProperty("WRITE_ALL_DO", "WRITE ALL DIGITAL OUTs", centralSystem, uuids);
+        writeAllAO=formCommandNameProperty("WRITE_ALL_AO", "WRITE ALL ANALOG OUTs", centralSystem, uuids);
+        addCommands(readAllAI);
+        addCommands(readAllAO);
+        addCommands(readAllDI);
+        addCommands(readAllDO);
+        addCommands(writeAllAO);
+        addCommands(writeAllDO);
+
         addPropertys(configdeviceAddress);
         addPropertys(configdeviceSpeed);
         addPropertys(analogInChanelN1);
@@ -166,13 +187,88 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
             if(position>=0){
                 SoftLongProperty devaddress=deviceAddress;
                 long deviceaddress=devaddress.getValue();
-                long property_address=(long)property.getAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS);
+                Long p_address=(Long)property.getAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS);
+                long property_address=p_address!=null?(long)p_address:-1;
                 int responseAddress=CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 3])<<4;
                 responseAddress+=CommunicationUtils.getHalfByteFromChar((char)recivedMessage[position+4]);
                 if(responseAddress==deviceaddress){
                     int command=CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 5])<<4;
                     command+=CommunicationUtils.getHalfByteFromChar((char)recivedMessage[position+6]);
                     switch (command){
+                        case 0x00:
+                        case 0x01:
+                        case 0x02:
+                        case 0x03:{
+                            if (position + 13 > recivedMessage.length) {
+                                fireEvent(EventType.ERROR, "READ PROPERTY FAIL RESPONSE TOO SMALL! ");
+                                return false;
+                            }
+                            if ((recivedMessage[position + 9] != 'O' || recivedMessage[position + 10] != 'K')){
+                                return false;
+                            } else {
+                                int crc = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 9]) << 4;
+                                crc += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 10]);
+                                int calcCRC = calculateCrc(recivedMessage, position, 15);
+                                if (crc != calcCRC) {
+                                    fireEvent(EventType.ERROR, "READ PROPERTY FAIL: CRC ERROR!");
+                                    return false;
+                                } else {
+                                    if(property_address==2 && (command==0x02||command==0x03)){
+                                        int val = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 7]) << 4;
+                                        val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 8]);
+                                        if(val<0)val=0;
+                                        if(val>4)val=4;
+                                        ((ValueProperty<Short>)property).setHardWareInternalValue((short)val);
+                                        return true;
+                                    }
+                                    if(property_address==1 && (command==0x00||command==0x01)){
+                                        int val = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 7]) << 4;
+                                        val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 8]);
+                                        if(val<0)val=0;
+                                        if(val>255)val=255;
+                                        ((ValueProperty<Short>)property).setHardWareInternalValue((short)val);
+                                        return true;
+                                    }
+                                    return false;
+                                }
+                            }
+                        }
+                        case 0x10:
+                        case 0x20:{
+                            int propertyNum = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 7]) << 4;
+                            propertyNum += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 8]);
+                            if (position + 29 > recivedMessage.length) {
+                                fireEvent(EventType.ERROR, "READ PROPERTY FAIL RESPONSE TOO SMALL! ");
+                                return false;
+                            }
+                            if (propertyNum != 0 || recivedMessage[position + 25] != 'O' || recivedMessage[position + 26] != 'K') {
+                                return false;
+                            } else {
+                                int crc = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 27]) << 4;
+                                crc += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 28]);
+                                int calcCRC = calculateCrc(recivedMessage, position, 27);
+                                if (crc != calcCRC) {
+                                    fireEvent(EventType.ERROR, "READ PROPERTY FAIL: CRC ERROR!");
+                                    return false;
+                                } else {
+                                    int pos=position+9;
+                                    if(command==0x10) {
+                                        pos = getAOValue(recivedMessage, pos, analogInChanelN1);
+                                        pos = getAOValue(recivedMessage, pos, analogInChanelN2);
+                                        pos = getAOValue(recivedMessage, pos, analogInChanelN3);
+                                        pos = getAOValue(recivedMessage, pos, analogInChanelN4);
+                                        if(pos!=(position+9+4*4))return false;
+                                    } else {
+                                        pos = getAOValue(recivedMessage, pos, analogOutChanelN1);
+                                        pos = getAOValue(recivedMessage, pos, analogOutChanelN2);
+                                        pos = getAOValue(recivedMessage, pos, analogOutChanelN3);
+                                        pos = getAOValue(recivedMessage, pos, analogOutChanelN4);
+                                        if(pos!=(position+9+4*4))return false;
+                                    }
+                                    return true;
+                                }
+                            }
+                        }
                         case 0x11:
                         case 0x21:{
                             int propertyNum = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 7]) << 4;
@@ -193,7 +289,6 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
                                 } else {
                                     /*
                                     int value=CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 9])<<4;
-
                                     value+=CommunicationUtils.getHalfByteFromChar((char)recivedMessage[position+10]);
                                      */
                                     int val = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 9]) << 12;
@@ -206,6 +301,46 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
                                 }
                             }
 
+                        }
+                        case 0x30:
+                        case 0x40:{
+                            int propertyNum = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 7]) << 4;
+                            propertyNum += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 8]);
+                            if (position + 25 > recivedMessage.length) {
+                                fireEvent(EventType.ERROR, "READ ALL PROPERTY FAIL RESPONSE TOO SMALL! ");
+                                return false;
+                            }
+                            if (propertyNum != 0 || recivedMessage[position + 21] != 'O' || recivedMessage[position + 22] != 'K') {
+                                return false;
+                            } else {
+                                int crc = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 23]) << 4;
+                                crc += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 24]);
+                                int calcCRC = calculateCrc(recivedMessage, position, 23);
+                                if (crc != calcCRC) {
+                                    fireEvent(EventType.ERROR, "READ ALL PROPERTY FAIL: CRC ERROR!");
+                                    return false;
+                                } else {
+                                    int pos=position+9;
+                                    if(command==0x10) {
+                                        pos = getDOValue(recivedMessage, pos, digitalInChanelN1);
+                                        pos = getDOValue(recivedMessage, pos, digitalInChanelN2);
+                                        pos = getDOValue(recivedMessage, pos, digitalInChanelN3);
+                                        pos = getDOValue(recivedMessage, pos, digitalInChanelN4);
+                                        pos = getDOValue(recivedMessage, pos, digitalInChanelN5);
+                                        pos = getDOValue(recivedMessage, pos, digitalInChanelN6);
+                                        if(pos!=(position+9+2*6))return false;
+                                    } else {
+                                        pos = getDOValue(recivedMessage, pos, digitalOutChanelN1);
+                                        pos = getDOValue(recivedMessage, pos, digitalOutChanelN2);
+                                        pos = getDOValue(recivedMessage, pos, digitalOutChanelN3);
+                                        pos = getDOValue(recivedMessage, pos, digitalOutChanelN4);
+                                        pos = getDOValue(recivedMessage, pos, digitalOutChanelN5);
+                                        pos = getDOValue(recivedMessage, pos, digitalOutChanelN6);
+                                        if(pos!=(position+9+2*6))return false;
+                                    }
+                                    return true;
+                                }
+                            }
                         }
                         case 0x31:
                         case 0x41: {
@@ -237,6 +372,26 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
                                     }
                                     return true;
                                 }
+                            }
+                        }
+                        case 0x22:
+                        case 0x42: {
+                            if (position + 13 > recivedMessage.length) {
+                                fireEvent(EventType.ERROR, "WRITE ALL PROPERTY FAIL RESPONSE TOO SMALL! ");
+                                return false;
+                            }
+                            if (recivedMessage[position + 9] != 'O' || recivedMessage[position + 10] != 'K') {
+                                fireEvent(EventType.ERROR, "WRITE ALL PROPERTY FAIL: " + property);
+                                return false;
+                            } else {
+                                int crc = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 11]) << 4;
+                                crc += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 12]);
+                                int calcCRC = calculateCrc(recivedMessage, position, 11);
+                                if (crc != calcCRC) {
+                                    fireEvent(EventType.ERROR, "WRITE ALL PROPERTY FAIL: CRC ERROR!");
+                                    return false;
+                                }
+                                return true;
                             }
                         }
                         case 0x23:
@@ -339,7 +494,7 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
                 buffer[4]=CommunicationUtils.getHalfByteHex(deviceaddress&0xF);
                 //-----------------------------------------
                 buffer[5]='0';
-                buffer[6]=(property_address%10)==0?(byte)'0':(byte)'1';
+                buffer[6]=(property_address%10)==1?(byte)'0':(byte)'2';
                 buffer[7]='F';
                 buffer[8]='F';
                 //-----------------------------------------
@@ -474,7 +629,7 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
         switch (property_command){
             case 0:{
                 //WRITE CONFIG
-                SoftLongProperty out=(SoftLongProperty)property;
+                SoftShortProperty out=(SoftShortProperty)property;
                 long val=out.getValue()==null?0:out.getValue();
                 byte[] buffer=new byte[12];
                 buffer[0]='V';
@@ -484,12 +639,14 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
                 buffer[4]=CommunicationUtils.getHalfByteHex(deviceaddress&0xF);
                 //-----------------------------------------
                 buffer[5]='0';
-                if(property_address==1){
+                if(property_address==2){
                     if(val<1) val=1;
                     if(val>4) val=4;
-                    buffer[6]='0';
+                    buffer[6]='3';
                 } else {
-                    buffer[6]='2';
+                    if(val<0)val=0;
+                    if(val>255)val=255;
+                    buffer[6]='1';
                 }
 
                 buffer[7]=CommunicationUtils.getHalfByteHex((val>>4)&0xF);
@@ -593,6 +750,227 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
         }
     }
 
+    private int setDOValue(byte[] buffer,int pos,SoftBoolProperty property){
+        if(property==null)return pos;
+        boolean value=property.getValue()==null?false:property.getValue();
+        buffer[pos++]='0';
+        buffer[pos++]=(byte)(value?'1':'0');
+        return pos;
+    }
+
+    private int setAOValue(byte[] buffer,int pos,SoftFloatProperty property){
+        if(property==null)return pos;
+        float value=property.getValue()==null?0:property.getValue();
+        int val=(int)((value/10.0f)*0x3FF);
+
+        if(value>10)val=0x3FF;
+        if(val<0)val=0;
+        buffer[pos++]=CommunicationUtils.getHalfByteHex((val>>12)&0xF);
+        buffer[pos++]=CommunicationUtils.getHalfByteHex((val>>8)&0xF);
+        buffer[pos++]=CommunicationUtils.getHalfByteHex((val>>4)&0xF);
+        buffer[pos++]=CommunicationUtils.getHalfByteHex(val&0xF);
+        return pos;
+    }
+
+    private int getDOValue(byte[] buffer,int pos,SoftBoolProperty property){
+        if(property==null)return pos;
+        pos++;
+        if (buffer[pos++] == '1') {
+            (property).setHardWareInternalValue(true);
+        } else {
+            (property).setHardWareInternalValue(false);
+        }
+        return pos;
+    }
+
+    private int getAOValue(byte[] recivedMessage,int pos,SoftFloatProperty property){
+        if(property==null)return pos;
+        int val = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[pos++]) << 12;
+        val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[pos++]) << 8;
+        val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[pos++]) << 4;
+        val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[pos++]);
+        float value = (val*10.0f) / 0x3FF ;
+        ((ValueProperty<Float>) property).setHardWareInternalValue(value);
+        return pos;
+    }
+
+    @Override
+    protected RequestInformation processCommandRequest(String commandName) {
+        SoftLongProperty devaddress=deviceAddress;
+        long deviceaddress=devaddress.getValue();
+        switch (commandName){
+            case "READ_ALL_DI":{
+                //READ AI
+                byte[] buffer = new byte[13];
+                buffer[0] = 'V';
+                buffer[1] = 'N';
+                buffer[2] = 'T';
+                buffer[3] = CommunicationUtils.getHalfByteHex((deviceaddress & 0xF0) >> 4);
+                buffer[4] = CommunicationUtils.getHalfByteHex(deviceaddress & 0xF);
+                //-----------------------------------------
+                buffer[5] = '3';
+                buffer[6] = '0';
+                buffer[7] = '0';
+                buffer[8] = '0';
+                buffer[9] = 'F';
+                buffer[10] = 'F';
+                //-----------------------------------------
+                int sum = 0;
+                for (int i = 0; i < buffer.length - 2; i++) {
+                    sum += buffer[i];
+                }
+                buffer[buffer.length - 2] = CommunicationUtils.getHalfByteHex((sum & 0xF0) >> 4);
+                buffer[buffer.length - 1] = CommunicationUtils.getHalfByteHex(sum & 0xF);
+                return new RequestInformation(buffer, 25);
+            }
+            case "READ_ALL_AI": {
+                //READ AI
+                byte[] buffer = new byte[13];
+                buffer[0] = 'V';
+                buffer[1] = 'N';
+                buffer[2] = 'T';
+                buffer[3] = CommunicationUtils.getHalfByteHex((deviceaddress & 0xF0) >> 4);
+                buffer[4] = CommunicationUtils.getHalfByteHex(deviceaddress & 0xF);
+                //-----------------------------------------
+                buffer[5] = '1';
+                buffer[6] = '0';
+                buffer[7] = '0';
+                buffer[8] = '0';
+                buffer[9] = 'F';
+                buffer[10] = 'F';
+                //-----------------------------------------
+                int sum = 0;
+                for (int i = 0; i < buffer.length - 2; i++) {
+                    sum += buffer[i];
+                }
+                buffer[buffer.length - 2] = CommunicationUtils.getHalfByteHex((sum & 0xF0) >> 4);
+                buffer[buffer.length - 1] = CommunicationUtils.getHalfByteHex(sum & 0xF);
+                return new RequestInformation(buffer, 29);
+            }
+            case "READ_ALL_DO":{
+                //READ AI
+                byte[] buffer = new byte[13];
+                buffer[0] = 'V';
+                buffer[1] = 'N';
+                buffer[2] = 'T';
+                buffer[3] = CommunicationUtils.getHalfByteHex((deviceaddress & 0xF0) >> 4);
+                buffer[4] = CommunicationUtils.getHalfByteHex(deviceaddress & 0xF);
+                //-----------------------------------------
+                buffer[5] = '4';
+                buffer[6] = '0';
+                buffer[7] = '0';
+                buffer[8] = '0';
+                buffer[9] = 'F';
+                buffer[10] = 'F';
+                //-----------------------------------------
+                int sum = 0;
+                for (int i = 0; i < buffer.length - 2; i++) {
+                    sum += buffer[i];
+                }
+                buffer[buffer.length - 2] = CommunicationUtils.getHalfByteHex((sum & 0xF0) >> 4);
+                buffer[buffer.length - 1] = CommunicationUtils.getHalfByteHex(sum & 0xF);
+                return new RequestInformation(buffer, 25);
+            }
+            case "READ_ALL_AO":{
+                //READ AI
+                byte[] buffer = new byte[13];
+                buffer[0] = 'V';
+                buffer[1] = 'N';
+                buffer[2] = 'T';
+                buffer[3] = CommunicationUtils.getHalfByteHex((deviceaddress & 0xF0) >> 4);
+                buffer[4] = CommunicationUtils.getHalfByteHex(deviceaddress & 0xF);
+                //-----------------------------------------
+                buffer[5] = '2';
+                buffer[6] = '0';
+                buffer[7] = '0';
+                buffer[8] = '0';
+                buffer[9] = 'F';
+                buffer[10] = 'F';
+                //-----------------------------------------
+                int sum = 0;
+                for (int i = 0; i < buffer.length - 2; i++) {
+                    sum += buffer[i];
+                }
+                buffer[buffer.length - 2] = CommunicationUtils.getHalfByteHex((sum & 0xF0) >> 4);
+                buffer[buffer.length - 1] = CommunicationUtils.getHalfByteHex(sum & 0xF);
+                return new RequestInformation(buffer, 29);
+            }
+            case "WRITE_ALL_DO":{
+                //WRITE DO
+                byte[] buffer = new byte[25];
+                buffer[0] = 'V';
+                buffer[1] = 'N';
+                buffer[2] = 'T';
+                buffer[3] = CommunicationUtils.getHalfByteHex((deviceaddress & 0xF0) >> 4);
+                buffer[4] = CommunicationUtils.getHalfByteHex(deviceaddress & 0xF);
+                //-----------------------------------------
+                buffer[5] = '4';
+                buffer[6] = '2';
+                buffer[7] = '0';
+                buffer[8] = '0';
+                int index=9;
+                index=setDOValue(buffer,index,digitalOutChanelN1);
+                index=setDOValue(buffer,index,digitalOutChanelN2);
+                index=setDOValue(buffer,index,digitalOutChanelN3);
+                index=setDOValue(buffer,index,digitalOutChanelN4);
+                index=setDOValue(buffer,index,digitalOutChanelN5);
+                index=setDOValue(buffer,index,digitalOutChanelN6);
+                //index=9+2*6=21
+                buffer[index++] = 'F';
+                buffer[index++] = 'F';
+                //-----------------------------------------
+                int sum = 0;
+                for (int i = 0; i < buffer.length - 2; i++) {
+                    sum += buffer[i];
+                }
+                buffer[buffer.length - 2] = CommunicationUtils.getHalfByteHex((sum & 0xF0) >> 4);
+                buffer[buffer.length - 1] = CommunicationUtils.getHalfByteHex(sum & 0xF);
+                return new RequestInformation(buffer, 13);
+            }
+            case "WRITE_ALL_AO":{
+                //WRITE AI
+                byte[] buffer = new byte[29];//25+2+2=29
+                buffer[0] = 'V';
+                buffer[1] = 'N';
+                buffer[2] = 'T';
+                buffer[3] = CommunicationUtils.getHalfByteHex((deviceaddress & 0xF0) >> 4);
+                buffer[4] = CommunicationUtils.getHalfByteHex(deviceaddress & 0xF);
+                //-----------------------------------------
+                buffer[5] = '2';
+                buffer[6] = '2';
+                buffer[7] = '0';
+                buffer[8] = '0';
+                int index=9;
+                index=setAOValue(buffer, index, analogOutChanelN1);
+                index=setAOValue(buffer, index, analogOutChanelN2);
+                index=setAOValue(buffer, index, analogOutChanelN3);
+                index=setAOValue(buffer, index, analogOutChanelN4);
+                //index=9+4*4=16+9=25
+                buffer[index++] = 'F';
+                buffer[index++] = 'F';
+                //-----------------------------------------
+                int sum = 0;
+                for (int i = 0; i < buffer.length - 2; i++) {
+                    sum += buffer[i];
+                }
+                buffer[buffer.length - 2] = CommunicationUtils.getHalfByteHex((sum & 0xF0) >> 4);
+                buffer[buffer.length - 1] = CommunicationUtils.getHalfByteHex(sum & 0xF);
+                return new RequestInformation(buffer, 13);
+
+            }
+            case "REFRESH":{
+                lineSelect.readValueRequest();
+                readAllAI.activate();
+                readAllAO.activate();
+                readAllDI.activate();
+                readAllDO.activate();
+                ((ValueProperty<Boolean>)refreshCommand).setInternalValue(false);
+                return null;
+            }
+        }
+        return super.processCommandRequest(commandName);
+    }
+
     public SoftBoolProperty getDigitalInChanelN1() {
         return digitalInChanelN1;
     }
@@ -688,5 +1066,29 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
     @Override
     public String getDeviceType() {
         return "Favorit Ventil Device";
+    }
+
+    public DeviceNamedCommandProperty getReadAllAI() {
+        return readAllAI;
+    }
+
+    public DeviceNamedCommandProperty getReadAllAO() {
+        return readAllAO;
+    }
+
+    public DeviceNamedCommandProperty getReadAllDI() {
+        return readAllDI;
+    }
+
+    public DeviceNamedCommandProperty getReadAllDO() {
+        return readAllDO;
+    }
+
+    public DeviceNamedCommandProperty getWriteAllAO() {
+        return writeAllAO;
+    }
+
+    public DeviceNamedCommandProperty getWriteAllDO() {
+        return writeAllDO;
     }
 }

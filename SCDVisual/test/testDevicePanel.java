@@ -1,3 +1,4 @@
+import images.MyResourceLoader;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
@@ -8,7 +9,8 @@ import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.timeaction.PropertyTimer;
-import ua.pp.fairwind.javafx.panels.DeviceConfigPanel;
+import ua.pp.fairwind.javafx.panels.LineInfoBar;
+import ua.pp.fairwind.javafx.panels.SimpleDeviceConfigPanel;
 import ua.pp.fairwind.javafx.panels.devices.FavoritPanel;
 
 /**
@@ -24,23 +26,30 @@ public class testDevicePanel extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        MyResourceLoader resloader=new MyResourceLoader();
         VBox vbox=new VBox();
-        line=new SerialLine("com5","SERIAL PORT #5",null,"RS LINE PORT",ms,5000);
+        vbox.setId("mainPanel");
+        line=new SerialLine("com6","SERIAL PORT #6",null,"RS LINE PORT",ms,5000);
         line.setPerformanceMonitor(true);
-        line.addEventListener((elemnt,event,params)->{
-            if(event== EventType.PERFORMANCE){
-                if(params!=null)System.out.println(params);
+        line.addEventListener((elemnt, event, params) -> {
+            if (event == EventType.PERFORMANCE) {
+                if (params != null) System.out.println(params);
             }
         });
+        LineInfoBar infoBar=new LineInfoBar(50,line);
         FavoritCoreDeviceV1 dev=new FavoritCoreDeviceV1(1,"Favorit Ventil V1",null,"Test Description",ms);
         dev.setPrimerayLine(line);
         //dev.getErrorCommunicationStatus().setInternalValue(true);
-        DeviceConfigPanel panel=new DeviceConfigPanel(dev);
+        //DeviceConfigPanel panel=new DeviceConfigPanel(dev);
+        SimpleDeviceConfigPanel panel=new SimpleDeviceConfigPanel(dev);
         FavoritPanel panel2=new FavoritPanel(dev);
         vbox.getChildren().add(panel);
         vbox.getChildren().add(panel2);
+        vbox.getChildren().add(infoBar);
         Scene scene=new Scene(vbox);
-        vbox.setPrefHeight(970);
+        scene.getStylesheets().addAll(resloader.getExternalResourceURILink("application.css"));
+
+        //vbox.setPrefHeight(970);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -49,7 +58,7 @@ public class testDevicePanel extends Application {
     public void stop() throws Exception {
         if(line!=null)line.destroy();
         PropertyTimer.stopWork();
-        ms.destroy();
+        MessageSubSystemMultiDipatch.destroyAllService();
         super.stop();
     }
 }

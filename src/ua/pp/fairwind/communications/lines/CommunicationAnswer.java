@@ -75,10 +75,11 @@ public class CommunicationAnswer {
         return request.isExistReservLine();
     }
 
-    public void sendOverReservLine() {
+    public boolean sendOverReservLine() {
         if(request!=null){
-            request.sendRequestOverReservLine();
+            return request.sendRequestOverReservLine();
         }
+        return false;
     }
 
     @Override

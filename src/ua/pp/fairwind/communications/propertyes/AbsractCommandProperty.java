@@ -2,6 +2,7 @@ package ua.pp.fairwind.communications.propertyes;
 
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OPERATION_TYPE;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
 
@@ -59,5 +60,23 @@ abstract public class AbsractCommandProperty extends SoftBoolProperty {
     @Override
     protected void unbindPropertyForWrite() {
         fireEvent(EventType.PARSE_ERROR,"Binding not supported for command!!!");
+    }
+
+    @Override
+    public void endRequest(OPERATION_TYPE type) {
+        if(type==OPERATION_TYPE.COMMAND_EXECUTE)setInternalValue(false);
+        super.endRequest(type);
+    }
+
+    @Override
+    public void invalidate() {
+        setInternalValue(false);
+        super.invalidate();
+    }
+
+    @Override
+    public void rollback() {
+        setInternalValue(false);
+        super.invalidate();
     }
 }

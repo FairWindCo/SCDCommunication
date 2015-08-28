@@ -18,4 +18,6 @@ public interface MessageSubSystem {
         void removeChangeEventListener(ValueChangeListener<?> listener);
         void clear();
         void destroy();
+        void destroyService();
+        MessageSubSystem getNewChild();
 }
