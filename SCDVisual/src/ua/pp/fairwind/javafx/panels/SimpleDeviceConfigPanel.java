@@ -2,6 +2,7 @@ package ua.pp.fairwind.javafx.panels;
 
 import eu.hansolo.enzo.canvasled.Led;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -70,9 +71,11 @@ public class SimpleDeviceConfigPanel extends HBox {
 
     private void initControl(){
         GridPane grid = new GridPane();
+        setAlignment(Pos.TOP_CENTER);
         getChildren().add(grid);
         grid.setHgap(10);
         grid.setVgap(10);
+        grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(10, 10, 10, 10));
         int rowindex=0;
         grid.add(new Label(device.getDeviceType() + " : " + device.getName()), 0, rowindex++, 3, 1);

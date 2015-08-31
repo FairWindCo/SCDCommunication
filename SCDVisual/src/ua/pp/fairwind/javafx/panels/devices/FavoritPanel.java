@@ -54,6 +54,7 @@ public class FavoritPanel extends HBox {
 
     public static Pane createDeviceStatusPane(AbstractDevice device){
         final GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(15);
         grid.setPadding(new Insets(30, 20, 10, 10));
@@ -98,6 +99,7 @@ public class FavoritPanel extends HBox {
         initTab.setClosable(false);
         Platform.runLater(() -> {
             final GridPane grid = new GridPane();
+            grid.setAlignment(Pos.CENTER);
             grid.setId("formGrid");
             grid.setHgap(10);
             grid.setVgap(10);
@@ -120,6 +122,7 @@ public class FavoritPanel extends HBox {
         initTab.setClosable(false);
         Platform.runLater(() -> {
             final GridPane grid = new GridPane();
+            grid.setAlignment(Pos.CENTER);
             grid.setId("formGrid");
             grid.setHgap(10);
             grid.setVgap(10);
@@ -143,6 +146,7 @@ public class FavoritPanel extends HBox {
         initTab.setClosable(false);
         Platform.runLater(() -> {
             final GridPane grid = new GridPane();
+            grid.setAlignment(Pos.CENTER);
             grid.setId("formGrid");
             grid.setHgap(10);
             grid.setVgap(10);
@@ -164,6 +168,7 @@ public class FavoritPanel extends HBox {
         initTab.setClosable(false);
         Platform.runLater(() -> {
             final GridPane grid = new GridPane();
+            grid.setAlignment(Pos.CENTER);
             grid.setId("formGrid");
             grid.setHgap(10);
             grid.setVgap(10);
@@ -184,6 +189,7 @@ public class FavoritPanel extends HBox {
         initTab.setClosable(false);
         Platform.runLater(() -> {
             final GridPane grid = new GridPane();
+            grid.setAlignment(Pos.CENTER);
             grid.setId("formGrid");
             grid.setHgap(10);
             grid.setVgap(10);
@@ -196,6 +202,7 @@ public class FavoritPanel extends HBox {
 
     private Pane createImidiatlyLineSelectPane(){
         final GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
         grid.setId("formGrid");
         grid.setStyle("-fx-border-width: 1; -fx-border-style: solid;");
         grid.setHgap(10);
@@ -212,6 +219,7 @@ public class FavoritPanel extends HBox {
         initTab.setClosable(false);
         Platform.runLater(() -> {
             final GridPane grid = new GridPane();
+            grid.setAlignment(Pos.CENTER);
             grid.setId("formGrid");
             grid.setHgap(10);
             grid.setVgap(10);
@@ -298,6 +306,7 @@ public class FavoritPanel extends HBox {
     }
 
     private void initControl(){
+        setAlignment(Pos.CENTER);
         intiStatusPane();
         intiDIPane();
         intiDOPane();
@@ -306,6 +315,7 @@ public class FavoritPanel extends HBox {
         intiLinePane();
         intiDeviceConfigPane();
         VBox hbox=new VBox();
+        hbox.setAlignment(Pos.CENTER);
         tabs.setPrefHeight(430);
         hbox.setSpacing(10);
         hbox.setStyle("-fx-border-width: 1; -fx-border-style: solid;");

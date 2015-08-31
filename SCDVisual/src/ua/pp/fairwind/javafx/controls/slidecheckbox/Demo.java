@@ -23,6 +23,7 @@ public class Demo extends Application {
         SlideCheckBox checkBox = new SlideCheckBox();
         //checkBox.setScaleX(0.5);
         //checkBox.setScaleY(0.5);
+        //checkBox.setPrefHeight(300);
 
         StackPane pane = new StackPane();
         pane.getChildren().addAll(checkBox);

@@ -4,13 +4,13 @@ import javafx.application.Platform;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.lines.AbstractLine;
 import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.lines.performance.PerformanceMonitorEventData;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
-import ua.pp.fairwind.javafx.guiElements.ButtonPanel;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Created by Сергей on 24.09.2014.
  */
-public class LineInfoBar extends ButtonPanel {
+public class LineInfoBar extends Pane {
     private final Label time=new Label();
     private final Label level=new Label();
     private final Label object=new Label();
@@ -48,11 +48,12 @@ public class LineInfoBar extends ButtonPanel {
     private final GridPane pane=new GridPane();
 
     public LineInfoBar(double height,LineInterface line) {
-        super(height);
+        setPrefHeight(height);
+        setId("buttomPanel");
         setupLine(line);
-        enableStatistic.onActionProperty().set(value->{
-            if(this.line!=null && this.line instanceof AbstractLine){
-                ((AbstractLine)this.line).setPerformanceMonitor(enableStatistic.isSelected());
+        enableStatistic.onActionProperty().set(value -> {
+            if (this.line != null && this.line instanceof AbstractLine) {
+                ((AbstractLine) this.line).setPerformanceMonitor(enableStatistic.isSelected());
             }
         });
         pane.setHgap(10);
@@ -82,11 +83,12 @@ public class LineInfoBar extends ButtonPanel {
     }
 
     public LineInfoBar(double height, String id,AbstractLine line) {
-        super(height, id);
+        setId(id);
+        setPrefHeight(height);
         setupLine(line);
-        enableStatistic.onActionProperty().set(value->{
-            if(this.line!=null && this.line instanceof AbstractLine){
-                ((AbstractLine)this.line).setPerformanceMonitor(enableStatistic.isSelected());
+        enableStatistic.onActionProperty().set(value -> {
+            if (this.line != null && this.line instanceof AbstractLine) {
+                ((AbstractLine) this.line).setPerformanceMonitor(enableStatistic.isSelected());
             }
         });
         pane.setHgap(10);
@@ -103,9 +105,6 @@ public class LineInfoBar extends ButtonPanel {
         pane.setGridLinesVisible(true);
     }
 
-    @Override
-    protected void constructAdditionalElements() {
-    }
 
     private void updateInfo(ElementInterface element,EventType eventType,Object parameters){
             time.setText(LocalDateTime.now().format(formater));

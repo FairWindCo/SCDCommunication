@@ -1,5 +1,6 @@
 package ua.pp.fairwind.javafx.panels.devices;
 
+import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
@@ -54,8 +55,10 @@ public class FavoritComplexPanel extends BorderPane {
     }
 
     private void initControl(){
+
         setTop(devpanel);
         setCenter(panel);
+        setAlignment(panel, Pos.CENTER);
         VBox down=new VBox();
         down.getChildren().addAll(infoBarP, infoBarS);
 
