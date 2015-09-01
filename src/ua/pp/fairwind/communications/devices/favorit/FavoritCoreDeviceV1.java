@@ -3,6 +3,7 @@ package ua.pp.fairwind.communications.devices.favorit;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
 import ua.pp.fairwind.communications.devices.DeviceInterface;
 import ua.pp.fairwind.communications.devices.RequestInformation;
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
@@ -58,6 +59,18 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
 
     public FavoritCoreDeviceV1(long address, String name, String uuid, String description, MessageSubSystem centralSystem) {
         this(address, name, uuid, description, centralSystem, null);
+    }
+
+    public FavoritCoreDeviceV1(long address, String name, String uuid, String description, SystemElementDirectory centralSystem) {
+        this(address, name, uuid, description, centralSystem.getChileMessageSubsystems());
+        parentSystem.addElemnts(listOfPropertyes);
+        listOfCommands.stream().forEach(comand -> centralSystem.addElemnt(comand));
+    }
+
+    public static FavoritCoreDeviceV1 createFavoritCoreDiveceV1(long address, String name, String uuid, String description, SystemElementDirectory parentSystem){
+        FavoritCoreDeviceV1 property=new FavoritCoreDeviceV1(address, name, uuid, description, parentSystem);
+        parentSystem.addElemnt(property);
+        return property;
     }
 
     protected SoftBoolProperty formDIProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){

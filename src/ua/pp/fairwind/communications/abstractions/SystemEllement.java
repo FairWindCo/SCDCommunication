@@ -10,14 +10,14 @@ import java.util.UUID;
 /**
  * Created by FairWindCo on 30.06.2015.
  */
-public class SystemEllement implements ElementInterface{
+public abstract class SystemEllement implements ElementInterface{
     final private String name;
     final private UUID uuid;
     final protected MessageSubSystem centralSystem;
     final private String description;
     protected volatile boolean eventactive=true;
 
-    public SystemEllement(String name,MessageSubSystem centralSystem) {
+    protected SystemEllement(String name,MessageSubSystem centralSystem) {
         if(name==null || name.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
         this.name = name;
         this.uuid=UUID.randomUUID();
@@ -25,7 +25,7 @@ public class SystemEllement implements ElementInterface{
         this.description="";
     }
 
-    public SystemEllement(String name, String description,MessageSubSystem centralSystem) {
+    protected SystemEllement(String name, String description,MessageSubSystem centralSystem) {
         if(name==null || name.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
         this.name = name;
         this.description = description;
@@ -34,7 +34,7 @@ public class SystemEllement implements ElementInterface{
     }
 
 
-    public SystemEllement(String name, String uuid,String description,MessageSubSystem centralSystem) {
+    protected SystemEllement(String name, String uuid,String description,MessageSubSystem centralSystem) {
         this.name = name;
         this.description = description;
         this.centralSystem=centralSystem!=null?centralSystem.getNewChild():new MessageSubSystemSimple();

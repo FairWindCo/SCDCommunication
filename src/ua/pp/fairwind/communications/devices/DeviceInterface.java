@@ -14,7 +14,6 @@ public interface DeviceInterface extends ElementInterface{
     String[] getCommandsName();
     String[] getPropertyesName();
     AbsractCommandProperty getCommand(String name);
-    AbstractProperty getPropertyInfo(String name);
     AbstractProperty getProperty(String name);
 
     void processRecivedMessage(CommunicationAnswer answer);

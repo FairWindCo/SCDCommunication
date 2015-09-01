@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 
@@ -46,5 +47,29 @@ public class SoftCharProperty extends ValueProperty<Character> {
 
     public SoftCharProperty(String name, Character value) {
         super(name, value);
+    }
+
+    public static SoftCharProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Character value){
+        SoftCharProperty property=new SoftCharProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftCharProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
+        SoftCharProperty property=new SoftCharProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftCharProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
+        SoftCharProperty property=new SoftCharProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftCharProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
+        SoftCharProperty property=new SoftCharProperty(name,null,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
     }
 }

@@ -34,56 +34,56 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
 
     //КОНСТРУКТОР
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
+    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, description, centralSystem);
         this.softOperationType = softOperationType;
     }
 
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType,T value) {
+    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType,T value) {
         super(name, uuid, description, centralSystem);
         this.softOperationType = softOperationType;
         this.value.set(value);
     }
 
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
+    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
         super(name, uuid, description, centralSystem);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem,T value) {
+    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem,T value) {
         super(name, uuid, description, centralSystem);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);
     }
 
-    public ValueProperty(String name, String uuid, String description) {
+    protected ValueProperty(String name, String uuid, String description) {
         super(name, uuid, description, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    public ValueProperty(String name, String uuid, String description,T value) {
+    protected ValueProperty(String name, String uuid, String description,T value) {
         super(name, uuid, description, null);
         this.value.set(value);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    public ValueProperty(String name, String description) {
+    protected ValueProperty(String name, String description) {
         super(name, null, description, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    public ValueProperty(String name, String description,T value) {
+    protected ValueProperty(String name, String description,T value) {
         super(name, null, description, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);
     }
 
-    public ValueProperty(String name) {
+    protected ValueProperty(String name) {
         super(name, null, null, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    public ValueProperty(String name, T value) {
+    protected ValueProperty(String name, T value) {
         super(name, null, null, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);

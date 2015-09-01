@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
@@ -62,6 +63,32 @@ public class SoftShortProperty extends NumberProperty<Short> {
     public SoftShortProperty(String name, Short value) {
         super(name, value);
     }
+
+
+    public static SoftShortProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Short value){
+        SoftShortProperty property=new SoftShortProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftShortProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
+        SoftShortProperty property=new SoftShortProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftShortProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
+        SoftShortProperty property=new SoftShortProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftShortProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
+        SoftShortProperty property=new SoftShortProperty(name,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
 
     protected Short convertFromNumber(Number value){
         if(value!=null) return value.shortValue();return null;

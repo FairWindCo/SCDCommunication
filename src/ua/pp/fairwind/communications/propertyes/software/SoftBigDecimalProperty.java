@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
@@ -75,5 +76,29 @@ public class SoftBigDecimalProperty extends NumberProperty<BigDecimal> {
     protected BigDecimal convertFromString(String value, int radix) {
         if(value==null) return null;
         return new BigDecimal(value);
+    }
+
+    public static SoftBigDecimalProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, BigDecimal value){
+        SoftBigDecimalProperty property=new SoftBigDecimalProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftBigDecimalProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
+        SoftBigDecimalProperty property=new SoftBigDecimalProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftBigDecimalProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
+        SoftBigDecimalProperty property=new SoftBigDecimalProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftBigDecimalProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
+        SoftBigDecimalProperty property=new SoftBigDecimalProperty(name,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
     }
 }

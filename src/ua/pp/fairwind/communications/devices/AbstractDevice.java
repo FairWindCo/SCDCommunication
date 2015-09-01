@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.devices;
 
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.lines.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.CommunicationProtocolRequest;
 import ua.pp.fairwind.communications.lines.LineInterface;
@@ -51,6 +52,7 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
     protected volatile LineInterface primaryLine;
     protected volatile LineInterface secondaryLine;
     protected volatile LineParameters lineparams;
+    protected volatile SystemElementDirectory parentSystem;
 
     private final ElementEventListener changeListener=(element,type,param)->{
         if(element!=null && element instanceof ValueProperty) {
@@ -165,6 +167,14 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         cmds.add(validateErrorCommandLine2);
         cmds.add(validateAllErrorCommand);
         listOfCommands.addAll(cmds);
+        parentSystem=null;
+    }
+
+    protected AbstractDevice(long address,String name, String uuid, String description, SystemElementDirectory centralSystem) {
+        this(address,name, uuid, description, centralSystem.getChileMessageSubsystems());
+        parentSystem=centralSystem;
+        parentSystem.addElemnts(listOfPropertyes);
+        listOfCommands.stream().forEach(comand->centralSystem.addElemnt(comand));
     }
 
     protected void sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE reqType,byte[] buffer,long needReadByteCount,AbstractProperty property,boolean needRollBack){
@@ -390,18 +400,6 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         if(name!=null){
             try{
                 AbsractCommandProperty result=listOfCommands.parallelStream().filter(command->name.equals(command.getName())).findFirst().get();
-                return result;
-            } catch (NoSuchElementException ex){
-                return null;
-            }
-        } else return null;
-    }
-
-    @Override
-    public AbstractProperty getPropertyInfo(String name) {
-        if(name!=null){
-            try {
-                AbstractProperty result = listOfPropertyes.parallelStream().filter(command -> name.equals(command.getName())).findFirst().get();
                 return result;
             } catch (NoSuchElementException ex){
                 return null;

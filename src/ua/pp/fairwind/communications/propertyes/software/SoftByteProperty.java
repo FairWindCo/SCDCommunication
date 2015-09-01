@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
@@ -73,5 +74,29 @@ public class SoftByteProperty extends NumberProperty<Byte> {
     protected Byte convertFromString(String value, int radix) {
         if(value!=null) return Byte.parseByte(value,radix);
         return null;
+    }
+
+    public static SoftByteProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Byte value){
+        SoftByteProperty property=new SoftByteProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftByteProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
+        SoftByteProperty property=new SoftByteProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftByteProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
+        SoftByteProperty property=new SoftByteProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftByteProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
+        SoftByteProperty property=new SoftByteProperty(name,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
     }
 }

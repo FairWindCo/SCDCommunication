@@ -33,6 +33,20 @@ public class SerialLine extends AbstractLine {
         port=new SerialPort(comportName);
     }
 
+
+
+
+    @Override
+    synchronized protected void closeUsedResources() {
+        try {
+            if (port.isOpened()) {
+                port.closePort();
+            }
+        }catch (SerialPortException ex){
+            fireEvent(EventType.ERROR,ex.getLocalizedMessage());
+        }
+    }
+
     @Override
     synchronized protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException, LineTimeOutException {
         try {

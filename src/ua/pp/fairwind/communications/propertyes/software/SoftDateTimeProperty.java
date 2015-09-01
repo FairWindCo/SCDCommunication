@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.DatePropertyInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
@@ -100,5 +101,29 @@ public class SoftDateTimeProperty extends ValueProperty<Date> implements DatePro
     @Override
     public void unbindReadStringProperty() {
 
+    }
+
+    public static SoftDateTimeProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Date value){
+        SoftDateTimeProperty property=new SoftDateTimeProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftDateTimeProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
+        SoftDateTimeProperty property=new SoftDateTimeProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftDateTimeProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
+        SoftDateTimeProperty property=new SoftDateTimeProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftDateTimeProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
+        SoftDateTimeProperty property=new SoftDateTimeProperty(name,null,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
     }
 }

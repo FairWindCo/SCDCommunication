@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
@@ -113,12 +114,12 @@ public class SoftStringProperty extends ValueProperty<String> implements StringP
 
     @Override
     public void bindWriteNumberProperty(NumberProperty<?> property) {
-        bindPropertyForWrite((AbstractProperty)property, null, 10, 0, -1, false);
+        bindPropertyForWrite((AbstractProperty) property, null, 10, 0, -1, false);
     }
 
     @Override
     public void bindWriteNumberProperty(NumberProperty<?> property, String format) {
-        bindPropertyForWrite((AbstractProperty)property, format, 10, 0, -1, false);
+        bindPropertyForWrite((AbstractProperty) property, format, 10, 0, -1, false);
     }
 
     public SoftStringProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
@@ -144,6 +145,30 @@ public class SoftStringProperty extends ValueProperty<String> implements StringP
 
     public SoftStringProperty(String name, String uuid, String description, String value) {
         super(name, uuid, description, value);
+    }
+
+    public static SoftStringProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, String value){
+        SoftStringProperty property=new SoftStringProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftStringProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
+        SoftStringProperty property=new SoftStringProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftStringProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
+        SoftStringProperty property=new SoftStringProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftStringProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
+        SoftStringProperty property=new SoftStringProperty(name,null,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
     }
 
 }

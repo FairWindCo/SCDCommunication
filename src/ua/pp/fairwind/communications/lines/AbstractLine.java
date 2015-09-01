@@ -43,11 +43,10 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     private final ExecutorService service= Executors.newCachedThreadPool();
     private volatile LineSelectDevice lineSelector;
 
-    public AbstractLine(String name, String uuid, String description, MessageSubSystem centralSystem,long maxTransactionTime) {
+    protected AbstractLine(String name, String uuid, String description, MessageSubSystem centralSystem,long maxTransactionTime) {
         super(name, uuid, description, centralSystem);
         this.maxTransactionTime = maxTransactionTime;
     }
-
 
     synchronized private boolean isTrunsactionActive(){
         if(transuction.get()){
@@ -149,6 +148,8 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     abstract protected boolean setLineParameters(LineParameters params);
     abstract protected void onStartTrunsaction();
     abstract protected void onEndTrunsaction();
+    abstract protected void closeUsedResources();
+
 
     @Override
     synchronized public void endTransaction(UUID uuid) {
@@ -320,6 +321,8 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                                     transuction.set(false);
                                     trunsactionUUID=null;
                                 }
+                            } else {
+                                closeUsedResources();
                             }
                         }
                     }
@@ -367,9 +370,10 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     @Override
     public void destroy(){
-        super.destroy();
+        closeUsedResources();
         threadRunned.set(false);
         service.shutdown();
+        super.destroy();
     }
 
     public boolean isPerformanceMonitor() {

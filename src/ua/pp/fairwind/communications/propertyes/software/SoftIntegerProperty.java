@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
@@ -71,5 +72,29 @@ public class SoftIntegerProperty extends NumberProperty<Integer> {
     protected Integer convertFromString(String value, int radix) {
         if(value!=null) return Integer.parseInt(value,radix);
         return null;
+    }
+
+    public static SoftIntegerProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Integer value){
+        SoftIntegerProperty property=new SoftIntegerProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftIntegerProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
+        SoftIntegerProperty property=new SoftIntegerProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftIntegerProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
+        SoftIntegerProperty property=new SoftIntegerProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftIntegerProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
+        SoftIntegerProperty property=new SoftIntegerProperty(name,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
     }
 }
