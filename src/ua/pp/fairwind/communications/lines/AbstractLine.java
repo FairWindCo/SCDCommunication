@@ -129,6 +129,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                     return selectData.compare(readed);
                 }
             } catch (LineErrorException|LineTimeOutException ex){
+                fireEvent(EventType.ERROR,ex.getLocalizedMessage());
                 return false;
             }
         }
@@ -137,8 +138,11 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     private boolean lineSelectorExecute(LineParameters params){
         if(lineSelector!=null) {
-            Object selectedline = params.getLineParameter("SUB_LINE_NUMBER");
-            return lineSelectorExecute(selectedline);
+            Object lineChange=params.getLineParameter("NEED_LINE_CHANGE");
+            if(lineChange!=null && lineChange instanceof Boolean && (Boolean)lineChange) {
+                Object selectedline = params.getLineParameter("SUB_LINE_NUMBER");
+                return lineSelectorExecute(selectedline);
+            } else return true;
         }
         return true;
     }
@@ -384,4 +388,11 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         performanceMonitor.set(state);
     }
 
+    public LineSelectDevice getLineSelector() {
+        return lineSelector;
+    }
+
+    public void setLineSelector(LineSelectDevice lineSelector) {
+        this.lineSelector = lineSelector;
+    }
 }

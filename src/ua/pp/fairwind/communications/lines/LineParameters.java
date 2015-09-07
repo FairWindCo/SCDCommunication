@@ -15,7 +15,9 @@ public interface LineParameters {
         RS_RTS,
         RS_FLOWCONTROL,
         TIME_OUT,
-        SUB_LINE_NUMBER
+        SUB_LINE_NUMBER,
+        RS_PURGE_TX,
+        RS_PURGE_RX
     }
 
     Object getLineParameter(String name);

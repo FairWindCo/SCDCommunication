@@ -55,7 +55,9 @@ public class SerialLine extends AbstractLine {
                 setLineParameters(params);
             }
             //setLineParameters(params);
+            //port.purgePort(SerialPort.PURGE_RXCLEAR|SerialPort.PURGE_RXCLEAR);
             port.writeBytes(data);
+
         }catch (SerialPortException portexception){
             try {
                 if(port.isOpened())port.closePort();
@@ -77,6 +79,7 @@ public class SerialLine extends AbstractLine {
             //setLineParameters(params);
             long starttime=System.currentTimeMillis();
             if(bytesForReadCount<=0){
+                System.out.println("READ TIMEOUT"+timeOut);
                 CommunicationUtils.RealThreadPause(timeOut);
                 int recivedByteCount=port.getInputBufferBytesCount();
                 if(recivedByteCount>=Math.abs(bytesForReadCount)){
@@ -86,7 +89,7 @@ public class SerialLine extends AbstractLine {
                 }
             } else {
                 try {
-
+                    System.out.println("READ TIMEOUT"+timeOut);
                     //System.out.print("START READ:"+ new Date(starttime)+" LENGTH:");
                     byte[] buf=port.readBytes((int) bytesForReadCount, (int) timeOut);
                     //System.out.println(System.currentTimeMillis()-starttime);
@@ -116,12 +119,21 @@ public class SerialLine extends AbstractLine {
             int flowcontrol = (int) (parameters.getLineParameter("RS_FLOWCONTROL")!=null?parameters.getLineParameter("RS_FLOWCONTROL"):SerialPort.FLOWCONTROL_NONE);
             boolean dtr = (boolean) (parameters.getLineParameter("RS_DTR")!=null?parameters.getLineParameter("RS_DTR"):false);
             boolean rts = (boolean) (parameters.getLineParameter("RS_RTS")!=null?parameters.getLineParameter("RS_RTS"):false);
+            boolean clearRX = (boolean) (parameters.getLineParameter("RS_PURGE_RX")!=null?parameters.getLineParameter("RS_PURGE_RX"):false);
+            boolean clearTX = (boolean) (parameters.getLineParameter("RS_PURGE_TX")!=null?parameters.getLineParameter("RS_PURGE_TX"):false);
             try {
                 if (!port.isOpened()) port.openPort();
                 port.setParams(speed, databit, stopbit, parity, rts, dtr);
                 port.setFlowControlMode(flowcontrol);
+                if(clearTX){
+                    port.purgePort(SerialPort.PURGE_TXABORT|SerialPort.PURGE_TXCLEAR);
+                }
+                if(clearRX){
+                    port.purgePort(SerialPort.PURGE_RXABORT|SerialPort.PURGE_RXCLEAR);
+                }
                 return true;
             } catch (SerialPortException e){
+                System.out.println(e.getLocalizedMessage());
                 fireEvent(EventType.ERROR,e.getLocalizedMessage());
                 return false;
             }
@@ -132,6 +144,7 @@ public class SerialLine extends AbstractLine {
                 port.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
                 return true;
             }catch (SerialPortException e){
+
                 fireEvent(EventType.ERROR,e);
                 return false;
             }

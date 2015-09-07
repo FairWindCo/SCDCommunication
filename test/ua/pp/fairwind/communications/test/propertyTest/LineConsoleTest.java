@@ -6,6 +6,7 @@ import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
 import ua.pp.fairwind.communications.lines.SerialLine;
+import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OperationTrunsactionReadWriteSeparate;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
@@ -23,7 +24,7 @@ public class LineConsoleTest {
             }
         });
         //line.addWriteMonitoringDevice(ldev);
-        FavoritCoreDeviceV1 fav=new FavoritCoreDeviceV1(1,"Ventil",null,"Ventil plate",null);
+        FavoritCoreDeviceV1 fav=new FavoritCoreDeviceV1(1,"Ventil",null,"Ventil plate",(MessageSubSystem)null);
         fav.setReadTimeOut(150);
 
         fav.setPrimerayLine(line);

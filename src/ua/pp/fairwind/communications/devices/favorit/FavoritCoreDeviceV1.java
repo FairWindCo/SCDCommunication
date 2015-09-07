@@ -1,7 +1,9 @@
 package ua.pp.fairwind.communications.devices.favorit;
 
+import ua.pp.fairwind.communications.abstractions.LineSelector;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
 import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.devices.LineSelectDevice;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 /**
  * Created by Сергей on 09.07.2015.
  */
-public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterface {
+public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterface,LineSelectDevice {
     private final SoftBoolProperty digitalInChanelN1;
     private final SoftBoolProperty digitalInChanelN2;
     private final SoftBoolProperty digitalInChanelN3;
@@ -186,6 +188,61 @@ public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterfa
         } else{
             return -1;
         }
+    }
+
+    @Override
+    public LineSelector selectLine(Object needLine) {
+        if(needLine!=null && needLine instanceof Number){
+            long deviceaddress=deviceAddress.getValue();
+            long val=((Number)needLine).longValue();
+            if(val>4)val=4;
+            if(val<0)val=0;
+
+            byte[] buffer=new byte[13];
+            buffer[0]='V';
+            buffer[1]='N';
+            buffer[2]='T';
+            buffer[3]=CommunicationUtils.getHalfByteHex((deviceaddress & 0xF0) >> 4);
+            buffer[4]=CommunicationUtils.getHalfByteHex(deviceaddress&0xF);
+            //-----------------------------------------
+            buffer[5]='5';
+            buffer[6]='1';
+            buffer[7]=CommunicationUtils.getHalfByteHex((val>>4)&0xF);
+            buffer[8]=CommunicationUtils.getHalfByteHex(val&0xF);
+            buffer[9]='F';
+            buffer[10]='F';
+            //-----------------------------------------
+            int sum=0;
+            for(int i=0;i<buffer.length-2;i++){sum+=buffer[i];}
+            buffer[buffer.length-2]=CommunicationUtils.getHalfByteHex((sum & 0xF0) >> 4);
+            buffer[buffer.length-1]=CommunicationUtils.getHalfByteHex(sum&0xF);
+
+            byte[] buffer_test=new byte[13];
+            buffer_test[0]='V';
+            buffer_test[1]='N';
+            buffer_test[2]='T';
+            buffer_test[3]=CommunicationUtils.getHalfByteHex((deviceaddress & 0xF0) >> 4);
+            buffer_test[4]=CommunicationUtils.getHalfByteHex(deviceaddress&0xF);
+            //-----------------------------------------
+            buffer_test[5]='5';
+            buffer_test[6]='1';
+            buffer_test[7]=CommunicationUtils.getHalfByteHex((val>>4)&0xF);
+            buffer_test[8]=CommunicationUtils.getHalfByteHex(val&0xF);
+            buffer_test[9]='O';
+            buffer_test[10]='K';
+            //-----------------------------------------
+            sum=0;
+            for(int i=0;i<buffer.length-2;i++){sum+=buffer_test[i];}
+            buffer_test[buffer_test.length-2]=CommunicationUtils.getHalfByteHex((sum & 0xF0) >> 4);
+            buffer_test[buffer_test.length-1]=CommunicationUtils.getHalfByteHex(sum&0xF);
+            Long devTO=((ValueProperty<Long>)deviceTimeOut).getInternalValue();
+            Long devTOP=((ValueProperty<Long>)deviceTimeOutPause).getInternalValue();
+            Long devWP=((ValueProperty<Long>)deviceWritePause).getInternalValue();
+            long maxRetry=retryCount.getInternalValue();
+            LineSelector ls=new LineSelector(buffer,buffer_test,lineparams,devTO+lineSelect.getPropertyTimeOutRead(),devTOP+lineSelect.getPropertyPauseBeforeRead(),devWP+lineSelect.getPropertyPauseBeforeWrite());
+            return ls;
+        }
+        return null;
     }
 
     protected boolean processRecivedMessage(final byte[] recivedMessage,final byte[] sendMessage,final AbstractProperty property){
