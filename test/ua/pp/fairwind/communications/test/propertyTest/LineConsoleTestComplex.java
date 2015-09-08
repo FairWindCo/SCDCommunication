@@ -2,6 +2,7 @@ package ua.pp.fairwind.communications.test.propertyTest;
 
 import jssc.SerialPort;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
+import ua.pp.fairwind.communications.devices.Baumer.Encoder;
 import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
@@ -15,11 +16,13 @@ import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
+import java.io.IOException;
+
 /**
  * Created by Сергей on 17.08.2015.
  */
-public class LineConsoleTestStep {
-    public static void main(String[] args) {
+public class LineConsoleTestComplex {
+    public static void main(String[] args) throws IOException {
         MessageSubSystem ms=new MessageSubSystemMultiDipatch();
         SerialLine line=new SerialLine("com9","RS232 Line#1",null,"Serial port",ms,5000);
         FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L,"Favirit Ventel",null,"",ms);
@@ -32,6 +35,23 @@ public class LineConsoleTestStep {
         line.addWriteMonitoringDevice(ldev);
         line.addReadMonitoringDevice(ldev);
         line.setLineSelector(favorit);
+        favorit.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_2, SerialPort.PARITY_NONE, SerialPort.FLOWCONTROL_NONE));
+        Encoder encoder=new Encoder(3L,"Encoder",null,"Baumer Encoder",ms,null);
+        encoder.setPauseBeforeRead(100L);
+        encoder.setReadTimeOut(3500L);
+        encoder.setPrimerayLine(line);
+        encoder.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE, SerialPort.FLOWCONTROL_NONE, 4));
+
+        encoder.addEventListener(new ElementEventListener() {
+            @Override
+            public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
+                System.out.println(typeEvent + " : " + element.toString() + " - " + params);
+            }
+        });
+
+        encoder.getSteps().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
+        encoder.getRevolution().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
+
 
         StepDriver motorDrive=new StepDriver(1L,"StepDrive",null,"PanDrive Step Motor",ms,null);
         motorDrive.setReadTimeOut(250);
@@ -52,22 +72,29 @@ public class LineConsoleTestStep {
         motorDrive.getSpeed().readValueRequest();
         motorDrive.getSpeed().setValue((short) 1000);
         motorDrive.getPosition().readValueRequest();
-        motorDrive.getRotateRight().activate();
-
-        CommunicationUtils.RealThreadPause(5000);
-        motorDrive.getMotorStop().activate();
-        CommunicationUtils.RealThreadPause(1000);
         motorDrive.getStep().setValue(1000L);
-        motorDrive.getStep().writeValueRequest();
-        //motorDrive.getStepRight().activate();
+        CommunicationUtils.RealThreadPause(1000);
+        do {
+            //encoder.getSteps().readValueRequest();
+            motorDrive.getSpeed().setValue((short) 1000);
+            motorDrive.getRotateRight().activate();
+            CommunicationUtils.RealThreadPause(5000);
+            motorDrive.getMotorStop().activate();
+            CommunicationUtils.RealThreadPause(1000);
+            motorDrive.getStep().writeValueRequest();
+            //motorDrive.getStepRight().activate();
+            encoder.getSteps().readValueRequest();
+            CommunicationUtils.RealThreadPause(1000);
+        }while (System.in.available()==0);
+        line.destroy();
+        MessageSubSystemMultiDipatch.destroyAllService();
+        System.out.println("ALL FINISH");
+        //fav.getLineSelect().setRequestTrunsaction(new OperationTrunsactionReadWriteSeparate());
 
-
-        //motorDrive.getLineSelect().setRequestTrunsaction(new OperationTrunsactionReadWriteSeparate());
-
-        /*motorDrive.getRate().setPropertyTimeOutReadAddon(50);
-        motorDrive.getRate().setValue(5.6f);
-        motorDrive.getRate().writeValueRequest();
-        motorDrive.getRate().readValueRequest();*/
+        /*fav.getRate().setPropertyTimeOutReadAddon(50);
+        fav.getRate().setValue(5.6f);
+        fav.getRate().writeValueRequest();
+        fav.getRate().readValueRequest();*/
 
     }
 }

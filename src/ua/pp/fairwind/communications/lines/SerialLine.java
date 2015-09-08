@@ -52,8 +52,8 @@ public class SerialLine extends AbstractLine {
         try {
             if (!port.isOpened()) {
                 port.openPort();
-                setLineParameters(params);
             }
+            setLineParameters(params);
             //setLineParameters(params);
             //port.purgePort(SerialPort.PURGE_RXCLEAR|SerialPort.PURGE_RXCLEAR);
             port.writeBytes(data);

@@ -31,13 +31,13 @@ public class StepDriver extends AbstractDevice {
 
     public StepDriver(long address, String name, String uuid, String description, MessageSubSystem centralSystem, HashMap<String, String> uuids) {
         super(address, name, uuid, description, centralSystem, uuids);
-        speed=new SoftShortProperty("SPEED",getUiidFromMap("SPEED",uuids),"Номер измерения",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+        speed=new SoftShortProperty("SPEED",getUiidFromMap("SPEED",uuids),"Скорость вращения",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         speed.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 001L);
         position=new SoftLongProperty("POSITION",getUiidFromMap("POSITION",uuids),"Номер измерения",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         position.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 002L);
-        statusCode=new SoftShortProperty("POSITION",getUiidFromMap("POSITION",uuids),"Номер измерения",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+        statusCode=new SoftShortProperty("STATUSCODE",getUiidFromMap("STATUSCODE",uuids),"Статус последней команды",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         statusCode.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 003L);
-        step=new SoftLongProperty("POSITION",getUiidFromMap("POSITION",uuids),"Номер измерения",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        step=new SoftLongProperty("STEP",getUiidFromMap("STEP",uuids),"Шаг",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         step.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 004L);
         rotateLeft=formCommandNameProperty("ROL", "ROTATE LEFT", centralSystem, uuids);
         rotateRight=formCommandNameProperty("ROR", "ROTATE RIGHT", centralSystem, uuids);
@@ -78,7 +78,7 @@ public class StepDriver extends AbstractDevice {
             for(int i=0;i<recivedMessage.length-8;i++) {
                 if(recivedMessage[i+1]==(deviceaddress &0xFF)){
                     int crc=calculateCRC(recivedMessage, i, 8);
-                    int bcrc=recivedMessage[i+8];
+                    int bcrc=(recivedMessage[i+8])&0xFF;
                     if(crc==bcrc) {
                         byte ststus=recivedMessage[i+2];
                         //byte module=recivedMessage[i+1];
@@ -87,10 +87,10 @@ public class StepDriver extends AbstractDevice {
                         switch (commandNum){
                             case 6:{
                                 long value=0;
-                                value+=((recivedMessage[i+4]<<24)&0xFF);
-                                value+=((recivedMessage[i+4]<<16)&0xFF);
-                                value+=((recivedMessage[i+4]<< 8)&0xFF);
-                                value+=((recivedMessage[i+4]    )&0xFF);
+                                value|=((recivedMessage[i+4]&0xFF)<<24);
+                                value|=((recivedMessage[i+5]&0xFF)<<16);
+                                value|=((recivedMessage[i+6]&0xFF)<< 8);
+                                value|=((recivedMessage[i+7]&0xFF)    );
                                 if(property==speed){
                                     speed.setHardWareInternalValue((short)(value&0xFFFF));
                                 } else
@@ -185,7 +185,7 @@ public class StepDriver extends AbstractDevice {
         } else if(property==speed) {
             long deviceaddress = deviceAddress.getValue();
             long pos=speed.getValue()!=null?speed.getValue():0;
-            //SET RELATIVE POSITION
+            //SET SPEED
             byte[] buffer = new byte[9];
             buffer[0] = (byte) (deviceaddress & 0xFF);
             buffer[1] = (byte) 0x05;

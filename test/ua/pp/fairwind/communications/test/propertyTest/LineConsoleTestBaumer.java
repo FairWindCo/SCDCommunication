@@ -1,11 +1,13 @@
 package ua.pp.fairwind.communications.test.propertyTest;
 
+import jssc.SerialPort;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.devices.Baumer.Encoder;
 import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
+import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
 import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
@@ -18,7 +20,7 @@ import ua.pp.fairwind.communications.propertyes.event.EventType;
 public class LineConsoleTestBaumer {
     public static void main(String[] args) {
         MessageSubSystem ms=new MessageSubSystemMultiDipatch();
-        SerialLine line=new SerialLine("com6","RS232 Line#1",null,"Serial port",ms,5000);
+        SerialLine line=new SerialLine("com9","RS232 Line#1",null,"Serial port",ms,5000);
         FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L,"Favirit Ventel",null,"",ms);
         LoggingDevice ldev=new LoggingDevice(0x000, "Logging Device", null, "", null, new LineMonitorInterface() {
             @Override
@@ -34,6 +36,7 @@ public class LineConsoleTestBaumer {
         fav.setPauseBeforeRead(100L);
         fav.setReadTimeOut(3500L);
         fav.setPrimerayLine(line);
+        fav.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE, SerialPort.FLOWCONTROL_NONE,4));
 
         fav.addEventListener(new ElementEventListener() {
             @Override

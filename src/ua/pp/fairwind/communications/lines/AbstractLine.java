@@ -119,6 +119,8 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         if(!selectData.isAlreadySelect()){
             try{
                 byte[] send=selectData.getSendbuffer();
+                System.out.print("WRITED:");
+                CommunicationUtils.showBuffer(send);
                 if(send!=null && send.length>0) {
                     selectData.getPauseBeforeWrite();
                     sendMessage(send, selectData.getLineParam());
@@ -126,6 +128,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                 if(selectData.neededByteCount()>0) {
                     selectData.getPauseBeforeRead();
                     byte[] readed = reciveMessage(selectData.getReadTimeOut(),selectData.neededByteCount(),selectData.getLineParam());
+                    System.out.print("READED:");CommunicationUtils.showBuffer(readed);
                     return selectData.compare(readed);
                 }
             } catch (LineErrorException|LineTimeOutException ex){
@@ -141,6 +144,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             Object lineChange=params.getLineParameter("NEED_LINE_CHANGE");
             if(lineChange!=null && lineChange instanceof Boolean && (Boolean)lineChange) {
                 Object selectedline = params.getLineParameter("SUB_LINE_NUMBER");
+                System.out.println("NEED SELECT LINE:"+lineChange+" NEW LINE:"+selectedline);
                 return lineSelectorExecute(selectedline);
             } else return true;
         }

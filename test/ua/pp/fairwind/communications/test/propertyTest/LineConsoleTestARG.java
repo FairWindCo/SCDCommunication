@@ -18,7 +18,7 @@ import ua.pp.fairwind.communications.propertyes.event.EventType;
 public class LineConsoleTestARG {
     public static void main(String[] args) {
         MessageSubSystem ms=new MessageSubSystemMultiDipatch();
-        SerialLine line=new SerialLine("com6","RS232 Line#1",null,"Serial port",ms,5000);
+        SerialLine line=new SerialLine("com9","RS232 Line#1",null,"Serial port",ms,5000);
         FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L,"Favirit Ventel",null,"",ms);
         LoggingDevice ldev=new LoggingDevice(0x000, "Logging Device", null, "", null, new LineMonitorInterface() {
             @Override
@@ -31,7 +31,7 @@ public class LineConsoleTestARG {
         line.setLineSelector(favorit);
 
         ArgMicroDevice fav=new ArgMicroDevice(1L,"ARG",null,"ARG Micro",ms,null);
-        fav.setReadTimeOut(250);
+        fav.setReadTimeOut(1050);
         fav.setPrimerayLine(line);
 
         fav.addEventListener(new ElementEventListener() {
