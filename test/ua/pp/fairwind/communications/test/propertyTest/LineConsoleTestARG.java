@@ -32,7 +32,7 @@ public class LineConsoleTestARG {
         line.addReadMonitoringDevice(ldev);
         line.setLineSelector(favorit);
 
-        ArgMicroDevice argMicro=new ArgMicroDevice(1L,"ARG",null,"ARG Micro",ms,null);
+        ArgMicroDevice argMicro=new ArgMicroDevice(10L,"ARG",null,"ARG Micro",ms,null);
         argMicro.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE,
                 SerialPort.FLOWCONTROL_NONE,4));
         argMicro.setReadTimeOut(1050);

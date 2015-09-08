@@ -29,8 +29,8 @@ public class LineConsoleTestStep {
                 System.out.println(event);
             }
         });
-        line.addWriteMonitoringDevice(ldev);
-        line.addReadMonitoringDevice(ldev);
+        //line.addWriteMonitoringDevice(ldev);
+        //line.addReadMonitoringDevice(ldev);
         line.setLineSelector(favorit);
 
         StepDriver motorDrive=new StepDriver(1L,"StepDrive",null,"PanDrive Step Motor",ms,null);
@@ -48,6 +48,9 @@ public class LineConsoleTestStep {
         motorDrive.getPosition().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
         motorDrive.getStatusCode().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
         //motorDrive.getPosition().readValueRequest();
+
+        motorDrive.getTickTimer().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
+        motorDrive.getTickTimer().readValueRequest();
 
         motorDrive.getSpeed().readValueRequest();
         motorDrive.getSpeed().setValue((short) 1000);
