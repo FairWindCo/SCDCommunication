@@ -364,9 +364,15 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
 
 
-    static protected String getUiidFromMap(String name,HashMap<String,String> uuids){
+    static protected String getUiidFromMap(String deviceName,String name,HashMap<String,String> uuids){
+        name=deviceName+":"+name;
         if(name==null || uuids==null) return null;
         return uuids.get(name);
+    }
+
+    protected String getUiidFromMap(String name,HashMap<String,String> uuids){
+        if(name==null || uuids==null) return null;
+        return getUiidFromMap(getName(),name,uuids);
     }
 
     protected void addCommands(DeviceNamedCommandProperty commands){
@@ -601,5 +607,17 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
     public LineInterface getSecondaryLine() {
         return secondaryLine;
+    }
+
+    @Override
+    public AbsractCommandProperty[] getCommands() {
+        if(listOfCommands==null || listOfCommands.size()==0) return null;
+        return listOfCommands.toArray(new AbsractCommandProperty[listOfCommands.size()]);
+    }
+
+    @Override
+    public AbstractProperty[] getPropertys() {
+        if(listOfPropertyes==null || listOfPropertyes.size()==0) return null;
+        return listOfPropertyes.toArray(new AbstractProperty[listOfPropertyes.size()]);
     }
 }

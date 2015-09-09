@@ -1,5 +1,3 @@
-package ua.pp.fairwind.communications;
-
 import images.MyResourceLoader;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -47,15 +45,15 @@ public class testComplexPanDriveFXPanel extends Application {
         scene.getStylesheets().addAll(resloader.getExternalResourceURILink("application.css"));
 
         //vbox.setPrefHeight(970);
-        primaryStage.setTitle("UTILITY FAVORIT VENTIL");
+        primaryStage.setTitle("UTILITY PAN DRIVE");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
     @Override
     public void stop() throws Exception {
-        if(lines!=null)lines.stream().forEach(line->line.destroy());
         PropertyTimer.stopWork();
+        if(lines!=null)lines.stream().forEach(line->line.destroy());
         ms.destroyService();
         super.stop();
     }

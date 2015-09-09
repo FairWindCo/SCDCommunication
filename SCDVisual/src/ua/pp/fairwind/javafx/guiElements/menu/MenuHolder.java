@@ -1,34 +1,22 @@
 package ua.pp.fairwind.javafx.guiElements.menu;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.stage.Modality;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MenuHolder implements EventHandler<ActionEvent>{
 	private ArrayList<MenuConfigElements> menus=new ArrayList<>();
 	private ArrayList<Menu> visualMenu=null;
 	final private MenuExecutor executor;
 	boolean fomr=false;
-	private final EventHandler<Event> onMenuShow=new EventHandler<Event>() {
 
-		@Override
-		public void handle(Event event) {
-			if(executor!=null && event.getSource() instanceof MenuItem){
-				MenuItem mitem=(MenuItem) event.getSource();
-				if(mitem.getUserData() instanceof MenuConfigElements){
-					//System.out.println("menu: "+mitem.getText());
-					executor.menuExecutor((MenuConfigElements) mitem.getUserData());
-				}
-			}			
-		}
-	};
 	
 	
 	public MenuHolder(MenuExecutor executor,boolean formStandartMenu) {
@@ -40,12 +28,12 @@ public class MenuHolder implements EventHandler<ActionEvent>{
 	}
 
 	protected void formStandartMenu(){
-		MenuConfigElements quit=new MenuConfigElements("Выход","exit");
+		MenuConfigElements quit=new MenuConfigElementsExitAction("Выход");
 		//MenuConfigElements view=new MenuConfigElements("view1",new SimpleView());
 		//MenuConfigElements view2=new MenuConfigElements("view2",new TreeViewWindow("test",new TreeMenuHolder(executor,true)));
 		//MenuConfigElements file=new MenuConfigElements("����","",null,view,view2,quit);
 		MenuConfigElements file=new MenuConfigElements("Файл","",null,quit);
-		MenuConfigElements about=new MenuConfigElements("О программе","showdialog",new SimpleView("about..."));
+		MenuConfigElements about=new MenuConfigElementsForm("О программе", Modality.NONE,new SimpleView("about..."));
 		MenuConfigElements help=new MenuConfigElements("Помощь","",null,about);
 		
 		menus.add(file);
@@ -96,9 +84,6 @@ public class MenuHolder implements EventHandler<ActionEvent>{
 				}
 				
 			} else {
-				if(topLevel){					
-					curent.setOnMenuValidation(onMenuShow);
-				}
 				curent.setOnAction(this);
 			}
 			return curent;

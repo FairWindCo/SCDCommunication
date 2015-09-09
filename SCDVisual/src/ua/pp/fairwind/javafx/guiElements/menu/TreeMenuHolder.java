@@ -1,14 +1,15 @@
 package ua.pp.fairwind.javafx.guiElements.menu;
 
-import java.util.ArrayList;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
+
+import java.util.ArrayList;
 
 public class TreeMenuHolder implements EventHandler<MouseEvent>{
 	private ArrayList<MenuConfigElements> menus=new ArrayList<>();
@@ -26,10 +27,10 @@ public class TreeMenuHolder implements EventHandler<MouseEvent>{
 	}
 
 	protected void formStandartMenu(){
-		MenuConfigElements quit=new MenuConfigElements("�����","exit");
-		MenuConfigElements view=new MenuConfigElements("view",new SimpleView());
+		MenuConfigElements quit=new MenuConfigElementsExitAction("�����");
+		MenuConfigElements view=new MenuConfigElementsForm("view",new SimpleView());
 		MenuConfigElements file=new MenuConfigElements("����","",null,view,quit);
-		MenuConfigElements about=new MenuConfigElements("� ���������","showdialog",new SimpleView("about..."));
+		MenuConfigElements about=new MenuConfigElementsForm("� ���������", Modality.NONE,new SimpleView("about..."));
 		MenuConfigElements help=new MenuConfigElements("������","",null,about);
 		
 		menus.add(file);

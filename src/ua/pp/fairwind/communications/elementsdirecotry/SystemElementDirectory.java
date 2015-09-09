@@ -7,7 +7,9 @@ import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
+import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -68,9 +70,32 @@ public class SystemElementDirectory extends SystemEllement{
         }
     }
 
+    public void addElemnts(LineInterface... elements){
+        for(LineInterface property:elements){
+            addElemnt(property);
+        }
+    }
+
+    public void addLines(List<LineInterface> elements){
+        for(LineInterface property:elements){
+            addElemnt(property);
+        }
+    }
+
+
     public void addElemnt(DeviceInterface element){
-        elements.put(element.getUUID(), element);
-        devices.put(element.getUUID(), element);
+        if(element!=null) {
+            elements.put(element.getUUID(), element);
+            devices.put(element.getUUID(), element);
+            AbstractProperty[] propertyes=element.getPropertys();
+            AbstractProperty[] commands=element.getCommands();
+            if(propertyes!=null){
+                for(AbstractProperty property:propertyes)addElemnt(property);
+            }
+            if(commands!=null){
+                for(AbstractProperty command:commands)addElemnt(command);
+            }
+        }
     }
 
     public void addElemnt(LineInterface element){
@@ -152,5 +177,62 @@ public class SystemElementDirectory extends SystemEllement{
         centralSystem.destroy();
     }
 
+    public Collection<LineInterface> getAllLines(){
+        return lines.values();
+    }
 
+    public Collection<DeviceInterface> getAllDevices(){
+        return devices.values();
+    }
+
+    public void setAllEventListener(ElementEventListener listener){
+        elements.values().forEach(element -> element.addEventListener(listener));
+    }
+
+    public void setAllLinesEventListener(ElementEventListener listener){
+        lines.values().forEach(element -> element.addEventListener(listener));
+    }
+
+    public void setAllDevicesEventListener(ElementEventListener listener){
+        devices.values().forEach(element -> element.addEventListener(listener));
+    }
+
+    public void setAllPropertyesEventListener(ElementEventListener listener){
+        propertyes.values().forEach(element -> element.addEventListener(listener));
+    }
+
+    public void removeAllEventListener(ElementEventListener listener){
+        elements.values().forEach(element -> element.removeEventListener(listener));
+    }
+
+    public void removeAllLinesEventListener(ElementEventListener listener){
+        lines.values().forEach(element -> element.removeEventListener(listener));
+    }
+
+    public void removeAllDevicesEventListener(ElementEventListener listener){
+        devices.values().forEach(element -> element.removeEventListener(listener));
+    }
+
+    public void removeAllPropertyesEventListener(ElementEventListener listener){
+        propertyes.values().forEach(element -> element.removeEventListener(listener));
+    }
+
+    public void setMonitoringToAllLines(DeviceInterface monitoringDevice){
+        lines.values().forEach(element -> {
+            element.addReadMonitoringDevice(monitoringDevice);
+            element.addWriteMonitoringDevice(monitoringDevice);
+        });
+    }
+
+    public void setReadMonitoringToAllLines(DeviceInterface monitoringDevice){
+        lines.values().forEach(element -> {
+            element.addReadMonitoringDevice(monitoringDevice);
+        });
+    }
+
+    public void setWriteMonitoringToAllLines(DeviceInterface monitoringDevice){
+        lines.values().forEach(element -> {
+            element.addWriteMonitoringDevice(monitoringDevice);
+        });
+    }
 }

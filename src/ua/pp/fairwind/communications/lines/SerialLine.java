@@ -4,6 +4,7 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 import jssc.SerialPortTimeoutException;
+import ua.pp.fairwind.communications.SCADASystem;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
@@ -24,6 +25,15 @@ public class SerialLine extends AbstractLine {
         if(portnames!=null){
             List<LineInterface> list=new ArrayList<>(portnames.length);
             for(String portName:portnames)list.add(new SerialLine(portName,portName,null,"RS 232 SERIAL PORT",centralSystem,maxTransactionTime));
+            return list;
+        }else return null;
+    }
+
+    public static List<LineInterface> getSerialLines(SCADASystem scadaSystem, long maxTransactionTime){
+        String[] portnames=SerialPortList.getPortNames();
+        if(portnames!=null){
+            List<LineInterface> list=new ArrayList<>(portnames.length);
+            for(String portName:portnames)list.add(new SerialLine(portName,portName,null,"RS 232 SERIAL PORT",scadaSystem.getChileMessageSubsystems(),maxTransactionTime));
             return list;
         }else return null;
     }
