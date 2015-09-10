@@ -36,8 +36,12 @@ public class SystemElementDirectory extends SystemEllement{
         super(name, null, description, new MessageSubSystemMultiDipatch());
     }
 
+    public MessageSubSystem getChileMessageSubsystems(UUID clientUUID){
+        return centralSystem.getNewChild(clientUUID);
+    }
+
     public MessageSubSystem getChileMessageSubsystems(){
-        return centralSystem.getNewChild();
+        return centralSystem;
     }
 
     public void addElemnt(ElementInterface element){

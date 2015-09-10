@@ -1,7 +1,7 @@
 package ua.pp.fairwind.communications.test.propertyTest;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
+import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
@@ -17,7 +17,7 @@ import ua.pp.fairwind.communications.propertyes.event.EventType;
 public class LineConsoleTest {
     public static void main(String[] args) {
         SerialLine line=new SerialLine("com5","RS232 Line#1",null,"Serial port",null,5000);
-        LoggingDevice ldev=new LoggingDevice(0x000, "Logging Device", null, "", null, new LineMonitorInterface() {
+        LoggingDevice ldev=new LoggingDevice("Logging Device", null, "", null, new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
@@ -53,12 +53,12 @@ public class LineConsoleTest {
         fav.getLineSelect().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
         fav.getLineSelect().setRequestTrunsaction(new OperationTrunsactionReadWriteSeparate());
 
-        fav.getDigitalOutChanelN1().setAdditionalInfo(FavoritCoreDeviceV1.IMIDIATLY_WRITE_FLAG, true);
-        fav.getDigitalOutChanelN2().setAdditionalInfo(FavoritCoreDeviceV1.IMIDIATLY_WRITE_FLAG, true);
-        fav.getDigitalOutChanelN3().setAdditionalInfo(FavoritCoreDeviceV1.IMIDIATLY_WRITE_FLAG, true);
-        fav.getDigitalOutChanelN4().setAdditionalInfo(FavoritCoreDeviceV1.IMIDIATLY_WRITE_FLAG, true);
-        fav.getDigitalOutChanelN5().setAdditionalInfo(FavoritCoreDeviceV1.IMIDIATLY_WRITE_FLAG, true);
-        fav.getDigitalOutChanelN6().setAdditionalInfo(FavoritCoreDeviceV1.IMIDIATLY_WRITE_FLAG, true);
+        fav.getDigitalOutChanelN1().setAdditionalInfo(FavoritCoreDeviceV1.IMMEDIATELY_WRITE_FLAG, true);
+        fav.getDigitalOutChanelN2().setAdditionalInfo(FavoritCoreDeviceV1.IMMEDIATELY_WRITE_FLAG, true);
+        fav.getDigitalOutChanelN3().setAdditionalInfo(FavoritCoreDeviceV1.IMMEDIATELY_WRITE_FLAG, true);
+        fav.getDigitalOutChanelN4().setAdditionalInfo(FavoritCoreDeviceV1.IMMEDIATELY_WRITE_FLAG, true);
+        fav.getDigitalOutChanelN5().setAdditionalInfo(FavoritCoreDeviceV1.IMMEDIATELY_WRITE_FLAG, true);
+        fav.getDigitalOutChanelN6().setAdditionalInfo(FavoritCoreDeviceV1.IMMEDIATELY_WRITE_FLAG, true);
 
         /*
         fav.getDigitalOutChanelN1().writeValueRequest();

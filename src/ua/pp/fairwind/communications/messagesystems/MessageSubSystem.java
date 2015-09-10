@@ -6,6 +6,8 @@ import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
 
+import java.util.UUID;
+
 /**
  * Created by ������ on 01.07.2015.
  */
@@ -19,5 +21,5 @@ public interface MessageSubSystem {
         void clear();
         void destroy();
         void destroyService();
-        MessageSubSystem getNewChild();
+        MessageSubSystem getNewChild(UUID elementForGetMessageSubSystem);
 }

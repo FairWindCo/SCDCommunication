@@ -1,8 +1,8 @@
 package ua.pp.fairwind.communications.elementsdirecotry;
 
 import ua.pp.fairwind.communications.devices.DeviceInterface;
-import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
-import ua.pp.fairwind.communications.devices.panDrive.StepDriver;
+import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
+import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 
 import java.util.HashMap;

@@ -1,9 +1,10 @@
-package ua.pp.fairwind.communications.devices.panDrive;
+package ua.pp.fairwind.communications.devices.hardwaredevices.panDrive;
 
 import jssc.SerialPort;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
+import ua.pp.fairwind.communications.devices.RSLineDevice;
 import ua.pp.fairwind.communications.devices.RequestInformation;
-import ua.pp.fairwind.communications.devices.panDrive.internatianalisation.I18N_panDrive;
+import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.internatianalisation.I18N_panDrive;
 import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 /**
  * Created by Сергей on 07.09.2015.
  */
-public class StepDriver extends AbstractDevice {
+public class StepDriver extends RSLineDevice {
     private final SoftShortProperty speed;
     private final SoftShortProperty statusCode;
     private final SoftLongProperty position;

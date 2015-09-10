@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
+import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
@@ -136,7 +137,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     @Override
     public T getValue() {
         if(softOperationType==SOFT_OPERATION_TYPE.WRITE_ONLY){
-            fireEvent(EventType.ERROR,"Property is WRITEONLY!");
+            fireEvent(EventType.ERROR,I18N.getLocalizedString("property.writeonly.error"));
             return null;
         }
         return getInternalValue();
@@ -181,7 +182,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     @Override
     public void setValue(final T value) {
         if(softOperationType==SOFT_OPERATION_TYPE.READ_ONLY){
-            fireEvent(EventType.ERROR,"Property is READONLY!");
+            fireEvent(EventType.ERROR, I18N.getLocalizedString("property.readonly.error"));
             return;
         }
         Object setupedvalidator=getAdditionalInfo(VALUE_VALIDATOR);
@@ -301,7 +302,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public String toString() {
-        return "P{Name:"+getName()+", Value:"+value.get()+" ,U:"+getUUIDString()+",D:"+getDescription()+"}";
+        return String.format(I18N.getLocalizedString("property.description"),getName(),getUUIDString(),getDescription(),value.get());
     }
 
     public T getOldValue() {

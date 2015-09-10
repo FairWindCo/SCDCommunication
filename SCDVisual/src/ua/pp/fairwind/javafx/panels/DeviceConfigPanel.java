@@ -7,7 +7,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import ua.pp.fairwind.communications.devices.AbstractDevice;
+import ua.pp.fairwind.communications.devices.RSLineDevice;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
@@ -21,9 +21,9 @@ import ua.pp.fairwind.javafx.I18N.I18N_monitor;
  * Created by Сергей on 27.08.2015.
  */
 public class DeviceConfigPanel  extends HBox {
-    final private AbstractDevice device;
+    final private RSLineDevice device;
 
-    public DeviceConfigPanel(AbstractDevice device) {
+    public DeviceConfigPanel(RSLineDevice device) {
         super();
         this.device = device;
         initControl();

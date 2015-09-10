@@ -52,7 +52,7 @@ public class PropertyConfigDialog {
         checkBox=new CheckBox(I18N_monitor.COMMON.getStringEx("CONFIG_PROPERTY_ENABLE_IMMEDIATELY_WRITE"));
         checkBox.setOnAction(select->{
             if(property!=null&&property instanceof ValueProperty<?>){
-                property.setAdditionalInfo(AbstractDevice.IMIDIATLY_WRITE_FLAG,checkBox.isSelected());
+                property.setAdditionalInfo(AbstractDevice.IMMEDIATELY_WRITE_FLAG,checkBox.isSelected());
             }
         });
         table=new TableView<>();
@@ -104,7 +104,7 @@ public class PropertyConfigDialog {
         this.property=property;
         if(property instanceof ValueProperty<?>){
             checkBox.setVisible(true);
-            Boolean state=(Boolean)property.getAdditionalInfo(AbstractDevice.IMIDIATLY_WRITE_FLAG);
+            Boolean state=(Boolean)property.getAdditionalInfo(AbstractDevice.IMMEDIATELY_WRITE_FLAG);
             checkBox.setSelected(state==null?false:state);
         } else {
             checkBox.setVisible(false);

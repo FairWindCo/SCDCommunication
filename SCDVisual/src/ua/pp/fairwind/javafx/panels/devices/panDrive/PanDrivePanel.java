@@ -13,7 +13,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
-import ua.pp.fairwind.communications.devices.panDrive.StepDriver;
+import ua.pp.fairwind.communications.devices.RSLineDevice;
+import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
@@ -52,7 +53,7 @@ public class PanDrivePanel extends HBox {
         initTab.setContent(createDeviceStatusPane(device));
     }
 
-    public static Pane createDeviceStatusPane(AbstractDevice device){
+    public static Pane createDeviceStatusPane(RSLineDevice device){
         final GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -247,7 +248,7 @@ public class PanDrivePanel extends HBox {
         Button button=new Button(String.valueOf(value));
         button.setOnAction(event->{
             property.setValue(value);
-            Boolean imid=(Boolean)property.getAdditionalInfo(AbstractDevice.IMIDIATLY_WRITE_FLAG);
+            Boolean imid=(Boolean)property.getAdditionalInfo(AbstractDevice.IMMEDIATELY_WRITE_FLAG);
             if(imid==null||!imid){
                 property.writeValueRequest();
             }

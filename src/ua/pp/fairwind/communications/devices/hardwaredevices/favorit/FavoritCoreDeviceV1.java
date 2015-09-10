@@ -1,9 +1,9 @@
-package ua.pp.fairwind.communications.devices.favorit;
+package ua.pp.fairwind.communications.devices.hardwaredevices.favorit;
 
 import ua.pp.fairwind.communications.abstractions.LineSelector;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
-import ua.pp.fairwind.communications.devices.DeviceInterface;
 import ua.pp.fairwind.communications.devices.LineSelectDevice;
+import ua.pp.fairwind.communications.devices.RSLineDevice;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 /**
  * Created by Сергей on 09.07.2015.
  */
-public class FavoritCoreDeviceV1 extends AbstractDevice implements DeviceInterface,LineSelectDevice {
+public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevice {
     private final SoftBoolProperty digitalInChanelN1;
     private final SoftBoolProperty digitalInChanelN2;
     private final SoftBoolProperty digitalInChanelN3;

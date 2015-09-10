@@ -3,7 +3,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
+import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;

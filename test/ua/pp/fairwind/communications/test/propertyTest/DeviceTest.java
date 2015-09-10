@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.test.propertyTest;
 
-import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
+import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 
 import java.util.Arrays;

@@ -5,6 +5,7 @@ import ua.pp.fairwind.communications.devices.DeviceInterface;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
 import ua.pp.fairwind.communications.lines.exceptions.TrunsactionError;
+import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 
 import java.util.UUID;
 

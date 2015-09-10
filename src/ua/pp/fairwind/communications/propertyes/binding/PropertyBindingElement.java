@@ -2,6 +2,7 @@ package ua.pp.fairwind.communications.propertyes.binding;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
+import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
@@ -22,8 +23,8 @@ public class PropertyBindingElement<FROM extends AbstractProperty,TO extends Abs
 
 
     public PropertyBindingElement(FROM readingProperty, TO writingProperty, PropertyConvertor<FROM, TO> readConvertor, PropertyConvertor<TO, FROM> writeConvertor, MessageSubSystem centralSystem) {
-        super("BINDING FROM: "+readingProperty.getName()+" TO: "+writingProperty.getName(), centralSystem);
-        if(readingProperty==null || writingProperty==null || readConvertor==null || writeConvertor==null) throw new IllegalArgumentException("property or convertor can not be NULL!!!");
+        super(String.format(I18N.getLocalizedString("binding.name"),readingProperty!=null?readingProperty.getName():"",writingProperty!=null?writingProperty.getName():""), centralSystem);
+        if(readingProperty==null || writingProperty==null || readConvertor==null || writeConvertor==null) throw new IllegalArgumentException(I18N.getLocalizedString("binding.create.error"));
         this.readingProperty = readingProperty;
         this.writingProperty = writingProperty;
         this.readConvertor=readConvertor;
@@ -31,7 +32,8 @@ public class PropertyBindingElement<FROM extends AbstractProperty,TO extends Abs
     }
 
     public PropertyBindingElement(FROM readingProperty, TO writingProperty, PropertyConvertor<FROM, TO> readConvertor, PropertyConvertor<TO, FROM> writeConvertor) {
-        super("BINDING FROM: "+readingProperty.getName()+" TO: "+writingProperty.getName(), null);
+        super(String.format(I18N.getLocalizedString("binding.name"),readingProperty!=null?readingProperty.getName():"",writingProperty!=null?writingProperty.getName():""), null);
+        if(readingProperty==null || writingProperty==null || readConvertor==null || writeConvertor==null) throw new IllegalArgumentException(I18N.getLocalizedString("binding.create.error"));
         this.readingProperty = readingProperty;
         this.writingProperty = writingProperty;
         this.readConvertor=readConvertor;
@@ -89,7 +91,7 @@ public class PropertyBindingElement<FROM extends AbstractProperty,TO extends Abs
                        res=writeConvertor.convertValue(writingProperty, readingProperty);
                    }
                    if(!res){
-                       fireEvent(EventType.PARSE_ERROR,"PROPERTY "+readingProperty.getName()+" NOT TRANSLATED TO PROPERTY "+writingProperty.getName());
+                       fireEvent(EventType.PARSE_ERROR,String.format(I18N.getLocalizedString("binding.translate.error"), readingProperty.getName(), writingProperty.getName()));
                    }
                } catch (BindingConvertExceptions ex){
                    fireEvent(EventType.ERROR,ex.getLocalizedMessage());

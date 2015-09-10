@@ -3,7 +3,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ua.pp.fairwind.communications.devices.panDrive.StepDriver;
+import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver;
 import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;

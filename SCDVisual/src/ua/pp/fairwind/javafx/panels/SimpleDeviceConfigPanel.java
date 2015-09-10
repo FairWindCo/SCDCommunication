@@ -9,7 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import ua.pp.fairwind.communications.devices.AbstractDevice;
+import ua.pp.fairwind.communications.devices.RSLineDevice;
 import ua.pp.fairwind.communications.lines.AbstractLine;
 import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
@@ -23,7 +23,7 @@ import java.util.List;
  * Created by Сергей on 27.08.2015.
  */
 public class SimpleDeviceConfigPanel extends HBox {
-    final private AbstractDevice device;
+    final private RSLineDevice device;
     final private List<LineInterface> lines;
     final private LineChange action;
     private volatile LineInterface selectedLine;
@@ -33,7 +33,7 @@ public class SimpleDeviceConfigPanel extends HBox {
         void secondaryLineChange(LineInterface newline);
     }
 
-    public SimpleDeviceConfigPanel(AbstractDevice device) {
+    public SimpleDeviceConfigPanel(RSLineDevice device) {
         super();
         this.device = device;
         selectedLine=(AbstractLine)device.getPrimaryLine();
@@ -42,7 +42,7 @@ public class SimpleDeviceConfigPanel extends HBox {
         initControl();
     }
 
-    public SimpleDeviceConfigPanel(AbstractDevice device,LineInterface line,List<LineInterface> lines) {
+    public SimpleDeviceConfigPanel(RSLineDevice device,LineInterface line,List<LineInterface> lines) {
         super();
         this.device = device;
         selectedLine=(AbstractLine)device.getPrimaryLine();
@@ -51,7 +51,7 @@ public class SimpleDeviceConfigPanel extends HBox {
         initControl();
     }
 
-    public SimpleDeviceConfigPanel(AbstractDevice device,LineInterface line,List<LineInterface> lines,LineChange listener) {
+    public SimpleDeviceConfigPanel(RSLineDevice device,LineInterface line,List<LineInterface> lines,LineChange listener) {
         super();
         this.device = device;
         selectedLine=(AbstractLine)device.getPrimaryLine();
@@ -60,7 +60,7 @@ public class SimpleDeviceConfigPanel extends HBox {
         initControl();
     }
 
-    public SimpleDeviceConfigPanel(AbstractDevice device,LineInterface line) {
+    public SimpleDeviceConfigPanel(RSLineDevice device,LineInterface line) {
         super();
         this.device = device;
         selectedLine=(AbstractLine)device.getPrimaryLine();

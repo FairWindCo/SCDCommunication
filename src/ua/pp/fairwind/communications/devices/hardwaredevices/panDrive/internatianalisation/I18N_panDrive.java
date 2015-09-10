@@ -1,11 +1,11 @@
-package ua.pp.fairwind.communications.devices.panDrive.internatianalisation;
+package ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.internatianalisation;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public enum I18N_panDrive {
-	COMMON("ua.pp.fairwind.communications.devices.panDrive.internatianalisation.common");
+	COMMON("ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.internatianalisation.common");
 	//APPLICATION("ua.pp.fairwind.communication.I18N.application");
 
 	private ResourceBundle resourceBundle;

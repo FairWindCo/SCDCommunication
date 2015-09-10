@@ -1,7 +1,8 @@
-package ua.pp.fairwind.communications.devices.arg.micro;
+package ua.pp.fairwind.communications.devices.hardwaredevices.arg.micro;
 
 import jssc.SerialPort;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
+import ua.pp.fairwind.communications.devices.RSLineDevice;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 /**
  * Created by Сергей on 07.09.2015.
  */
-public class ArgMicroDevice extends AbstractDevice {
+public class ArgMicroDevice extends RSLineDevice {
     private final SoftFloatProperty rate;
     private final SoftShortProperty numberMeasurementm;
 

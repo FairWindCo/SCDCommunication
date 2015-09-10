@@ -1,10 +1,8 @@
 package ua.pp.fairwind.communications.lines;
 
-import jssc.SerialPort;
-import jssc.SerialPortException;
-import jssc.SerialPortList;
-import jssc.SerialPortTimeoutException;
+import jssc.*;
 import ua.pp.fairwind.communications.SCADASystem;
+import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
@@ -19,12 +17,13 @@ import java.util.List;
  */
 public class SerialLine extends AbstractLine {
     final SerialPort port;
+    final SerialPortEventListener eventlistener;
 
     public static List<LineInterface> getSerialLines(MessageSubSystem centralSystem, long maxTransactionTime){
         String[] portnames=SerialPortList.getPortNames();
         if(portnames!=null){
             List<LineInterface> list=new ArrayList<>(portnames.length);
-            for(String portName:portnames)list.add(new SerialLine(portName,portName,null,"RS 232 SERIAL PORT",centralSystem,maxTransactionTime));
+            for(String portName:portnames)list.add(new SerialLine(portName,portName,null,I18N.getLocalizedString("serialline.name"),centralSystem,maxTransactionTime));
             return list;
         }else return null;
     }
@@ -33,7 +32,7 @@ public class SerialLine extends AbstractLine {
         String[] portnames=SerialPortList.getPortNames();
         if(portnames!=null){
             List<LineInterface> list=new ArrayList<>(portnames.length);
-            for(String portName:portnames)list.add(new SerialLine(portName,portName,null,"RS 232 SERIAL PORT",scadaSystem.getChileMessageSubsystems(),maxTransactionTime));
+            for(String portName:portnames)list.add(new SerialLine(portName,portName,null,I18N.getLocalizedString("serialline.name"),scadaSystem.getChileMessageSubsystems(),maxTransactionTime));
             return list;
         }else return null;
     }
@@ -41,10 +40,50 @@ public class SerialLine extends AbstractLine {
     public SerialLine(String comportName,String name, String uuid, String description, MessageSubSystem centralSystem, long maxTransactionTime) {
         super(name, uuid, description, centralSystem, maxTransactionTime);
         port=new SerialPort(comportName);
+        eventlistener=(event)->{
+            if(isServerMode()){
+                try {
+                    int count = port.getInputBufferBytesCount();
+                    if (count > 0) {
+                        byte[] data = port.readBytes(count, 1000);
+                        serviceRecivedFromLineDataInServerMode(data);
+                    }
+                }catch (SerialPortTimeoutException e){
+                    fireEvent(EventType.FATAL_ERROR,e);
+                }catch (SerialPortException ex){
+                    fireEvent(EventType.FATAL_ERROR,ex);
+                }
+            }
+        };
     }
 
+    @Override
+    public void setServerLineParameter(boolean setServerMode, LineParameters serverLineParameter) {
+        if(setServerMode){
+            try {
+                if(!port.isOpened()){
+                    port.openPort();
+                    setLineParameters(serverLineParameter);
+                }
+                port.addEventListener(eventlistener);
+            } catch (SerialPortException e){
+                serverMode.set(false);
+                fireEvent(EventType.FATAL_ERROR,e.getLocalizedMessage());
+                return;
+            }
 
-
+        } else {
+            try{
+                port.removeEventListener();
+                port.closePort();
+            } catch (SerialPortException e){
+                serverMode.set(false);
+                fireEvent(EventType.FATAL_ERROR,e.getLocalizedMessage());
+                return;
+            }
+        }
+        super.setServerLineParameter(setServerMode, serverLineParameter);
+    }
 
     @Override
     synchronized protected void closeUsedResources() {
@@ -89,7 +128,7 @@ public class SerialLine extends AbstractLine {
             //setLineParameters(params);
             long starttime=System.currentTimeMillis();
             if(bytesForReadCount<=0){
-                System.out.println("READ TIMEOUT"+timeOut);
+                //System.out.println("READ TIMEOUT"+timeOut);
                 CommunicationUtils.RealThreadPause(timeOut);
                 int recivedByteCount=port.getInputBufferBytesCount();
                 if(recivedByteCount>=Math.abs(bytesForReadCount)){
@@ -99,7 +138,7 @@ public class SerialLine extends AbstractLine {
                 }
             } else {
                 try {
-                    System.out.println("READ TIMEOUT"+timeOut);
+                    //System.out.println("READ TIMEOUT"+timeOut);
                     //System.out.print("START READ:"+ new Date(starttime)+" LENGTH:");
                     byte[] buf=port.readBytes((int) bytesForReadCount, (int) timeOut);
                     //System.out.println(System.currentTimeMillis()-starttime);
@@ -180,5 +219,10 @@ public class SerialLine extends AbstractLine {
         } catch (SerialPortException exc){
 
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format(I18N.getLocalizedString("serialline.description"),getName(),getUUIDString(),getDescription());
     }
 }

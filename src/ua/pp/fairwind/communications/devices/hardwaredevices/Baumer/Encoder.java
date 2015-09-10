@@ -1,7 +1,8 @@
-package ua.pp.fairwind.communications.devices.Baumer;
+package ua.pp.fairwind.communications.devices.hardwaredevices.Baumer;
 
 import jssc.SerialPort;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
+import ua.pp.fairwind.communications.devices.RSLineDevice;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
@@ -39,7 +40,7 @@ ST_H High byte steps
 ST_L Low byte steps
 LRC EAD XOR MT_H XOR M_T_L XOR ST_H XOR ST_L
  */
-public class Encoder extends AbstractDevice{
+public class Encoder extends RSLineDevice {
     private final SoftShortProperty revolution;
     private final SoftShortProperty steps;
 

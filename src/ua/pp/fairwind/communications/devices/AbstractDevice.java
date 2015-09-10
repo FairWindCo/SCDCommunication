@@ -2,10 +2,11 @@ package ua.pp.fairwind.communications.devices;
 
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.lines.CommunicationAnswer;
-import ua.pp.fairwind.communications.lines.CommunicationProtocolRequest;
+import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.lines.LineParameters;
+import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
+import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
@@ -25,9 +26,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by Сергей on 09.07.2015.
  */
 public abstract class AbstractDevice extends SystemEllement implements DeviceInterface {
-    public static final String IMIDIATLY_WRITE_FLAG="imidiatlyWrite";
+    public static final String IMMEDIATELY_WRITE_FLAG ="immediatelyWrite";
     public static final String PROPERTY_ADDRESS="propertyAddress";
-    protected final SoftLongProperty deviceAddress;
+    public static final String COMMAND_REFRESH="REFRESH";
+    public static final String COMMAND_VALIDATE="VALIDATE_COMMAND";
+    public static final String COMMAND_VALIDATE_LINE1="VALIDATE_LINE1";
+    public static final String COMMAND_VALIDATE_LINE2="VALIDATE_LINE2";
+    public static final String COMMAND_VALIDATE_ALL="VALIDATE";
+
     protected final SoftLongProperty deviceTimeOut;
     protected final SoftLongProperty deviceTimeOutPause;
     protected final SoftLongProperty deviceWritePause;
@@ -57,7 +63,7 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
     private final ElementEventListener changeListener=(element,type,param)->{
         if(element!=null && element instanceof ValueProperty) {
             ValueProperty<?> hardwarePoperty=(ValueProperty<?>)element;
-            boolean isImidiatlyWrite=hardwarePoperty.getAdditionalInfo(IMIDIATLY_WRITE_FLAG)==null?false:(boolean)hardwarePoperty.getAdditionalInfo(IMIDIATLY_WRITE_FLAG);
+            boolean isImidiatlyWrite=hardwarePoperty.getAdditionalInfo(IMMEDIATELY_WRITE_FLAG)==null?false:(boolean)hardwarePoperty.getAdditionalInfo(IMMEDIATELY_WRITE_FLAG);
             if(hardwarePoperty.isActive()) {
                 if (type == EventType.ELEMENT_CHANGE || type == EventType.NEED_WRITE_VALUE) {
                     if(type == EventType.ELEMENT_CHANGE && !isImidiatlyWrite){
@@ -80,8 +86,8 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         }
     };
 
-    public AbstractDevice(long address,String name, String uuid, String description, MessageSubSystem centralSystem) {
-        this(address, name, uuid, description, centralSystem, null);
+    public AbstractDevice(String name, String uuid, String description, MessageSubSystem centralSystem) {
+        this(name, uuid, description, centralSystem, null);
     }
 
     protected DeviceNamedCommandProperty formCommandNameProperty(String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
@@ -92,59 +98,58 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
     protected SoftBoolProperty formIndicatorProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids,boolean initialValue){
         SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY,initialValue);
-        command.setAdditionalInfo("propertyAddress", address);
+        command.setAdditionalInfo(PROPERTY_ADDRESS, address);
         return command;
     }
 
     protected SoftBoolProperty formBoolProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids,boolean initialValue){
         SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE,initialValue);
-        command.setAdditionalInfo("propertyAddress",address);
+        command.setAdditionalInfo(PROPERTY_ADDRESS,address);
         return command;
     }
 
     protected SoftBoolProperty formDeviceBoolProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids,boolean initialValue){
         SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE,initialValue);
-        command.setAdditionalInfo("propertyAddress", address);
+        command.setAdditionalInfo(PROPERTY_ADDRESS, address);
         //command.addEventListener(changeListener);
         return command;
     }
 
     protected SoftLongProperty formLongProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids,long initialValue){
         SoftLongProperty command=new SoftLongProperty(name,getUiidFromMap(name,uuids),description,centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE,initialValue);
-        command.setAdditionalInfo("propertyAddress", address);
+        command.setAdditionalInfo(PROPERTY_ADDRESS, address);
         return command;
     }
 
     protected SoftLongProperty formLongConfigProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
         SoftLongProperty command=new SoftLongProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
-        command.setAdditionalInfo("propertyAddress", address);
+        command.setAdditionalInfo(PROPERTY_ADDRESS, address);
         return command;
     }
 
-    public AbstractDevice(long address,String name, String uuid, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids) {
+    public AbstractDevice(String name, String uuid, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids) {
         super(name, uuid, description, centralSystem);
-        deviceAddress=formLongProperty(-1,"Address","The Device Address used for communication",centralSystem,uuids,address);
-        deviceTimeOut=formLongProperty(-2,"TimeOut","The Time Out for ReadLine operation",centralSystem,uuids,500L);
-        deviceTimeOutPause=formLongProperty(-3, "BeforeReadPause",  "Wait pause after WriteLine operation", centralSystem,uuids, 0L);
-        deviceLastTryCommunicateTime=formLongConfigProperty(-4, "LastTryCommunicateTime", "Wait pause after WriteLine operation", centralSystem, uuids);
-        deviceLastSuccessCommunicateTime=formLongConfigProperty(-5,"LastSuccessCommunicateTime","Wait pause after WriteLine operation",centralSystem,uuids);
-        refreshCommand=formCommandNameProperty("REFRESH", "The Refresh Device Data Command", centralSystem, uuids);
-        validateErrorCommand=formCommandNameProperty("VALIDATE_COMMAND", "Validate last command error", centralSystem, uuids);
-        validateErrorCommandLine1=formCommandNameProperty("VALIDATE_LINE1", "Validate last command error on line 1", centralSystem, uuids);
-        validateErrorCommandLine2=formCommandNameProperty("VALIDATE_LINE2", "Validate last command error on line 2", centralSystem, uuids);
-        validateAllErrorCommand=formCommandNameProperty("VALIDATE", "Validate all error", centralSystem, uuids);
-        lastCommunicationStatus      =  formIndicatorProperty(-6, "LAST_COMMUNICATION_STATUS", "Status indicator of error during last comminication", centralSystem, uuids, false);
-        errorCommunicationStatus     =  formIndicatorProperty(-7, "COMMUNICATION_STATUS", "Status indicator of error comminication with validation", centralSystem, uuids, false);
-        lastCommunicationStatusLine1 =  formIndicatorProperty(-8,"COMMUNICATION_STATUS_LINE_1","Status indicator of error during last comminication on line 1",centralSystem,uuids,false);
-        lastCommunicationStatusLine2  =  formIndicatorProperty(-9,"COMMUNICATION_STATUS_LINE_2","Status indicator of error during last comminication on line 2",centralSystem,uuids,false);
-        errorCommunicationStatusLine1 =  formIndicatorProperty(-10,"LAST_COMMUNICATION_STATUS_LINE1","Status indicator of error comminication with validation on line 1",centralSystem,uuids,false);
-        errorCommunicationStatusLine2 =  formIndicatorProperty(-11, "LAST_COMMUNICATION_STATUS_LINE2", "Status indicator of error comminication with validation on line 2", centralSystem, uuids, false);
-        activate = formBoolProperty(-12, "ACTIVATE DEVICE", "Status indicator of error comminication with validation on line 2", centralSystem, uuids, true);
-        deviceWritePause=formLongProperty(-13, "BeforeWritePause", "Wait pause before WriteLine operation", centralSystem, uuids, 0L);
-        retryCount=formLongProperty(-14,"CountOfTimeOutRetry","Count of re try operation before timeout error recived",centralSystem,uuids,1);
+        deviceTimeOut=formLongProperty(-2, I18N.getLocalizedString("device.timeout_property.name"),I18N.getLocalizedString("device.timeout_property.description"),centralSystem,uuids,500L);
+        deviceTimeOutPause=formLongProperty(-3, I18N.getLocalizedString("device.bausebeforeread_property.name"),  I18N.getLocalizedString("device.bausebeforeread_property.description"), centralSystem,uuids, 0L);
+        deviceLastTryCommunicateTime=formLongConfigProperty(-4, I18N.getLocalizedString("device.lastcommunicationtime_property.name"), I18N.getLocalizedString("device.lastcommunicationtime_property.description"), centralSystem, uuids);
+        deviceLastSuccessCommunicateTime=formLongConfigProperty(-5,I18N.getLocalizedString("device.lastsuccesscommunicationtime_property.name"),I18N.getLocalizedString("device.lastsuccesscommunicationtime_property.description"),centralSystem,uuids);
+        refreshCommand=formCommandNameProperty(COMMAND_REFRESH, I18N.getLocalizedString("device.command_refresh.description"), centralSystem, uuids);
+        validateErrorCommand=formCommandNameProperty(COMMAND_VALIDATE, I18N.getLocalizedString("device.command_validate.description"), centralSystem, uuids);
+        validateErrorCommandLine1=formCommandNameProperty(COMMAND_VALIDATE_LINE1, I18N.getLocalizedString("device.command_validate_line1.description"), centralSystem, uuids);
+        validateErrorCommandLine2=formCommandNameProperty(COMMAND_VALIDATE_LINE2, I18N.getLocalizedString("device.command_validate_line2.description"), centralSystem, uuids);
+        validateAllErrorCommand=formCommandNameProperty(COMMAND_VALIDATE_ALL, I18N.getLocalizedString("device.command_validate_all.descriptio"), centralSystem, uuids);
+        lastCommunicationStatus      =  formIndicatorProperty(-6, I18N.getLocalizedString("device.lastcommunicationstatus_property.name"), I18N.getLocalizedString("device.lastcommunicationstatus_property.description"), centralSystem, uuids, false);
+        errorCommunicationStatus     =  formIndicatorProperty(-7, I18N.getLocalizedString("device.lasterrorcommunicationstatus_property.name"), I18N.getLocalizedString("device.lasterrorcommunicationstatus_property.description"), centralSystem, uuids, false);
+        lastCommunicationStatusLine1 =  formIndicatorProperty(-8,I18N.getLocalizedString("device.lastcommunicationstatusline1_property.name"),I18N.getLocalizedString("device.lastcommunicationstatusline1_property.description"),centralSystem,uuids,false);
+        lastCommunicationStatusLine2  =  formIndicatorProperty(-9,I18N.getLocalizedString("device.lastcommunicationstatusline2_property.name"),I18N.getLocalizedString("device.lastcommunicationstatusline2_property.description"),centralSystem,uuids,false);
+        errorCommunicationStatusLine1 =  formIndicatorProperty(-10,I18N.getLocalizedString("device.lasterrorcommunicationstatusline1_property.name"),I18N.getLocalizedString("device.lasterrorcommunicationstatusline1_property.description"),centralSystem,uuids,false);
+        errorCommunicationStatusLine2 =  formIndicatorProperty(-11, I18N.getLocalizedString("device.lasterrorcommunicationstatusline2_property.name"), I18N.getLocalizedString("device.lasterrorcommunicationstatusline2_property.description"), centralSystem, uuids, false);
+        activate = formBoolProperty(-12, I18N.getLocalizedString("device.activate_property.name"), I18N.getLocalizedString("device.activate_property.description"), centralSystem, uuids, true);
+        activate.addEventListener((element,type,param)->{if(type==EventType.ELEMENT_CHANGE)super.setEnabled(activate.getInternalValue() == null ? false : activate.getInternalValue());});
+        deviceWritePause=formLongProperty(-13, I18N.getLocalizedString("device.bausebeforewrite_property.name"), I18N.getLocalizedString("device.bausebeforewrite_property.description"), centralSystem, uuids, 0L);
+        retryCount=formLongProperty(-14,I18N.getLocalizedString("device.retrycount_property.name"),I18N.getLocalizedString("device.retrycount_property.description"),centralSystem,uuids,1);
 
         ArrayList<AbstractProperty> list=new ArrayList<>();
-        list.add(deviceAddress);
         list.add(deviceTimeOut);
         list.add(deviceTimeOutPause);
         list.add(deviceLastTryCommunicateTime);
@@ -170,8 +175,8 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         parentSystem=null;
     }
 
-    protected AbstractDevice(long address,String name, String uuid, String description, SystemElementDirectory centralSystem) {
-        this(address,name, uuid, description, centralSystem.getChileMessageSubsystems());
+    protected AbstractDevice(String name, String uuid, String description, SystemElementDirectory centralSystem) {
+        this(name, uuid, description, centralSystem.getChileMessageSubsystems());
         parentSystem=centralSystem;
         parentSystem.addElemnts(listOfPropertyes);
         listOfCommands.stream().forEach(comand->centralSystem.addElemnt(comand));
@@ -337,22 +342,22 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
     protected RequestInformation processCommandRequest(String commandName){
         RequestInformation result=null;
         switch(commandName){
-            case "REFRESH":{
+            case COMMAND_REFRESH:{
                 break;
             }
-            case "VALIDATE_COMMAND": {
+            case COMMAND_VALIDATE: {
                 ((ValueProperty<Boolean>)errorCommunicationStatus).setInternalValue(false);
                 break;
             }
-            case "VALIDATE_LINE1":{
+            case COMMAND_VALIDATE_LINE1:{
                 ((ValueProperty<Boolean>)errorCommunicationStatusLine1).setInternalValue(false);
                 break;
             }
-            case "VALIDATE_LINE2":{
+            case COMMAND_VALIDATE_LINE2:{
                 ((ValueProperty<Boolean>)errorCommunicationStatusLine1).setInternalValue(false);
                 break;
             }
-            case "VALIDATE": {
+            case COMMAND_VALIDATE_ALL: {
                 ((ValueProperty<Boolean>)errorCommunicationStatus).setInternalValue(false);
                 ((ValueProperty<Boolean>)errorCommunicationStatusLine1).setInternalValue(false);
                 ((ValueProperty<Boolean>)errorCommunicationStatusLine2).setInternalValue(false);
@@ -427,18 +432,6 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
 
 
-     @Override
-    public long getAddress() {
-        Long adr= ((ValueProperty<Long>)deviceAddress).getInternalValue();
-        if(adr==null) return -1;
-        return adr;
-    }
-
-    @Override
-    public void setAddress(long address) {
-        ((ValueProperty<Long>)deviceAddress).setInternalValue(address);
-    }
-
     @Override
     public void setPrimerayLine(LineInterface line) {
         this.primaryLine=line;
@@ -479,11 +472,6 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
     @Override
     public Long getLastTryExchangeTime() {
         return ((ValueProperty<Long>)deviceLastSuccessCommunicateTime).getInternalValue();
-    }
-
-
-    public SoftLongProperty getDeviceAddressProperty(){
-        return deviceAddress;
     }
 
     public SoftLongProperty getDeviceTimeOutProperty(){
@@ -619,5 +607,12 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
     public AbstractProperty[] getPropertys() {
         if(listOfPropertyes==null || listOfPropertyes.size()==0) return null;
         return listOfPropertyes.toArray(new AbstractProperty[listOfPropertyes.size()]);
+    }
+
+
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        activate.setValue(enabled);
     }
 }

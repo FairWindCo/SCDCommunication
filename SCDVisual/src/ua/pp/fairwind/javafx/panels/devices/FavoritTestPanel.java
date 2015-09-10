@@ -8,7 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
+import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;

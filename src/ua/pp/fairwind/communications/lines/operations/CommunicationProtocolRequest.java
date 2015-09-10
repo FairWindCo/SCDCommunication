@@ -1,6 +1,8 @@
-package ua.pp.fairwind.communications.lines;
+package ua.pp.fairwind.communications.lines.operations;
 
 import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.lines.LineInterface;
+import ua.pp.fairwind.communications.lines.LineParameters;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OPERATION_TYPE;

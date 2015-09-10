@@ -2,8 +2,8 @@ package ua.pp.fairwind.communications.test.propertyTest;
 
 import jssc.SerialPort;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.devices.Baumer.Encoder;
-import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
+import ua.pp.fairwind.communications.devices.hardwaredevices.Baumer.Encoder;
+import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
@@ -22,7 +22,7 @@ public class LineConsoleTestBaumer {
         MessageSubSystem ms=new MessageSubSystemMultiDipatch();
         SerialLine line=new SerialLine("com9","RS232 Line#1",null,"Serial port",ms,5000);
         FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L,"Favirit Ventel",null,"",ms);
-        LoggingDevice ldev=new LoggingDevice(0x000, "Logging Device", null, "", null, new LineMonitorInterface() {
+        LoggingDevice ldev=new LoggingDevice("Logging Device", null, "", null, new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
