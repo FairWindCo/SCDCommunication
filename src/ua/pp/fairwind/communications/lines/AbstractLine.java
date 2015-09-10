@@ -504,4 +504,16 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     public boolean isServerMode() {
         return serverMode.get();
     }
+
+    public void addDeviceToService(ImitatorDevice device){
+        if(device!=null)deviceForService.add(device);
+    }
+
+    public void removeDeviceToService(ImitatorDevice device){
+        if(device!=null)deviceForService.remove(device);
+    }
+
+    public ImitatorDevice[] getDeivicesForService(){
+        return deviceForService.toArray(new ImitatorDevice[deviceForService.size()]);
+    }
 }

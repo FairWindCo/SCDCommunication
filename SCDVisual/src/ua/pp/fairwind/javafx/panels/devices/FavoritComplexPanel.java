@@ -7,7 +7,6 @@ import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCore
 import ua.pp.fairwind.communications.lines.AbstractLine;
 import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.javafx.panels.LineInfoBar;
-import ua.pp.fairwind.javafx.panels.SimpleDeviceConfigPanel;
 
 import java.util.List;
 
@@ -44,6 +43,7 @@ public class FavoritComplexPanel extends BorderPane {
 
     public FavoritComplexPanel(LineInterface line,FavoritCoreDeviceV1 device,List<LineInterface> lines) {
         if(device==null)throw new RuntimeException("DEVICE CAN`T BE NULL!");
+        if(line!=null)device.setPrimerayLine(line);
         this.line=line;
         this.lines=lines;
         this.device=device;

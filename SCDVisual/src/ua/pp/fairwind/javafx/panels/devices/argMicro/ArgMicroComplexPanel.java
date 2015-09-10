@@ -1,9 +1,9 @@
-package ua.pp.fairwind.javafx.panels.devices.panDrive;
+package ua.pp.fairwind.javafx.panels.devices.argMicro;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver;
+import ua.pp.fairwind.communications.devices.hardwaredevices.arg.micro.ArgMicroDevice;
 import ua.pp.fairwind.communications.lines.AbstractLine;
 import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.javafx.panels.LineInfoBar;
@@ -14,18 +14,18 @@ import java.util.List;
 /**
  * Created by Сергей on 28.08.2015.
  */
-public class PanDriveComplexPanel extends BorderPane {
+public class ArgMicroComplexPanel extends BorderPane {
     private final LineInterface line;
-    private final StepDriver device;
+    private final ArgMicroDevice device;
     private final List<LineInterface> lines;
 
     private final SimpleDeviceConfigPanel devpanel;
-    private final PanDrivePanel panel;
+    private final ArgMicroPanel panel;
     private final LineInfoBar infoBarP;
     private final LineInfoBar infoBarS;
 
 
-    public PanDriveComplexPanel(AbstractLine line, StepDriver device) {
+    public ArgMicroComplexPanel(AbstractLine line, ArgMicroDevice device) {
         this(line, device, null);
     }
 
@@ -42,7 +42,7 @@ public class PanDriveComplexPanel extends BorderPane {
         }
     };
 
-    public PanDriveComplexPanel(LineInterface line, StepDriver device, List<LineInterface> lines) {
+    public ArgMicroComplexPanel(LineInterface line, ArgMicroDevice device, List<LineInterface> lines) {
         if(device==null)throw new RuntimeException("DEVICE CAN`T BE NULL!");
         if(line!=null)device.setPrimerayLine(line);
         this.line=line;
@@ -51,7 +51,7 @@ public class PanDriveComplexPanel extends BorderPane {
         devpanel=new SimpleDeviceConfigPanel(device,line,lines,listner);
         infoBarP=new LineInfoBar(35,device.getPrimaryLine());
         infoBarS=new LineInfoBar(35,device.getSecondaryLine());
-        panel=new PanDrivePanel(device);
+        panel=new ArgMicroPanel(device);
         initControl();
     }
 

@@ -41,7 +41,7 @@ public class SCADASystem extends SystemElementDirectory implements AutoCreateDev
         return scada;
     }
 
-    private  SCADASystem(String name,String description,MessageSubSystem topLevel,HashMap<String,String> uuids,AutoCreateDeviceFunction createDeviceFunction) {
+    protected SCADASystem(String name,String description,MessageSubSystem topLevel,HashMap<String,String> uuids,AutoCreateDeviceFunction createDeviceFunction) {
         super(name, getUiidFromMap(name,uuids),description,topLevel);
         this.uuids=uuids;
         this.topLevel=topLevel;
@@ -87,7 +87,10 @@ public class SCADASystem extends SystemElementDirectory implements AutoCreateDev
             } else {
                 device = createDeviceFunction.createDevice(address, typeOfDevice, name, description, topLevel, uuids);
             }
-            if(device!=null)createdDevices.put(name,device);
+            if(device!=null){
+                createdDevices.put(name,device);
+                addElemnt(device);
+            }
         }
         return device;
     }

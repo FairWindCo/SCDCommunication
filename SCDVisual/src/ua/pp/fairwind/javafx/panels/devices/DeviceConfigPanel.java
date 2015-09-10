@@ -1,4 +1,4 @@
-package ua.pp.fairwind.javafx.panels;
+package ua.pp.fairwind.javafx.panels.devices;
 
 import eu.hansolo.enzo.canvasled.Led;
 import javafx.geometry.Insets;
@@ -15,7 +15,7 @@ import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
 import ua.pp.fairwind.io.javafx.propertys.BooleanPropertyFXAdapter;
 import ua.pp.fairwind.io.javafx.propertys.special.LongPropertyFXAdapterSpec;
 import ua.pp.fairwind.io.javafx.propertys.special.ShortPropertyFXAdapterSpec;
-import ua.pp.fairwind.javafx.I18N.I18N_monitor;
+import ua.pp.fairwind.javafx.I18N.I18N;
 
 /**
  * Created by Сергей on 27.08.2015.
@@ -38,15 +38,15 @@ public class DeviceConfigPanel  extends HBox {
         int rowindex=0;
         grid.add(new Label(device.getDeviceType() + " : " + device.getName() + " UUID=" + device.getUUID()), 0, rowindex++, 6, 1);
         grid.add(new Label(device.getDescription()),0,rowindex++,4,1);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_ADDRES")), 0, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_ADDRES")), 0, rowindex);
         grid.add(createAddressSelect(device.getDeviceAddressProperty()), 1, rowindex);
         grid.add(createConfigureButton(), 5, rowindex++,2,1);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_STATUS")), 0, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE1_STATUS")), 1, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE2_STATUS")), 2, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_ERROR")), 3, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE1_ERROR")), 4, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE2_ERROR")), 5, rowindex++);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_STATUS")), 0, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE1_STATUS")), 1, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE2_STATUS")), 2, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_ERROR")), 3, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE1_ERROR")), 4, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE2_ERROR")), 5, rowindex++);
 
         grid.add(createLedIndicator(device.getLastCommunicationStatus()), 0, rowindex);
         grid.add(createLedIndicator(device.getLastCommunicationStatusLine1()), 1, rowindex);
@@ -54,14 +54,14 @@ public class DeviceConfigPanel  extends HBox {
         grid.add(createLedIndicator(device.getErrorCommunicationStatus()), 3, rowindex);
         grid.add(createLedIndicator(device.getErrorCommunicationStatusLine1()), 4, rowindex);
         grid.add(createLedIndicator(device.getErrorCommunicationStatusLine2()), 5, rowindex++);
-        grid.add(new Label(I18N_monitor.COMMON.getString("LAST_COMMUNICATE_TIME")), 0, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("LAST_COMMUNICATE_TIME")), 0, rowindex);
         grid.add(createCommandExecuteButton(device.getValidateErrorCommand()), 3, rowindex);
         grid.add(createCommandExecuteButton(device.getValidateErrorCommandLine1()), 4, rowindex);
         grid.add(createCommandExecuteButton(device.getValidateErrorCommandLine2()), 5, rowindex);
     }
 
     private Button createConfigureButton(){
-        return new Button(I18N_monitor.COMMON.getString("CONFIG_DEVICE_DIALOG"));
+        return new Button(I18N.COMMON.getString("CONFIG_DEVICE_DIALOG"));
     }
 
     public static Button createCommandExecuteButton(DeviceNamedCommandProperty command){

@@ -17,7 +17,7 @@ import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
 import ua.pp.fairwind.io.javafx.propertys.BooleanPropertyFXAdapter;
 import ua.pp.fairwind.io.javafx.propertys.FloatPropertyFXAdapter;
 import ua.pp.fairwind.io.javafx.propertys.LongPropertyFXAdapter;
-import ua.pp.fairwind.javafx.I18N.I18N_monitor;
+import ua.pp.fairwind.javafx.I18N.I18N;
 import ua.pp.fairwind.javafx.panels.dialogs.PropertyConfigDialog;
 
 /**
@@ -39,9 +39,9 @@ public class FavoritTestPanel extends HBox {
         grid.setVgap(10);
         grid.setPadding(new Insets(10, 10, 10, 10));
         int rowindex=0;
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DIGITAL IN")), 0, rowindex, 4, 1);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DIGITAL OUT")), 5, rowindex++, 5, 1);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DI1")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("DIGITAL IN")), 0, rowindex, 4, 1);
+        grid.add(new Label(I18N.getLocalizedString("DIGITAL OUT")), 5, rowindex++, 5, 1);
+        grid.add(new Label(I18N.getLocalizedString("DI1")), 0, rowindex);
         grid.add(createLedIndicator(device.getDigitalInChanelN1()), 1, rowindex);
         grid.add(createReReadButton(device.getDigitalInChanelN1()), 2, rowindex);
         grid.add(createConfigureProppearty(device.getDigitalInChanelN1()), 3, rowindex);
@@ -51,9 +51,9 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReWriteButton(device.getDigitalOutChanelN1()), 7, rowindex);
         grid.add(createBoolChangeCommandButton(device.getDigitalOutChanelN1()), 8, rowindex);
         grid.add(createLedIndicator(device.getDigitalOutChanelN1()), 9, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DO1")), 10, rowindex++);
+        grid.add(new Label(I18N.getLocalizedString("DO1")), 10, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DI2")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("DI2")), 0, rowindex);
         grid.add(createLedIndicator(device.getDigitalInChanelN2()), 1, rowindex);
         grid.add(createReReadButton(device.getDigitalInChanelN2()), 2, rowindex);
         grid.add(createConfigureProppearty(device.getDigitalInChanelN2()), 3, rowindex);
@@ -63,9 +63,9 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReWriteButton(device.getDigitalOutChanelN2()), 7, rowindex);
         grid.add(createBoolChangeCommandButton(device.getDigitalOutChanelN2()), 8, rowindex);
         grid.add(createLedIndicator(device.getDigitalOutChanelN2()), 9, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DO2")), 10, rowindex++);
+        grid.add(new Label(I18N.getLocalizedString("DO2")), 10, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DI3")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("DI3")), 0, rowindex);
         grid.add(createLedIndicator(device.getDigitalInChanelN3()), 1, rowindex);
         grid.add(createReReadButton(device.getDigitalInChanelN3()), 2, rowindex);
         grid.add(createConfigureProppearty(device.getDigitalInChanelN3()), 3, rowindex);
@@ -75,9 +75,9 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReWriteButton(device.getDigitalOutChanelN3()), 7, rowindex);
         grid.add(createBoolChangeCommandButton(device.getDigitalOutChanelN3()), 8, rowindex);
         grid.add(createLedIndicator(device.getDigitalOutChanelN3()), 9, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DO3")), 10, rowindex++);
+        grid.add(new Label(I18N.getLocalizedString("DO3")), 10, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DI4")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("DI4")), 0, rowindex);
         grid.add(createLedIndicator(device.getDigitalInChanelN4()), 1, rowindex);
         grid.add(createReReadButton(device.getDigitalInChanelN4()), 2, rowindex);
         grid.add(createConfigureProppearty(device.getDigitalInChanelN4()), 3, rowindex);
@@ -87,9 +87,9 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReWriteButton(device.getDigitalOutChanelN4()), 7, rowindex);
         grid.add(createBoolChangeCommandButton(device.getDigitalOutChanelN4()), 8, rowindex);
         grid.add(createLedIndicator(device.getDigitalOutChanelN4()), 9, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DO4")), 10, rowindex++);
+        grid.add(new Label(I18N.getLocalizedString("DO4")), 10, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DI5")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("DI5")), 0, rowindex);
         grid.add(createLedIndicator(device.getDigitalInChanelN5()), 1, rowindex);
         grid.add(createReReadButton(device.getDigitalInChanelN5()), 2, rowindex);
         grid.add(createConfigureProppearty(device.getDigitalInChanelN5()), 3, rowindex);
@@ -99,9 +99,9 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReWriteButton(device.getDigitalOutChanelN5()), 7, rowindex);
         grid.add(createBoolChangeCommandButton(device.getDigitalOutChanelN5()), 8, rowindex);
         grid.add(createLedIndicator(device.getDigitalOutChanelN5()), 9, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DO5")), 10, rowindex++);
+        grid.add(new Label(I18N.getLocalizedString("DO5")), 10, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DI6")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("DI6")), 0, rowindex);
         grid.add(createLedIndicator(device.getDigitalInChanelN6()), 1, rowindex);
         grid.add(createReReadButton(device.getDigitalInChanelN6()), 2, rowindex);
         grid.add(createConfigureProppearty(device.getDigitalInChanelN6()), 3, rowindex);
@@ -111,12 +111,12 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReWriteButton(device.getDigitalOutChanelN6()), 7, rowindex);
         grid.add(createBoolChangeCommandButton(device.getDigitalOutChanelN6()), 8, rowindex);
         grid.add(createLedIndicator(device.getDigitalOutChanelN6()), 9, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DO6")), 10, rowindex++);
+        grid.add(new Label(I18N.getLocalizedString("DO6")), 10, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("ANALOG IN")), 0, rowindex,4,1);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("ANALOG OUT")), 5, rowindex++,5,1);
+        grid.add(new Label(I18N.getLocalizedString("ANALOG IN")), 0, rowindex,4,1);
+        grid.add(new Label(I18N.getLocalizedString("ANALOG OUT")), 5, rowindex++,5,1);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("AI1")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("AI1")), 0, rowindex);
         grid.add(createLcdIndicator(device.getAnalogInChanelN1()), 1, rowindex);
         grid.add(createReReadButton(device.getAnalogInChanelN1()), 2, rowindex);
         grid.add(createConfigureProppearty(device.getAnalogInChanelN1()), 3, rowindex);
@@ -125,10 +125,10 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReReadButton(device.getAnalogOutChanelN1()), 6, rowindex);
         grid.add(createReWriteButton(device.getAnalogOutChanelN1()), 7, rowindex);
         grid.add(createLcdIndicator(device.getAnalogOutChanelN1()), 9, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("AO1")), 10, rowindex++);
+        grid.add(new Label(I18N.getLocalizedString("AO1")), 10, rowindex++);
 
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("AI2")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("AI2")), 0, rowindex);
         grid.add(createLcdIndicator(device.getAnalogInChanelN2()), 1, rowindex);
         grid.add(createReReadButton(device.getAnalogInChanelN2()), 2, rowindex);
         grid.add(createConfigureProppearty(device.getAnalogInChanelN2()), 3, rowindex);
@@ -137,9 +137,9 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReReadButton(device.getAnalogOutChanelN2()), 6, rowindex);
         grid.add(createReWriteButton(device.getAnalogOutChanelN2()), 7, rowindex);
         grid.add(createLcdIndicator(device.getAnalogOutChanelN2()), 9, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("AO2")), 10, rowindex++);
+        grid.add(new Label(I18N.getLocalizedString("AO2")), 10, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("AI3")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("AI3")), 0, rowindex);
         grid.add(createLcdIndicator(device.getAnalogInChanelN3()), 1, rowindex);
         grid.add(createReReadButton(device.getAnalogInChanelN3()), 2, rowindex);
         grid.add(createConfigureProppearty(device.getAnalogInChanelN3()), 3, rowindex);
@@ -148,9 +148,9 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReReadButton(device.getAnalogOutChanelN3()), 6, rowindex);
         grid.add(createReWriteButton(device.getAnalogOutChanelN3()), 7, rowindex);
         grid.add(createLcdIndicator(device.getAnalogOutChanelN3()), 9, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("AO3")), 10, rowindex++);
+        grid.add(new Label(I18N.getLocalizedString("AO3")), 10, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("AI4")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("AI4")), 0, rowindex);
         grid.add(createLcdIndicator(device.getAnalogInChanelN4()), 1, rowindex);
         grid.add(createReReadButton(device.getAnalogInChanelN4()), 2, rowindex);
         grid.add(createConfigureProppearty(device.getAnalogInChanelN4()), 3, rowindex);
@@ -159,10 +159,10 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReReadButton(device.getAnalogOutChanelN4()), 6, rowindex);
         grid.add(createReWriteButton(device.getAnalogOutChanelN4()), 7, rowindex);
         grid.add(createLcdIndicator(device.getAnalogOutChanelN4()), 9, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("AO4")), 10, rowindex++);
+        grid.add(new Label(I18N.getLocalizedString("AO4")), 10, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("LINE SELECT")), 0, rowindex++,10,1);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("SELECTED_LINE:")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("LINE SELECT")), 0, rowindex++,10,1);
+        grid.add(new Label(I18N.getLocalizedString("SELECTED_LINE:")), 0, rowindex);
         grid.add(createLineIndicator(device.getLineSelect()), 1, rowindex);
         grid.add(createConfigureProppearty(device.getLineSelect()), 2, rowindex);
         grid.add(createReReadButton(device.getLineSelect()), 3, rowindex);
@@ -173,12 +173,12 @@ public class FavoritTestPanel extends HBox {
         grid.add(createSetLinebutton(device.getLineSelect(),3), 9, rowindex);
         grid.add(createSetLinebutton(device.getLineSelect(),4), 10, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DEVICE CONFIG")), 0, rowindex++,10,1);
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DEVICE ADDRESS")), 0, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("DEVICE CONFIG")), 0, rowindex++,10,1);
+        grid.add(new Label(I18N.getLocalizedString("DEVICE ADDRESS")), 0, rowindex);
         grid.add(createReReadButton(device.getConfigdeviceAddress()), 3, rowindex);
         grid.add(createReWriteButton(device.getConfigdeviceAddress()), 4, rowindex);
 
-        grid.add(new Label(I18N_monitor.COMMON.getStringEx("DEVICE SPEED")), 6, rowindex);
+        grid.add(new Label(I18N.getLocalizedString("DEVICE SPEED")), 6, rowindex);
         grid.add(createReReadButton(device.getConfigdeviceSpeed()), 9, rowindex);
         grid.add(createReWriteButton(device.getConfigdeviceSpeed()), 10, rowindex);
     }
@@ -200,19 +200,19 @@ public class FavoritTestPanel extends HBox {
     }
 
     private Button createBoolChangeCommandButton(SoftBoolProperty property){
-        Button button=new Button(I18N_monitor.COMMON.getStringEx("CHANGE"));
+        Button button=new Button(I18N.getLocalizedString("CHANGE"));
         button.setOnAction(event->property.invertValue());
         return button;
     }
 
     private Button createReReadButton(AbstractProperty command){
-        Button button=new Button(I18N_monitor.COMMON.getStringEx("READ"));
+        Button button=new Button(I18N.getLocalizedString("READ"));
         button.setOnAction(event->command.readValueRequest());
         return button;
     }
 
     private Button createReWriteButton(AbstractProperty command){
-        Button button=new Button(I18N_monitor.COMMON.getStringEx("SAVE"));
+        Button button=new Button(I18N.getLocalizedString("SAVE"));
         button.setOnAction(event->command.writeValueRequest());
         return button;
     }

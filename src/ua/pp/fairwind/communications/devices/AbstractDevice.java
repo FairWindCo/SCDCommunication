@@ -202,6 +202,9 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
                     } else if (secondaryLine != null) {
                         deviceLastTryCommunicateTime.setInternalValue(System.currentTimeMillis());
                         secondaryLine.async_communicate(request);
+                    } else {
+                        if(property!=null)property.endRequest(reqType.getPropertyOperationType());
+                        fireEvent(EventType.FATAL_ERROR,I18N.getLocalizedString("device.no_line_specified.error"));
                     }
                 }
         }

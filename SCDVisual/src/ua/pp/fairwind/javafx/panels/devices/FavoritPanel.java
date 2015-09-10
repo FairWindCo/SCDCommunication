@@ -26,12 +26,11 @@ import ua.pp.fairwind.io.javafx.propertys.BooleanPropertyFXAdapter;
 import ua.pp.fairwind.io.javafx.propertys.FloatPropertyFXAdapter;
 import ua.pp.fairwind.io.javafx.propertys.LongPropertyFXAdapter;
 import ua.pp.fairwind.io.javafx.propertys.special.ShortPropertyFXAdapterSpec;
-import ua.pp.fairwind.javafx.I18N.I18N_monitor;
+import ua.pp.fairwind.javafx.I18N.I18N;
 import ua.pp.fairwind.javafx.controls.slidecheckbox.SlideCheckBox;
-import ua.pp.fairwind.javafx.panels.DeviceConfigPanel;
 import ua.pp.fairwind.javafx.panels.dialogs.PropertyConfigDialog;
 
-import static ua.pp.fairwind.javafx.panels.DeviceConfigPanel.createAddressSelect;
+import static ua.pp.fairwind.javafx.panels.devices.DeviceConfigPanel.createAddressSelect;
 
 
 /**
@@ -47,7 +46,7 @@ public class FavoritPanel extends HBox {
     }
 
     private void  intiStatusPane(){
-        final Tab initTab=new Tab(I18N_monitor.COMMON.getStringEx("STASUS"));
+        final Tab initTab=new Tab(I18N.getLocalizedString("STASUS"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         initTab.setContent(createDeviceStatusPane(device));
@@ -63,20 +62,20 @@ public class FavoritPanel extends HBox {
         grid.setId("formGrid");
         grid.add(new Label(device.getDeviceType() + " : " + device.getName() + " UUID=" + device.getUUID()), 0, rowindex++, 3, 1);
         grid.add(new Label(device.getDescription()),0,rowindex++,3,1);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_ADDRES")), 0, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_ADDRES")), 0, rowindex);
         grid.add(createAddressSelect(device.getDeviceAddressProperty()), 1, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_STATUS")), 0, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE1_STATUS")), 1, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE2_STATUS")), 2, rowindex++);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_STATUS")), 0, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE1_STATUS")), 1, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE2_STATUS")), 2, rowindex++);
 
         grid.add(createLedIndicator(device.getLastCommunicationStatus(),Color.GREENYELLOW), 0, rowindex);
         grid.add(createLedIndicator(device.getLastCommunicationStatusLine1(),Color.GREENYELLOW), 1, rowindex);
         grid.add(createLedIndicator(device.getLastCommunicationStatusLine2(),Color.GREENYELLOW), 2, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_ERROR")), 0, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE1_ERROR")), 1, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE2_ERROR")), 2, rowindex++);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_ERROR")), 0, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE1_ERROR")), 1, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE2_ERROR")), 2, rowindex++);
 
 
         grid.add(createLedIndicator(device.getErrorCommunicationStatus(),Color.RED), 0, rowindex);
@@ -87,7 +86,7 @@ public class FavoritPanel extends HBox {
         grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getValidateErrorCommandLine1()), 1, rowindex);
         grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getValidateErrorCommandLine2()), 2, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getString("LAST_COMMUNICATE_TIME")), 0, rowindex++);
+        grid.add(new Label(I18N.COMMON.getString("LAST_COMMUNICATE_TIME")), 0, rowindex++);
 
         grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getRefreshCommand()), 0, rowindex);
         grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getValidateAllErrorCommand()), 2, rowindex);
@@ -95,7 +94,7 @@ public class FavoritPanel extends HBox {
     }
 
     private void  intiDIPane(){
-        final Tab initTab=new Tab(I18N_monitor.COMMON.getStringEx("DIGITAL IN"));
+        final Tab initTab=new Tab(I18N.getLocalizedString("DIGITAL IN"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -106,19 +105,19 @@ public class FavoritPanel extends HBox {
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
             int rowIndex = 0;
-            setDIChanelControl(grid, device.getDigitalInChanelN1(), I18N_monitor.COMMON.getStringEx("DI1"), rowIndex++, 0);
-            setDIChanelControl(grid, device.getDigitalInChanelN2(), I18N_monitor.COMMON.getStringEx("DI2"), rowIndex++, 0);
-            setDIChanelControl(grid, device.getDigitalInChanelN3(), I18N_monitor.COMMON.getStringEx("DI3"), rowIndex++, 0);
-            setDIChanelControl(grid, device.getDigitalInChanelN4(), I18N_monitor.COMMON.getStringEx("DI4"), rowIndex++, 0);
-            setDIChanelControl(grid, device.getDigitalInChanelN5(), I18N_monitor.COMMON.getStringEx("DI5"), rowIndex++, 0);
-            setDIChanelControl(grid, device.getDigitalInChanelN6(), I18N_monitor.COMMON.getStringEx("DI6"), rowIndex++, 0);
+            setDIChanelControl(grid, device.getDigitalInChanelN1(), I18N.getLocalizedString("DI1"), rowIndex++, 0);
+            setDIChanelControl(grid, device.getDigitalInChanelN2(), I18N.getLocalizedString("DI2"), rowIndex++, 0);
+            setDIChanelControl(grid, device.getDigitalInChanelN3(), I18N.getLocalizedString("DI3"), rowIndex++, 0);
+            setDIChanelControl(grid, device.getDigitalInChanelN4(), I18N.getLocalizedString("DI4"), rowIndex++, 0);
+            setDIChanelControl(grid, device.getDigitalInChanelN5(), I18N.getLocalizedString("DI5"), rowIndex++, 0);
+            setDIChanelControl(grid, device.getDigitalInChanelN6(), I18N.getLocalizedString("DI6"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllDI()), 0, rowIndex++,3,1);
             initTab.setContent(grid);
         });
     }
 
     private void  intiDOPane(){
-        final Tab initTab=new Tab(I18N_monitor.COMMON.getStringEx("DIGITAL OUT"));
+        final Tab initTab=new Tab(I18N.getLocalizedString("DIGITAL OUT"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -129,12 +128,12 @@ public class FavoritPanel extends HBox {
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
             int rowIndex = 0;
-            setDOChanelControl(grid, device.getDigitalOutChanelN1(), I18N_monitor.COMMON.getStringEx("DO1"), rowIndex++, 0);
-            setDOChanelControl(grid, device.getDigitalOutChanelN2(), I18N_monitor.COMMON.getStringEx("DO2"), rowIndex++, 0);
-            setDOChanelControl(grid, device.getDigitalOutChanelN3(), I18N_monitor.COMMON.getStringEx("DO3"), rowIndex++, 0);
-            setDOChanelControl(grid, device.getDigitalOutChanelN4(), I18N_monitor.COMMON.getStringEx("DO4"), rowIndex++, 0);
-            setDOChanelControl(grid, device.getDigitalOutChanelN5(), I18N_monitor.COMMON.getStringEx("DO5"), rowIndex++, 0);
-            setDOChanelControl(grid, device.getDigitalOutChanelN6(), I18N_monitor.COMMON.getStringEx("DO6"), rowIndex++, 0);
+            setDOChanelControl(grid, device.getDigitalOutChanelN1(), I18N.getLocalizedString("DO1"), rowIndex++, 0);
+            setDOChanelControl(grid, device.getDigitalOutChanelN2(), I18N.getLocalizedString("DO2"), rowIndex++, 0);
+            setDOChanelControl(grid, device.getDigitalOutChanelN3(), I18N.getLocalizedString("DO3"), rowIndex++, 0);
+            setDOChanelControl(grid, device.getDigitalOutChanelN4(), I18N.getLocalizedString("DO4"), rowIndex++, 0);
+            setDOChanelControl(grid, device.getDigitalOutChanelN5(), I18N.getLocalizedString("DO5"), rowIndex++, 0);
+            setDOChanelControl(grid, device.getDigitalOutChanelN6(), I18N.getLocalizedString("DO6"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllDO()), 0, rowIndex, 3, 1);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getWriteAllDO()), 4, rowIndex++,3,1);
             initTab.setContent(grid);
@@ -142,7 +141,7 @@ public class FavoritPanel extends HBox {
     }
 
     private void intiAOPane(){
-        final Tab initTab=new Tab(I18N_monitor.COMMON.getStringEx("ANALOG OUT"));
+        final Tab initTab=new Tab(I18N.getLocalizedString("ANALOG OUT"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -153,10 +152,10 @@ public class FavoritPanel extends HBox {
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
             int rowIndex = 0;
-            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN1(), I18N_monitor.COMMON.getStringEx("AO1"), rowIndex++, 0);
-            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN2(), I18N_monitor.COMMON.getStringEx("AO2"), rowIndex++, 0);
-            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN3(), I18N_monitor.COMMON.getStringEx("AO3"), rowIndex++, 0);
-            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN4(), I18N_monitor.COMMON.getStringEx("AO4"), rowIndex++, 0);
+            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN1(), I18N.getLocalizedString("AO1"), rowIndex++, 0);
+            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN2(), I18N.getLocalizedString("AO2"), rowIndex++, 0);
+            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN3(), I18N.getLocalizedString("AO3"), rowIndex++, 0);
+            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN4(), I18N.getLocalizedString("AO4"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllAO()), 0, rowIndex,3,1);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getWriteAllAO()), 2, rowIndex++,3,1);
             initTab.setContent(grid);
@@ -164,7 +163,7 @@ public class FavoritPanel extends HBox {
     }
 
     private void intiAIPane(){
-        final Tab initTab=new Tab(I18N_monitor.COMMON.getStringEx("ANALOG IN"));
+        final Tab initTab=new Tab(I18N.getLocalizedString("ANALOG IN"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -175,17 +174,17 @@ public class FavoritPanel extends HBox {
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
             int rowIndex = 0;
-            setAIChanelControl(grid, device.getAnalogInChanelN1(), I18N_monitor.COMMON.getStringEx("AI1"), rowIndex++, 0);
-            setAIChanelControl(grid, device.getAnalogInChanelN2(), I18N_monitor.COMMON.getStringEx("AI2"), rowIndex++, 0);
-            setAIChanelControl(grid, device.getAnalogInChanelN3(), I18N_monitor.COMMON.getStringEx("AI3"), rowIndex++, 0);
-            setAIChanelControl(grid, device.getAnalogInChanelN4(), I18N_monitor.COMMON.getStringEx("AI4"), rowIndex++, 0);
+            setAIChanelControl(grid, device.getAnalogInChanelN1(), I18N.getLocalizedString("AI1"), rowIndex++, 0);
+            setAIChanelControl(grid, device.getAnalogInChanelN2(), I18N.getLocalizedString("AI2"), rowIndex++, 0);
+            setAIChanelControl(grid, device.getAnalogInChanelN3(), I18N.getLocalizedString("AI3"), rowIndex++, 0);
+            setAIChanelControl(grid, device.getAnalogInChanelN4(), I18N.getLocalizedString("AI4"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllAI()), 0, rowIndex++, 3, 1);
             initTab.setContent(grid);
         });
     }
 
     private void intiLinePane(){
-        final Tab initTab=new Tab(I18N_monitor.COMMON.getStringEx("LINE CONTROL"));
+        final Tab initTab=new Tab(I18N.getLocalizedString("LINE CONTROL"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -196,7 +195,7 @@ public class FavoritPanel extends HBox {
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
             int rowIndex = 0;
-            setLineSelectChanelControl(grid, device.getLineSelect(), I18N_monitor.COMMON.getStringEx("LINE_CONTROL"), rowIndex++, 0);
+            setLineSelectChanelControl(grid, device.getLineSelect(), I18N.getLocalizedString("LINE_CONTROL"), rowIndex++, 0);
             initTab.setContent(grid);
         });
     }
@@ -210,12 +209,12 @@ public class FavoritPanel extends HBox {
         grid.setVgap(10);
         grid.setPadding(new Insets(10, 10, 10, 10));
         int rowIndex = 0;
-        setLineSelectChanelControlImid(grid, device.getLineSelect(), I18N_monitor.COMMON.getStringEx("LINE_CONTROL"), rowIndex++, 0);
+        setLineSelectChanelControlImid(grid, device.getLineSelect(), I18N.getLocalizedString("LINE_CONTROL"), rowIndex++, 0);
         return grid;
     }
 
     private void intiDeviceConfigPane(){
-        final Tab initTab=new Tab(I18N_monitor.COMMON.getStringEx("SETUP"));
+        final Tab initTab=new Tab(I18N.getLocalizedString("SETUP"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -226,12 +225,12 @@ public class FavoritPanel extends HBox {
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
             int rowindex = 0;
-            grid.add(new Label(I18N_monitor.COMMON.getStringEx("DEVICE ADDRESS")), 0, rowindex);
+            grid.add(new Label(I18N.getLocalizedString("DEVICE ADDRESS")), 0, rowindex);
             grid.add(createAddressSelect(device.getConfigdeviceAddress()), 1, rowindex);
             grid.add(createReReadButton(device.getConfigdeviceAddress()), 2, rowindex);
             grid.add(createReWriteButton(device.getConfigdeviceAddress()), 3, rowindex++);
 
-            grid.add(new Label(I18N_monitor.COMMON.getStringEx("DEVICE SPEED")), 0, rowindex);
+            grid.add(new Label(I18N.getLocalizedString("DEVICE SPEED")), 0, rowindex);
             grid.add(createSpeedSelect(device.getConfigdeviceSpeed()), 1, rowindex);
             grid.add(createReReadButton(device.getConfigdeviceSpeed()), 2, rowindex);
             grid.add(createReWriteButton(device.getConfigdeviceSpeed()), 3, rowindex);
@@ -358,19 +357,19 @@ public class FavoritPanel extends HBox {
     }
 
     private Button createBoolChangeCommandButton(SoftBoolProperty property){
-        Button button=new Button(I18N_monitor.COMMON.getStringEx("CHANGE"));
+        Button button=new Button(I18N.getLocalizedString("CHANGE"));
         button.setOnAction(event->property.invertValue());
         return button;
     }
 
     private Button createReReadButton(AbstractProperty command){
-        Button button=new Button(I18N_monitor.COMMON.getStringEx("READ"));
+        Button button=new Button(I18N.getLocalizedString("READ"));
         button.setOnAction(event->command.readValueRequest());
         return button;
     }
 
     private Button createReWriteButton(AbstractProperty command){
-        Button button=new Button(I18N_monitor.COMMON.getStringEx("SAVE"));
+        Button button=new Button(I18N.getLocalizedString("SAVE"));
         button.setOnAction(event->command.writeValueRequest());
         return button;
     }
@@ -384,6 +383,8 @@ public class FavoritPanel extends HBox {
 
     private SlideCheckBox createSlideIndicator(SoftBoolProperty property){
         SlideCheckBox led = new SlideCheckBox();
+        led.setScaleX(0.7);
+        led.setScaleY(0.7);
         led.setPrefSize(100, 50);
         led.selectedProperty().bindBidirectional(new BooleanPropertyFXAdapter(property));
         return led;

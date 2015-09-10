@@ -10,8 +10,8 @@ import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.timeaction.PropertyTimer;
 import ua.pp.fairwind.javafx.panels.LineInfoBar;
-import ua.pp.fairwind.javafx.panels.SimpleDeviceConfigPanel;
 import ua.pp.fairwind.javafx.panels.devices.FavoritPanel;
+import ua.pp.fairwind.javafx.panels.devices.SimpleDeviceConfigPanel;
 
 /**
  * Created by Сергей on 27.08.2015.

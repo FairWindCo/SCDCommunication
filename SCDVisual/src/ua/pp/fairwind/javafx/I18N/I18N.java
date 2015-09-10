@@ -1,12 +1,14 @@
-package ua.pp.fairwind.communications.internatianalisation;
+package ua.pp.fairwind.javafx.I18N;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public enum I18N {
-	APPLICATION("ua.pp.fairwind.communications.internatianalisation.application",null),
-	COMMON("ua.pp.fairwind.communications.internatianalisation.common",new MyResources());
+	COMMON_RESOURCE("images.application",null),
+	APPLICATION_RESOURCE("images.application",null),
+	APPLICATION("ua.pp.fairwind.javafx.internatianalisation.application",null),
+	COMMON("ua.pp.fairwind.communications.javafx.common",new ua.pp.fairwind.javafx.I18N.MyResources());
 
 
 	final private ResourceBundle resourceBundle;
@@ -24,8 +26,8 @@ public enum I18N {
 
 		}
 		resourceBundle=resource;
-	}
-
+	}  
+	
 
 	public String getString(String key) {
 		if(resourceBundle==null)return key;

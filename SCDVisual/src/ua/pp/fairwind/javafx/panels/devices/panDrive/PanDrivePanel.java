@@ -25,12 +25,12 @@ import ua.pp.fairwind.io.javafx.propertys.LongPropertyFXAdapter;
 import ua.pp.fairwind.io.javafx.propertys.ShortPropertyFXAdapter;
 import ua.pp.fairwind.io.javafx.propertys.special.LongPropertyFXAdapterSpec;
 import ua.pp.fairwind.io.javafx.propertys.special.ShortPropertyFXAdapterSpec;
-import ua.pp.fairwind.javafx.I18N.I18N_monitor;
+import ua.pp.fairwind.javafx.I18N.I18N;
 import ua.pp.fairwind.javafx.controls.slidecheckbox.SlideCheckBox;
-import ua.pp.fairwind.javafx.panels.DeviceConfigPanel;
+import ua.pp.fairwind.javafx.panels.devices.DeviceConfigPanel;
 import ua.pp.fairwind.javafx.panels.dialogs.PropertyConfigDialog;
 
-import static ua.pp.fairwind.javafx.panels.DeviceConfigPanel.createAddressSelect;
+import static ua.pp.fairwind.javafx.panels.devices.DeviceConfigPanel.createAddressSelect;
 
 
 /**
@@ -47,7 +47,7 @@ public class PanDrivePanel extends HBox {
     }
 
     private void  intiStatusPane(){
-        final Tab initTab=new Tab(I18N_monitor.COMMON.getStringEx("STASUS"));
+        final Tab initTab=new Tab(I18N.getLocalizedString("STASUS"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         initTab.setContent(createDeviceStatusPane(device));
@@ -63,20 +63,20 @@ public class PanDrivePanel extends HBox {
         grid.setId("formGrid");
         grid.add(new Label(device.getDeviceType() + " : " + device.getName() + " UUID=" + device.getUUID()), 0, rowindex++, 3, 1);
         grid.add(new Label(device.getDescription()),0,rowindex++,3,1);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_ADDRES")), 0, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_ADDRES")), 0, rowindex);
         grid.add(createAddressSelect(device.getDeviceAddressProperty()), 1, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_STATUS")), 0, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE1_STATUS")), 1, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE2_STATUS")), 2, rowindex++);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_STATUS")), 0, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE1_STATUS")), 1, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE2_STATUS")), 2, rowindex++);
 
         grid.add(createLedIndicator(device.getLastCommunicationStatus(),Color.GREENYELLOW), 0, rowindex);
         grid.add(createLedIndicator(device.getLastCommunicationStatusLine1(),Color.GREENYELLOW), 1, rowindex);
         grid.add(createLedIndicator(device.getLastCommunicationStatusLine2(),Color.GREENYELLOW), 2, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_ERROR")), 0, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE1_ERROR")), 1, rowindex);
-        grid.add(new Label(I18N_monitor.COMMON.getString("DEVICE_LINE2_ERROR")), 2, rowindex++);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_ERROR")), 0, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE1_ERROR")), 1, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("DEVICE_LINE2_ERROR")), 2, rowindex++);
 
 
         grid.add(createLedIndicator(device.getErrorCommunicationStatus(),Color.RED), 0, rowindex);
@@ -87,7 +87,7 @@ public class PanDrivePanel extends HBox {
         grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getValidateErrorCommandLine1()), 1, rowindex);
         grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getValidateErrorCommandLine2()), 2, rowindex++);
 
-        grid.add(new Label(I18N_monitor.COMMON.getString("LAST_COMMUNICATE_TIME")), 0, rowindex++);
+        grid.add(new Label(I18N.COMMON.getString("LAST_COMMUNICATE_TIME")), 0, rowindex++);
 
         grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getRefreshCommand()), 0, rowindex);
         grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getValidateAllErrorCommand()), 2, rowindex);
@@ -95,7 +95,7 @@ public class PanDrivePanel extends HBox {
     }
 
     private void intiDeviceControlPane(){
-        final Tab initTab=new Tab(I18N_monitor.COMMON.getStringEx("ANALOG OUT"));
+        final Tab initTab=new Tab(I18N.getLocalizedString("DEVICE VALUE"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -106,15 +106,15 @@ public class PanDrivePanel extends HBox {
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
             int rowIndex = 0;
-            /*rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN1(), I18N_monitor.COMMON.getStringEx("AO1"), rowIndex++, 0);
-            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN2(), I18N_monitor.COMMON.getStringEx("AO2"), rowIndex++, 0);
-            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN3(), I18N_monitor.COMMON.getStringEx("AO3"), rowIndex++, 0);
-            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN4(), I18N_monitor.COMMON.getStringEx("AO4"), rowIndex++, 0);
+            /*rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN1(), I18N.COMMON.getStringEx("AO1"), rowIndex++, 0);
+            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN2(), I18N.COMMON.getStringEx("AO2"), rowIndex++, 0);
+            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN3(), I18N.COMMON.getStringEx("AO3"), rowIndex++, 0);
+            rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN4(), I18N.COMMON.getStringEx("AO4"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllAO()), 0, rowIndex, 3, 1);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getWriteAllAO()), 2, rowIndex++,3,1);/**/
-            rowIndex=setLongSpeedChanelControl(grid, device.getSpeed(), I18N_monitor.COMMON.getStringEx("SPEED"), rowIndex++, 0);
-            rowIndex=setLongChanelControl(grid, device.getPosition(), I18N_monitor.COMMON.getStringEx("POSITION"), rowIndex++, 0);
-            rowIndex=setLongChanelControl(grid, device.getStep(), I18N_monitor.COMMON.getStringEx("STEP"), rowIndex++, 0);
+            rowIndex=setLongSpeedChanelControl(grid, device.getSpeed(), I18N.getLocalizedString("SPEED"), rowIndex++, 0);
+            rowIndex=setLongChanelControl(grid, device.getPosition(), I18N.getLocalizedString("POSITION"), rowIndex++, 0);
+            rowIndex=setLongChanelControl(grid, device.getStep(), I18N.getLocalizedString("STEP"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getRotateLeft()), 0, rowIndex);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getMotorStop()), 1, rowIndex);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getRotateRight()), 2, rowIndex++);
@@ -123,7 +123,7 @@ public class PanDrivePanel extends HBox {
     }
 
     private void intiDeviceConfigPane(){
-        final Tab initTab=new Tab(I18N_monitor.COMMON.getStringEx("SETUP"));
+        final Tab initTab=new Tab(I18N.getLocalizedString("SETUP"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -134,33 +134,33 @@ public class PanDrivePanel extends HBox {
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
             int rowindex = 0;
-            grid.add(new Label(I18N_monitor.COMMON.getStringEx("DEVICE ADDRESS")), 0, rowindex);
+            grid.add(new Label(I18N.getLocalizedString("DEVICE ADDRESS")), 0, rowindex);
             grid.add(createAddressSelect(device.getRsadress()), 1, rowindex);
             grid.add(createReReadButton(device.getRsadress()), 2, rowindex);
             grid.add(createReWriteButton(device.getRsadress()), 3, rowindex++);
 
-            grid.add(new Label(I18N_monitor.COMMON.getStringEx("DEVICE SPEED")), 0, rowindex);
+            grid.add(new Label(I18N.getLocalizedString("DEVICE SPEED")), 0, rowindex);
             grid.add(createSpeedSelect(device.getRsspeed()), 1, rowindex);
             grid.add(createReReadButton(device.getRsspeed()), 2, rowindex);
             grid.add(createReWriteButton(device.getRsspeed()), 3, rowindex++);
 
-            grid.add(new Label(I18N_monitor.COMMON.getStringEx("DEVICE HOST ADDRESS")), 0, rowindex);
+            grid.add(new Label(I18N.getLocalizedString("DEVICE HOST ADDRESS")), 0, rowindex);
             grid.add(createAddressSelect(device.getSerialHostAdress()), 1, rowindex);
             grid.add(createReReadButton(device.getSerialHostAdress()), 2, rowindex);
             grid.add(createReWriteButton(device.getSerialHostAdress()), 3, rowindex++);
 
-            grid.add(new Label(I18N_monitor.COMMON.getStringEx("DEVICE BROADCAST ADDRESS")), 0, rowindex);
+            grid.add(new Label(I18N.getLocalizedString("DEVICE BROADCAST ADDRESS")), 0, rowindex);
             grid.add(createAddressSelect(device.getSerialSecondAdress()), 1, rowindex);
             grid.add(createReReadButton(device.getSerialSecondAdress()), 2, rowindex);
             grid.add(createReWriteButton(device.getSerialSecondAdress()), 3, rowindex++);
 
 
-            setDOChanelControl(grid, device.getAutoStartTMCL(), I18N_monitor.COMMON.getStringEx("AutoStartTMCL"), rowindex++, 0);
-            setDOChanelControl(grid, device.getConfigurationEpromLock(), I18N_monitor.COMMON.getStringEx("ConfigurationEpromLock"), rowindex++, 0);
-            setDOChanelControl(grid, device.getEndSwichPolarity(), I18N_monitor.COMMON.getStringEx("EndSwichPolarity"), rowindex++, 0);
-            setDIChanelControl(grid, device.getDowloadMode(), I18N_monitor.COMMON.getStringEx("DowloadMode"), rowindex++, 0);
-            rowindex=setLongChanelControl(grid, device.getTickTimer(), I18N_monitor.COMMON.getStringEx("Ticktimer"), rowindex, 0);
-            rowindex=setLongChanelControl(grid, device.getRandomNumber(), I18N_monitor.COMMON.getStringEx("RANDOM"), rowindex, 0);
+            setDOChanelControl(grid, device.getAutoStartTMCL(), I18N.getLocalizedString("AutoStartTMCL"), rowindex++, 0);
+            setDOChanelControl(grid, device.getConfigurationEpromLock(), I18N.getLocalizedString("ConfigurationEpromLock"), rowindex++, 0);
+            setDOChanelControl(grid, device.getEndSwichPolarity(), I18N.getLocalizedString("EndSwichPolarity"), rowindex++, 0);
+            setDIChanelControl(grid, device.getDowloadMode(), I18N.getLocalizedString("DowloadMode"), rowindex++, 0);
+            rowindex=setLongChanelControl(grid, device.getTickTimer(), I18N.getLocalizedString("Ticktimer"), rowindex, 0);
+            rowindex=setLongChanelControl(grid, device.getRandomNumber(), I18N.getLocalizedString("RANDOM"), rowindex, 0);
             initTab.setContent(grid);
         });
     }
@@ -189,7 +189,7 @@ public class PanDrivePanel extends HBox {
         grid.add(createReReadButton(chanel), col++, rowindex);
         grid.add(createReWriteButton(chanel), col++, rowindex);
         grid.add(createConfigureProppearty(chanel), col++, rowindex++);
-        grid.add(createSliderControl(chanel, 0, Integer.MAX_VALUE, Integer.MAX_VALUE/100, 1000, 10), 0, rowindex++,5,1);
+        grid.add(createSliderControl(chanel, 0, Integer.MAX_VALUE, Integer.MAX_VALUE/1000, 10000000, 10), 0, rowindex++,5,1);
         return rowindex;
     }
 
@@ -257,19 +257,19 @@ public class PanDrivePanel extends HBox {
     }
 
     private Button createBoolChangeCommandButton(SoftBoolProperty property){
-        Button button=new Button(I18N_monitor.COMMON.getStringEx("CHANGE"));
+        Button button=new Button(I18N.getLocalizedString("CHANGE"));
         button.setOnAction(event->property.invertValue());
         return button;
     }
 
     private Button createReReadButton(AbstractProperty command){
-        Button button=new Button(I18N_monitor.COMMON.getStringEx("READ"));
+        Button button=new Button(I18N.getLocalizedString("READ"));
         button.setOnAction(event->command.readValueRequest());
         return button;
     }
 
     private Button createReWriteButton(AbstractProperty command){
-        Button button=new Button(I18N_monitor.COMMON.getStringEx("SAVE"));
+        Button button=new Button(I18N.getLocalizedString("SAVE"));
         button.setOnAction(event -> command.writeValueRequest());
         return button;
     }
@@ -283,7 +283,8 @@ public class PanDrivePanel extends HBox {
 
     private SlideCheckBox createSlideIndicator(SoftBoolProperty property){
         SlideCheckBox led = new SlideCheckBox();
-        led.setPrefSize(100, 50);
+        led.setScaleX(0.4);
+        led.setScaleY(0.4);
         led.selectedProperty().bindBidirectional(new BooleanPropertyFXAdapter(property));
         return led;
     }

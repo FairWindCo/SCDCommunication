@@ -3,12 +3,15 @@ package ua.pp.fairwind.communications.elementsdirecotry;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
 import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.devices.ImitatorDevice;
 import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
+import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -57,10 +60,6 @@ public class SystemElementDirectory extends SystemEllement{
         }
     }
 
-    public void addElemnt(AbstractProperty element){
-        elements.put(element.getUUID(), element);
-        propertyes.put(element.getUUID(), element);
-    }
 
     public void addElemnts(AbstractProperty... elements){
         for(AbstractProperty property:elements){
@@ -86,11 +85,9 @@ public class SystemElementDirectory extends SystemEllement{
         }
     }
 
-
-    public void addElemnt(DeviceInterface element){
+    public void addElemntWithProperty(DeviceInterface element){
         if(element!=null) {
-            elements.put(element.getUUID(), element);
-            devices.put(element.getUUID(), element);
+            addElemnt(element);
             AbstractProperty[] propertyes=element.getPropertys();
             AbstractProperty[] commands=element.getCommands();
             if(propertyes!=null){
@@ -102,18 +99,8 @@ public class SystemElementDirectory extends SystemEllement{
         }
     }
 
-    public void addElemnt(LineInterface element){
-        elements.put(element.getUUID(), element);
-        lines.put(element.getUUID(), element);
-    }
 
-    public void addElemnt(SystemElementDirectory element){
-        elements.put(element.getUUID(), element);
-        subsystems.put(element.getUUID(), element);
-    }
-
-
-    public void addremoveElemnt(ElementInterface element){
+    public void removeElemnt(ElementInterface element){
         elements.remove(element.getUUID());
         if(element instanceof AbstractProperty){
             propertyes.remove(element.getUUID());
@@ -185,12 +172,88 @@ public class SystemElementDirectory extends SystemEllement{
         return lines.values();
     }
 
+    public List<LineInterface> getListLines(){
+        return new ArrayList<>(lines.values());
+    }
+
     public Collection<DeviceInterface> getAllDevices(){
         return devices.values();
     }
 
     public void setAllEventListener(ElementEventListener listener){
         elements.values().forEach(element -> element.addEventListener(listener));
+    }
+
+    protected void addListenerDeepElements(ElementInterface element,ElementEventListener listener){
+        element.addEventListener(listener);
+
+        if (element instanceof DeviceInterface) {
+            AbstractProperty[] properties=((DeviceInterface)element).getPropertys();
+            if(properties!=null&&properties.length>0){
+                for(AbstractProperty property:properties){
+                    property.addEventListener(listener);
+                }
+            }
+            AbsractCommandProperty[] commands=((DeviceInterface)element).getCommands();
+            if(commands!=null&&commands.length>0){
+                for(AbsractCommandProperty command:commands){
+                    command.addEventListener(listener);
+                }
+            }
+        }
+        if (element instanceof LineInterface) {
+            ImitatorDevice[] devices=((LineInterface)element).getDeivicesForService();
+            if(devices!=null&&devices.length>0){
+                for(DeviceInterface device:devices) {
+                    addListenerDeepElements(device,listener);
+                }
+            }
+        }
+        if (element instanceof SystemElementDirectory) {
+            ((SystemElementDirectory)element).addDeepAllEventListener(listener);
+        }
+    }
+
+    protected void removeListenerDeepElements(ElementInterface element,ElementEventListener listener){
+        element.removeEventListener(listener);
+
+        if (element instanceof DeviceInterface) {
+            AbstractProperty[] properties=((DeviceInterface)element).getPropertys();
+            if(properties!=null&&properties.length>0){
+                for(AbstractProperty property:properties){
+                    property.removeEventListener(listener);
+                }
+            }
+            AbsractCommandProperty[] commands=((DeviceInterface)element).getCommands();
+            if(commands!=null&&commands.length>0){
+                for(AbsractCommandProperty command:commands){
+                    command.removeEventListener(listener);
+                }
+            }
+        }
+        if (element instanceof LineInterface) {
+            ImitatorDevice[] devices=((LineInterface)element).getDeivicesForService();
+            if(devices!=null&&devices.length>0){
+                for(DeviceInterface device:devices) {
+                    removeListenerDeepElements(device, listener);
+                }
+            }
+        }
+        if (element instanceof SystemElementDirectory) {
+            ((SystemElementDirectory)element).removeDeepAllEventListener(listener);
+        }
+    }
+
+    public void addDeepAllEventListener(ElementEventListener listener){
+        elements.values().forEach(element -> {
+            addListenerDeepElements(element, listener);
+        });
+    }
+
+    public void removeDeepAllEventListener(ElementEventListener listener){
+        elements.values().forEach(element -> {
+            removeListenerDeepElements(element, listener);
+        });
     }
 
     public void setAllLinesEventListener(ElementEventListener listener){
