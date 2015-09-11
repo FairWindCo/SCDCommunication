@@ -1,6 +1,7 @@
 package ua.pp.fairwind.javafx.panels.devices;
 
 import eu.hansolo.enzo.canvasled.Led;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -14,10 +15,13 @@ import ua.pp.fairwind.communications.lines.AbstractLine;
 import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
+import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
 import ua.pp.fairwind.io.javafx.propertys.BooleanPropertyFXAdapter;
 import ua.pp.fairwind.javafx.I18N.I18N;
 import ua.pp.fairwind.javafx.panels.dialogs.LineParametersDialog;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +31,7 @@ public class SimpleDeviceConfigPanel extends HBox {
     final private RSLineDevice device;
     final private List<LineInterface> lines;
     final private LineChange action;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
     private volatile LineInterface selectedLine;
 
     public interface LineChange{
@@ -82,22 +87,25 @@ public class SimpleDeviceConfigPanel extends HBox {
         grid.add(new Label(device.getDeviceType() + " : " + device.getName()), 0, rowindex++, 3, 1);
         grid.add(new Label(I18N.COMMON.getString("DEVICE_ADDRES")), 0, rowindex);
         grid.add(DeviceConfigPanel.createAddressSelect(device.getDeviceAddressProperty()), 1, rowindex);
+        if(lines!=null && !lines.isEmpty()){
+            grid.add(new Label(I18N.getLocalizedString("SELECT_LINE_PRIMARY:")), 3, rowindex);
+            grid.add(createLineComboBoxP(), 4, rowindex);
+            grid.add(new Label(I18N.getLocalizedString("SELECT_LINE_SECONDARY:")), 3, rowindex+1);
+            grid.add(createLineComboBoxS(), 4, rowindex+1);
+        }
         grid.add(createConfigureButton(), 2, rowindex++);
         grid.add(new Label(I18N.COMMON.getString("DEVICE_STATUS")), 0, rowindex);
-        grid.add(createLedIndicator(device.getLastCommunicationStatus(),Color.GREENYELLOW), 1, rowindex);
+        grid.add(createLedIndicator(device.getLastCommunicationStatus(), Color.GREENYELLOW), 1, rowindex);
         grid.add(createLedIndicator(device.getErrorCommunicationStatus(),Color.RED), 2, rowindex++);
-        grid.add(new Label(I18N.COMMON.getString("LAST_COMMUNICATE_TIME")), 0, rowindex++);
-        if(lines!=null && !lines.isEmpty()){
-            grid.add(new Label(I18N.getLocalizedString("SELECT_LINE_PRIMARY:")), 0, rowindex);
-            grid.add(createLineComboBoxP(), 1, rowindex++,2,1);
-            grid.add(new Label(I18N.getLocalizedString("SELECT_LINE_SECONDARY:")), 0, rowindex);
-            grid.add(createLineComboBoxS(), 1, rowindex++,2,1);
-        }
+        grid.add(new Label(I18N.COMMON.getString("LAST_COMMUNICATE_TIME")), 0, rowindex);
+        grid.add(createTimeLabel(device.getDeviceLastExchangeTimeProperty()), 1, rowindex);
+        grid.add(new Label(I18N.COMMON.getString("LAST_TRY_COMMUNICATE_TIME")), 2, rowindex);
+        grid.add(createTimeLabel(device.getDeviceLastTryExchangeProperty()), 3, rowindex++);
     }
 
     private Button createConfigureButton(){
         Button button=new Button(I18N.COMMON.getString("CONFIG_DEVICE_DIALOG"));
-                button.setOnAction(action->LineParametersDialog.getSerialLineParameterDialog(device,device.getLineParameters()));
+                button.setOnAction(action->LineParametersDialog.getSerialLineParameterDialog(device));
         return button;
     }
 
@@ -116,6 +124,7 @@ public class SimpleDeviceConfigPanel extends HBox {
 
     private ComboBox<LineInterface> createLineComboBoxP(){
         ComboBox<LineInterface> combo=new ComboBox<>();
+        combo.setPrefWidth(150);
         if(lines!=null) combo.getItems().addAll(lines);
         combo.setOnAction(a -> {
             LineInterface selected = combo.getValue();
@@ -127,6 +136,7 @@ public class SimpleDeviceConfigPanel extends HBox {
     }
     private ComboBox<LineInterface> createLineComboBoxS(){
         ComboBox<LineInterface> combo=new ComboBox<>();
+        combo.setPrefWidth(150);
         if(lines!=null) combo.getItems().addAll(lines);
         combo.setOnAction(a->{
             LineInterface selected=combo.getValue();
@@ -135,5 +145,35 @@ public class SimpleDeviceConfigPanel extends HBox {
         });
         combo.setValue(device.getSecondaryLine());
         return combo;
+    }
+
+    private Label createTimeLabel(SoftLongProperty property){
+        Label lbl=new Label();
+        property.addChangeEventListener(event -> {
+            Object newVal = event.getNewValue();
+            String txt;
+            if (newVal != null) {
+                long datetime = (Long) newVal;
+                Date time = new Date(datetime);
+                txt = dateFormat.format(time);
+            } else {
+                txt = "";
+            }
+            executeInJavaFXThread(() -> lbl.setText(txt));
+
+        });
+        return lbl;
+    }
+
+    static public void executeInJavaFXThread(Runnable acriton){
+        if(Platform.isFxApplicationThread()){
+            acriton.run();
+        } else {
+            try{
+                Platform.runLater(acriton);
+            } catch (IllegalStateException ex){
+                acriton.run();
+            }
+        }
     }
 }

@@ -1,16 +1,14 @@
 package ua.pp.fairwind.javafx.panels.dialogs;
 
 import javafx.geometry.Insets;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 import jssc.SerialPort;
 import ua.pp.fairwind.communications.devices.SerialDeviceInterface;
 import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
 import ua.pp.fairwind.communications.lines.LineParameters;
+import ua.pp.fairwind.javafx.guiElements.editors.IntegerInputText;
 
 import java.util.Optional;
 
@@ -19,11 +17,12 @@ import java.util.Optional;
  */
 public class LineParametersDialog {
 
-    public static void getSerialLineParameterDialog(SerialDeviceInterface serialDevice,LineParameters curent){
+    public static void getSerialLineParameterDialog(SerialDeviceInterface serialDevice){
+        if(serialDevice==null)return;
         Dialog<LineParameters> dialog = new Dialog<>();
         dialog.setTitle("Line Parameters Dialog");
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
+        LineParameters curent=serialDevice.getLineParameters();
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
@@ -34,15 +33,54 @@ public class LineParametersDialog {
         int stopbit=SerialPort.STOPBITS_2;
         int parity=SerialPort.PARITY_NONE;
         int floatcontrol=SerialPort.FLOWCONTROL_NONE;
-        if(curent!=null && curent.getLineParameter(LineParameters.ParametersName.RS_SPEED.name())!=null){
-            speed=(int)curent.getLineParameter(LineParameters.ParametersName.RS_SPEED.name());
+        boolean rts=false;
+        boolean dts=false;
+        boolean clearRX=false;
+        boolean clearTX=false;
+        if(curent!=null && curent.getLineParameter(LineParameters.RS_SPEED)!=null){
+            speed=(int)curent.getLineParameter(LineParameters.RS_SPEED);
+        }
+        if(curent!=null && curent.getLineParameter(LineParameters.RS_DATABIT)!=null){
+            databit=(int)curent.getLineParameter(LineParameters.RS_DATABIT);
+        }
+        if(curent!=null && curent.getLineParameter(LineParameters.RS_STOBIT)!=null){
+            stopbit=(int)curent.getLineParameter(LineParameters.RS_STOBIT);
+        }
+        if(curent!=null && curent.getLineParameter(LineParameters.RS_PARITY)!=null){
+            parity=(int)curent.getLineParameter(LineParameters.RS_PARITY);
+        }
+        if(curent!=null && curent.getLineParameter(LineParameters.RS_FLOWCONTROL)!=null){
+            floatcontrol=(int)curent.getLineParameter(LineParameters.RS_FLOWCONTROL);
+        }
+
+        if(curent!=null && curent.getLineParameter(LineParameters.RS_DTR)!=null){
+            dts=(boolean)curent.getLineParameter(LineParameters.RS_DTR);
+        }
+        if(curent!=null && curent.getLineParameter(LineParameters.RS_RTS)!=null){
+            rts=(boolean)curent.getLineParameter(LineParameters.RS_RTS);
+        }
+        if(curent!=null && curent.getLineParameter(LineParameters.RS_PURGE_RX)!=null){
+            clearRX=(boolean)curent.getLineParameter(LineParameters.RS_PURGE_RX);
+        }
+        if(curent!=null && curent.getLineParameter(LineParameters.RS_PURGE_TX)!=null){
+            clearTX=(boolean)curent.getLineParameter(LineParameters.RS_PURGE_TX);
         }
 
         ComboBox<Integer>rsspeed=createSpeedSelect(speed);
-        ComboBox<Integer>rsdata=createDataBitSelect(speed);
-        ComboBox<Integer>rsstop=createStopBitSelect(speed);
-        ComboBox<Integer>rsparity=createParitySelect(speed);
-        ComboBox<Integer>rsflow=createParitySelect(speed);
+        ComboBox<Integer>rsdata=createDataBitSelect(databit);
+        ComboBox<Integer>rsstop=createStopBitSelect(stopbit);
+        ComboBox<Integer>rsparity=createParitySelect(parity);
+        ComboBox<Integer>rsflow=createFlowControlSelect(floatcontrol);
+        CheckBox rsdtr=new CheckBox();
+        rsdtr.setSelected(dts);
+        CheckBox rsrts=new CheckBox();
+        rsrts.setSelected(rts);
+        CheckBox rsclearrx=new CheckBox();
+        rsclearrx.setSelected(clearRX);
+        CheckBox rscleartx=new CheckBox();
+        rscleartx.setSelected(clearTX);
+
+        IntegerInputText intEditor=new IntegerInputText((Integer)curent.getLineParameter(LineParameters.SUB_LINE_NUMBER),10);
         grid.add(new Label("BAUD RATE:"), 0, 0);
         grid.add(rsspeed, 1, 0);
         grid.add(new Label("DATA BIT:"), 0, 1);
@@ -53,6 +91,16 @@ public class LineParametersDialog {
         grid.add(rsparity, 1, 3);
         grid.add(new Label("FLOW CONTROL:"), 0, 4);
         grid.add(rsflow, 1, 4);
+        grid.add(new Label("SET DTR:"), 0, 5);
+        grid.add(rsdtr, 1, 5);
+        grid.add(new Label("SET RTS:"), 0, 6);
+        grid.add(rsrts, 1, 6);
+        grid.add(new Label("SET CLEAR RX:"), 2, 5);
+        grid.add(rsclearrx, 3, 5);
+        grid.add(new Label("SET CLEAR TX:"), 2, 6);
+        grid.add(rscleartx, 3, 6);
+        grid.add(new Label("SET LINE NUMBER:"), 0,7);
+        grid.add(intEditor, 1, 7);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -66,7 +114,7 @@ public class LineParametersDialog {
                 int sstopbit=rsstop.getSelectionModel().getSelectedItem()==null?SerialPort.STOPBITS_2:(int)rsstop.getSelectionModel().getSelectedItem();
                 int sparity=rsparity.getSelectionModel().getSelectedItem()==null?SerialPort.PARITY_NONE:(int)rsparity.getSelectionModel().getSelectedItem();
                 int sfloatcontrol=rsflow.getSelectionModel().getSelectedItem()==null?SerialPort.FLOWCONTROL_NONE:rsflow.getSelectionModel().getSelectedItem();
-                return new CommunicationLineParameters(sspeed,sdatabit,sparity,sstopbit,sfloatcontrol);
+                return new CommunicationLineParameters(sspeed,sdatabit,sparity,sstopbit,sfloatcontrol,rsdtr.isSelected(),rsrts.isSelected(),rsclearrx.isSelected(),rscleartx.isSelected());
             }
             return null;
         });
@@ -78,11 +126,11 @@ public class LineParametersDialog {
     public static ComboBox<Integer> createSpeedSelect(int sinitialValue){
         ComboBox<Integer> box=new ComboBox<>();
         box.getItems().addAll(new Integer(SerialPort.BAUDRATE_110),
-                new Integer(SerialPort.BAUDRATE_110),
                 new Integer(SerialPort.BAUDRATE_300),
                 new Integer(SerialPort.BAUDRATE_600),
                 new Integer(SerialPort.BAUDRATE_1200),
                 new Integer(SerialPort.BAUDRATE_4800),
+                new Integer(SerialPort.BAUDRATE_9600),
                 new Integer(SerialPort.BAUDRATE_14400),
                 new Integer(SerialPort.BAUDRATE_19200),
                 new Integer(SerialPort.BAUDRATE_38400),
@@ -160,6 +208,7 @@ public class LineParametersDialog {
                 }
             }
         });
+        box.getSelectionModel().select((Integer)sinitialValue);
         return box;
     }
 
@@ -203,6 +252,7 @@ public class LineParametersDialog {
                 }
             }
         });
+        box.getSelectionModel().select((Integer)sinitialValue);
         return box;
     }
 
@@ -223,7 +273,7 @@ public class LineParametersDialog {
                     case SerialPort.STOPBITS_2:
                         return "2 STOP BIT";
                     default:
-                        return "8 STOP BIT";
+                        return "2 STOP BIT";
                 }
             }
 
@@ -241,6 +291,7 @@ public class LineParametersDialog {
                 }
             }
         });
+        box.getSelectionModel().select((Integer)sinitialValue);
         return box;
     }
 
@@ -289,6 +340,7 @@ public class LineParametersDialog {
                 }
             }
         });
+        box.getSelectionModel().select((Integer)sinitialValue);
         return box;
     }
 
@@ -337,6 +389,7 @@ public class LineParametersDialog {
                 }
             }
         });
+        box.getSelectionModel().select((Integer)sinitialValue);
         return box;
     }
 }

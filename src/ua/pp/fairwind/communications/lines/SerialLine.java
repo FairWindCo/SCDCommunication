@@ -159,21 +159,27 @@ public class SerialLine extends AbstractLine {
         }
     }
 
-    protected boolean setLineParameters(LineParameters parameters){
+    protected boolean setepLineParameters(LineParameters parameters,LineParameters curentLineParameters,boolean alwaysSet){
         if(parameters!=null) {
-            int speed = (int) (parameters.getLineParameter("RS_SPEED")!=null?parameters.getLineParameter("RS_SPEED"):SerialPort.BAUDRATE_9600);
-            int databit = (int) (parameters.getLineParameter("RS_DATABIT")!=null?parameters.getLineParameter("RS_DATABIT"):SerialPort.DATABITS_8);
-            int stopbit = (int) (parameters.getLineParameter("RS_STOBIT")!=null?parameters.getLineParameter("RS_STOBIT"):SerialPort.STOPBITS_1);
-            int parity = (int) (parameters.getLineParameter("RS_PARITY")!=null?parameters.getLineParameter("RS_PARITY"):SerialPort.PARITY_NONE);
-            int flowcontrol = (int) (parameters.getLineParameter("RS_FLOWCONTROL")!=null?parameters.getLineParameter("RS_FLOWCONTROL"):SerialPort.FLOWCONTROL_NONE);
-            boolean dtr = (boolean) (parameters.getLineParameter("RS_DTR")!=null?parameters.getLineParameter("RS_DTR"):false);
-            boolean rts = (boolean) (parameters.getLineParameter("RS_RTS")!=null?parameters.getLineParameter("RS_RTS"):false);
-            boolean clearRX = (boolean) (parameters.getLineParameter("RS_PURGE_RX")!=null?parameters.getLineParameter("RS_PURGE_RX"):false);
-            boolean clearTX = (boolean) (parameters.getLineParameter("RS_PURGE_TX")!=null?parameters.getLineParameter("RS_PURGE_TX"):false);
+            int speed = (int) (parameters.getLineParameter(LineParameters.RS_SPEED)!=null?parameters.getLineParameter(LineParameters.RS_SPEED):SerialPort.BAUDRATE_9600);
+            int databit = (int) (parameters.getLineParameter(LineParameters.RS_DATABIT)!=null?parameters.getLineParameter(LineParameters.RS_DATABIT):SerialPort.DATABITS_8);
+            int stopbit = (int) (parameters.getLineParameter(LineParameters.RS_STOBIT)!=null?parameters.getLineParameter(LineParameters.RS_STOBIT):SerialPort.STOPBITS_1);
+            int parity = (int) (parameters.getLineParameter(LineParameters.RS_PARITY)!=null?parameters.getLineParameter(LineParameters.RS_PARITY):SerialPort.PARITY_NONE);
+            int flowcontrol = (int) (parameters.getLineParameter(LineParameters.RS_FLOWCONTROL)!=null?parameters.getLineParameter(LineParameters.RS_FLOWCONTROL):SerialPort.FLOWCONTROL_NONE);
+            boolean dtr = (boolean) (parameters.getLineParameter(LineParameters.RS_DTR)!=null?parameters.getLineParameter(LineParameters.RS_DTR):false);
+            boolean rts = (boolean) (parameters.getLineParameter(LineParameters.RS_RTS)!=null?parameters.getLineParameter(LineParameters.RS_RTS):false);
+            boolean clearRX = (boolean) (parameters.getLineParameter(LineParameters.RS_PURGE_RX)!=null?parameters.getLineParameter(LineParameters.RS_PURGE_RX):false);
+            boolean clearTX = (boolean) (parameters.getLineParameter(LineParameters.RS_PURGE_TX)!=null?parameters.getLineParameter(LineParameters.RS_PURGE_TX):false);
             try {
                 if (!port.isOpened()) port.openPort();
-                port.setParams(speed, databit, stopbit, parity, rts, dtr);
-                port.setFlowControlMode(flowcontrol);
+                if(alwaysSet || !CommunicationLineParameters.compare_RS_BAUD(parameters,curentLineParameters)){
+                    System.out.printf("SET BAUD RATE %d DATABIT: %d STOP %d PARITY %d \n",speed,databit,stopbit,parity);
+                    port.setParams(speed, databit, stopbit, parity, rts, dtr);
+                }
+                if(alwaysSet || !LineParameters.compareLineParameter(parameters,curentLineParameters,LineParameters.RS_FLOWCONTROL)) {
+                    System.out.println("FLOW CONTROL:"+flowcontrol);
+                    port.setFlowControlMode(flowcontrol);
+                }
                 if(clearTX){
                     port.purgePort(SerialPort.PURGE_TXABORT|SerialPort.PURGE_TXCLEAR);
                 }
@@ -224,5 +230,10 @@ public class SerialLine extends AbstractLine {
     @Override
     public String toString() {
         return String.format(I18N.getLocalizedString("serialline.description"),getName(),getUUIDString(),getDescription());
+    }
+
+    @Override
+    protected boolean testIdentialyLineParameters(LineParameters current, LineParameters newparmeters) {
+        return CommunicationLineParameters.compare_RS_PARAMETERS(current,newparmeters);
     }
 }

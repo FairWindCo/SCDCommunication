@@ -32,7 +32,7 @@ public class ArgMicroDevice extends RSLineDevice {
         rate=formRateProperty(002L,"RATE","Расход м3/ч",centralSystem,uuids);
         numberMeasurementm=new SoftShortProperty("NUMBER_MEASUREMENT",getUiidFromMap("NUMBER_MEASUREMENT",uuids),"Номер измерения",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         numberMeasurementm.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 001L);
-        setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE,
+        setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600,SerialPort.DATABITS_8,SerialPort.PARITY_NONE,SerialPort.STOPBITS_1,
                 SerialPort.FLOWCONTROL_NONE));
         addPropertys(rate);
         addPropertys(numberMeasurementm);

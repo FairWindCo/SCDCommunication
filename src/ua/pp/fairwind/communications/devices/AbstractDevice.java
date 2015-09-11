@@ -16,6 +16,7 @@ import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
+import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,6 +105,12 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
     protected SoftBoolProperty formBoolProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids,boolean initialValue){
         SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE,initialValue);
+        command.setAdditionalInfo(PROPERTY_ADDRESS,address);
+        return command;
+    }
+
+    protected SoftShortProperty formShortProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids,short initialValue){
+        SoftShortProperty command=new SoftShortProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE,initialValue);
         command.setAdditionalInfo(PROPERTY_ADDRESS,address);
         return command;
     }

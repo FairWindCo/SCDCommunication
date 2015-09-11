@@ -35,4 +35,5 @@ public interface LineInterface  extends ElementInterface {
     ImitatorDevice[] getDeivicesForService();
     void addDeviceToService(ImitatorDevice device);
     void removeDeviceToService(ImitatorDevice device);
+
 }

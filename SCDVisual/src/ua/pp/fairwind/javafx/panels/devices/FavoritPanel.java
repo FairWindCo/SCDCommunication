@@ -111,8 +111,11 @@ public class FavoritPanel extends HBox {
             setDIChanelControl(grid, device.getDigitalInChanelN4(), I18N.getLocalizedString("DI4"), rowIndex++, 0);
             setDIChanelControl(grid, device.getDigitalInChanelN5(), I18N.getLocalizedString("DI5"), rowIndex++, 0);
             setDIChanelControl(grid, device.getDigitalInChanelN6(), I18N.getLocalizedString("DI6"), rowIndex++, 0);
-            grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllDI()), 0, rowIndex++,3,1);
-            initTab.setContent(grid);
+            grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllDI()), 0, rowIndex++, 3, 1);
+            ScrollPane scrol=new ScrollPane(grid);
+            scrol.setFitToWidth(true);
+            scrol.setFitToHeight(true);
+            initTab.setContent(scrol);
         });
     }
 
@@ -135,8 +138,11 @@ public class FavoritPanel extends HBox {
             setDOChanelControl(grid, device.getDigitalOutChanelN5(), I18N.getLocalizedString("DO5"), rowIndex++, 0);
             setDOChanelControl(grid, device.getDigitalOutChanelN6(), I18N.getLocalizedString("DO6"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllDO()), 0, rowIndex, 3, 1);
-            grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getWriteAllDO()), 4, rowIndex++,3,1);
-            initTab.setContent(grid);
+            grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getWriteAllDO()), 4, rowIndex++, 3, 1);
+            ScrollPane scrol=new ScrollPane(grid);
+            scrol.setFitToWidth(true);
+            scrol.setFitToHeight(true);
+            initTab.setContent(scrol);
         });
     }
 
@@ -158,7 +164,10 @@ public class FavoritPanel extends HBox {
             rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN4(), I18N.getLocalizedString("AO4"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllAO()), 0, rowIndex,3,1);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getWriteAllAO()), 2, rowIndex++,3,1);
-            initTab.setContent(grid);
+            ScrollPane scrol=new ScrollPane(grid);
+            scrol.setFitToWidth(true);
+            scrol.setFitToHeight(true);
+            initTab.setContent(scrol);
         });
     }
 
@@ -179,7 +188,10 @@ public class FavoritPanel extends HBox {
             setAIChanelControl(grid, device.getAnalogInChanelN3(), I18N.getLocalizedString("AI3"), rowIndex++, 0);
             setAIChanelControl(grid, device.getAnalogInChanelN4(), I18N.getLocalizedString("AI4"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllAI()), 0, rowIndex++, 3, 1);
-            initTab.setContent(grid);
+            ScrollPane scrol=new ScrollPane(grid);
+            scrol.setFitToWidth(true);
+            scrol.setFitToHeight(true);
+            initTab.setContent(scrol);
         });
     }
 
@@ -234,7 +246,10 @@ public class FavoritPanel extends HBox {
             grid.add(createSpeedSelect(device.getConfigdeviceSpeed()), 1, rowindex);
             grid.add(createReReadButton(device.getConfigdeviceSpeed()), 2, rowindex);
             grid.add(createReWriteButton(device.getConfigdeviceSpeed()), 3, rowindex);
-            initTab.setContent(grid);
+            ScrollPane scrol=new ScrollPane(grid);
+            scrol.setFitToWidth(true);
+            scrol.setFitToHeight(true);
+            initTab.setContent(scrol);
         });
     }
 

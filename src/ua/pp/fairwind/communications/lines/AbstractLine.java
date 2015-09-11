@@ -48,6 +48,8 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     private final ExecutorService service= Executors.newCachedThreadPool();
     private volatile LineSelectDevice lineSelector;
     private volatile LineParameters serverLineParameter;
+    private volatile LineParameters curentLineParameters;
+    private volatile Object curentLine;
 
     protected AbstractLine(String name, String uuid, String description, MessageSubSystem centralSystem,long maxTransactionTime) {
         super(name, uuid, description, centralSystem);
@@ -202,22 +204,66 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     private boolean lineSelectorExecute(LineParameters params){
         if(lineSelector!=null) {
+            Object always_set_line=params.getLineParameter(LineParameters.ALWAYS_SET_LINE);
+            boolean need_set_line=false;
+            if(always_set_line!=null && always_set_line instanceof Boolean){
+                need_set_line=(Boolean)need_set_line;
+            }
+            Object selectedline = params.getLineParameter("SUB_LINE_NUMBER");
             Object lineChange=params.getLineParameter("NEED_LINE_CHANGE");
-            if(lineChange!=null && lineChange instanceof Boolean && (Boolean)lineChange) {
-                Object selectedline = params.getLineParameter("SUB_LINE_NUMBER");
-                //System.out.println("NEED SELECT LINE:"+lineChange+" NEW LINE:"+selectedline);
-                return lineSelectorExecute(selectedline);
-            } else return true;
+            if(!need_set_line){
+                if(curentLine==selectedline){
+                    need_set_line=false;
+                } else {
+                    if(curentLine==null)need_set_line=true;
+                    else need_set_line=curentLine.equals(selectedline);
+                }
+            }
+            if(need_set_line) {
+                if (lineChange != null && lineChange instanceof Boolean && (Boolean) lineChange) {
+                    //System.out.println("NEED SELECT LINE:"+lineChange+" NEW LINE:"+selectedline);
+                    return lineSelectorExecute(selectedline);
+                } else return true;
+            } else {
+                return true;
+            }
+
         }
         return true;
     }
 
     abstract protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException,LineTimeOutException;
     abstract protected byte[] reciveMessage(long timeOut,long bytesForReadCount, LineParameters params) throws LineErrorException,LineTimeOutException;
-    abstract protected boolean setLineParameters(LineParameters params);
+    abstract protected boolean setepLineParameters(LineParameters params,LineParameters curentLineParameters,boolean alwaysSet);
     abstract protected void onStartTrunsaction();
     abstract protected void onEndTrunsaction();
     abstract protected void closeUsedResources();
+    abstract protected boolean testIdentialyLineParameters(LineParameters current,LineParameters newparmeters);
+
+    protected boolean setLineParameters(LineParameters params){
+        if(params==null){
+            return setepLineParameters(params,curentLineParameters,true);
+        }
+        Object always_set_line_param=params.getLineParameter(LineParameters.ALWAYS_SET_LINE_PARAM);
+        boolean need_set_line_param=false;
+        if(always_set_line_param!=null && always_set_line_param instanceof Boolean){
+            need_set_line_param=(Boolean)always_set_line_param;
+        }
+        if(need_set_line_param){
+            return setepLineParameters(params,curentLineParameters,true);
+        } else {
+            if(!testIdentialyLineParameters(curentLineParameters,params)){
+                if(setepLineParameters(params,curentLineParameters,false)){
+                    curentLineParameters=params;
+                    return true;
+                } else {
+                    fireEvent(EventType.ERROR,localizeError("line_parameters_error"));
+                    return false;
+                }
+
+            }else return true;
+        }
+    }
 
 
     @Override

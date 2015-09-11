@@ -122,7 +122,7 @@ public class StepDriver extends RSLineDevice {
         referenceSearch=formCommandNameProperty("MST", "REFERENCE SEARCH", centralSystem, uuids);
         stepLeft=formCommandNameProperty("STPL", "MOTOR STEP LEFT", centralSystem, uuids);
         stepRight=formCommandNameProperty("STPR", "MOTOR STEP RIGHT", centralSystem, uuids);
-        setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE,
+        setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.PARITY_NONE,SerialPort.STOPBITS_1,
                 SerialPort.FLOWCONTROL_NONE));
         addPropertys(position);
         addPropertys(step);

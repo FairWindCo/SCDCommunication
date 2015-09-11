@@ -81,7 +81,8 @@ public class PropertyBindingElement<FROM extends AbstractProperty,TO extends Abs
 
     @Override
     public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-           if(typeEvent==EventType.ELEMENT_CHANGE && element!=null){
+           if((typeEvent==EventType.ELEMENT_CHANGE || typeEvent==EventType.ELEMENT_CHANGE_FROM_HARDWARE)&& element!=null){
+               System.out.printf("EVENT FROM %s\n",element);
                try {
                    boolean res=false;
                    if(element==readingProperty){

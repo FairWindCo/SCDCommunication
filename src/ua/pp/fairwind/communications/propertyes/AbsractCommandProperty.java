@@ -17,10 +17,10 @@ abstract public class AbsractCommandProperty extends SoftBoolProperty {
     }
 
     public void activate(){
-        setValue(true);
+        setInternalValue(true);
     }
     public void executed(){
-        setValue(false);
+        setInternalValue(false);
     }
 
     @Override

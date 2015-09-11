@@ -8,33 +8,32 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
 
-
-public class IntegerInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
+public class IntegerInputNoNullText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
 	final private static String DIGITPATERN="[0123456789]{1,}";
 	final private static String EMPTYSTRING="";
 	private int maxValue=Integer.MAX_VALUE;
 	private int minValue=Integer.MIN_VALUE;
 	private SimpleIntegerProperty integerValueProperty=new SimpleIntegerProperty(0);
-	
-	public IntegerInputText() {
+
+	public IntegerInputNoNullText() {
 		super();
 		onInitialisation();
 	}
-	
-	
 
-	public IntegerInputText(Integer arg0) {
+
+
+	public IntegerInputNoNullText(Integer arg0) {
 		super(arg0.toString());
 		onInitialisation();
 	}
 
-	public IntegerInputText(Integer arg0,int maxVal) {
+	public IntegerInputNoNullText(Integer arg0, int maxVal) {
 		super(arg0==null?null:arg0.toString());
 		this.maxValue = maxVal;
 		onInitialisation();
 	}
-	
-	public IntegerInputText(int maxVal) {
+
+	public IntegerInputNoNullText(int maxVal) {
 		super();
 		this.maxValue = maxVal;
 		onInitialisation();
@@ -116,7 +115,8 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 		
 	}
 
-	
+
+
 	
 	public int getMaxValue() {
 		return maxValue;

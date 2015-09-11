@@ -24,7 +24,7 @@ public class ValuedPropertyConvertor<FROM extends Comparable<? super FROM>,TO ex
     @Override
     public boolean convertValue(ValueProperty<FROM> fromValue, ValueProperty<TO> toValue) throws BindingConvertExceptions {
         if(convertor==null) return false;
-        toValue.setInternalValue(convertor.convertValue(fromValue.getValue()));
+        toValue.setValue(convertor.convertValue(fromValue.getValue(),toValue.getValue()));
         return true;
     }
 

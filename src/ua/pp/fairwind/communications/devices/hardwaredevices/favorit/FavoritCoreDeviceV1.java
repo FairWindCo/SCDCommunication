@@ -1,11 +1,13 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.favorit;
 
+import jssc.SerialPort;
 import ua.pp.fairwind.communications.abstractions.LineSelector;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
 import ua.pp.fairwind.communications.devices.LineSelectDevice;
 import ua.pp.fairwind.communications.devices.RSLineDevice;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
+import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
@@ -170,6 +172,7 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
         addPropertys(digitalOutChanelN5);
         addPropertys(digitalOutChanelN6);
         addPropertys(lineSelect);
+        setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.PARITY_NONE,SerialPort.STOPBITS_2, SerialPort.FLOWCONTROL_NONE));
     }
 
     @Override

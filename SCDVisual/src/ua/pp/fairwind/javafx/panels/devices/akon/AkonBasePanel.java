@@ -1,4 +1,4 @@
-package ua.pp.fairwind.javafx.panels.devices.panDrive;
+package ua.pp.fairwind.javafx.panels.devices.akon;
 
 import eu.hansolo.enzo.canvasled.Led;
 import eu.hansolo.enzo.lcd.Lcd;
@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import ua.pp.fairwind.communications.devices.AbstractDevice;
 import ua.pp.fairwind.communications.devices.RSLineDevice;
-import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver;
+import ua.pp.fairwind.communications.devices.hardwaredevices.akon.AkonBase;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
@@ -37,11 +37,11 @@ import static ua.pp.fairwind.javafx.panels.devices.DeviceConfigPanel.createAddre
 /**
  * Created by Сергей on 27.08.2015.
  */
-public class PanDrivePanel extends HBox {
-    final private StepDriver device;
+public class AkonBasePanel extends HBox {
+    final private AkonBase device;
     final private TabPane tabs=new TabPane();
 
-    public PanDrivePanel(StepDriver device) {
+    public AkonBasePanel(AkonBase device) {
         super();
         this.device = device;
         initControl();
@@ -113,12 +113,13 @@ public class PanDrivePanel extends HBox {
             rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN4(), I18N.COMMON.getStringEx("AO4"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllAO()), 0, rowIndex, 3, 1);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getWriteAllAO()), 2, rowIndex++,3,1);/**/
+            /*
             rowIndex=setLongSpeedChanelControl(grid, device.getSpeed(), I18N.getLocalizedString("SPEED"), rowIndex++, 0);
             rowIndex=setLongChanelControl(grid, device.getPosition(), I18N.getLocalizedString("POSITION"), rowIndex++, 0);
             rowIndex=setLongChanelControl(grid, device.getStep(), I18N.getLocalizedString("STEP"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getRotateLeft()), 0, rowIndex);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getMotorStop()), 1, rowIndex);
-            grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getRotateRight()), 2, rowIndex++);
+            grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getRotateRight()), 2, rowIndex++);/***/
             initTab.setContent(grid);
         });
     }
@@ -136,6 +137,7 @@ public class PanDrivePanel extends HBox {
             grid.setPadding(new Insets(10, 10, 10, 10));
             int rowindex = 0;
             grid.add(new Label(I18N.getLocalizedString("DEVICE ADDRESS")), 0, rowindex);
+            /*
             grid.add(createAddressSelect(device.getRsadress()), 1, rowindex);
             grid.add(createReReadButton(device.getRsadress()), 2, rowindex);
             grid.add(createReWriteButton(device.getRsadress()), 3, rowindex++);
@@ -150,18 +152,12 @@ public class PanDrivePanel extends HBox {
             grid.add(createReReadButton(device.getSerialHostAdress()), 2, rowindex);
             grid.add(createReWriteButton(device.getSerialHostAdress()), 3, rowindex++);
 
-            grid.add(new Label(I18N.getLocalizedString("DEVICE BROADCAST ADDRESS")), 0, rowindex);
-            grid.add(createAddressSelect(device.getSerialSecondAdress()), 1, rowindex);
-            grid.add(createReReadButton(device.getSerialSecondAdress()), 2, rowindex);
-            grid.add(createReWriteButton(device.getSerialSecondAdress()), 3, rowindex++);
-
-
             setDOChanelControl(grid, device.getAutoStartTMCL(), I18N.getLocalizedString("AutoStartTMCL"), rowindex++, 0);
             setDOChanelControl(grid, device.getConfigurationEpromLock(), I18N.getLocalizedString("ConfigurationEpromLock"), rowindex++, 0);
             setDOChanelControl(grid, device.getEndSwichPolarity(), I18N.getLocalizedString("EndSwichPolarity"), rowindex++, 0);
             setDIChanelControl(grid, device.getDowloadMode(), I18N.getLocalizedString("DowloadMode"), rowindex++, 0);
             rowindex=setLongChanelControl(grid, device.getTickTimer(), I18N.getLocalizedString("Ticktimer"), rowindex, 0);
-            rowindex=setLongChanelControl(grid, device.getRandomNumber(), I18N.getLocalizedString("RANDOM"), rowindex, 0);
+            rowindex=setLongChanelControl(grid, device.getRandomNumber(), I18N.getLocalizedString("RANDOM"), rowindex, 0);/**/
             initTab.setContent(grid);
         });
     }

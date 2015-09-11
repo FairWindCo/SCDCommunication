@@ -51,7 +51,7 @@ public class Encoder extends RSLineDevice {
         steps=new SoftShortProperty("STEPS",getUiidFromMap("STEPS",uuids),"Номер измерения",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         steps.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 002L);
         deviceTimeOut.setValue(350L);
-        setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE, SerialPort.FLOWCONTROL_NONE));
+        setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.PARITY_NONE,SerialPort.STOPBITS_1,SerialPort.FLOWCONTROL_NONE));
         addPropertys(revolution);
         addPropertys(steps);
     }
