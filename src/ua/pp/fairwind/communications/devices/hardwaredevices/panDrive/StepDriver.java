@@ -177,7 +177,7 @@ public class StepDriver extends RSLineDevice {
                         byte ststus=recivedMessage[i+2];
                         //byte module=recivedMessage[i+1];
                         byte commandNum=recivedMessage[i+3];
-                        statusCode.setHardWareInternalValue((short)ststus);
+                        setHardWareInternalValue(statusCode, (short)ststus);
                         switch (commandNum){
                             case 6:{
                                 long value=0;
@@ -186,10 +186,10 @@ public class StepDriver extends RSLineDevice {
                                 value|=((recivedMessage[i+6]&0xFF)<< 8);
                                 value|=((recivedMessage[i+7]&0xFF)    );
                                 if(property==speed){
-                                    speed.setHardWareInternalValue((short)(value&0xFFFF));
+                                    setHardWareInternalValue(speed, (short) (value & 0xFFFF));
                                 } else
                                 if(property==position){
-                                    position.setHardWareInternalValue(value);
+                                    setHardWareInternalValue(position,value);
                                 }
                                 break;
                             }
@@ -375,50 +375,50 @@ public class StepDriver extends RSLineDevice {
 
     private void setupConfigurationParameters(int number,long value){
         switch (number){
-            case 64:magic.setHardWareInternalValue((short) value);break;
-            case 65:rsspeed.setHardWareInternalValue((short)value);break;
-            case 66:rsadress.setHardWareInternalValue((short)value);break;
-            case 67:mode.setHardWareInternalValue((short)value);break;
-            case 68:serialHeartbeat.setHardWareInternalValue(value);break;
+            case 64:setHardWareInternalValue(magic,(short)value);break;
+            case 65:setHardWareInternalValue(rsspeed,(short)value);break;
+            case 66:setHardWareInternalValue(rsadress,(short)value);break;
+            case 67:setHardWareInternalValue(mode,(short)value);break;
+            case 68:setHardWareInternalValue(serialHeartbeat,value);break;
             case 73:{
                 if(value==0){
-                    configurationEpromLock.setHardWareInternalValue(false);
+                    setHardWareInternalValue(configurationEpromLock,false);
                 } else {
-                    configurationEpromLock.setHardWareInternalValue(true);
+                    setHardWareInternalValue(configurationEpromLock,true);
                 }
                 break;
             }
-            case 75:telegramPauseTime.setHardWareInternalValue((short)value);break;
-            case 76:serialHostAdress.setHardWareInternalValue((short)value);break;
+            case 75:setHardWareInternalValue(telegramPauseTime,(short)value);break;
+            case 76:setHardWareInternalValue(serialHostAdress,(short)value);break;
             case 77:{
                 if(value==0){
-                    autoStartTMCL.setHardWareInternalValue(false);
+                    setHardWareInternalValue(autoStartTMCL,false);
                 } else {
-                    autoStartTMCL.setHardWareInternalValue(true);
+                    setHardWareInternalValue(autoStartTMCL,true);
                 }
                 break;
             }
             case 79:{
                 if(value==0){
-                    endSwichPolarity.setHardWareInternalValue(false);
+                    setHardWareInternalValue(endSwichPolarity,false);
                 } else {
-                    endSwichPolarity.setHardWareInternalValue(true);
+                    setHardWareInternalValue(endSwichPolarity,true);
                 }
                 break;
             }
-            case 128:TMCLaplicationStatus.setHardWareInternalValue((short)value);break;
-            case 87:serialSecondAdress.setHardWareInternalValue((short)value);break;
+            case 128:setHardWareInternalValue(TMCLaplicationStatus,(short)value);break;
+            case 87:setHardWareInternalValue(serialSecondAdress,(short)value);break;
             case 129:{
                 if(value==0){
-                    dowloadMode.setHardWareInternalValue(false);
+                    setHardWareInternalValue(dowloadMode,false);
                 } else {
-                    dowloadMode.setHardWareInternalValue(true);
+                    setHardWareInternalValue(dowloadMode,true);
                 }
                 break;
             }
-            case 130:TMCLprogramCounter.setHardWareInternalValue(value);break;
-            case 132:tickTimer.setHardWareInternalValue(value);break;
-            case 133:randomNumber.setHardWareInternalValue(value);break;
+            case 130:setHardWareInternalValue(TMCLprogramCounter,value);break;
+            case 132:setHardWareInternalValue(tickTimer,value);break;
+            case 133:setHardWareInternalValue(randomNumber,value);break;
         }
     }
 

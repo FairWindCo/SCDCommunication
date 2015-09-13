@@ -238,10 +238,10 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
             for(int i=0;i<buffer.length-2;i++){sum+=buffer_test[i];}
             buffer_test[buffer_test.length-2]=CommunicationUtils.getHalfByteHex((sum & 0xF0) >> 4);
             buffer_test[buffer_test.length-1]=CommunicationUtils.getHalfByteHex(sum&0xF);
-            Long devTO=((ValueProperty<Long>)deviceTimeOut).getInternalValue();
-            Long devTOP=((ValueProperty<Long>)deviceTimeOutPause).getInternalValue();
-            Long devWP=((ValueProperty<Long>)deviceWritePause).getInternalValue();
-            long maxRetry=retryCount.getInternalValue();
+            Long devTO=(Long)getInternalValue((ValueProperty<Long>)deviceTimeOut);
+            Long devTOP=(Long)getInternalValue((ValueProperty<Long>)deviceTimeOutPause);
+            Long devWP=(Long)getInternalValue((ValueProperty<Long>)deviceWritePause);
+            long maxRetry=(Long)getInternalValue(retryCount);
             LineSelector ls=new LineSelector(buffer,buffer_test,lineparams,devTO+lineSelect.getPropertyTimeOutRead(),devTOP+lineSelect.getPropertyPauseBeforeRead(),devWP+lineSelect.getPropertyPauseBeforeWrite());
             return ls;
         }
@@ -291,7 +291,7 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
                                         val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 8]);
                                         if(val<0)val=0;
                                         if(val>4)val=4;
-                                        ((ValueProperty<Short>)property).setHardWareInternalValue((short)val);
+                                        setHardWareInternalValue(((ValueProperty<Short>)property),(short)val);
                                         return true;
                                     }
                                     if(property_address==1 && (command==0x00||command==0x01)){
@@ -299,7 +299,7 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
                                         val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 8]);
                                         if(val<0)val=0;
                                         if(val>255)val=255;
-                                        ((ValueProperty<Short>)property).setHardWareInternalValue((short)val);
+                                        setHardWareInternalValue(((ValueProperty<Short>) property), (short) val);
                                         return true;
                                     }
                                     return false;
@@ -369,7 +369,7 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
                                     val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 11]) << 4;
                                     val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 12]);
                                     float value = (val*10.0f) / 0x3FF ;
-                                    ((ValueProperty<Float>) property).setHardWareInternalValue(value);
+                                    setHardWareInternalValue((ValueProperty<Float>) property,value);
                                     return true;
                                 }
                             }
@@ -439,9 +439,9 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
                                     value+=CommunicationUtils.getHalfByteFromChar((char)recivedMessage[position+10]);
                                      */
                                     if (recivedMessage[position + 10] == '1') {
-                                        ((ValueProperty<Boolean>) property).setHardWareInternalValue(true);
+                                        setHardWareInternalValue((ValueProperty<Boolean>) property,true);
                                     } else {
-                                        ((ValueProperty<Boolean>) property).setHardWareInternalValue(false);
+                                        setHardWareInternalValue((ValueProperty<Boolean>) property, false);
                                     }
                                     return true;
                                 }
@@ -507,7 +507,7 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
                                 }
                                 long val = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 9]) << 4;
                                 val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 10]);
-                                ((ValueProperty<Long>)property).setHardWareInternalValue(val);
+                                setHardWareInternalValue((ValueProperty<Long>)property,val);
                                 return true;
                             }
                         }
@@ -529,7 +529,7 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
                                 }
                                 long val = CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 7]) << 4;
                                 val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[position + 8]);
-                                ((ValueProperty<Long>)property).setHardWareInternalValue(val);
+                                setHardWareInternalValue((ValueProperty<Long>)property,val);
                                 return true;
                             }
                         }
@@ -849,9 +849,9 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
         if(property==null)return pos;
         pos++;
         if (buffer[pos++] == '1') {
-            (property).setHardWareInternalValue(true);
+            setHardWareInternalValue(property, true);
         } else {
-            (property).setHardWareInternalValue(false);
+            setHardWareInternalValue(property, false);
         }
         return pos;
     }
@@ -863,7 +863,7 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
         val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[pos++]) << 4;
         val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[pos++]);
         float value = (val*10.0f) / 0x3FF ;
-        ((ValueProperty<Float>) property).setHardWareInternalValue(value);
+        setHardWareInternalValue((ValueProperty<Float>) property,value);
         return pos;
     }
 
@@ -1037,7 +1037,7 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
                 readAllAO.activate();
                 readAllDI.activate();
                 readAllDO.activate();
-                ((ValueProperty<Boolean>)refreshCommand).setInternalValue(false);
+                setInternalValue((ValueProperty<Boolean>)refreshCommand,false);
                 return null;
             }
         }

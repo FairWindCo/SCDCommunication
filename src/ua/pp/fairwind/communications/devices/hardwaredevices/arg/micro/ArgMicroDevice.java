@@ -59,13 +59,13 @@ public class ArgMicroDevice extends RSLineDevice {
                     byte ccrc = CRC(recivedMessage, i, 8);
                     if (ccrc == recivedMessage[i + 8]) {
                         short mnumberMeasurement=(short)(recivedMessage[i+1] & 0xFF);
-                        this.numberMeasurementm.setHardWareInternalValue(mnumberMeasurement);
+                        this.setHardWareInternalValue(numberMeasurementm,mnumberMeasurement);
                         try {
                             float val=Float.parseFloat(CommunicationUtils.formStringFomByteBuffer(recivedMessage, i + 2, 6));
-                            rate.setHardWareInternalValue(val);
+                            setHardWareInternalValue(rate,val);
                             return true;
                         } catch (NumberFormatException ex) {
-                            rate.setHardWareInternalValue(0.0f);
+                            setHardWareInternalValue(rate ,0.0f);
                             return false;
                         }
                     }

@@ -62,22 +62,19 @@ abstract public class AbsractCommandProperty extends SoftBoolProperty {
     protected void unbindPropertyForWrite() {
         fireEvent(EventType.PARSE_ERROR,I18N.getLocalizedString("command.binding.error"));
     }
-
     @Override
     public void endRequest(OPERATION_TYPE type) {
         if(type==OPERATION_TYPE.COMMAND_EXECUTE)setInternalValue(false);
-        super.endRequest(type);
+        endRequest(type);
     }
-
     @Override
-    public void invalidate() {
+    protected void invalidate() {
         setInternalValue(false);
-        super.invalidate();
+        invalidate();
     }
-
     @Override
-    public void rollback() {
+    protected void rollback() {
         setInternalValue(false);
-        super.invalidate();
+        invalidate();
     }
 }

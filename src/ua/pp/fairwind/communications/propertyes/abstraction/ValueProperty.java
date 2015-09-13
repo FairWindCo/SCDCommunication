@@ -129,7 +129,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     }
 
 
-    public T getInternalValue() {
+    T getInternalValue() {
         return value.get();
     }
 
@@ -143,15 +143,15 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         return getInternalValue();
     }
 
-    public void setHardWareInternalValue(final T value) {
+    protected void setHardWareInternalValue(final T value) {
         setInternalValue(value, false, true);
     }
 
-    public void setSilentInternalValue(final T value) {
+    protected void setSilentInternalValue(final T value) {
         setInternalValue(value,true,false);
     }
 
-    public void setInternalValue(final T value) {
+    protected void setInternalValue(final T value) {
         setInternalValue(value, false, false);
     }
 
@@ -309,7 +309,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         return oldvalue.get();
     }
 
-    public void rollback(){
+    protected void rollback(){
         invalidate();
         //setHardWareInternalValue(oldvalue.get());
         T newVal = this.oldvalue.get();
@@ -320,7 +320,8 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         fireChangeEvent(oldVel, newVal, true);
     }
 
-    public void invalidate(){
+
+    protected void invalidate(){
         valide.set(false);
         fireEvent(EventType.INVALIDATE,null);
     }

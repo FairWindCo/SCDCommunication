@@ -210,27 +210,28 @@ public abstract class AbstractProperty extends SystemEllement{
         additionalParameters.put(PROPERTY_PAUSE_BEFORE_WRITE, value);
     }
 
-    public boolean isMultiRequestEnabled(OPERATION_TYPE type){
+    protected boolean isMultiRequestEnabled(OPERATION_TYPE type){
         return requestTrunsaction.isMultiRequestEnabled(type);
     }
 
-    public void setMultiRequestEnabled(OPERATION_TYPE type,boolean state){
+    protected void setMultiRequestEnabled(OPERATION_TYPE type,boolean state){
         requestTrunsaction.setMultiRequestEnabled(type,state);
     }
 
-    public boolean isRequestActive(OPERATION_TYPE type){
+    protected boolean isRequestActive(OPERATION_TYPE type){
         return requestTrunsaction.isRequestActive(type);
     }
 
-    public boolean startRequest(OPERATION_TYPE type){
+    protected boolean startRequest(OPERATION_TYPE type){
         return requestTrunsaction.startRequest(type);
     }
 
-    public void endRequest(OPERATION_TYPE type){
+    protected void endRequest(OPERATION_TYPE type){
         requestTrunsaction.endRequest(type);
     }
 
     public void setRequestTrunsaction(OperationTrunsactions requestTrunsaction) {
         this.requestTrunsaction = requestTrunsaction;
     }
+
 }

@@ -1,6 +1,5 @@
 package ua.pp.fairwind.communications.devices;
 
-import ua.pp.fairwind.communications.abstractions.SystemEllement;
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.lines.LineInterface;
@@ -11,6 +10,7 @@ import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.PropertyExecutor;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Created by Сергей on 09.07.2015.
  */
-public abstract class AbstractDevice extends SystemEllement implements DeviceInterface {
+public abstract class AbstractDevice extends PropertyExecutor implements DeviceInterface {
     public static final String IMMEDIATELY_WRITE_FLAG ="immediatelyWrite";
     public static final String PROPERTY_ADDRESS="propertyAddress";
     public static final String COMMAND_REFRESH="REFRESH";
@@ -70,7 +70,7 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
                     if(type == EventType.ELEMENT_CHANGE && !isImidiatlyWrite){
                         return;
                     }
-                    if(hardwarePoperty.getInternalValue()!=null)writeProperty(hardwarePoperty);
+                    if(getInternalValue(hardwarePoperty)!=null)writeProperty(hardwarePoperty);
                 } else if (type == EventType.NEED_READ_VALUE) {
                     readProperty(hardwarePoperty);
                 }
@@ -105,7 +105,7 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
     protected SoftBoolProperty formBoolProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids,boolean initialValue){
         SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE,initialValue);
-        command.setAdditionalInfo(PROPERTY_ADDRESS,address);
+        command.setAdditionalInfo(PROPERTY_ADDRESS, address);
         return command;
     }
 
@@ -152,7 +152,7 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
         errorCommunicationStatusLine1 =  formIndicatorProperty(-10,I18N.getLocalizedString("device.lasterrorcommunicationstatusline1_property.name"),I18N.getLocalizedString("device.lasterrorcommunicationstatusline1_property.description"),centralSystem,uuids,false);
         errorCommunicationStatusLine2 =  formIndicatorProperty(-11, I18N.getLocalizedString("device.lasterrorcommunicationstatusline2_property.name"), I18N.getLocalizedString("device.lasterrorcommunicationstatusline2_property.description"), centralSystem, uuids, false);
         activate = formBoolProperty(-12, I18N.getLocalizedString("device.activate_property.name"), I18N.getLocalizedString("device.activate_property.description"), centralSystem, uuids, true);
-        activate.addEventListener((element,type,param)->{if(type==EventType.ELEMENT_CHANGE)super.setEnabled(activate.getInternalValue() == null ? false : activate.getInternalValue());});
+        activate.addEventListener((element,type,param)->{if(type==EventType.ELEMENT_CHANGE)super.setEnabled(getInternalValue(activate) == null ? false : (Boolean) getInternalValue(activate));});
         deviceWritePause=formLongProperty(-13, I18N.getLocalizedString("device.bausebeforewrite_property.name"), I18N.getLocalizedString("device.bausebeforewrite_property.description"), centralSystem, uuids, 0L);
         retryCount=formLongProperty(-14,I18N.getLocalizedString("device.retrycount_property.name"),I18N.getLocalizedString("device.retrycount_property.description"),centralSystem,uuids,1);
 
@@ -191,10 +191,10 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
     protected void sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE reqType,byte[] buffer,long needReadByteCount,AbstractProperty property,boolean needRollBack){
         if(buffer!=null){
-            Long devTO=((ValueProperty<Long>)deviceTimeOut).getInternalValue();
-            Long devTOP=((ValueProperty<Long>)deviceTimeOutPause).getInternalValue();
-            Long devWP=((ValueProperty<Long>)deviceWritePause).getInternalValue();
-            long maxRetry=retryCount.getInternalValue();
+            Long devTO=(Long)getInternalValue((ValueProperty<Long>)deviceTimeOut);
+            Long devTOP=(Long)getInternalValue((ValueProperty<Long>)deviceTimeOutPause);
+            Long devWP=(Long)getInternalValue((ValueProperty<Long>)deviceWritePause);
+            long maxRetry=(Long)getInternalValue(retryCount);
             if(property!=null){
                 devTOP=property.getPropertyPauseBeforeRead()>0?property.getPropertyPauseBeforeRead():devTOP+property.getPropertyPauseBeforeReadAddon();
                 devTO=property.getPropertyTimeOutRead()>0?property.getPropertyTimeOutRead():devTO+property.getPropertyTimeOutReadAddon();
@@ -204,13 +204,13 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
                 CommunicationProtocolRequest request=CommunicationProtocolRequest.createReuest(reqType,buffer,needReadByteCount,this, devTO,devTOP,devWP,lineparams,property,primaryLine!=null?secondaryLine:null,needRollBack,maxRetry);
                 if(request!=null) {
                     if (primaryLine != null) {
-                        deviceLastTryCommunicateTime.setInternalValue(System.currentTimeMillis());
+                        setInternalValue(deviceLastTryCommunicateTime,System.currentTimeMillis());
                         primaryLine.async_communicate(request);
                     } else if (secondaryLine != null) {
-                        deviceLastTryCommunicateTime.setInternalValue(System.currentTimeMillis());
+                        setInternalValue(deviceLastTryCommunicateTime,System.currentTimeMillis());
                         secondaryLine.async_communicate(request);
                     } else {
-                        if(property!=null)property.endRequest(reqType.getPropertyOperationType());
+                        if(property!=null)endRequest(property,reqType.getPropertyOperationType());
                         fireEvent(EventType.FATAL_ERROR,I18N.getLocalizedString("device.no_line_specified.error"));
                     }
                 }
@@ -239,29 +239,29 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
 
     private void setLine1Error(){
-        (lastCommunicationStatus).setInternalValue(false);
-        (errorCommunicationStatus).setInternalValue(true);
-        (lastCommunicationStatusLine1).setInternalValue(false);
-        (errorCommunicationStatusLine1).setInternalValue(true);
+        setInternalValue(lastCommunicationStatus,false);
+        setInternalValue(errorCommunicationStatus, true);
+        setInternalValue(lastCommunicationStatusLine1, false);
+        setInternalValue(errorCommunicationStatusLine1, true);
     }
 
     private void setLine2Error(){
-        (lastCommunicationStatus).setInternalValue(false);
-        (errorCommunicationStatus).setInternalValue(true);
-        (lastCommunicationStatusLine1).setInternalValue(false);
-        (errorCommunicationStatusLine1).setInternalValue(true);
+        setInternalValue(lastCommunicationStatus,false);
+        setInternalValue(errorCommunicationStatus,true);
+        setInternalValue(lastCommunicationStatusLine1,false);
+        setInternalValue(errorCommunicationStatusLine1,true);
     }
 
     private void setLine1Success(){
-        (lastCommunicationStatus).setInternalValue(true);
-        (lastCommunicationStatusLine1).setInternalValue(true);
-        (deviceLastSuccessCommunicateTime).setInternalValue(System.currentTimeMillis());
+        setInternalValue(lastCommunicationStatus,true);
+        setInternalValue(lastCommunicationStatusLine1,true);
+        setInternalValue(deviceLastSuccessCommunicateTime,System.currentTimeMillis());
     }
 
     private void setLine2Success(){
-        (lastCommunicationStatus).setInternalValue(true);
-        (lastCommunicationStatusLine2).setInternalValue(true);
-        (deviceLastSuccessCommunicateTime).setInternalValue(System.currentTimeMillis());
+        setInternalValue(lastCommunicationStatus,true);
+        setInternalValue(lastCommunicationStatusLine2,true);
+        setInternalValue(deviceLastSuccessCommunicateTime,System.currentTimeMillis());
     }
 
     @Override
@@ -356,21 +356,21 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
                 break;
             }
             case COMMAND_VALIDATE: {
-                ((ValueProperty<Boolean>)errorCommunicationStatus).setInternalValue(false);
+                setInternalValue(errorCommunicationStatus,false);
                 break;
             }
             case COMMAND_VALIDATE_LINE1:{
-                ((ValueProperty<Boolean>)errorCommunicationStatusLine1).setInternalValue(false);
+                setInternalValue(errorCommunicationStatusLine1,false);
                 break;
             }
             case COMMAND_VALIDATE_LINE2:{
-                ((ValueProperty<Boolean>)errorCommunicationStatusLine1).setInternalValue(false);
+                setInternalValue(errorCommunicationStatusLine1,false);
                 break;
             }
             case COMMAND_VALIDATE_ALL: {
-                ((ValueProperty<Boolean>)errorCommunicationStatus).setInternalValue(false);
-                ((ValueProperty<Boolean>)errorCommunicationStatusLine1).setInternalValue(false);
-                ((ValueProperty<Boolean>)errorCommunicationStatusLine2).setInternalValue(false);
+                setInternalValue(errorCommunicationStatus,false);
+                setInternalValue(errorCommunicationStatusLine1,false);
+                setInternalValue(errorCommunicationStatusLine2,false);
                 break;
             }
         }
@@ -454,34 +454,34 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
     @Override
     public long getReadTimeOut() {
-        return ((ValueProperty<Long>)deviceTimeOut).getInternalValue();
+        return (Long)getInternalValue((ValueProperty<Long>)deviceTimeOut);
     }
 
     @Override
     public void setReadTimeOut(long timeout) {
-        ((ValueProperty<Long>)deviceTimeOut).setInternalValue(timeout);
+        setInternalValue(deviceTimeOut, timeout);
     }
 
     @Override
-    public long getPauseBeforeRead() { return ((ValueProperty<Long>)deviceTimeOutPause).getInternalValue();   }
+    public long getPauseBeforeRead() { return (Long)getInternalValue((ValueProperty<Long>)deviceTimeOutPause);   }
 
     @Override
     public void setPauseBeforeRead(long pause) {
-        ((ValueProperty<Long>)deviceTimeOutPause).setInternalValue(pause);
+        setInternalValue(deviceTimeOutPause, pause);
     }
 
     public void setPauseBeforeWrite(long pause) {
-        ((ValueProperty<Long>)deviceWritePause).setInternalValue(pause);
+        setInternalValue(deviceWritePause, pause);
     }
 
     @Override
     public Long getLastSuccessExchangeTime() {
-        return ((ValueProperty<Long>)deviceLastSuccessCommunicateTime).getInternalValue();
+        return (Long)getInternalValue((ValueProperty<Long>)deviceLastSuccessCommunicateTime);
     }
 
     @Override
     public Long getLastTryExchangeTime() {
-        return ((ValueProperty<Long>)deviceLastSuccessCommunicateTime).getInternalValue();
+        return (Long)getInternalValue((ValueProperty<Long>)deviceLastSuccessCommunicateTime);
     }
 
     public SoftLongProperty getDeviceTimeOutProperty(){
@@ -538,12 +538,12 @@ public abstract class AbstractDevice extends SystemEllement implements DeviceInt
 
     @Override
     public void setActivete(boolean activeted) {
-        ((ValueProperty<Boolean>)activate).setInternalValue(activeted);
+        setInternalValue(activate, activeted);
     }
 
     @Override
     public boolean isActive() {
-        return ((ValueProperty<Boolean>)activate).getInternalValue();
+        return (Boolean)getInternalValue((ValueProperty<Boolean>)activate);
     }
 
     @Override

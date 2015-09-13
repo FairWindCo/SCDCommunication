@@ -33,14 +33,14 @@ public abstract class RSLineDevice extends AbstractDevice implements SerialDevic
 
     @Override
     public long getAddress() {
-        Long adr= ((ValueProperty<Long>)deviceAddress).getInternalValue();
+        Long adr= (Long)getInternalValue((ValueProperty<Long>)deviceAddress);
         if(adr==null) return -1;
         return adr;
     }
 
     @Override
     public void setAddress(long address) {
-        ((ValueProperty<Long>)deviceAddress).setInternalValue(address);
+        setInternalValue(deviceAddress, address);
     }
 
 

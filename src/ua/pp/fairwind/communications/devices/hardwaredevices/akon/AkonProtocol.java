@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.akon;
 
 
+import ua.pp.fairwind.communications.propertyes.abstraction.AbstractValuePropertyExecutor;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.software.*;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
@@ -12,7 +13,7 @@ import java.util.Date;
 /**
  * Created by Сергей on 11.09.2015.
  */
-public class AkonProtocol {
+public class AkonProtocol extends AbstractValuePropertyExecutor {
     static final int READ_PROPERTY=0;
     static final int WRITE_PROPERTY=1;
 
@@ -130,31 +131,30 @@ public class AkonProtocol {
     static public void setValueFromTransfer(ValueProperty property,long value){
         if(property==null)return;
         if(property instanceof SoftBoolProperty){
-            if(value==0){
-                property.setHardWareInternalValue(false);
+            if(value==0){setHardWareInternalValue(property,false);
             } else {
-                property.setHardWareInternalValue(true);
+                setHardWareInternalValue(property,true);
             }
         } else if(property instanceof SoftLongProperty){
-            property.setHardWareInternalValue(value);
+            setHardWareInternalValue(property, value);
         } else if(property instanceof SoftShortProperty){
-            property.setHardWareInternalValue((short)value);
+            setHardWareInternalValue(property, (short) value);
         } else if(property instanceof SoftIntegerProperty){
-            property.setHardWareInternalValue((int)value);
+            setHardWareInternalValue(property, (int) value);
         } else if(property instanceof SoftByteProperty){
-            property.setHardWareInternalValue((byte)value);
+            setHardWareInternalValue(property, (byte) value);
         } else if(property instanceof SoftCharProperty){
-            property.setHardWareInternalValue((char)value);
+            setHardWareInternalValue(property, (char) value);
         } else if(property instanceof SoftFloatProperty){
-            property.setHardWareInternalValue(Float.intBitsToFloat((int)value));
+            setHardWareInternalValue(property, Float.intBitsToFloat((int)value));
         } else if(property instanceof SoftDoubleProperty){
-            property.setHardWareInternalValue(Double.longBitsToDouble(value));
+            setHardWareInternalValue(property,Double.longBitsToDouble(value));
         } else if(property instanceof SoftDateTimeProperty){
-            property.setHardWareInternalValue(new Date(value));
+            setHardWareInternalValue(property,new Date(value));
         } else if(property instanceof SoftBigDecimalProperty){
-            property.setHardWareInternalValue(BigDecimal.valueOf(value));
+            setHardWareInternalValue(property,BigDecimal.valueOf(value));
         } else if(property instanceof SoftBigIntegerProperty){
-            property.setHardWareInternalValue(BigInteger.valueOf(value));
+            setHardWareInternalValue(property,BigInteger.valueOf(value));
         }
     }
 }

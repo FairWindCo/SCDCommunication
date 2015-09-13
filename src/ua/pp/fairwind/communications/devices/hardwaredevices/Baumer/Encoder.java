@@ -66,8 +66,8 @@ public class Encoder extends RSLineDevice {
                     if (ccrc == recivedMessage[i + 6]) {
                         short revolve=(short)(((recivedMessage[i + 2]<<8)+recivedMessage[i + 3])&0xFF);
                         short steps=(short)(((recivedMessage[i + 4]<<8)+recivedMessage[i + 5])&0xFF);
-                        this.revolution.setHardWareInternalValue(revolve);
-                        this.steps.setHardWareInternalValue(steps);
+                        setHardWareInternalValue(this.revolution,revolve);
+                        setHardWareInternalValue(this.steps,steps);
                         return true;
                     }
                 }
