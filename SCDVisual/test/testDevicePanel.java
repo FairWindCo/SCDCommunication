@@ -16,6 +16,7 @@ import ua.pp.fairwind.javafx.panels.devices.FavoritPanel;
 /**
  * Created by Сергей on 27.08.2015.
  */
+
 public class testDevicePanel extends Application {
     SerialLine line;
     MessageSubSystem ms=new MessageSubSystemMultiDipatch();
