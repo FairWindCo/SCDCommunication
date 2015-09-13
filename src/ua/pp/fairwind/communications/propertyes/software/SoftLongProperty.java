@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
@@ -61,6 +62,30 @@ public class SoftLongProperty extends NumberProperty<Long> {
 
     public SoftLongProperty(String name, Long value) {
         super(name, value);
+    }
+
+    public static SoftLongProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Long value){
+        SoftLongProperty property=new SoftLongProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftLongProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
+        SoftLongProperty property=new SoftLongProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftLongProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
+        SoftLongProperty property=new SoftLongProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftLongProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
+        SoftLongProperty property=new SoftLongProperty(name,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
     }
 
     @Override

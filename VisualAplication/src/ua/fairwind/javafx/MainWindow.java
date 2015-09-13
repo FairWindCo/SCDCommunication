@@ -5,9 +5,7 @@ import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import ua.pp.fairwind.communications.propertyes.software.stringlike.StringIntegerValuedProperty;
-import ua.pp.fairwind.javafx.guiElements.menu.MenuConfigElements;
-import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
-import ua.pp.fairwind.javafx.guiElements.menu.MenuHolder;
+import ua.pp.fairwind.javafx.guiElements.menu.*;
 import ua.pp.fairwind.javafx.guiElements.windows.AppWindow;
 import ua.pp.fairwind.javafx.panels.InfoDialog;
 import ua.pp.fairwind.javafx.panels.LogEventView;
@@ -66,12 +64,16 @@ public class MainWindow  extends Application {
         MenuConfigElements dio=new MenuConfigElements("DIO4",new AKONDIOWindow("AKON AIK", resloader,4,4,monitor));*/
         //MenuConfigElements fpmonitor=new MenuConfigElements("Monitor",new FPMonitorWindow("Favorit Monitor", resloader));
         //MenuConfigElements fpshuv=new MenuConfigElements("SHUV Test",new SHYVWindow("AKON SHUV", resloader,6,2));
-        MenuConfigElements logmessage=new MenuConfigElements("Message Log", evetView);
-        MenuConfigElements logline=new MenuConfigElements("Buffer Line Log", bufferView);
+        MenuConfigElements logmessage=new MenuConfigElementsForm("Message Log", evetView);
+        MenuConfigElements logline=new MenuConfigElementsForm("Buffer Line Log", bufferView);
+        /*
         MenuConfigElements testDialog=new MenuConfigElements("modal app dialog",(a,b)->{
             new Thread(() -> mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK)).start();
+            mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK);});/**/
+        MenuConfigElements testDialog=new MenuConfigElementsAction("modal app dialog",(a,b)->{
+            //new Thread(() -> mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK)).start();
             mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK);});
-        MenuConfigElements log=new MenuConfigElements("Log", "","",logmessage,logline,testDialog);
+        MenuConfigElements log=new MenuConfigElements("Log", logmessage,logline,testDialog);
         /*
         testDev.setAddChild(pandrive);
         testDev.setAddChild(arg);

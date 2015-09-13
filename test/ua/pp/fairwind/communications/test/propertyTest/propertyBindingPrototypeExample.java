@@ -28,9 +28,9 @@ public class propertyBindingPrototypeExample {
         p2.addChangeEventListener(listener);
         p3.addChangeEventListener(listener);
         f1.addChangeEventListener(listener);
-        new NumberPropertyBindingelement<>(p1,p2,fromValue1 -> ValuedPropertyConvertor.convertIntegerFromNumber(fromValue1),ValueConvertor::convertIntegerFromNumber).bind();
-        new NumberPropertyBindingelement<>(p2,p3,fromValue1 -> ValuedPropertyConvertor.convertIntegerFromNumber(fromValue1),ValueConvertor::convertIntegerFromNumber).bind();
-        new NumberPropertyBindingelement<>(p3,f1,fromValue1 -> ValuedPropertyConvertor.convertFloatFromNumber(fromValue1),ValueConvertor::convertIntegerFromNumber).bindWrite();
+        new NumberPropertyBindingelement<>(p1,p2,(fromValue1,oldValue) -> ValuedPropertyConvertor.convertIntegerFromNumber(fromValue1),ValueConvertor::convertIntegerFromNumber).bind();
+        new NumberPropertyBindingelement<>(p2,p3,(fromValue1,oldValue) -> ValuedPropertyConvertor.convertIntegerFromNumber(fromValue1),ValueConvertor::convertIntegerFromNumber).bind();
+        new NumberPropertyBindingelement<>(p3,f1,(fromValue1,oldValue) -> ValuedPropertyConvertor.convertFloatFromNumber(fromValue1),ValueConvertor::convertIntegerFromNumber).bindWrite();
 
         p1.setValue(10);
         p1.setValue(20);

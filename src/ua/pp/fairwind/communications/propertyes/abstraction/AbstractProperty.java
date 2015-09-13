@@ -37,7 +37,7 @@ public abstract class AbstractProperty extends SystemEllement{
 
 
 
-    public AbstractProperty(String name, String uuid, String description,MessageSubSystem centralSystem) {
+    protected AbstractProperty(String name, String uuid, String description,MessageSubSystem centralSystem) {
         super(name, uuid, description, centralSystem);
     }
 

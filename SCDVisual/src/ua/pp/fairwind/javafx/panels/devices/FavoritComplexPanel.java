@@ -3,11 +3,10 @@ package ua.pp.fairwind.javafx.panels.devices;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
+import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.lines.AbstractLine;
 import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.javafx.panels.LineInfoBar;
-import ua.pp.fairwind.javafx.panels.SimpleDeviceConfigPanel;
 
 import java.util.List;
 
@@ -44,6 +43,7 @@ public class FavoritComplexPanel extends BorderPane {
 
     public FavoritComplexPanel(LineInterface line,FavoritCoreDeviceV1 device,List<LineInterface> lines) {
         if(device==null)throw new RuntimeException("DEVICE CAN`T BE NULL!");
+        if(line!=null)device.setPrimerayLine(line);
         this.line=line;
         this.lines=lines;
         this.device=device;

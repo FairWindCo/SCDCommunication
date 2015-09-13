@@ -29,7 +29,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 	}
 
 	public IntegerInputText(Integer arg0,int maxVal) {
-		super(arg0.toString());
+		super(arg0==null?null:arg0.toString());
 		this.maxValue = maxVal;
 		onInitialisation();
 	}

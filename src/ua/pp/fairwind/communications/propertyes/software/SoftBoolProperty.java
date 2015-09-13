@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.BooleanPropertyInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
@@ -110,5 +111,29 @@ public class SoftBoolProperty extends ValueProperty<Boolean> implements BooleanP
             setValue(!value);
         }
 
+    }
+
+    public static SoftBoolProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Boolean value){
+        SoftBoolProperty property=new SoftBoolProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftBoolProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
+        SoftBoolProperty property=new SoftBoolProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftBoolProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
+        SoftBoolProperty property=new SoftBoolProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftBoolProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
+        SoftBoolProperty property=new SoftBoolProperty(name,null,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
     }
 }

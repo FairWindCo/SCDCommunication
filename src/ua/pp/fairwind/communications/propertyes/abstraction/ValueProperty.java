@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
+import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
@@ -34,56 +35,56 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
 
     //КОНСТРУКТОР
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
+    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, description, centralSystem);
         this.softOperationType = softOperationType;
     }
 
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType,T value) {
+    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType,T value) {
         super(name, uuid, description, centralSystem);
         this.softOperationType = softOperationType;
         this.value.set(value);
     }
 
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
+    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
         super(name, uuid, description, centralSystem);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    public ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem,T value) {
+    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem,T value) {
         super(name, uuid, description, centralSystem);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);
     }
 
-    public ValueProperty(String name, String uuid, String description) {
+    protected ValueProperty(String name, String uuid, String description) {
         super(name, uuid, description, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    public ValueProperty(String name, String uuid, String description,T value) {
+    protected ValueProperty(String name, String uuid, String description,T value) {
         super(name, uuid, description, null);
         this.value.set(value);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    public ValueProperty(String name, String description) {
+    protected ValueProperty(String name, String description) {
         super(name, null, description, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    public ValueProperty(String name, String description,T value) {
+    protected ValueProperty(String name, String description,T value) {
         super(name, null, description, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);
     }
 
-    public ValueProperty(String name) {
+    protected ValueProperty(String name) {
         super(name, null, null, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    public ValueProperty(String name, T value) {
+    protected ValueProperty(String name, T value) {
         super(name, null, null, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);
@@ -136,7 +137,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     @Override
     public T getValue() {
         if(softOperationType==SOFT_OPERATION_TYPE.WRITE_ONLY){
-            fireEvent(EventType.ERROR,"Property is WRITEONLY!");
+            fireEvent(EventType.ERROR,I18N.getLocalizedString("property.writeonly.error"));
             return null;
         }
         return getInternalValue();
@@ -181,7 +182,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     @Override
     public void setValue(final T value) {
         if(softOperationType==SOFT_OPERATION_TYPE.READ_ONLY){
-            fireEvent(EventType.ERROR,"Property is READONLY!");
+            fireEvent(EventType.ERROR, I18N.getLocalizedString("property.readonly.error"));
             return;
         }
         Object setupedvalidator=getAdditionalInfo(VALUE_VALIDATOR);
@@ -301,7 +302,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public String toString() {
-        return "P{Name:"+getName()+", Value:"+value.get()+" ,U:"+getUUIDString()+",D:"+getDescription()+"}";
+        return String.format(I18N.getLocalizedString("property.description"),getName(),getUUIDString(),getDescription(),value.get());
     }
 
     public T getOldValue() {

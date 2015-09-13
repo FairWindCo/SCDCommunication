@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.timeaction;
 
+import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
@@ -110,7 +111,7 @@ public class PropertyTimer extends TimerTask{
 
     @Override
     public String toString() {
-        return "TIMER " +timerAction +" period=" + period +" ms";
+        return String.format(I18N.getLocalizedString("timer.description"),timerAction,period);
     }
 
     public static void stopWork(){

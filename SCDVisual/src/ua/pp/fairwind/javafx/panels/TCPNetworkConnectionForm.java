@@ -44,8 +44,8 @@ public class TCPNetworkConnectionForm  extends SimpleView {
 		if(dev!=null){
 			safeparams=dev.getLineParameters();
 			if(safeparams!=null){
-                address.setValue(safeparams.getLineParameter(LineParameters.ParametersName.IP_ADDRESS.name()).toString());
-                port.setValue((Integer)safeparams.getLineParameter(LineParameters.ParametersName.IP_PORT.name()));
+                address.setValue(safeparams.getLineParameter(LineParameters.IP_ADDRESS).toString());
+                port.setValue((Integer)safeparams.getLineParameter(LineParameters.IP_PORT));
 			}
 		} else {
 			dev=null;

@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes;
 
+import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OPERATION_TYPE;
@@ -16,10 +17,10 @@ abstract public class AbsractCommandProperty extends SoftBoolProperty {
     }
 
     public void activate(){
-        setValue(true);
+        setInternalValue(true);
     }
     public void executed(){
-        setValue(false);
+        setInternalValue(false);
     }
 
     @Override
@@ -32,34 +33,34 @@ abstract public class AbsractCommandProperty extends SoftBoolProperty {
 
     @Override
     protected void bindPropertyForRead(AbstractProperty property) {
-        fireEvent(EventType.PARSE_ERROR,"Binding not supported for command!!!");
+        fireEvent(EventType.PARSE_ERROR, I18N.getLocalizedString("command.binding.error"));
     }
 
     @Override
     protected void reciveValueFromBindingWrite(AbstractProperty property, Object valueForWtite, String formatForWrite, int radixForWrite, int positionForWrite, int lengthForWrite, boolean convertBoolToBinaryForWrite) {
-        fireEvent(EventType.PARSE_ERROR,"Binding not supported for command!!!");
+        fireEvent(EventType.PARSE_ERROR,I18N.getLocalizedString("command.binding.error"));
     }
 
     @Override
     protected void reciveValueFromBindingRead(AbstractProperty property, Object valueForWtite) {
-        fireEvent(EventType.PARSE_ERROR,"Binding not supported for command!!!");
+        fireEvent(EventType.PARSE_ERROR,I18N.getLocalizedString("command.binding.error"));
     }
 
 
     @Override
     protected void bindPropertyForWrite(AbstractProperty property, String formatForWrite, int radixForWrite, int positionForWrite, int lengthForWrite, boolean convertBoolToBinaryForWrite) {
-        fireEvent(EventType.PARSE_ERROR, "Binding not supported for command!!!");
+        fireEvent(EventType.PARSE_ERROR, I18N.getLocalizedString("command.binding.error"));
     }
 
 
     @Override
     protected void unbindPropertyForRead() {
-        fireEvent(EventType.PARSE_ERROR,"Binding not supported for command!!!");
+        fireEvent(EventType.PARSE_ERROR,I18N.getLocalizedString("command.binding.error"));
     }
 
     @Override
     protected void unbindPropertyForWrite() {
-        fireEvent(EventType.PARSE_ERROR,"Binding not supported for command!!!");
+        fireEvent(EventType.PARSE_ERROR,I18N.getLocalizedString("command.binding.error"));
     }
 
     @Override

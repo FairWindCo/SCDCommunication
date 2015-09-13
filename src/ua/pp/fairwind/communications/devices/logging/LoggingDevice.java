@@ -2,8 +2,8 @@ package ua.pp.fairwind.communications.devices.logging;
 
 import ua.pp.fairwind.communications.devices.AbstractDevice;
 import ua.pp.fairwind.communications.devices.RequestInformation;
-import ua.pp.fairwind.communications.lines.CommunicationAnswer;
-import ua.pp.fairwind.communications.lines.CommunicationProtocolRequest;
+import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
+import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 
@@ -15,13 +15,13 @@ import java.util.HashMap;
 public class LoggingDevice extends AbstractDevice {
     final LineMonitorInterface monitorInterface;
 
-    public LoggingDevice(long address, String name, String uuid, String description, MessageSubSystem centralSystem,LineMonitorInterface monitorInterface) {
-        super(address, name, uuid, description, centralSystem);
+    public LoggingDevice(String name, String uuid, String description, MessageSubSystem centralSystem,LineMonitorInterface monitorInterface) {
+        super(name, uuid, description, centralSystem);
         this.monitorInterface=monitorInterface;
     }
 
-    public LoggingDevice(long address, String name, String uuid, String description, MessageSubSystem centralSystem, HashMap<String, String> uuids,LineMonitorInterface monitorInterface) {
-        super(address, name, uuid, description, centralSystem, uuids);
+    public LoggingDevice(String name, String uuid, String description, MessageSubSystem centralSystem, HashMap<String, String> uuids,LineMonitorInterface monitorInterface) {
+        super(name, uuid, description, centralSystem, uuids);
         this.monitorInterface=monitorInterface;
     }
 

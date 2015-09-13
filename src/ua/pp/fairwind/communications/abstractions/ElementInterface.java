@@ -16,5 +16,8 @@ public interface ElementInterface {
     void addEventListener(ElementEventListener listener);
     void removeEventListener(ElementEventListener listener);
     void destroy();
+
+    void setEnabled(boolean enabled);
+    boolean isEnabled();
     String getHardwareName();
 }

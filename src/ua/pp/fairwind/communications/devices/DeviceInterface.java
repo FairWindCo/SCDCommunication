@@ -1,9 +1,9 @@
 package ua.pp.fairwind.communications.devices;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.lines.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.lines.LineParameters;
+import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 
@@ -14,12 +14,11 @@ public interface DeviceInterface extends ElementInterface{
     String[] getCommandsName();
     String[] getPropertyesName();
     AbsractCommandProperty getCommand(String name);
-    AbstractProperty getPropertyInfo(String name);
     AbstractProperty getProperty(String name);
+    AbsractCommandProperty[] getCommands();
+    AbstractProperty[] getPropertys();
 
     void processRecivedMessage(CommunicationAnswer answer);
-    long getAddress();
-    void setAddress(long address);
 
     long getReadTimeOut();
     void setReadTimeOut(long timeOut);

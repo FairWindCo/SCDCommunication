@@ -1,4 +1,6 @@
-package ua.pp.fairwind.communications.lines;
+package ua.pp.fairwind.communications.lines.operations;
+
+import ua.pp.fairwind.communications.lines.LineInterface;
 
 import java.util.Date;
 

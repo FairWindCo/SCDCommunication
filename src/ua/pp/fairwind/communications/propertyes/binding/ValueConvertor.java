@@ -9,7 +9,7 @@ import java.util.Date;
  */
 @FunctionalInterface
 public interface ValueConvertor<FROM extends Comparable<? super FROM>,TO extends Comparable<? super TO>> {
-    TO convertValue(FROM fromValue) throws BindingConvertExceptions;
+    TO convertValue(FROM fromValue,TO oldTOValue) throws BindingConvertExceptions;
 
     static  String convertNumberToString(Number value){
         if(value==null) return null;
@@ -17,12 +17,12 @@ public interface ValueConvertor<FROM extends Comparable<? super FROM>,TO extends
     }
 
 
-    static String converBooleanToString(Boolean value){
+    static String converBooleanToString(Boolean value,Object oldVal){
         if(value==null) return null;
         return value.toString();
     }
 
-    static String converBooleanToStringBIN(Boolean value){
+    static String converBooleanToStringBIN(Boolean value,Object oldVal){
         if(value==null) return null;
         if(((Boolean) value).booleanValue()){
             return "1";
@@ -32,22 +32,22 @@ public interface ValueConvertor<FROM extends Comparable<? super FROM>,TO extends
     }
 
 
-    static  String converDateToString(Date value){
+    static  String converDateToString(Date value,Object oldVal){
         if(value==null) return null;
         return value.toString();
     }
 
-    static  Byte convertByteFromNumber(Number value) {
+    static  Byte convertByteFromNumber(Number value,Object oldVal) {
         if(value!=null)return value.byteValue();
         return null;
     }
 
-    static  Short convertShortFromNumber(Number value) {
+    static  Short convertShortFromNumber(Number value,Object oldVal) {
         if(value!=null)return value.shortValue();
         return null;
     }
 
-    static Integer convertIntegerFromNumber(Number value) {
+    static Integer convertIntegerFromNumber(Number value,Object oldVal) {
         if(value!=null)return value.intValue();
         return null;
     }

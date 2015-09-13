@@ -3,19 +3,22 @@ package ua.pp.fairwind.communications.lines;
 import ua.pp.fairwind.communications.abstractions.LineSelector;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
 import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.devices.ImitatorDevice;
 import ua.pp.fairwind.communications.devices.LineSelectDevice;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
+import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
 import ua.pp.fairwind.communications.lines.exceptions.TrunsactionError;
+import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
+import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 import ua.pp.fairwind.communications.lines.performance.PerformanceMonitorEventData;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,20 +37,49 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     private final AtomicBoolean threadPaused=new AtomicBoolean(false);
     private final AtomicBoolean performanceMonitor=new AtomicBoolean(false);
     private final AtomicBoolean threadTrunsactionPaused=new AtomicBoolean(false);
+    protected final AtomicBoolean serverMode=new AtomicBoolean(false);
     private volatile long startTrunsactionTime=-1;
     private volatile UUID trunsactionUUID;
     private final long maxTransactionTime;
     private final Set<DeviceInterface> readmonitoring=new HashSet<>();
     private final Set<DeviceInterface> writemonitoring=new HashSet<>();
+    private final Set<ImitatorDevice> deviceForService=new HashSet<>();
     private final ReentrantLock lock = new ReentrantLock();
     private final ExecutorService service= Executors.newCachedThreadPool();
     private volatile LineSelectDevice lineSelector;
+    private volatile LineParameters serverLineParameter;
+    private volatile LineParameters curentLineParameters;
+    private volatile Object curentLine;
 
-    public AbstractLine(String name, String uuid, String description, MessageSubSystem centralSystem,long maxTransactionTime) {
+    protected AbstractLine(String name, String uuid, String description, MessageSubSystem centralSystem,long maxTransactionTime) {
         super(name, uuid, description, centralSystem);
         this.maxTransactionTime = maxTransactionTime;
     }
 
+    protected AbstractLine(String name, String uuid, String description, SystemElementDirectory centralSystem,long maxTransactionTime) {
+        super(name, uuid, description, centralSystem);
+        this.maxTransactionTime = maxTransactionTime;
+    }
+
+    protected AbstractLine(String name, String uuid, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids,long maxTransactionTime) {
+        super(name, uuid, description, centralSystem);
+        this.maxTransactionTime = maxTransactionTime;
+    }
+
+    protected AbstractLine(String name, String uuid, String description, SystemElementDirectory centralSystem,HashMap<String,String> uuids,long maxTransactionTime) {
+        super(name, uuid, description, centralSystem);
+        this.maxTransactionTime = maxTransactionTime;
+    }
+
+    public static String localizeName(String key){
+        return localizeName("line", key);
+    }
+    public static String localizeDescription(String key){
+        return localizeDescription("line", key);
+    }
+    public static String localizeError(String key){
+        return localizeError("line", key);
+    }
 
     synchronized private boolean isTrunsactionActive(){
         if(transuction.get()){
@@ -59,6 +91,37 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             }
         } else {
             return false;
+        }
+    }
+
+    protected void serviceRecivedFromLineDataInServerMode(final byte[] data){
+        if(serverMode.get() && data!=null && data.length>0){
+            try {
+                if (lock.tryLock(maxTransactionTime * 3, TimeUnit.MILLISECONDS)) {
+                        deviceForService.forEach(device -> {
+                            byte[] copydata = Arrays.copyOf(data, data.length);
+                            byte[] answer = device.process_line_data(copydata);
+                            if (answer != null && answer.length > 0) {
+                                long starttime=System.currentTimeMillis();
+                                try {
+                                    sendMessage(answer, serverLineParameter);
+                                    perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION, System.currentTimeMillis() - starttime);
+                                    writemonitor(answer, null);
+                                } catch (LineErrorException e) {
+                                    fireEvent(EventType.FATAL_ERROR, e);
+                                } catch (LineTimeOutException e) {
+                                    fireEvent(EventType.FATAL_ERROR, e);
+                                }
+                            }
+                        });
+                }
+            }catch (InterruptedException ex){
+                //do nothing
+            } catch (Exception ex){
+                fireEvent(EventType.FATAL_ERROR,ex);
+            }finally {
+                lock.unlock();
+            }
         }
     }
 
@@ -89,9 +152,9 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     @Override
     synchronized public void startTransaction(UUID uuid,long waitTime) throws TrunsactionError {
-        if(uuid==null) throw new TrunsactionError("NEED UUID!!", TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
+        if(uuid==null) throw new TrunsactionError( localizeError("uuid_error"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
         if(!uuid.equals(trunsactionUUID) && transuction.get() && startTrunsactionTime+ maxTransactionTime <System.currentTimeMillis()){
-            throw new TrunsactionError("Another transaction started!", TrunsactionError.TrunsactionErrorType.ANOTHER_TRUNSACTION_EXECUTE);
+            throw new TrunsactionError(localizeError("another_trunsaction"), TrunsactionError.TrunsactionErrorType.ANOTHER_TRUNSACTION_EXECUTE);
         } else {
             try {
                 if(lock.tryLock(waitTime, TimeUnit.MILLISECONDS)) {
@@ -103,7 +166,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                     onStartTrunsaction();
                 }
             } catch (InterruptedException ex){
-                throw new TrunsactionError("Can not acquire monitor!", TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
+                throw new TrunsactionError(localizeError("acquire_monitor"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
             }
         }
     }
@@ -120,6 +183,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         if(!selectData.isAlreadySelect()){
             try{
                 byte[] send=selectData.getSendbuffer();
+                //System.out.print("WRITED:");CommunicationUtils.showBuffer(send);
                 if(send!=null && send.length>0) {
                     selectData.getPauseBeforeWrite();
                     sendMessage(send, selectData.getLineParam());
@@ -127,9 +191,11 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                 if(selectData.neededByteCount()>0) {
                     selectData.getPauseBeforeRead();
                     byte[] readed = reciveMessage(selectData.getReadTimeOut(),selectData.neededByteCount(),selectData.getLineParam());
+                    //System.out.print("READED:");CommunicationUtils.showBuffer(readed);
                     return selectData.compare(readed);
                 }
             } catch (LineErrorException|LineTimeOutException ex){
+                fireEvent(EventType.ERROR,ex.getLocalizedMessage());
                 return false;
             }
         }
@@ -138,17 +204,67 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     private boolean lineSelectorExecute(LineParameters params){
         if(lineSelector!=null) {
+            Object always_set_line=params.getLineParameter(LineParameters.ALWAYS_SET_LINE);
+            boolean need_set_line=false;
+            if(always_set_line!=null && always_set_line instanceof Boolean){
+                need_set_line=(Boolean)need_set_line;
+            }
             Object selectedline = params.getLineParameter("SUB_LINE_NUMBER");
-            return lineSelectorExecute(selectedline);
+            Object lineChange=params.getLineParameter("NEED_LINE_CHANGE");
+            if(!need_set_line){
+                if(curentLine==selectedline){
+                    need_set_line=false;
+                } else {
+                    if(curentLine==null)need_set_line=true;
+                    else need_set_line=curentLine.equals(selectedline);
+                }
+            }
+            if(need_set_line) {
+                if (lineChange != null && lineChange instanceof Boolean && (Boolean) lineChange) {
+                    //System.out.println("NEED SELECT LINE:"+lineChange+" NEW LINE:"+selectedline);
+                    return lineSelectorExecute(selectedline);
+                } else return true;
+            } else {
+                return true;
+            }
+
         }
         return true;
     }
 
     abstract protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException,LineTimeOutException;
     abstract protected byte[] reciveMessage(long timeOut,long bytesForReadCount, LineParameters params) throws LineErrorException,LineTimeOutException;
-    abstract protected boolean setLineParameters(LineParameters params);
+    abstract protected boolean setepLineParameters(LineParameters params,LineParameters curentLineParameters,boolean alwaysSet);
     abstract protected void onStartTrunsaction();
     abstract protected void onEndTrunsaction();
+    abstract protected void closeUsedResources();
+    abstract protected boolean testIdentialyLineParameters(LineParameters current,LineParameters newparmeters);
+
+    protected boolean setLineParameters(LineParameters params){
+        if(params==null){
+            return setepLineParameters(params,curentLineParameters,true);
+        }
+        Object always_set_line_param=params.getLineParameter(LineParameters.ALWAYS_SET_LINE_PARAM);
+        boolean need_set_line_param=false;
+        if(always_set_line_param!=null && always_set_line_param instanceof Boolean){
+            need_set_line_param=(Boolean)always_set_line_param;
+        }
+        if(need_set_line_param){
+            return setepLineParameters(params,curentLineParameters,true);
+        } else {
+            if(!testIdentialyLineParameters(curentLineParameters,params)){
+                if(setepLineParameters(params,curentLineParameters,false)){
+                    curentLineParameters=params;
+                    return true;
+                } else {
+                    fireEvent(EventType.ERROR,localizeError("line_parameters_error"));
+                    return false;
+                }
+
+            }else return true;
+        }
+    }
+
 
     @Override
     synchronized public void endTransaction(UUID uuid) {
@@ -163,14 +279,28 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     @Override
     public void sendMessage(UUID uuid,final byte[] data, LineParameters params) throws TrunsactionError,LineErrorException,LineTimeOutException {
         if(!isTrunsactionActive(uuid)){
-            if(setLineParameters(params)) {
-                long starttime = System.currentTimeMillis();
-                sendMessage(data, params);
-                perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION, System.currentTimeMillis() - starttime);
-                writemonitor(data, null);
+            try {
+                if (lock.tryLock(maxTransactionTime, TimeUnit.MILLISECONDS)) {
+                    if (lineSelectorExecute(params)) {
+                        long starttime = System.currentTimeMillis();
+                        sendMessage(data, params);
+                        perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION, System.currentTimeMillis() - starttime);
+                        writemonitor(data, null);
+                    } else {
+                        fireEvent(EventType.ERROR,localizeError("line_parameters_error"));
+                    }
+                } else {
+                    endTransaction(uuid);
+                    throw new TrunsactionError(localizeError("another_trunsaction"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
+                }
+            }catch (InterruptedException e){
+                endTransaction(uuid);
+                throw new TrunsactionError(localizeError("another_trunsaction"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
+            } finally {
+                lock.unlock();
             }
         } else {
-            throw new TrunsactionError("Another transaction started!", TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
+            throw new TrunsactionError(localizeError("another_trunsaction"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
         }
     }
 
@@ -197,24 +327,37 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     @Override
     public byte[] reciveMessage(UUID uuid,long timeOut,long bytesForReadCount, LineParameters params) throws TrunsactionError,LineTimeOutException,LineErrorException {
         if(!isTrunsactionActive(uuid)){
-            if(setLineParameters(params)) {
-                long starttime = System.currentTimeMillis();
-                final byte[] data = reciveMessage(timeOut, bytesForReadCount, params);
-                perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION, System.currentTimeMillis() - starttime);
-                readmonitor(data, null);
-                return data;
-            } else {
-                return null;
+            try {
+                if (lock.tryLock(maxTransactionTime, TimeUnit.MILLISECONDS)) {
+                    if (lineSelectorExecute(params)&&setLineParameters(params)) {
+                        long start_time = System.currentTimeMillis();
+                        final byte[] data = reciveMessage(timeOut, bytesForReadCount, params);
+                        perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION, System.currentTimeMillis() - start_time);
+                        readmonitor(data, null);
+                        return data;
+                    } else {
+                        fireEvent(EventType.ERROR,localizeError("line_parameters_error"));
+                        return null;
+                    }
+                } else {
+                    endTransaction(uuid);
+                    throw new TrunsactionError(localizeError("another_trunsaction"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
+                }
+            }catch (InterruptedException e){
+                endTransaction(uuid);
+                throw new TrunsactionError(localizeError("another_trunsaction"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
+            } finally {
+                lock.unlock();
             }
         } else {
-            throw new TrunsactionError("Another transaction started!", TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
+            throw new TrunsactionError(localizeError("another_trunsaction"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
         }
     }
 
     private CommunicationAnswer processRequest(final CommunicationProtocolRequest request){
-        if(request!=null){
+        if(request!=null && !serverMode.get()){
             if(!setLineParameters(request.getParameters())){
-                CommunicationAnswer answ=new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.ERROR,null,"CAN`T SET LINE PARAMETERS",this,0,0);
+                CommunicationAnswer answ=new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.ERROR,null,localizeError("line_parameters_error"),this,0,0);
             }
             if(request.getPauseBeforeWrite()>0) {
                 CommunicationUtils.RealThreadPause(request.getPauseBeforeWrite());
@@ -247,7 +390,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             }
 
         }
-        return new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.ERROR,null,"NULL REQUEST",this,0,0);
+        return new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.ERROR,null,localizeError("null_request"),this,0,0);
     }
 
 
@@ -261,7 +404,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                     threadCreated.set(true);
                     threadRunned.set(true);
                     while (threadRunned.get()){
-                        if(!threadPaused.get() && !threadTrunsactionPaused.get() ) {
+                        if(!threadPaused.get() && !threadTrunsactionPaused.get() &&!serverMode.get() ) {
                             try {
                                 lock.lock();
                                 CommunicationProtocolRequest request = requests.poll();
@@ -320,6 +463,8 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                                     transuction.set(false);
                                     trunsactionUUID=null;
                                 }
+                            } else {
+                                closeUsedResources();
                             }
                         }
                     }
@@ -362,14 +507,15 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     @Override
     public String toString() {
-        return "LINE{Name:"+getName()+" ,U:"+getUUIDString()+",D:"+getDescription()+"}";
+        return String.format(I18N.getLocalizedString("line.description"),getName(),getUUIDString(),getDescription());
     }
 
     @Override
     public void destroy(){
-        super.destroy();
+        closeUsedResources();
         threadRunned.set(false);
         service.shutdown();
+        super.destroy();
     }
 
     public boolean isPerformanceMonitor() {
@@ -380,4 +526,40 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         performanceMonitor.set(state);
     }
 
+    public LineSelectDevice getLineSelector() {
+        return lineSelector;
+    }
+
+    public void setLineSelector(LineSelectDevice lineSelector) {
+        this.lineSelector = lineSelector;
+    }
+
+    public void setServerLineParameter(boolean setServerMode,LineParameters serverLineParameter) {
+        if(setServerMode) {
+            this.serverLineParameter = serverLineParameter;
+            serverMode.set(false);
+        } else {
+            serverMode.set(false);
+        }
+    }
+
+    public void stopServerMode() {
+        setServerLineParameter(false, null);
+    }
+
+    public boolean isServerMode() {
+        return serverMode.get();
+    }
+
+    public void addDeviceToService(ImitatorDevice device){
+        if(device!=null)deviceForService.add(device);
+    }
+
+    public void removeDeviceToService(ImitatorDevice device){
+        if(device!=null)deviceForService.remove(device);
+    }
+
+    public ImitatorDevice[] getDeivicesForService(){
+        return deviceForService.toArray(new ImitatorDevice[deviceForService.size()]);
+    }
 }

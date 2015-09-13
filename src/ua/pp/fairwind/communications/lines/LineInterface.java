@@ -2,9 +2,11 @@ package ua.pp.fairwind.communications.lines;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.devices.ImitatorDevice;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
 import ua.pp.fairwind.communications.lines.exceptions.TrunsactionError;
+import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 
 import java.util.UUID;
 
@@ -29,4 +31,9 @@ public interface LineInterface  extends ElementInterface {
 
     boolean isPaused();
     void setPaused(boolean pause);
+
+    ImitatorDevice[] getDeivicesForService();
+    void addDeviceToService(ImitatorDevice device);
+    void removeDeviceToService(ImitatorDevice device);
+
 }

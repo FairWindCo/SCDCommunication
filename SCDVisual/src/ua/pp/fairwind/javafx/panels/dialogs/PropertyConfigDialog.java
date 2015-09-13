@@ -8,7 +8,7 @@ import ua.pp.fairwind.communications.devices.AbstractDevice;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.timeaction.PropertyTimer;
-import ua.pp.fairwind.javafx.I18N.I18N_monitor;
+import ua.pp.fairwind.javafx.I18N.I18N;
 
 
 /**
@@ -49,30 +49,30 @@ public class PropertyConfigDialog {
     }
 
     private PropertyConfigDialog() {
-        checkBox=new CheckBox(I18N_monitor.COMMON.getStringEx("CONFIG_PROPERTY_ENABLE_IMMEDIATELY_WRITE"));
+        checkBox=new CheckBox(I18N.getLocalizedString("CONFIG_PROPERTY_ENABLE_IMMEDIATELY_WRITE"));
         checkBox.setOnAction(select->{
             if(property!=null&&property instanceof ValueProperty<?>){
-                property.setAdditionalInfo(AbstractDevice.IMIDIATLY_WRITE_FLAG,checkBox.isSelected());
+                property.setAdditionalInfo(AbstractDevice.IMMEDIATELY_WRITE_FLAG,checkBox.isSelected());
             }
         });
         table=new TableView<>();
-        TableColumn<PropertyTimer, String> col1= new TableColumn<>(I18N_monitor.COMMON.getStringEx("CONFIG_PROPERTY_AVIABLE_TIMERS"));
+        TableColumn<PropertyTimer, String> col1= new TableColumn<>(I18N.getLocalizedString("CONFIG_PROPERTY_AVIABLE_TIMERS"));
         col1.setCellValueFactory(param -> {
             if (param.getValue() == null) return new SimpleStringProperty("----");
             PropertyTimer time = param.getValue();
             return new SimpleStringProperty(time.toString());
         });
-        ButtonCell col2=new ButtonCell(I18N_monitor.COMMON.getStringEx("CONFIG_PROPERTY_REMOVE_TIMER"));
+        ButtonCell col2=new ButtonCell(I18N.getLocalizedString("CONFIG_PROPERTY_REMOVE_TIMER"));
         TableColumn<PropertyTimer,String> col_action = new TableColumn<>("Action");
-        col_action.setCellValueFactory((p)->new SimpleStringProperty(I18N_monitor.COMMON.getStringEx("CONFIG_PROPERTY_REMOVE_TIMER")));
+        col_action.setCellValueFactory((p)->new SimpleStringProperty(I18N.getLocalizedString("CONFIG_PROPERTY_REMOVE_TIMER")));
 
 
-        col_action.setCellFactory(p ->new ButtonCell(I18N_monitor.COMMON.getStringEx("CONFIG_PROPERTY_REMOVE_TIMER")));
+        col_action.setCellFactory(p ->new ButtonCell(I18N.getLocalizedString("CONFIG_PROPERTY_REMOVE_TIMER")));
 
 
         table.getColumns().add(col1);
         table.getColumns().add(col_action);
-        add=new Button(I18N_monitor.COMMON.getStringEx("CONFIG_PROPERTY_ADD_TIMER"));
+        add=new Button(I18N.getLocalizedString("CONFIG_PROPERTY_ADD_TIMER"));
         add.setOnAction(action->{
             if(property!=null){
                 //PropertyTimer timer=PropertyTimer.createPropertyTimer(property, TIMER_ACTION.READ,1000);
@@ -104,12 +104,12 @@ public class PropertyConfigDialog {
         this.property=property;
         if(property instanceof ValueProperty<?>){
             checkBox.setVisible(true);
-            Boolean state=(Boolean)property.getAdditionalInfo(AbstractDevice.IMIDIATLY_WRITE_FLAG);
+            Boolean state=(Boolean)property.getAdditionalInfo(AbstractDevice.IMMEDIATELY_WRITE_FLAG);
             checkBox.setSelected(state==null?false:state);
         } else {
             checkBox.setVisible(false);
         }
-        dialog.setHeaderText(I18N_monitor.COMMON.getStringEx("CONFIG_PROPERTY:")+property.getName()+" "+property.getDescription());
+        dialog.setHeaderText(I18N.getLocalizedString("CONFIG_PROPERTY:")+property.getName()+" "+property.getDescription());
         refreshTable(property);
         dialog.show();
     }
@@ -130,7 +130,7 @@ public class PropertyConfigDialog {
     }
 
     public static Button crateConfigButton(final AbstractProperty property){
-        Button but=new Button(I18N_monitor.COMMON.getStringEx("CONFIG"));
+        Button but=new Button(I18N.getLocalizedString("CONFIG"));
         but.setOnAction(action->showConfigDialog(property));
         return but;
     }

@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
@@ -45,6 +46,30 @@ public class SoftDoubleProperty extends NumberProperty<Double>{
 
     public SoftDoubleProperty(String name, String description, MessageSubSystem centralSystem, Double value) {
         super(name, description, centralSystem, value);
+    }
+
+    public static SoftDoubleProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Double value){
+        SoftDoubleProperty property=new SoftDoubleProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftDoubleProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
+        SoftDoubleProperty property=new SoftDoubleProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftDoubleProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
+        SoftDoubleProperty property=new SoftDoubleProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
+    }
+
+    public static SoftDoubleProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
+        SoftDoubleProperty property=new SoftDoubleProperty(name,description,parentSystem.getChileMessageSubsystems());
+        parentSystem.addElemnt(property);
+        return property;
     }
 
     public SoftDoubleProperty(String name, MessageSubSystem centralSystem, Double value) {

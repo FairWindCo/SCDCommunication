@@ -47,7 +47,7 @@ public class InfoDialog extends SimpleView {
 		lblPanel.getChildren().addAll(imageView,text);
 		btnPanel.getChildren().add(set);
 		
-		set.setOnAction(arg0 -> closeWindow());
+		//set.setOnAction(arg0 -> closeWindow());
 		
 		sceneRoot.centerProperty().set(lblPanel);
 		sceneRoot.bottomProperty().set(btnPanel);

@@ -6,6 +6,7 @@ import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
 import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
 
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -54,7 +55,7 @@ public class MessageSubSystemMultiDipatch extends MessageSubSystemSimple{
     }
 
     @Override
-    public MessageSubSystem getNewChild() {
+    public MessageSubSystem getNewChild(UUID elementForGetMessageSubSystem) {
         return new MessageSubSystemMultiDipatch();
     }
 

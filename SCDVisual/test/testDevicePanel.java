@@ -3,15 +3,15 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ua.pp.fairwind.communications.devices.favorit.FavoritCoreDeviceV1;
+import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.timeaction.PropertyTimer;
 import ua.pp.fairwind.javafx.panels.LineInfoBar;
-import ua.pp.fairwind.javafx.panels.SimpleDeviceConfigPanel;
 import ua.pp.fairwind.javafx.panels.devices.FavoritPanel;
+import ua.pp.fairwind.javafx.panels.devices.SimpleDeviceConfigPanel;
 
 /**
  * Created by Сергей on 27.08.2015.
