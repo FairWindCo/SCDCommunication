@@ -1,7 +1,7 @@
 package ua.pp.fairwind.communications.devices.logging;
 
-import ua.pp.fairwind.communications.devices.AbstractDevice;
 import ua.pp.fairwind.communications.devices.RequestInformation;
+import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;

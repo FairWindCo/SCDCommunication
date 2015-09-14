@@ -1,4 +1,4 @@
-package ua.pp.fairwind.communications.devices;
+package ua.pp.fairwind.communications.devices.abstracts;
 
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;

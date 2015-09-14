@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.abstractions;
 
-import ua.pp.fairwind.communications.lines.LineParameters;
+import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
 import java.util.Arrays;

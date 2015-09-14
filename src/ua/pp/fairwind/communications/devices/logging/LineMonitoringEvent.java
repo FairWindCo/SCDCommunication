@@ -1,7 +1,7 @@
 package ua.pp.fairwind.communications.devices.logging;
 
-import ua.pp.fairwind.communications.devices.DeviceInterface;
-import ua.pp.fairwind.communications.lines.LineInterface;
+import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 

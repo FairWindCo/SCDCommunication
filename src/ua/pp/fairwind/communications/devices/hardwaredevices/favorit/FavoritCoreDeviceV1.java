@@ -2,12 +2,12 @@ package ua.pp.fairwind.communications.devices.hardwaredevices.favorit;
 
 import jssc.SerialPort;
 import ua.pp.fairwind.communications.abstractions.LineSelector;
-import ua.pp.fairwind.communications.devices.AbstractDevice;
-import ua.pp.fairwind.communications.devices.LineSelectDevice;
-import ua.pp.fairwind.communications.devices.RSLineDevice;
 import ua.pp.fairwind.communications.devices.RequestInformation;
+import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
+import ua.pp.fairwind.communications.devices.abstracts.LineSelectDevice;
+import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
+import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;

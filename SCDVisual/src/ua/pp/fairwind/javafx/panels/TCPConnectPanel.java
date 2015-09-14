@@ -5,9 +5,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import ua.pp.fairwind.communications.devices.DeviceInterface;
-import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
-import ua.pp.fairwind.communications.lines.LineParameters;
+import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
+import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.javafx.I18N.I18N;
 
 public class TCPConnectPanel extends StackPane{

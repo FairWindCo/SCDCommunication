@@ -1,16 +1,17 @@
-package ua.pp.fairwind.communications.lines;
+package ua.pp.fairwind.communications.lines.abstracts;
 
 import ua.pp.fairwind.communications.abstractions.LineSelector;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
-import ua.pp.fairwind.communications.devices.DeviceInterface;
-import ua.pp.fairwind.communications.devices.ImitatorDevice;
-import ua.pp.fairwind.communications.devices.LineSelectDevice;
+import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.ImitatorDevice;
+import ua.pp.fairwind.communications.devices.abstracts.LineSelectDevice;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
 import ua.pp.fairwind.communications.lines.exceptions.TrunsactionError;
+import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 import ua.pp.fairwind.communications.lines.performance.PerformanceMonitorEventData;
@@ -353,8 +354,8 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             throw new TrunsactionError(localizeError("another_trunsaction"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
         }
     }
-
-    private CommunicationAnswer processRequest(final CommunicationProtocolRequest request){
+    //функция выплолнения операций чтения записи в линию для запроса
+    private CommunicationAnswer processCommunicationOperationForRequest(final CommunicationProtocolRequest request){
         if(request!=null && !serverMode.get()){
             if(!setLineParameters(request.getParameters())){
                 CommunicationAnswer answ=new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.ERROR,null,localizeError("line_parameters_error"),this,0,0);
@@ -393,6 +394,54 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         return new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.ERROR,null,localizeError("null_request"),this,0,0);
     }
 
+    //выполнение действий предусмотренных запросом
+    private void executeRequest(CommunicationProtocolRequest request){
+        if (request != null) {
+            try {
+                //System.out.println(request);
+                if(!lineSelectorExecute(request.getParameters())){
+                    if(request.isCanTry()){
+                        CommunicationProtocolRequest newRequest = CommunicationProtocolRequest.createReuest(request);
+                        if (newRequest != null) requests.add(newRequest);
+                    } else {
+                        request.invalidate();
+                    }
+                } else {
+                    CommunicationAnswer answer = processCommunicationOperationForRequest(request);
+                    if (answer.getStatus() == CommunicationAnswer.CommunicationResult.TIMEOUT && request.isCanTry()) {
+                        //request.destroy();
+                        CommunicationProtocolRequest newRequest = CommunicationProtocolRequest.createReuest(request);
+                        if (newRequest != null) requests.add(newRequest);
+                    } else {
+                        DeviceInterface dev = request.getSenderDevice();
+                        if (dev != null && threadRunned.get()) {
+                            service.submit(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        long starttime=System.currentTimeMillis();
+                                        dev.processRecivedMessage(answer);
+                                        perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.ANALISE_OPERATINO, System.currentTimeMillis() - starttime);
+                                    } catch (Exception e) {
+                                        fireEvent(EventType.ERROR, e);
+                                    } finally {
+                                        answer.destroy();
+                                    }
+                                }
+                            });
+                        } else {
+                            answer.destroy();
+                        }
+                        CommunicationProtocolRequest subrequest=request.getSubrequest();
+                        if(subrequest!=null) executeRequest(subrequest);
+                    }
+                }
+            }catch (Exception all_ex){
+                request.invalidate();
+                request.destroy();
+            }
+        }
+    }
 
     @Override
     public void async_communicate(CommunicationProtocolRequest request) {
@@ -408,48 +457,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                             try {
                                 lock.lock();
                                 CommunicationProtocolRequest request = requests.poll();
-                                if (request != null) {
-                                    try {
-                                        //System.out.println(request);
-                                        if(!lineSelectorExecute(request.getParameters())){
-                                            if(request.isCanTry()){
-                                                CommunicationProtocolRequest newRequest = CommunicationProtocolRequest.createReuest(request);
-                                                if (newRequest != null) requests.add(newRequest);
-                                            } else {
-                                                request.invalidate();
-                                            }
-                                        } else {
-                                            CommunicationAnswer answer = processRequest(request);
-                                            if (answer.getStatus() == CommunicationAnswer.CommunicationResult.TIMEOUT && request.isCanTry()) {
-                                                //request.destroy();
-                                                CommunicationProtocolRequest newRequest = CommunicationProtocolRequest.createReuest(request);
-                                                if (newRequest != null) requests.add(newRequest);
-                                            } else {
-                                                DeviceInterface dev = request.getSenderDevice();
-                                                if (dev != null && threadRunned.get()) {
-                                                    service.submit(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            try {
-                                                                long starttime=System.currentTimeMillis();
-                                                                dev.processRecivedMessage(answer);
-                                                                perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.ANALISE_OPERATINO, System.currentTimeMillis() - starttime);
-                                                            } catch (Exception e) {
-                                                                fireEvent(EventType.ERROR, e);
-                                                            } finally {
-                                                                answer.destroy();
-                                                            }
-                                                        }
-                                                    });
-                                                } else {
-                                                    answer.destroy();
-                                                }
-                                            }
-                                        }
-                                    }catch (Exception all_ex){
-                                        request.destroy();
-                                    }
-                                }
+                                executeRequest(request);
                             } catch (Exception ex){
                                 fireEvent(EventType.FATAL_ERROR,ex);
                             }finally {

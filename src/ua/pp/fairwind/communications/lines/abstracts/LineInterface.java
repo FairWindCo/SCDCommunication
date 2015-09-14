@@ -1,11 +1,12 @@
-package ua.pp.fairwind.communications.lines;
+package ua.pp.fairwind.communications.lines.abstracts;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.devices.DeviceInterface;
-import ua.pp.fairwind.communications.devices.ImitatorDevice;
+import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.ImitatorDevice;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
 import ua.pp.fairwind.communications.lines.exceptions.TrunsactionError;
+import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 
 import java.util.UUID;

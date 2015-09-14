@@ -1,10 +1,10 @@
 package ua.pp.fairwind.communications;
 
-import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.elementsdirecotry.AutoCreateDeviceFunction;
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.lines.SerialLine;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.timeaction.PropertyTimer;
@@ -49,7 +49,7 @@ public class SCADASystem extends SystemElementDirectory implements AutoCreateDev
     }
 
     private void destroyAllLine(){
-        getAllLines().forEach(ua.pp.fairwind.communications.lines.LineInterface::destroy);
+        getAllLines().forEach(LineInterface::destroy);
     }
 
     @Override

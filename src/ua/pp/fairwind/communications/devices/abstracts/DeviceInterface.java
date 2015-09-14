@@ -1,8 +1,8 @@
-package ua.pp.fairwind.communications.devices;
+package ua.pp.fairwind.communications.devices.abstracts;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.lines.LineInterface;
-import ua.pp.fairwind.communications.lines.LineParameters;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
+import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;

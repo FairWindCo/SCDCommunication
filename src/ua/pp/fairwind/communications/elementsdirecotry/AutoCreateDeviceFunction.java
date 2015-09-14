@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.elementsdirecotry;
 
-import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.devices.hardwaredevices.Baumer.Encoder;
 import ua.pp.fairwind.communications.devices.hardwaredevices.arg.micro.ArgMicroDevice;
 import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;

@@ -1,9 +1,10 @@
-package ua.pp.fairwind.communications.devices;
+package ua.pp.fairwind.communications.devices.abstracts;
 
+import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
-import ua.pp.fairwind.communications.lines.LineInterface;
-import ua.pp.fairwind.communications.lines.LineParameters;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
+import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
@@ -189,42 +190,57 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
         listOfCommands.stream().forEach(comand->centralSystem.addElemnt(comand));
     }
 
-    protected void sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE reqType,byte[] buffer,long needReadByteCount,AbstractProperty property,boolean needRollBack){
+    protected CommunicationProtocolRequest formCommunicationProtocolRequest(CommunicationProtocolRequest.REQUEST_TYPE reqType,RequestInformation needOperation,AbstractProperty property){
+        if(needOperation==null) return null;
+        CommunicationProtocolRequest subrequest=formCommunicationProtocolRequest(reqType,needOperation.getSubrequest(),property);
+        CommunicationProtocolRequest request;
+        byte[] buffer=needOperation.getBufferForWrite();
         if(buffer!=null){
             Long devTO=(Long)getInternalValue((ValueProperty<Long>)deviceTimeOut);
             Long devTOP=(Long)getInternalValue((ValueProperty<Long>)deviceTimeOutPause);
             Long devWP=(Long)getInternalValue((ValueProperty<Long>)deviceWritePause);
             long maxRetry=(Long)getInternalValue(retryCount);
+            long needReadByteCount=needOperation.getNeddedByteForRead();
+            boolean needRollBack=needOperation.isNeedRollBack();
             if(property!=null){
                 devTOP=property.getPropertyPauseBeforeRead()>0?property.getPropertyPauseBeforeRead():devTOP+property.getPropertyPauseBeforeReadAddon();
                 devTO=property.getPropertyTimeOutRead()>0?property.getPropertyTimeOutRead():devTO+property.getPropertyTimeOutReadAddon();
                 devWP=property.getPropertyPauseBeforeWrite()>0?property.getPropertyPauseBeforeWrite():devWP+property.getPropertyPauseBeforeWriteAddon();
-
+                request=CommunicationProtocolRequest.createReuest(reqType,buffer,needReadByteCount,this, devTO,devTOP,devWP,lineparams,property,primaryLine!=null?secondaryLine:null,needRollBack,maxRetry,subrequest);
+                return request;
+            } else {
+                request=CommunicationProtocolRequest.createReuest(reqType,buffer,needReadByteCount,this, devTO,devTOP,devWP,lineparams,null,primaryLine!=null?secondaryLine:null,needRollBack,maxRetry,subrequest);
+                return request;
             }
-                CommunicationProtocolRequest request=CommunicationProtocolRequest.createReuest(reqType,buffer,needReadByteCount,this, devTO,devTOP,devWP,lineparams,property,primaryLine!=null?secondaryLine:null,needRollBack,maxRetry);
-                if(request!=null) {
-                    if (primaryLine != null) {
-                        setInternalValue(deviceLastTryCommunicateTime,System.currentTimeMillis());
-                        primaryLine.async_communicate(request);
-                    } else if (secondaryLine != null) {
-                        setInternalValue(deviceLastTryCommunicateTime,System.currentTimeMillis());
-                        secondaryLine.async_communicate(request);
-                    } else {
-                        if(property!=null)endRequest(property,reqType.getPropertyOperationType());
-                        fireEvent(EventType.FATAL_ERROR,I18N.getLocalizedString("device.no_line_specified.error"));
-                    }
-                }
+        } else {
+            return subrequest;
+        }
+    }
+
+    protected void sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE reqType,RequestInformation requestInformation,AbstractProperty property){
+        CommunicationProtocolRequest request=formCommunicationProtocolRequest(reqType,requestInformation,property);
+        if(request!=null) {
+            if (primaryLine != null) {
+                setInternalValue(deviceLastTryCommunicateTime,System.currentTimeMillis());
+                primaryLine.async_communicate(request);
+            } else if (secondaryLine != null) {
+                setInternalValue(deviceLastTryCommunicateTime,System.currentTimeMillis());
+                secondaryLine.async_communicate(request);
+            } else {
+                if(property!=null)endRequest(property,reqType.getPropertyOperationType());
+                fireEvent(EventType.FATAL_ERROR,I18N.getLocalizedString("device.no_line_specified.error"));
+            }
         }
     }
 
     protected void readProperty(AbstractProperty property){
         RequestInformation req=formReadRequest(property);
-        if(req!=null) sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.READ_PROPERTY,req.getBufferForWrite(),req.getNeddedByteForRead(),property,req.isNeedRollBack());
+        if(req!=null) sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.READ_PROPERTY,req,property);
     }
 
     protected void writeProperty(AbstractProperty property) {
         RequestInformation req=formWriteRequest(property);
-        if(req!=null) sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.WRITE_PROPERTY,req.getBufferForWrite(),req.getNeddedByteForRead(),property,req.isNeedRollBack());
+        if(req!=null) sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.WRITE_PROPERTY,req,property);
     }
 
     protected void executeCommandName(DeviceNamedCommandProperty property){
@@ -232,7 +248,7 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
         if(req==null){
             property.executed();
         } else {
-            sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.COMMAND_EXECUTE,req.getBufferForWrite(),req.getNeddedByteForRead(),property,req.isNeedRollBack());
+            sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.COMMAND_EXECUTE,req,property);
         }
     }
 

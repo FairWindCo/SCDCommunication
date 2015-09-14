@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.lines.operations;
 
-import ua.pp.fairwind.communications.lines.LineInterface;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 
 import java.util.Date;
 

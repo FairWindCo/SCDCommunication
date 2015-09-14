@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import ua.pp.fairwind.communications.SCADASystem;
 import ua.pp.fairwind.communications.devices.hardwaredevices.Baumer.Encoder;
 import ua.pp.fairwind.communications.elementsdirecotry.AutoCreateDeviceFunction;
-import ua.pp.fairwind.communications.lines.LineInterface;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleHardWareViewMenu;
 import ua.pp.fairwind.javafx.panels.devices.belima.BelimaEncoderComplexPanel;
 

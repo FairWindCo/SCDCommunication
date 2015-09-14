@@ -1,4 +1,4 @@
-package ua.pp.fairwind.communications.devices;
+package ua.pp.fairwind.communications.devices.abstracts;
 
 /**
  * Created by Сергей on 07.07.2015.

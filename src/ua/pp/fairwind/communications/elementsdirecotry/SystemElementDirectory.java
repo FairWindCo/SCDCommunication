@@ -2,9 +2,9 @@ package ua.pp.fairwind.communications.elementsdirecotry;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
-import ua.pp.fairwind.communications.devices.DeviceInterface;
-import ua.pp.fairwind.communications.devices.ImitatorDevice;
-import ua.pp.fairwind.communications.lines.LineInterface;
+import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.ImitatorDevice;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;

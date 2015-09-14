@@ -7,8 +7,8 @@ import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver
 import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
-import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
 import ua.pp.fairwind.communications.lines.SerialLine;
+import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;

@@ -3,8 +3,12 @@ package ua.pp.fairwind.communications.lines;
 import jssc.*;
 import ua.pp.fairwind.communications.SCADASystem;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
+import ua.pp.fairwind.communications.lines.abstracts.AbstractLine;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
+import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
+import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
@@ -172,7 +176,7 @@ public class SerialLine extends AbstractLine {
             boolean clearTX = (boolean) (parameters.getLineParameter(LineParameters.RS_PURGE_TX)!=null?parameters.getLineParameter(LineParameters.RS_PURGE_TX):false);
             try {
                 if (!port.isOpened()) port.openPort();
-                if(alwaysSet || !CommunicationLineParameters.compare_RS_BAUD(parameters,curentLineParameters)){
+                if(alwaysSet || !CommunicationLineParameters.compare_RS_BAUD(parameters, curentLineParameters)){
                     System.out.printf("SET BAUD RATE %d DATABIT: %d STOP %d PARITY %d \n",speed,databit,stopbit,parity);
                     port.setParams(speed, databit, stopbit, parity, rts, dtr);
                 }

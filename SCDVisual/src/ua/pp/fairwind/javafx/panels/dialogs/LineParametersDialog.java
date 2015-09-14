@@ -5,9 +5,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 import jssc.SerialPort;
-import ua.pp.fairwind.communications.devices.SerialDeviceInterface;
-import ua.pp.fairwind.communications.lines.CommunicationLineParameters;
-import ua.pp.fairwind.communications.lines.LineParameters;
+import ua.pp.fairwind.communications.devices.abstracts.SerialDeviceInterface;
+import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
+import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.javafx.guiElements.editors.IntegerInputText;
 
 import java.util.Optional;

@@ -4,8 +4,8 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
-import ua.pp.fairwind.communications.lines.AbstractLine;
-import ua.pp.fairwind.communications.lines.LineInterface;
+import ua.pp.fairwind.communications.lines.abstracts.AbstractLine;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.javafx.panels.LineInfoBar;
 
 import java.util.List;

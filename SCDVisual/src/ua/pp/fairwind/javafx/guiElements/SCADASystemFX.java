@@ -2,10 +2,10 @@ package ua.pp.fairwind.javafx.guiElements;
 
 import ua.pp.fairwind.communications.SCADASystem;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.elementsdirecotry.AutoCreateDeviceFunction;
-import ua.pp.fairwind.communications.lines.LineInterface;
 import ua.pp.fairwind.communications.lines.SerialLine;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.javafx.I18N.I18N;

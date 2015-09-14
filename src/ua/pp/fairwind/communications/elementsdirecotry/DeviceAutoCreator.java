@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.elementsdirecotry;
 
-import ua.pp.fairwind.communications.devices.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 
 import java.util.HashMap;
