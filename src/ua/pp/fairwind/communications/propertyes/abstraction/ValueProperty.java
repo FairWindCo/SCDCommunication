@@ -129,7 +129,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     }
 
 
-    T getInternalValue() {
+    protected T getInternalValue() {
         return value.get();
     }
 
@@ -155,7 +155,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         setInternalValue(value, false, false);
     }
 
-    void setInternalValue(final T value,boolean silent,boolean fromHardWare) {
+    protected void setInternalValue(final T value,boolean silent,boolean fromHardWare) {
         if(value==null) return;
         this.valide.set(true);
         if(silent){
@@ -238,7 +238,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public void removeChangeEventListener(ValueChangeListener<? super T> listener){
-          centralSystem.removeChangeEventListener(listener);
+        centralSystem.removeChangeEventListener(listener);
     }
 
     @Override

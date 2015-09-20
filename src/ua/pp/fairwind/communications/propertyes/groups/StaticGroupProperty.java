@@ -3,6 +3,7 @@ package ua.pp.fairwind.communications.propertyes.groups;
 
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
+import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 
 import java.util.Collection;
 import java.util.Map;
@@ -13,23 +14,35 @@ import java.util.stream.Stream;
 /**
  * Created by ������ on 26.06.2015.
  */
-public class StaticGroupProperty extends AbstractProperty {
+public abstract class StaticGroupProperty extends AbstractProperty implements GroupPropertyInterface {
     final private Map<String,AbstractProperty> properties;
     final private Map<UUID,AbstractProperty> propertiesUUID;
 
+    final private ElementEventListener listener= (element, typeEvent, params) -> {
+        Object value=getAdditionalInfo(PROPERTY_BUBLE_EVENT);
+        if(value!=null&&value instanceof Boolean&&(boolean)value){
+          fireEvent(typeEvent,params);
+        }
+    };
+
+
+    @Override
     public AbstractProperty get(String name){
         return properties.get(name);
     }
 
+    @Override
     public AbstractProperty getByUUID(String name){
         return propertiesUUID.get(name);
     }
 
 
+    @Override
     public Stream<AbstractProperty> getStream(){
         return properties.values().stream();
     }
 
+    @Override
     public AbstractProperty getPopertyByIndex(int index){
         Collection<AbstractProperty> list=properties.values();
         int in=0;
@@ -51,6 +64,7 @@ public class StaticGroupProperty extends AbstractProperty {
     protected void addPropertyies(final AbstractProperty... propertyList){
         if(propertyList!=null && propertyList.length>0){
             for(AbstractProperty property:propertyList){
+                property.addEventListener(listener);
                 properties.put(property.getName(), property);
                 propertiesUUID.put(property.getUUID(), property);
             }
@@ -59,6 +73,7 @@ public class StaticGroupProperty extends AbstractProperty {
 
     protected void addProperty(final AbstractProperty property){
         if(property!=null){
+            property.addEventListener(listener);
             properties.put(property.getName(), property);
             propertiesUUID.put(property.getUUID(), property);
         }
@@ -66,6 +81,7 @@ public class StaticGroupProperty extends AbstractProperty {
 
     protected void remove(final AbstractProperty property){
         if(property!=null) {
+            property.removeEventListener(listener);
             properties.remove(property.getName());
             propertiesUUID.remove(property.getUUIDString());
         }
@@ -80,5 +96,18 @@ public class StaticGroupProperty extends AbstractProperty {
     @Override
     protected void reciveValueFromBindingRead(AbstractProperty property, Object valueForWtite) {
 
+    }
+
+    public boolean isBubleEvent() {
+        Object value=getAdditionalInfo(PROPERTY_BUBLE_EVENT);
+        if(value!=null&&value instanceof Boolean&&(boolean)value){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void setBubleEvent(boolean bubleEvent) {
+        setAdditionalInfo(PROPERTY_BUBLE_EVENT,bubleEvent);
     }
 }

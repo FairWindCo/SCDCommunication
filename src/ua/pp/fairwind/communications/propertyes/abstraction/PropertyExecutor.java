@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  * Created by Сергей on 13.09.2015.
  */
-public class PropertyExecutor extends SystemEllement {
+public abstract class PropertyExecutor extends SystemEllement {
     public PropertyExecutor(String name, MessageSubSystem centralSystem) {
         super(name, centralSystem);
     }

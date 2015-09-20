@@ -19,6 +19,7 @@ public abstract class AbstractProperty extends SystemEllement{
     final public static String PROPERTY_PAUSE_BEFORE_READ_ADDON="PROPERTY_PAUSE_BEFORE_READ_ADDON";
     final public static String PROPERTY_PAUSE_BEFORE_WRITE_ADDON="PROPERTY_PAUSE_BEFORE_WRITE_ADDON";
     final public static String PROPERTY_READ_TIME_OUT="PROPERTY_READ_TIME_OUT";
+    final public static String PROPERTY_BUBLE_EVENT="PROPERTY_BUBLE_EVENT";
     final public static String PROPERTY_PAUSE_BEFORE_READ="PROPERTY_PAUSE_BEFORE_READ";
     final public static String PROPERTY_PAUSE_BEFORE_WRITE="PROPERTY_PAUSE_BEFORE_WRITE";
     final public static String TIMER="TIMER";
