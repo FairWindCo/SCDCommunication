@@ -71,6 +71,7 @@ public class AkonProtocol extends AbstractValuePropertyExecutor {
                             value|=((recivedBuffer[i+7]&0xFF)<<8);
                             value|=((recivedBuffer[i+8]&0xFF));
                             setValueFromTransfer(property,value);
+                            return true;
                         } else {
                             return true;
                         }

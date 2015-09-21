@@ -20,10 +20,7 @@ import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Created by Сергей on 10.07.2015.
  */
 abstract  public class AbstractLine extends SystemEllement implements LineInterface  {
-    private final ConcurrentLinkedQueue<CommunicationProtocolRequest> requests=new ConcurrentLinkedQueue<>();
+    private final LinkedBlockingQueue<CommunicationProtocolRequest> requests=new LinkedBlockingQueue<>();
     private final AtomicBoolean threadRunned=new AtomicBoolean(false);
     private final AtomicBoolean threadCreated=new AtomicBoolean(false);
     private final AtomicBoolean transuction=new AtomicBoolean(false);
@@ -444,40 +441,44 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     }
 
     @Override
-    public void async_communicate(CommunicationProtocolRequest request) {
-        requests.add(request);
-        if(!threadCreated.get()){
-            Thread processor=new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    threadCreated.set(true);
-                    threadRunned.set(true);
-                    while (threadRunned.get()){
-                        if(!threadPaused.get() && !threadTrunsactionPaused.get() &&!serverMode.get() ) {
-                            try {
-                                lock.lock();
-                                CommunicationProtocolRequest request = requests.poll();
+    public void async_communicate(CommunicationProtocolRequest requesting) {
+        //System.out.println("ADD REQUEST"+requesting);
+        try {
+            requests.offer(requesting, 500, TimeUnit.MICROSECONDS);
+        } catch (InterruptedException e) {
+            return;
+        }
+        if(threadCreated.compareAndSet(false,true)){
+            Thread processor=new Thread(() -> {
+                threadRunned.set(true);
+                while (threadRunned.get()){
+                    if(!threadPaused.get() && !threadTrunsactionPaused.get() &&!serverMode.get() ) {
+                        try {
+                            lock.lock();
+                            CommunicationProtocolRequest request = requests.poll(1,TimeUnit.SECONDS);
+                            if(request!=null) {
+                                //System.out.println("PROCESS REQUEST" + request);
                                 executeRequest(request);
-                            } catch (Exception ex){
-                                fireEvent(EventType.FATAL_ERROR,ex);
-                            }finally {
-                                lock.unlock();
+                            }
+                        } catch (Exception ex){
+                            fireEvent(EventType.FATAL_ERROR,ex);
+                        }finally {
+                            lock.unlock();
+                        }
+                    } else {
+                        if(threadTrunsactionPaused.get()){
+                            long elapsed=System.currentTimeMillis();
+                            if(elapsed>startTrunsactionTime+maxTransactionTime){
+                                threadTrunsactionPaused.set(false);
+                                transuction.set(false);
+                                trunsactionUUID=null;
                             }
                         } else {
-                            if(threadTrunsactionPaused.get()){
-                                long elapsed=System.currentTimeMillis();
-                                if(elapsed>startTrunsactionTime+maxTransactionTime){
-                                    threadTrunsactionPaused.set(false);
-                                    transuction.set(false);
-                                    trunsactionUUID=null;
-                                }
-                            } else {
-                                closeUsedResources();
-                            }
+                            closeUsedResources();
                         }
                     }
-                    threadCreated.set(false);
                 }
+                threadCreated.set(false);
             });
             processor.start();
         }

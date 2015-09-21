@@ -223,6 +223,7 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor{
                 requestType +
                 ", requestNum=" + requestNum +
                 ", bytesForSend=" + Arrays.toString(bytesForSend) +
+                ", property="+property+
                 '}';
     }
 
