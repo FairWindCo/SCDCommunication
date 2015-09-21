@@ -15,9 +15,6 @@ import java.util.List;
  * Created by Сергей on 28.08.2015.
  */
 public class BelimaEncoderComplexPanel extends BorderPane {
-    private final LineInterface line;
-    private final Encoder device;
-    private final List<LineInterface> lines;
 
     private final SimpleDeviceConfigPanel devpanel;
     private final BelimaEncoderPanel panel;
@@ -45,9 +42,9 @@ public class BelimaEncoderComplexPanel extends BorderPane {
     public BelimaEncoderComplexPanel(LineInterface line, Encoder device, List<LineInterface> lines) {
         if(device==null)throw new RuntimeException("DEVICE CAN`T BE NULL!");
         if(line!=null)device.setPrimerayLine(line);
-        this.line=line;
-        this.lines=lines;
-        this.device=device;
+        LineInterface line1 = line;
+        List<LineInterface> lines1 = lines;
+        Encoder device1 = device;
         devpanel=new SimpleDeviceConfigPanel(device,line,lines,listner);
         infoBarP=new LineInfoBar(35,device.getPrimaryLine());
         infoBarS=new LineInfoBar(35,device.getSecondaryLine());

@@ -205,7 +205,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             Object always_set_line=params.getLineParameter(LineParameters.ALWAYS_SET_LINE);
             boolean need_set_line=false;
             if(always_set_line!=null && always_set_line instanceof Boolean){
-                need_set_line=(Boolean)need_set_line;
+                need_set_line=(Boolean)always_set_line;
             }
             Object selectedline = params.getLineParameter("SUB_LINE_NUMBER");
             Object lineChange=params.getLineParameter("NEED_LINE_CHANGE");

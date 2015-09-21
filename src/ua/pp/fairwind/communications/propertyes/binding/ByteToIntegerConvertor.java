@@ -9,11 +9,10 @@ import ua.pp.fairwind.communications.propertyes.software.SoftIntegerProperty;
  * Created by Сергей on 11.09.2015.
  */
 public class ByteToIntegerConvertor extends PropertyValueBindingElement<Byte,Integer> {
-    private final int byteNumber;
 
     private ByteToIntegerConvertor(ValueProperty<Byte> readingProperty, ValueProperty<Integer> writingProperty, ValueConvertor<Byte, Integer> readConvertor, ValueConvertor<Integer, Byte> writeConvertor, MessageSubSystem centralSystem,int byteNumber) {
         super(readingProperty, writingProperty, readConvertor, writeConvertor, centralSystem);
-        this.byteNumber=byteNumber;
+        int byteNumber1 = byteNumber;
 
     }
 

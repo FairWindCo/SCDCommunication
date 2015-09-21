@@ -4,7 +4,7 @@ package ua.pp.fairwind.communications.lines.performance;
  * Created by Сергей on 27.08.2015.
  */
 public class PerformanceMonitorEventData {
-    public static enum EXECUTE_TYPE{
+    public enum EXECUTE_TYPE{
         BEFORE_WRITE_PAUSE,
         BEFORE_READ_PAUSE,
         WRITE_OPERATION,

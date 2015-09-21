@@ -8,8 +8,6 @@ import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
-import ua.pp.fairwind.communications.propertyes.binding.ByteToLongConvertor;
-import ua.pp.fairwind.communications.propertyes.software.SoftByteProperty;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
 /**

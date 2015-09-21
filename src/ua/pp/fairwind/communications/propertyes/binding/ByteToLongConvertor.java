@@ -9,11 +9,10 @@ import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
  * Created by Сергей on 11.09.2015.
  */
 public class ByteToLongConvertor extends PropertyValueBindingElement<Byte,Long> {
-    private final int byteNumber;
 
     private ByteToLongConvertor(ValueProperty<Byte> readingProperty, ValueProperty<Long> writingProperty, ValueConvertor<Byte, Long> readConvertor, ValueConvertor<Long, Byte> writeConvertor, MessageSubSystem centralSystem, int byteNumber) {
         super(readingProperty, writingProperty, readConvertor, writeConvertor, centralSystem);
-        this.byteNumber=byteNumber;
+        int byteNumber1 = byteNumber;
 
     }
 

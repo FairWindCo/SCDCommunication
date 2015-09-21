@@ -65,12 +65,12 @@ abstract public class AbsractCommandProperty extends SoftBoolProperty {
     @Override
     public void endRequest(OPERATION_TYPE type) {
         if(type==OPERATION_TYPE.COMMAND_EXECUTE)setInternalValue(false);
-        endRequest(type);
+        super.endRequest(type);
     }
     @Override
     protected void invalidate() {
         setInternalValue(false);
-        invalidate();
+        super.invalidate();
     }
     @Override
     protected void rollback() {

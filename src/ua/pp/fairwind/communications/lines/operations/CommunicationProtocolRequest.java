@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by Сергей on 09.07.2015.
  */
 public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor{
-    public static enum REQUEST_TYPE{
+    public enum REQUEST_TYPE{
         READ_PROPERTY(OPERATION_TYPE.READ_PROPERTY),
         WRITE_PROPERTY(OPERATION_TYPE.WRITE_PROPERTY),
         COMMAND_EXECUTE(OPERATION_TYPE.COMMAND_EXECUTE),

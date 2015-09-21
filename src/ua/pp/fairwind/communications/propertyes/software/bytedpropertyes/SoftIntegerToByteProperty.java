@@ -5,9 +5,6 @@ import ua.pp.fairwind.communications.propertyes.abstraction.AbstractGroupedPrope
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftByteProperty;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 /**
  * Created by Сергей on 21.09.2015.
  */

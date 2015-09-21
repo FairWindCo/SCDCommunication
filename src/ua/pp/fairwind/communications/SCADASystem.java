@@ -29,7 +29,7 @@ public class SCADASystem extends SystemElementDirectory implements AutoCreateDev
 
     static public String getUiidFromMap(String deviceName,String propertyName,HashMap<String,String> uuids){
         String name=deviceName+":"+propertyName;
-        if(name==null || uuids==null) return null;
+        if(uuids==null) return null;
         return uuids.get(name);
     }
 

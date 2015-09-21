@@ -227,7 +227,7 @@ public class SerialLine extends AbstractLine {
             if (port.isOpened())
                 port.closePort();
         } catch (SerialPortException exc){
-
+        //do nothing
         }
     }
 

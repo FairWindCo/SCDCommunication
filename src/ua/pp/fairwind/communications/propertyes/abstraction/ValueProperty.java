@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Created by Сергей on 30.06.2015.
  */
 public abstract class ValueProperty<T extends Comparable<? super T>> extends AbstractProperty implements ValuePropertyInterface<T> {
-    public static enum SOFT_OPERATION_TYPE{
+    public enum SOFT_OPERATION_TYPE{
         READ_ONLY,
         WRITE_ONLY,
         READ_WRITE

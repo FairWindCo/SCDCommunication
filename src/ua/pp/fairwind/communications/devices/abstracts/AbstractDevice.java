@@ -295,7 +295,7 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
                         setLine2Error();
                     }
                 }
-                if(!line.equals(secondaryLine)) {
+                if(!(line != null ? line.equals(secondaryLine) : false)) {
                     if(!answer.sendOverReservLine()) setLine2Error();
                 }
                 if(answer.getStatus()== CommunicationAnswer.CommunicationResult.TIMEOUT){
@@ -366,7 +366,6 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
     public abstract String getDeviceType();
 
     protected RequestInformation processCommandRequest(String commandName){
-        RequestInformation result=null;
         switch(commandName){
             case COMMAND_REFRESH:{
                 break;
@@ -390,14 +389,14 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
                 break;
             }
         }
-        return result;
+        return null;
     }
 
 
 
     static protected String getUiidFromMap(String deviceName,String name,HashMap<String,String> uuids){
         name=deviceName+":"+name;
-        if(name==null || uuids==null) return null;
+        if(uuids==null) return null;
         return uuids.get(name);
     }
 
@@ -416,9 +415,7 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
     protected void addPropertys(AbstractProperty property){
         if (property!=null){
             listOfPropertyes.add(property);
-            if(property!=null){
-                property.addEventListener(changeListener);
-            }
+            property.addEventListener(changeListener);
         }
     }
 
