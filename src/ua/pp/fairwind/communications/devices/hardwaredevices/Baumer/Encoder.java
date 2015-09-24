@@ -44,11 +44,11 @@ public class Encoder extends RSLineDevice {
     private final SoftShortProperty revolution;
     private final SoftShortProperty steps;
 
-    public Encoder(long address, String name, String uuid, String description, MessageSubSystem centralSystem, HashMap<String, String> uuids) {
-        super(address, name, uuid, description, centralSystem, uuids);
-        revolution=new SoftShortProperty("REVOLUTION",getUiidFromMap("REVOLUTION",uuids),"Номер измерения",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+    public Encoder(long address, String codename, String uuid) {
+        super(address, codename, uuid);
+        revolution=new SoftShortProperty("BAUMER.REVOLUTION", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         revolution.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 001L);
-        steps=new SoftShortProperty("STEPS",getUiidFromMap("STEPS",uuids),"Номер измерения",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+        steps=new SoftShortProperty("BAUMER.STEPS",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         steps.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 002L);
         deviceTimeOut.setValue(350L);
         setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.PARITY_NONE,SerialPort.STOPBITS_1,SerialPort.FLOWCONTROL_NONE));

@@ -10,13 +10,13 @@ import ua.pp.fairwind.communications.propertyes.software.SoftIntegerProperty;
  */
 public class ByteToIntegerConvertor extends PropertyValueBindingElement<Byte,Integer> {
 
-    private ByteToIntegerConvertor(ValueProperty<Byte> readingProperty, ValueProperty<Integer> writingProperty, ValueConvertor<Byte, Integer> readConvertor, ValueConvertor<Integer, Byte> writeConvertor, MessageSubSystem centralSystem,int byteNumber) {
-        super(readingProperty, writingProperty, readConvertor, writeConvertor, centralSystem);
+    private ByteToIntegerConvertor(ValueProperty<Byte> readingProperty, ValueProperty<Integer> writingProperty, ValueConvertor<Byte, Integer> readConvertor, ValueConvertor<Integer, Byte> writeConvertor, int byteNumber) {
+        super(readingProperty, writingProperty, readConvertor, writeConvertor);
         int byteNumber1 = byteNumber;
 
     }
 
-    static public ByteToIntegerConvertor createByteToIntegerConvertor(SoftByteProperty from,SoftIntegerProperty to,int byteNumber, MessageSubSystem centralSystem){
+    static public ByteToIntegerConvertor createByteToIntegerConvertor(SoftByteProperty from,SoftIntegerProperty to,int byteNumber){
         final ValueConvertor<Byte, Integer> readConvertor=(FROM,OLD_TO)->{
             if(FROM==null) return null;
             if(OLD_TO==null)OLD_TO=0;
@@ -25,10 +25,10 @@ public class ByteToIntegerConvertor extends PropertyValueBindingElement<Byte,Int
         final ValueConvertor<Integer, Byte> writeConvertor=(FROM,OLD_TO)->{
             if(FROM==null) return null;
             if(OLD_TO==null)OLD_TO=0;
-            byte val=(byte)((((int)FROM)>>byteNumber)&0xFF);
+            byte val=(byte)((FROM >>byteNumber)&0xFF);
             return val;
         };
-        return new ByteToIntegerConvertor(from,to,readConvertor,writeConvertor,centralSystem,byteNumber);
+        return new ByteToIntegerConvertor(from,to,readConvertor,writeConvertor,byteNumber);
     }
 
     public static int intFromBytePos(byte newValue,int oldValue,int pos){

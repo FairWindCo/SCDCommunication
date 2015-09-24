@@ -16,15 +16,15 @@ import ua.pp.fairwind.communications.propertyes.event.EventType;
  */
 public class LineConsoleTest {
     public static void main(String[] args) {
-        SerialLine line=new SerialLine("com5","RS232 Line#1",null,"Serial port",null,5000);
-        LoggingDevice ldev=new LoggingDevice("Logging Device", null, "", null, new LineMonitorInterface() {
+        SerialLine line=new SerialLine("com5","RS232 Line#1",null,5000);
+        LoggingDevice ldev=new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
             }
         });
         //line.addWriteMonitoringDevice(ldev);
-        FavoritCoreDeviceV1 fav=new FavoritCoreDeviceV1(1,"Ventil",null,"Ventil plate",(MessageSubSystem)null);
+        FavoritCoreDeviceV1 fav=new FavoritCoreDeviceV1(1,"Ventil",null);
         fav.setReadTimeOut(150);
 
         fav.setPrimerayLine(line);

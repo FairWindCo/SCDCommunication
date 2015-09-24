@@ -37,7 +37,7 @@ public class StringIntegerValuedProperty extends StringValuedPropertry {
     }
 
     public StringIntegerValuedProperty(String name, String uuid, String description, MessageSubSystem centralSystem, String defauleValue, String format, Integer minValue,Integer maxValue, String... correctValues) {
-        super(name, uuid, description, centralSystem, defauleValue, format, new IntegerValueConverter(minValue, maxValue), correctValues);
+        super(name, uuid, defauleValue, format, new IntegerValueConverter(minValue, maxValue), correctValues);
         if(minValue==null && maxValue==null){
             setConverter(null);
         }

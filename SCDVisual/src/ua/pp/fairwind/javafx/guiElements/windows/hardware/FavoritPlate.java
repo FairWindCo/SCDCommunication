@@ -15,17 +15,17 @@ import java.util.List;
  */
 public class FavoritPlate extends SimpleHardWareViewMenu {
 
-    public FavoritPlate(String menuItem, SCADASystem centralsystem, String deviceName, String deviceNameDecription) {
-        super(menuItem, centralsystem, AutoCreateDeviceFunction.FAVORIT_VENTIL_V1, deviceName, deviceNameDecription);
+    public FavoritPlate(String menuItem, SCADASystem centralsystem, String deviceName) {
+        super(menuItem,"", centralsystem,AutoCreateDeviceFunction.FAVORIT_VENTIL_V1, deviceName);
     }
 
     public FavoritPlate(String menuItem, SCADASystem centralsystem) {
-        super(menuItem, centralsystem, AutoCreateDeviceFunction.FAVORIT_VENTIL_V1, menuItem, null);
+        super(menuItem,"", centralsystem,AutoCreateDeviceFunction.FAVORIT_VENTIL_V1, "FAVORIT_VENTIL");
     }
 
     @Override
     protected Node createView() {
-        FavoritCoreDeviceV1 device=(FavoritCoreDeviceV1)centralsystem.createDevice(deviceType, deviceName, deviceNameDecription);
+        FavoritCoreDeviceV1 device=(FavoritCoreDeviceV1)centralsystem.createDevice(deviceType, deviceName);
         List<LineInterface> lines=centralsystem.getListLines();
         LineInterface oneLine=lines.get(0);
         FavoritComplexPanel panel=new FavoritComplexPanel(oneLine,device, lines);

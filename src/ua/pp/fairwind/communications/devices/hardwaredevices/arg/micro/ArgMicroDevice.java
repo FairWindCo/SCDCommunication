@@ -21,16 +21,16 @@ public class ArgMicroDevice extends RSLineDevice {
     private final SoftFloatProperty rate;
     private final SoftShortProperty numberMeasurementm;
 
-    protected SoftFloatProperty formRateProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
-        SoftFloatProperty property=new SoftFloatProperty(name,getUiidFromMap(name,uuids),description,centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+    protected SoftFloatProperty formRateProperty(long address,String name){
+        SoftFloatProperty property=new SoftFloatProperty(name, ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         property.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, address);
         return property;
     }
 
-    public ArgMicroDevice(long address, String name, String uuid, String description, MessageSubSystem centralSystem, HashMap<String, String> uuids) {
-        super(address, name, uuid, description, centralSystem, uuids);
-        rate=formRateProperty(002L,"RATE","Расход м3/ч",centralSystem,uuids);
-        numberMeasurementm=new SoftShortProperty("NUMBER_MEASUREMENT",getUiidFromMap("NUMBER_MEASUREMENT",uuids),"Номер измерения",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+    public ArgMicroDevice(long address, String codename, String uuid) {
+        super(address, codename, uuid);
+        rate=formRateProperty(002L,"ARGMICRO.RATE");
+        numberMeasurementm=new SoftShortProperty("ARGMICRO.NUMBER_MEASUREMENT",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         numberMeasurementm.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 001L);
         setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600,SerialPort.DATABITS_8,SerialPort.PARITY_NONE,SerialPort.STOPBITS_1,
                 SerialPort.FLOWCONTROL_NONE));

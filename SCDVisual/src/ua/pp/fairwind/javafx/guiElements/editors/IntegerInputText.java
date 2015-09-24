@@ -10,7 +10,7 @@ import javafx.scene.input.KeyEvent;
 
 
 public class IntegerInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
-	final private static String DIGITPATERN="[0123456789]{1,}";
+	final private static String DIGITPATERN="[-]{0,1}[0123456789]{1,}";
 	final private static String EMPTYSTRING="";
 	private int maxValue=Integer.MAX_VALUE;
 	private int minValue=Integer.MIN_VALUE;
@@ -90,7 +90,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 	
 	@Override
 	public void replaceText(int arg0, int arg1, String text) {
-		if(text.matches(DIGITPATERN)||text.equals(EMPTYSTRING)){
+		if(text.equals("-")||text.matches(DIGITPATERN)||text.equals(EMPTYSTRING)){
 			super.replaceText(arg0, arg1, text);
 		}
 	}
@@ -105,7 +105,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 	
 	@Override
 	public void handle(KeyEvent keyevent) {
-		if(!"0123456789".contains(keyevent.getCharacter())){
+		if(!"-0123456789".contains(keyevent.getCharacter())){
 			keyevent.consume();
 		}
 		/*
@@ -151,12 +151,18 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 			integerValueProperty.set(0);
 			return;
 		}
-		int intVal=Integer.parseInt(newValue);
-		if(intVal<minValue || intVal>maxValue){
-			setText(olds);
-			return;
+		if("-".equals(newValue)){
+			if(minValue>=0){
+				setText(EMPTYSTRING);
+			}
+		} else {
+			int intVal = Integer.parseInt(newValue);
+			if (intVal < minValue || intVal > maxValue) {
+				setText(olds);
+				return;
+			}
+			integerValueProperty.set(intVal);
 		}
-		integerValueProperty.set(intVal);
 	}
 
 	public SimpleIntegerProperty getIntegerValueProperty() {

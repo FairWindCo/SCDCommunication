@@ -13,36 +13,20 @@ import java.util.Date;
  * Created by ������ on 06.07.2015.
  */
 public class SoftDateTimeProperty extends ValueProperty<Date> implements DatePropertyInterface{
-    public SoftDateTimeProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
-        super(name, uuid, description, centralSystem, softOperationType);
+    public SoftDateTimeProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, softOperationType);
     }
 
-    public SoftDateTimeProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, Date value) {
-        super(name, uuid, description, centralSystem, softOperationType, value);
+    public SoftDateTimeProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, Date value) {
+        super(name, uuid, softOperationType, value);
     }
 
-    public SoftDateTimeProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public SoftDateTimeProperty(String name, String uuid) {
+        super(name, uuid);
     }
 
-    public SoftDateTimeProperty(String name, String uuid, String description, MessageSubSystem centralSystem, Date value) {
-        super(name, uuid, description, centralSystem, value);
-    }
-
-    public SoftDateTimeProperty(String name, String uuid, String description) {
-        super(name, uuid, description);
-    }
-
-    public SoftDateTimeProperty(String name, String uuid, String description, Date value) {
-        super(name, uuid, description, value);
-    }
-
-    public SoftDateTimeProperty(String name, String description) {
-        super(name, description);
-    }
-
-    public SoftDateTimeProperty(String name, String description, Date value) {
-        super(name, description, value);
+    public SoftDateTimeProperty(String name, String uuid, Date value) {
+        super(name, uuid, value);
     }
 
     public SoftDateTimeProperty(String name) {
@@ -51,6 +35,14 @@ public class SoftDateTimeProperty extends ValueProperty<Date> implements DatePro
 
     public SoftDateTimeProperty(String name, Date value) {
         super(name, value);
+    }
+
+    public SoftDateTimeProperty(String name, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, softOperationType);
+    }
+
+    public SoftDateTimeProperty(String name, SOFT_OPERATION_TYPE softOperationType, Date value) {
+        super(name, softOperationType, value);
     }
 
     @Override
@@ -103,27 +95,4 @@ public class SoftDateTimeProperty extends ValueProperty<Date> implements DatePro
 
     }
 
-    public static SoftDateTimeProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Date value){
-        SoftDateTimeProperty property=new SoftDateTimeProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftDateTimeProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
-        SoftDateTimeProperty property=new SoftDateTimeProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftDateTimeProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
-        SoftDateTimeProperty property=new SoftDateTimeProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftDateTimeProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
-        SoftDateTimeProperty property=new SoftDateTimeProperty(name,null,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
-    }
 }

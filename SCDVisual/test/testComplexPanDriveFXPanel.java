@@ -8,6 +8,7 @@ import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
+import ua.pp.fairwind.communications.messagesystems.MessageSystemManager;
 import ua.pp.fairwind.communications.timeaction.PropertyTimer;
 import ua.pp.fairwind.javafx.panels.devices.panDrive.PanDriveComplexPanel;
 
@@ -17,8 +18,7 @@ import java.util.List;
  * Created by Сергей on 28.08.2015.
  */
 public class testComplexPanDriveFXPanel extends Application {
-    final MessageSubSystem ms=new MessageSubSystemMultiDipatch();
-    final List<LineInterface> lines=SerialLine.getSerialLines(ms,5000);
+    final List<LineInterface> lines=SerialLine.getSerialLines(5000);
 
     public static void main(String[] args) {
         launch(args);
@@ -35,7 +35,7 @@ public class testComplexPanDriveFXPanel extends Application {
 
         LineInterface oneLine=lines.get(0);
         //FavoritCoreDeviceV1 dev=new FavoritCoreDeviceV1(1,"Favorit Ventil V1",null,"Test Description",ms);
-        StepDriver ds=new StepDriver(1,"Pan Drive",null,"Step Motor",ms,null);
+        StepDriver ds=new StepDriver(1,"Pan Drive",null);
         //dev.setPrimerayLine(oneLine);
 
         ds.setPrimerayLine(oneLine);
@@ -54,7 +54,7 @@ public class testComplexPanDriveFXPanel extends Application {
     public void stop() throws Exception {
         PropertyTimer.stopWork();
         if(lines!=null)lines.stream().forEach(line->line.destroy());
-        ms.destroyService();
+        MessageSystemManager.destroy();
         super.stop();
     }
 }

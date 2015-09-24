@@ -12,44 +12,25 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DeviceAutoCreator implements AutoCreateDeviceFunction{
     final private ConcurrentHashMap<String,DeviceInterface> createdDevices=new ConcurrentHashMap<>();
     final private AutoCreateDeviceFunction createDeviceFunction;
-    private final HashMap<String,String> uuids;
-    private final MessageSubSystem topLevel;
 
-    public DeviceAutoCreator(AutoCreateDeviceFunction createDeviceFunction, HashMap<String, String> uuids, MessageSubSystem topLevel) {
+    public DeviceAutoCreator(AutoCreateDeviceFunction createDeviceFunction) {
         this.createDeviceFunction = createDeviceFunction;
-        this.uuids = uuids;
-        this.topLevel = topLevel;
     }
 
-    public DeviceAutoCreator(MessageSubSystem topLevel,HashMap<String, String> uuids) {
-        this(null,uuids,topLevel);
+    public DeviceAutoCreator() {
+        this(null);
     }
 
-    public DeviceInterface createDevice(Long address,String deviceType,String deviceName,String deviceDescription){
-        return createDevice(address,deviceType,deviceName,deviceDescription,topLevel,uuids);
-    }
-
-    public DeviceInterface createDevice(String deviceType,String deviceName,String deviceDescription){
-        return createDevice(null,deviceType,deviceName,deviceDescription,topLevel,uuids);
-    }
-
-    public DeviceInterface createDevice(Long address,String deviceType,String deviceName){
-        return createDevice(address,deviceType,deviceName,null,topLevel,uuids);
-    }
-
-    public DeviceInterface createDevice(String deviceType,String deviceName){
-        return createDevice(null,deviceType,deviceName,null,topLevel,uuids);
-    }
 
     @Override
-    public DeviceInterface createDevice(Long address, String typeOfDevice, String name, String description, MessageSubSystem ms,HashMap<String, String> uuids) {
+    public DeviceInterface createDevice(Long address, String typeOfDevice, String name) {
         if(name==null)return null;
         DeviceInterface device=createdDevices.get(name);
         if(device==null) {
             if (createDeviceFunction == null) {
-                device = AutoCreateDeviceFunction.super.createAutoDevice(address, typeOfDevice, name, description, ms, uuids);
+                device = AutoCreateDeviceFunction.super.createAutoDevice(address, typeOfDevice, name);
             } else {
-                device = createDeviceFunction.createDevice(address, typeOfDevice, name, description, topLevel, uuids);
+                device = createDeviceFunction.createDevice(address, typeOfDevice, name);
             }
             if(device!=null)createdDevices.put(name,device);
         }

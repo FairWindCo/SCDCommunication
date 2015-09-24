@@ -17,34 +17,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by ������ on 30.06.2015.
  */
 public class SCADASystem extends SystemElementDirectory implements AutoCreateDeviceFunction{
-    private final HashMap<String,String> uuids;
-    private final MessageSubSystem topLevel;
     private final AutoCreateDeviceFunction createDeviceFunction;
     final private ConcurrentHashMap<String,DeviceInterface> createdDevices=new ConcurrentHashMap<>();
 
-    static public String getUiidFromMap(String name,HashMap<String,String> uuids){
-        if(name==null || uuids==null) return null;
-        return uuids.get(name);
-    }
 
-    static public String getUiidFromMap(String deviceName,String propertyName,HashMap<String,String> uuids){
-        String name=deviceName+":"+propertyName;
-        if(uuids==null) return null;
-        return uuids.get(name);
-    }
-
-    static public SCADASystem createScadaSystem(String name,String description,HashMap<String,String> uuids,int maxTrunsactionTime){
+    static public SCADASystem createScadaSystem(String name,int maxTrunsactionTime){
         MessageSubSystem topLevel=new MessageSubSystemMultiDipatch();
-        SCADASystem scada=new SCADASystem(name,description,topLevel,uuids,null);
-        List<LineInterface> serialLines= SerialLine.getSerialLines(scada,maxTrunsactionTime);
+        SCADASystem scada=new SCADASystem(name,null);
+        List<LineInterface> serialLines= SerialLine.getSerialLines(maxTrunsactionTime);
         scada.addLines(serialLines);
         return scada;
     }
 
-    protected SCADASystem(String name,String description,MessageSubSystem topLevel,HashMap<String,String> uuids,AutoCreateDeviceFunction createDeviceFunction) {
-        super(name, getUiidFromMap(name,uuids),description,topLevel);
-        this.uuids=uuids;
-        this.topLevel=topLevel;
+    protected SCADASystem(String name,AutoCreateDeviceFunction createDeviceFunction) {
+        super(name,null);
         this.createDeviceFunction=createDeviceFunction;
     }
 
@@ -62,30 +48,18 @@ public class SCADASystem extends SystemElementDirectory implements AutoCreateDev
     }
 
 
-    public DeviceInterface createDevice(Long address,String deviceType,String deviceName,String deviceDescription){
-        return createDevice(address, deviceType, deviceName, deviceDescription, topLevel, uuids);
-    }
-
-    public DeviceInterface createDevice(String deviceType,String deviceName,String deviceDescription){
-        return createDevice(null,deviceType,deviceName,deviceDescription,topLevel,uuids);
-    }
-
-    public DeviceInterface createDevice(Long address,String deviceType,String deviceName){
-        return createDevice(address,deviceType,deviceName,null,topLevel,uuids);
-    }
-
     public DeviceInterface createDevice(String deviceType,String deviceName){
-        return createDevice(null,deviceType,deviceName,null,topLevel,uuids);
+        return createDevice(null,deviceType,deviceName);
     }
 
-    public DeviceInterface createDevice(Long address, String typeOfDevice, String name, String description, MessageSubSystem ms, HashMap<String, String> uuids) {
+    public DeviceInterface createDevice(Long address, String typeOfDevice, String name) {
         if(name==null)return null;
         DeviceInterface device=createdDevices.get(name);
         if(device==null) {
             if (createDeviceFunction == null) {
-                device = createAutoDevice(address, typeOfDevice, name, description, ms, uuids);
+                device = createAutoDevice(address, typeOfDevice, name);
             } else {
-                device = createDeviceFunction.createDevice(address, typeOfDevice, name, description, topLevel, uuids);
+                device = createDeviceFunction.createDevice(address, typeOfDevice, name);
             }
             if(device!=null){
                 createdDevices.put(name,device);

@@ -16,7 +16,7 @@ public class StringsArrayValuedProperty extends StaticGroupProperty{
 
 
     public StringsArrayValuedProperty(String name, String uuid, String description, MessageSubSystem centralSystem, String delimeter, StringValuedPropertry... propertyList) {
-        super(name, uuid, description, centralSystem, propertyList);
+        super(name, uuid, propertyList);
         this.delimeter = delimeter;
     }
 

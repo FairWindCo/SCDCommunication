@@ -82,7 +82,7 @@ public class MessageSubSystemSimple implements MessageSubSystem{
     }
 
     @Override
-    public MessageSubSystem getNewChild(UUID elementForGetMessageSubSystem) {
+    public MessageSubSystem getNewChild() {
         return new MessageSubSystemSimple();
     }
 }

@@ -13,13 +13,12 @@ import ua.pp.fairwind.communications.utils.CommunicationUtils;
  */
 public class BindingTest {
     public static void main(String[] args) {
-        MessageSubSystem ms=new MessageSubSystemMultiDipatch();
-        SoftIntegerProperty i1=new SoftIntegerProperty("test int",null,null,ms, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
-        SoftByteProperty b1=new SoftByteProperty("test byte",ms);
+        SoftIntegerProperty i1=new SoftIntegerProperty("test int",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        SoftByteProperty b1=new SoftByteProperty("test byte");
         i1.addChangeEventListener((event) -> System.out.println(event.getNameFrom() + " = " + event.getNewValue()));
         b1.addChangeEventListener((event) -> System.out.println(event.getNameFrom() + " = " + event.getNewValue()));
 
-        ByteToIntegerConvertor.createByteToIntegerConvertor(b1, i1, 0, ms).bind();
+        ByteToIntegerConvertor.createByteToIntegerConvertor(b1, i1, 0).bind();
 
         b1.setValue((byte) 100);
 

@@ -46,11 +46,11 @@ public class ValuedPropertyConvertor<FROM extends Comparable<? super FROM>,TO ex
         if (value instanceof Integer) {
             newval = Integer.toString((Integer) value, radix);
         } else if (value instanceof Short) {
-            newval = Integer.toString(((Short) value).shortValue(), radix);
+            newval = Integer.toString(value.shortValue(), radix);
         } else if (value instanceof Long) {
             newval = Long.toString((Long) value, radix);
         } else if (value instanceof Byte) {
-            newval = Integer.toString(((Byte) value).byteValue(), radix);
+            newval = Integer.toString(value.byteValue(), radix);
         } else if (value instanceof BigInteger) {
             newval = ((BigInteger) value).toString(radix);
         } else if (value instanceof BigDecimal) {
@@ -70,7 +70,7 @@ public class ValuedPropertyConvertor<FROM extends Comparable<? super FROM>,TO ex
 
     public static String converBooleanToStringBIN(Boolean value){
         if(value==null) return null;
-        if(((Boolean) value).booleanValue()){
+        if(value.booleanValue()){
             return "1";
         } else {
             return "0";

@@ -45,36 +45,20 @@ public abstract class AbstractGroupedProperty<BigValue extends Comparable<? supe
     protected abstract BigValue   formExternalValue(SmallValue value,BigValue bigvalue,ValueProperty<SmallValue> internalProperty);
 
 
-    public AbstractGroupedProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
-        super(name, uuid, description, centralSystem, softOperationType);
+    public AbstractGroupedProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, softOperationType);
     }
 
-    public AbstractGroupedProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, BigValue value) {
-        super(name, uuid, description, centralSystem, softOperationType, value);
+    public AbstractGroupedProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, BigValue value) {
+        super(name, uuid, softOperationType, value);
     }
 
-    public AbstractGroupedProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public AbstractGroupedProperty(String name, String uuid) {
+        super(name, uuid);
     }
 
-    public AbstractGroupedProperty(String name, String uuid, String description, MessageSubSystem centralSystem, BigValue value) {
-        super(name, uuid, description, centralSystem, value);
-    }
-
-    public AbstractGroupedProperty(String name, String uuid, String description) {
-        super(name, uuid, description);
-    }
-
-    public AbstractGroupedProperty(String name, String uuid, String description, BigValue value) {
-        super(name, uuid, description, value);
-    }
-
-    public AbstractGroupedProperty(String name, String description) {
-        super(name, description);
-    }
-
-    public AbstractGroupedProperty(String name, String description, BigValue value) {
-        super(name, description, value);
+    public AbstractGroupedProperty(String name, String uuid, BigValue value) {
+        super(name, uuid, value);
     }
 
     public AbstractGroupedProperty(String name) {
@@ -138,11 +122,7 @@ public abstract class AbstractGroupedProperty<BigValue extends Comparable<? supe
 
     public boolean isBubleEvent() {
         Object value=getAdditionalInfo(PROPERTY_BUBLE_EVENT);
-        if(value!=null&&value instanceof Boolean&&(boolean)value){
-            return true;
-        } else {
-            return false;
-        }
+        return value != null && value instanceof Boolean && (boolean) value;
     }
 
     public void setBubleEvent(boolean bubleEvent) {

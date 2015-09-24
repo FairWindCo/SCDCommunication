@@ -15,10 +15,9 @@ import ua.pp.fairwind.communications.propertyes.software.SoftByteProperty;
  */
 public class LineConsoleTestAKON_OBJ {
     public static void main(String[] args) {
-        MessageSubSystem ms=new MessageSubSystemMultiDipatch();
-        SerialLine line=new SerialLine("com9","RS232 Line#1",null,"Serial port",ms,5000);
-        AkonBase akon=new AkonBase(0xAL,"Favirit Ventel",null,"",ms,null);
-        LoggingDevice ldev=new LoggingDevice("Logging Device", null, "", null, new LineMonitorInterface() {
+        SerialLine line=new SerialLine("com9","RS232 Line#1",null,5000);
+        AkonBase akon=new AkonBase(0xAL,"Favirit Ventel",null);
+        LoggingDevice ldev=new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
@@ -35,7 +34,7 @@ public class LineConsoleTestAKON_OBJ {
         akon.getSystemObject().get("SERIAL NUMBER").readValueRequest();
         akon.getSystemObject().get("TIME").readValueRequest();
 
-        ByteToLongConvertor.createByteToLongConvertor(bt, akon.getSerialNumber(), 1, ms).bind();
+        ByteToLongConvertor.createByteToLongConvertor(bt, akon.getSerialNumber(), 1).bind();
         bt.setValue((byte) 1);
         akon.getSystemObject().get("SERIAL NUMBER").readValueRequest();
 

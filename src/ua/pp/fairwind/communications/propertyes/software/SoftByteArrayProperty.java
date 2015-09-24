@@ -11,8 +11,8 @@ import ua.pp.fairwind.communications.propertyes.abstraction.StringPropertyInterf
  */
 public class SoftByteArrayProperty extends AbstractProperty implements ByteArrayPropertyInterface {
 
-    public SoftByteArrayProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public SoftByteArrayProperty(String name, String uuid) {
+        super(name, uuid);
     }
 
 

@@ -10,57 +10,32 @@ import java.math.BigInteger;
  * Created by Сергей on 07.07.2015.
  */
 public class SoftBigIntegerProperty extends NumberProperty<BigInteger>{
-
-    public SoftBigIntegerProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
-        super(name, uuid, description, centralSystem, softOperationType);
+    public SoftBigIntegerProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, softOperationType);
     }
 
-    public SoftBigIntegerProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, BigInteger value) {
-        super(name, uuid, description, centralSystem, softOperationType, value);
+    public SoftBigIntegerProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, BigInteger value) {
+        super(name, uuid, softOperationType, value);
     }
 
-    public SoftBigIntegerProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public SoftBigIntegerProperty(String name, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, softOperationType);
     }
 
-    public SoftBigIntegerProperty(String name, String description, MessageSubSystem centralSystem) {
-        super(name, description, centralSystem);
+    public SoftBigIntegerProperty(String name, SOFT_OPERATION_TYPE softOperationType, BigInteger value) {
+        super(name, softOperationType, value);
     }
 
-    public SoftBigIntegerProperty(String name, MessageSubSystem centralSystem) {
-        super(name, centralSystem);
-    }
-
-    public SoftBigIntegerProperty(String name, String uuid, String description) {
-        super(name, uuid, description);
-    }
-
-    public SoftBigIntegerProperty(String name, String description) {
-        super(name, description);
+    public SoftBigIntegerProperty(String name, String uuid) {
+        super(name, uuid);
     }
 
     public SoftBigIntegerProperty(String name) {
         super(name);
     }
 
-    public SoftBigIntegerProperty(String name, String uuid, String description, MessageSubSystem centralSystem, BigInteger value) {
-        super(name, uuid, description, centralSystem, value);
-    }
-
-    public SoftBigIntegerProperty(String name, String description, MessageSubSystem centralSystem, BigInteger value) {
-        super(name, description, centralSystem, value);
-    }
-
-    public SoftBigIntegerProperty(String name, MessageSubSystem centralSystem, BigInteger value) {
-        super(name, centralSystem, value);
-    }
-
-    public SoftBigIntegerProperty(String name, String uuid, String description, BigInteger value) {
-        super(name, uuid, description, value);
-    }
-
-    public SoftBigIntegerProperty(String name, String description, BigInteger value) {
-        super(name, description, value);
+    public SoftBigIntegerProperty(String name, String uuid, BigInteger value) {
+        super(name, uuid, value);
     }
 
     public SoftBigIntegerProperty(String name, BigInteger value) {
@@ -83,29 +58,5 @@ public class SoftBigIntegerProperty extends NumberProperty<BigInteger>{
         } else {
             return null;
         }
-    }
-
-    public static SoftBigIntegerProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, BigInteger value){
-        SoftBigIntegerProperty property=new SoftBigIntegerProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftBigIntegerProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
-        SoftBigIntegerProperty property=new SoftBigIntegerProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftBigIntegerProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
-        SoftBigIntegerProperty property=new SoftBigIntegerProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftBigIntegerProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
-        SoftBigIntegerProperty property=new SoftBigIntegerProperty(name,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
     }
 }

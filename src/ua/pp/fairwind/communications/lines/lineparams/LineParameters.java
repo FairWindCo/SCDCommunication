@@ -36,8 +36,7 @@ public interface LineParameters {
 
     static boolean compareLineParameter(LineParameters curent,LineParameters newval,String parameterName){
         if(curent==null){
-            if(newval==null) return true;
-            return false;
+            return newval == null;
         } else {
             if(newval==null) return false;
         }
@@ -47,11 +46,7 @@ public interface LineParameters {
         if(curentVal!=null){
             return curentVal.equals(newVal);
         } else {
-            if(newVal==null){
-                return true;
-            } else {
-                return false;
-            }
+            return newVal == null;
         }
     }
 }

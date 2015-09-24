@@ -24,27 +24,21 @@ public class StringValuedPropertry extends SoftStringProperty {
         this.format = format;
     }
 
-    public StringValuedPropertry(String name, String uuid, String description, MessageSubSystem centralSystem, String defauleValue, String format, NumberValueConverter<?> converter, String... correctValues) {
-        super(name, uuid, description, centralSystem);
+    public StringValuedPropertry(String name, String uuid, String defauleValue, String format, NumberValueConverter<?> converter, String... correctValues) {
+        super(name, uuid,SOFT_OPERATION_TYPE.READ_WRITE);
         this.defauleValue = defauleValue;
         this.format = format;
         this.converter = converter;
         this.correctValues = Arrays.asList(correctValues);
     }
 
-    public StringValuedPropertry(String name, String uuid, String description, MessageSubSystem centralSystem, String value, String defauleValue, String format, NumberValueConverter<?> converter, String... correctValues) {
-        super(name, uuid, description, centralSystem, value);
+    public StringValuedPropertry(String name, String uuid,String value, String defauleValue, String format, NumberValueConverter<?> converter, String... correctValues) {
+        super(name, uuid, value);
         this.defauleValue = defauleValue;
         this.format = format;
         this.converter = converter;
         this.correctValues = Arrays.asList(correctValues);
     }
-
-    public StringValuedPropertry(String name,String description, NumberValueConverter<?> converter, String defauleValue, String format,String... correctValues) {
-        this(name,null,description,null,null,defauleValue,format,converter,correctValues);
-    }
-
-
 
 
     protected String readMaskedValue(String val){

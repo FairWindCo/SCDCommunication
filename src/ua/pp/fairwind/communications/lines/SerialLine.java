@@ -23,26 +23,17 @@ public class SerialLine extends AbstractLine {
     final SerialPort port;
     final SerialPortEventListener eventlistener;
 
-    public static List<LineInterface> getSerialLines(MessageSubSystem centralSystem, long maxTransactionTime){
+    public static List<LineInterface> getSerialLines(long maxTransactionTime){
         String[] portnames=SerialPortList.getPortNames();
         if(portnames!=null){
             List<LineInterface> list=new ArrayList<>(portnames.length);
-            for(String portName:portnames)list.add(new SerialLine(portName,portName,null,I18N.getLocalizedString("serialline.name"),centralSystem,maxTransactionTime));
+            for(String portName:portnames)list.add(new SerialLine(portName,portName,null,maxTransactionTime));
             return list;
         }else return null;
     }
 
-    public static List<LineInterface> getSerialLines(SCADASystem scadaSystem, long maxTransactionTime){
-        String[] portnames=SerialPortList.getPortNames();
-        if(portnames!=null){
-            List<LineInterface> list=new ArrayList<>(portnames.length);
-            for(String portName:portnames)list.add(new SerialLine(portName,portName,null,I18N.getLocalizedString("serialline.name"),scadaSystem.getChileMessageSubsystems(),maxTransactionTime));
-            return list;
-        }else return null;
-    }
-
-    public SerialLine(String comportName,String name, String uuid, String description, MessageSubSystem centralSystem, long maxTransactionTime) {
-        super(name, uuid, description, centralSystem, maxTransactionTime);
+    public SerialLine(String comportName,String name, String uuid, long maxTransactionTime) {
+        super(name, uuid, maxTransactionTime);
         port=new SerialPort(comportName);
         eventlistener=(event)->{
             if(isServerMode()){
@@ -163,7 +154,33 @@ public class SerialLine extends AbstractLine {
         }
     }
 
-    protected boolean setepLineParameters(LineParameters parameters,LineParameters curentLineParameters,boolean alwaysSet){
+    protected boolean clearBuffers(LineParameters parameters){
+        try {
+            if (port.isOpened()) {
+                boolean clearRX=true;
+                boolean clearTX=false;
+                if(parameters!=null) {
+                    clearRX = (boolean) (parameters.getLineParameter(LineParameters.RS_PURGE_RX) != null ? parameters.getLineParameter(LineParameters.RS_PURGE_RX) : true);
+                    clearTX = (boolean) (parameters.getLineParameter(LineParameters.RS_PURGE_TX) != null ? parameters.getLineParameter(LineParameters.RS_PURGE_TX) : false);
+                }
+                if (clearTX) {
+                    System.out.println("CLEAR TX");
+                    port.purgePort(SerialPort.PURGE_TXABORT | SerialPort.PURGE_TXCLEAR);
+                }
+                if (clearRX) {
+                    System.out.println("CLEAR RX");
+                    port.purgePort(SerialPort.PURGE_RXABORT | SerialPort.PURGE_RXCLEAR);
+                }
+            }
+            return true;
+        } catch (SerialPortException e){
+            System.out.println(e.getLocalizedMessage());
+            fireEvent(EventType.ERROR,e.getLocalizedMessage());
+            return false;
+        }
+    }
+
+    protected boolean setupLineParameters(LineParameters parameters, LineParameters curentLineParameters, boolean alwaysSet){
         if(parameters!=null) {
             int speed = (int) (parameters.getLineParameter(LineParameters.RS_SPEED)!=null?parameters.getLineParameter(LineParameters.RS_SPEED):SerialPort.BAUDRATE_9600);
             int databit = (int) (parameters.getLineParameter(LineParameters.RS_DATABIT)!=null?parameters.getLineParameter(LineParameters.RS_DATABIT):SerialPort.DATABITS_8);
@@ -172,8 +189,6 @@ public class SerialLine extends AbstractLine {
             int flowcontrol = (int) (parameters.getLineParameter(LineParameters.RS_FLOWCONTROL)!=null?parameters.getLineParameter(LineParameters.RS_FLOWCONTROL):SerialPort.FLOWCONTROL_NONE);
             boolean dtr = (boolean) (parameters.getLineParameter(LineParameters.RS_DTR)!=null?parameters.getLineParameter(LineParameters.RS_DTR):false);
             boolean rts = (boolean) (parameters.getLineParameter(LineParameters.RS_RTS)!=null?parameters.getLineParameter(LineParameters.RS_RTS):false);
-            boolean clearRX = (boolean) (parameters.getLineParameter(LineParameters.RS_PURGE_RX)!=null?parameters.getLineParameter(LineParameters.RS_PURGE_RX):false);
-            boolean clearTX = (boolean) (parameters.getLineParameter(LineParameters.RS_PURGE_TX)!=null?parameters.getLineParameter(LineParameters.RS_PURGE_TX):false);
             try {
                 if (!port.isOpened()) port.openPort();
                 if(alwaysSet || !CommunicationLineParameters.compare_RS_BAUD(parameters, curentLineParameters)){
@@ -183,12 +198,6 @@ public class SerialLine extends AbstractLine {
                 if(alwaysSet || !LineParameters.compareLineParameter(parameters,curentLineParameters,LineParameters.RS_FLOWCONTROL)) {
                     System.out.println("FLOW CONTROL:"+flowcontrol);
                     port.setFlowControlMode(flowcontrol);
-                }
-                if(clearTX){
-                    port.purgePort(SerialPort.PURGE_TXABORT|SerialPort.PURGE_TXCLEAR);
-                }
-                if(clearRX){
-                    port.purgePort(SerialPort.PURGE_RXABORT|SerialPort.PURGE_RXCLEAR);
                 }
                 return true;
             } catch (SerialPortException e){

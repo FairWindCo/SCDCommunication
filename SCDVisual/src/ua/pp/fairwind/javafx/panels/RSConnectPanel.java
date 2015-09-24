@@ -9,18 +9,18 @@ import javafx.scene.layout.*;
 import jssc.SerialPortList;
 import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
-import ua.pp.fairwind.javafx.I18N.I18N;
+import ua.pp.fairwind.javafx.I18N.I18N_FX;
 
 public class RSConnectPanel extends StackPane{
-	private Label portLabel=new Label(I18N.COMMON.getString("rsPortLabel"));
+	private Label portLabel=new Label(I18N_FX.getLocalizedString("rsPortLabel"));
 	private ComboBox<String> ports=new ComboBox<>();
-	private Label baudLabel=new Label(I18N.COMMON.getString("baud"));
+	private Label baudLabel=new Label(I18N_FX.getLocalizedString("baud"));
 	private ComboBox<ValueHolder> portBaud=new ComboBox<>();
-	private Label dataBitsLabel=new Label(I18N.COMMON.getString("dataBits"));
+	private Label dataBitsLabel=new Label(I18N_FX.getLocalizedString("dataBits"));
 	private ComboBox<ValueHolder> portdataBits=new ComboBox<>();
-	private Label stopBitsLabel=new Label(I18N.COMMON.getString("stopBits"));
+	private Label stopBitsLabel=new Label(I18N_FX.getLocalizedString("stopBits"));
 	private ComboBox<ValueHolder> portstopBits=new ComboBox<>();
-	private Label parityLabel=new Label(I18N.COMMON.getString("parity"));
+	private Label parityLabel=new Label(I18N_FX.getLocalizedString("parity"));
 	private ComboBox<ValueHolder> portparity=new ComboBox<>();
 	private DeviceInterface dev;
 	private int pauseBeforeCommand=0;
@@ -60,7 +60,7 @@ public class RSConnectPanel extends StackPane{
 		hbox.setPadding(new Insets(15, 12, 15, 12));
 		hbox.setSpacing(10);
 		hbox.setStyle("-fx-background-color: #336699;");
-        Button buttonConnect = new Button(I18N.COMMON.getString("CONNECT"));
+        Button buttonConnect = new Button(I18N_FX.getLocalizedString("CONNECT"));
 		buttonConnect.setPrefSize(100, 20);
 
 		String[] names=getPorts();

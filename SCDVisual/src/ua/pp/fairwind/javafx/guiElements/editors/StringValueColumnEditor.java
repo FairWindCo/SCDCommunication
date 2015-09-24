@@ -154,7 +154,7 @@ public class StringValueColumnEditor extends TableCell<StringValuedPropertyFXAda
 					cell.setGraphic(graphic);
 				}
 			}
-		};
+		}
 
-	
+
 }

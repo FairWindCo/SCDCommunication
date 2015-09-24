@@ -22,15 +22,6 @@ public class PropertyBindingElement<FROM extends AbstractProperty,TO extends Abs
     private final PropertyConvertor<TO,FROM> writeConvertor;
 
 
-    public PropertyBindingElement(FROM readingProperty, TO writingProperty, PropertyConvertor<FROM, TO> readConvertor, PropertyConvertor<TO, FROM> writeConvertor, MessageSubSystem centralSystem) {
-        super(String.format(I18N.getLocalizedString("binding.name"),readingProperty!=null?readingProperty.getName():"",writingProperty!=null?writingProperty.getName():""), centralSystem);
-        if(readingProperty==null || writingProperty==null || readConvertor==null || writeConvertor==null) throw new IllegalArgumentException(I18N.getLocalizedString("binding.create.error"));
-        this.readingProperty = readingProperty;
-        this.writingProperty = writingProperty;
-        this.readConvertor=readConvertor;
-        this.writeConvertor=writeConvertor;
-    }
-
     public PropertyBindingElement(FROM readingProperty, TO writingProperty, PropertyConvertor<FROM, TO> readConvertor, PropertyConvertor<TO, FROM> writeConvertor) {
         super(String.format(I18N.getLocalizedString("binding.name"),readingProperty!=null?readingProperty.getName():"",writingProperty!=null?writingProperty.getName():""), null);
         if(readingProperty==null || writingProperty==null || readConvertor==null || writeConvertor==null) throw new IllegalArgumentException(I18N.getLocalizedString("binding.create.error"));

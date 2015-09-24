@@ -8,10 +8,7 @@ import ua.pp.fairwind.communications.propertyes.software.stringlike.StringIntege
 import ua.pp.fairwind.javafx.guiElements.SCADASystemFX;
 import ua.pp.fairwind.javafx.guiElements.menu.*;
 import ua.pp.fairwind.javafx.guiElements.windows.AppWindow;
-import ua.pp.fairwind.javafx.guiElements.windows.hardware.ArgMicroWindow;
-import ua.pp.fairwind.javafx.guiElements.windows.hardware.BelimaWindow;
-import ua.pp.fairwind.javafx.guiElements.windows.hardware.FavoritPlate;
-import ua.pp.fairwind.javafx.guiElements.windows.hardware.PanDriveWindow;
+import ua.pp.fairwind.javafx.guiElements.windows.hardware.*;
 import ua.pp.fairwind.javafx.panels.InfoDialog;
 import ua.pp.fairwind.javafx.panels.LogEventView;
 import ua.pp.fairwind.javafx.panels.LogLineBufferView;
@@ -38,7 +35,7 @@ public class MainWindowTest extends Application {
     @Override
     public void start(Stage windowStage) throws Exception {
         MyResourceLoader resloader=new MyResourceLoader();
-        scada=SCADASystemFX.createScadaSystem("CENTRAL SCADA","central scada manager",null,5000);
+        scada=SCADASystemFX.createScadaSystem("CENTRAL_SCADA",5000);
         //LineCommunicationLoggingWindow loggingWindow=new LineCommunicationLoggingWindow("Buffer Logging",1000);
         //scada.setMonitoringToAllLines(loggingWindow.getLoggingDevice());
 
@@ -47,7 +44,7 @@ public class MainWindowTest extends Application {
         mainView.setMainMenuExecutor(mainmenuexec);
         mainView.setTitle("TEST WINDOWS");
         mainView.setIcon(new Image(resloader.getExternalResourceURILink("icon-48x48.png")));
-        MenuConfigElements testDev=new MenuConfigElements("Single Devies", "");
+        MenuConfigElements testDev=new MenuConfigElements("Single_Devies", "");
         MenuConfigElements akon=new MenuConfigElements("AKON", "");
         MenuConfigElements test=new MenuConfigElements("test", "");
         StringIntegerValuedProperty chhh=new StringIntegerValuedProperty("test","","0", 0, 100,"val1","val2","val3","##.###");
@@ -56,13 +53,14 @@ public class MainWindowTest extends Application {
         MenuConfigElements testDialog=new MenuConfigElementsAction("modal app dialog",(a,b)->{
             //new Thread(() -> mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK)).start();
             mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK);});
-        MenuConfigElements log=new MenuConfigElements("Log", logmessage,logline,testDialog);
+        MenuConfigElements log=new MenuConfigElements("LOG", logmessage,logline,testDialog);
         MenuConfigElements favorit=new FavoritPlate("FavoritVentilV1",scada);
-        MenuConfigElements pandrive=new PanDriveWindow("Pan Drive Step Motor",scada);
-        MenuConfigElements argMicro=new ArgMicroWindow("Arg Micro",scada);
-        MenuConfigElements encoder=new BelimaWindow("Belimo Incremental Encoder",scada);
+        MenuConfigElements pandrive=new PanDriveWindow("Pan_Drive_Step_Motor",scada);
+        MenuConfigElements argMicro=new ArgMicroWindow("Arg_Micro",scada);
+        MenuConfigElements encoder=new BelimaWindow("Baumer_Incremental_Encoder",scada);
+        MenuConfigElements akonbase=new AkonBaseWindow("AKON_Base",scada,"baseakon");
         testDev.setAddChild(akon);
-
+        akon.setAddChild(akonbase);
         testDev.setAddChild(favorit);
         testDev.setAddChild(pandrive);
         testDev.setAddChild(argMicro);

@@ -15,13 +15,13 @@ import java.util.HashMap;
 public class LoggingDevice extends AbstractDevice {
     final LineMonitorInterface monitorInterface;
 
-    public LoggingDevice(String name, String uuid, String description, MessageSubSystem centralSystem,LineMonitorInterface monitorInterface) {
-        super(name, uuid, description, centralSystem);
+    public LoggingDevice(String name, String uuid, LineMonitorInterface monitorInterface) {
+        super(name, uuid);
         this.monitorInterface=monitorInterface;
     }
 
-    public LoggingDevice(String name, String uuid, String description, MessageSubSystem centralSystem, HashMap<String, String> uuids,LineMonitorInterface monitorInterface) {
-        super(name, uuid, description, centralSystem, uuids);
+    public LoggingDevice(String name, LineMonitorInterface monitorInterface) {
+        super(name,null);
         this.monitorInterface=monitorInterface;
     }
 

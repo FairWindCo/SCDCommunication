@@ -10,7 +10,7 @@ public class MyBaseResourceLoader {
 		this.resourceBundle = resourceBundle;
 	}
 	
-	protected String baseNam="ua.pp.fairwind.communication.I18N.common";
+	protected String baseNam="ua.pp.fairwind.communication.I18N_FX.common";
 	
 	public MyBaseResourceLoader(String resourceBundleName) {
 		this(ResourceBundle.getBundle(resourceBundleName));

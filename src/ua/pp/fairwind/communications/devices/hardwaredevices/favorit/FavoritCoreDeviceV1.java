@@ -61,87 +61,80 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
 
 
 
-    public FavoritCoreDeviceV1(long address, String name, String uuid, String description, MessageSubSystem centralSystem) {
-        this(address, name, uuid, description, centralSystem, null);
-    }
-
-    public FavoritCoreDeviceV1(long address, String name, String uuid, String description, SystemElementDirectory centralSystem) {
-        this(address, name, uuid, description, centralSystem.getChileMessageSubsystems());
-        parentSystem.addElemnts(listOfPropertyes);
-        listOfCommands.stream().forEach(comand -> centralSystem.addElemnt(comand));
-    }
-
-    public static FavoritCoreDeviceV1 createFavoritCoreDiveceV1(long address, String name, String uuid, String description, SystemElementDirectory parentSystem){
-        FavoritCoreDeviceV1 property=new FavoritCoreDeviceV1(address, name, uuid, description, parentSystem);
-        parentSystem.addElemnt(property);
+    public static FavoritCoreDeviceV1 createFavoritCoreDiveceV1(long address, String name, String uuid){
+        FavoritCoreDeviceV1 property=new FavoritCoreDeviceV1(address, name, uuid);
         return property;
     }
 
-    protected SoftBoolProperty formDIProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
-        SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+    protected SoftBoolProperty formDIProperty(long address,String name){
+        SoftBoolProperty command=new SoftBoolProperty(name,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         command.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, address);
         return command;
     }
 
-    protected SoftBoolProperty formDOProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
-        SoftBoolProperty command=new SoftBoolProperty(name,getUiidFromMap(name,uuids),description,centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+    protected SoftBoolProperty formDOProperty(long address,String name){
+        SoftBoolProperty command=new SoftBoolProperty(name, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         command.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, address);
         return command;
     }
 
-    protected SoftFloatProperty formAOProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
-        SoftFloatProperty command=new SoftFloatProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+    protected SoftFloatProperty formAOProperty(long address,String name){
+        SoftFloatProperty command=new SoftFloatProperty(name,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         command.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, address);
         return command;
     }
 
-    protected SoftFloatProperty formAIProperty(long address,String name, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids){
-        SoftFloatProperty command=new SoftFloatProperty(name,getUiidFromMap(name,uuids),description,centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+    protected SoftFloatProperty formAIProperty(long address,String name){
+        SoftFloatProperty command=new SoftFloatProperty(name,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         command.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, address);
         return command;
     }
 
-    public FavoritCoreDeviceV1(long address, String name, String uuid, String description, MessageSubSystem centralSystem, HashMap<String, String> uuids) {
-        super(address, name, uuid, description, centralSystem, uuids);
-        digitalOutChanelN1=formDOProperty(401, "DIGITAL_OUT_1", "Цифровой выход", centralSystem, uuids);
-        digitalOutChanelN2=formDOProperty(402, "DIGITAL_OUT_2", "Цифровой выход", centralSystem, uuids);
-        digitalOutChanelN3=formDOProperty(403, "DIGITAL_OUT_3", "Цифровой выход", centralSystem, uuids);
-        digitalOutChanelN4=formDOProperty(404, "DIGITAL_OUT_4", "Цифровой выход", centralSystem, uuids);
-        digitalOutChanelN5=formDOProperty(405, "DIGITAL_OUT_5", "Цифровой выход", centralSystem, uuids);
-        digitalOutChanelN6=formDOProperty(406, "DIGITAL_OUT_6", "Цифровой выход", centralSystem, uuids);
+    public FavoritCoreDeviceV1(long address){
+        this(address,"FAVORIT_VENTIL",null);
+    }
 
-        digitalInChanelN1=formDIProperty(301, "DIGITAL_IN_1", "Цифровой вход", centralSystem, uuids);
-        digitalInChanelN2=formDIProperty(302, "DIGITAL_IN_2", "Цифровой вход", centralSystem, uuids);
-        digitalInChanelN3=formDIProperty(303, "DIGITAL_IN_3", "Цифровой вход", centralSystem, uuids);
-        digitalInChanelN4=formDIProperty(304, "DIGITAL_IN_4", "Цифровой вход", centralSystem, uuids);
-        digitalInChanelN5=formDIProperty(305, "DIGITAL_IN_5", "Цифровой вход", centralSystem, uuids);
-        digitalInChanelN6=formDIProperty(306, "DIGITAL_IN_6", "Цифровой вход", centralSystem, uuids);
+    public FavoritCoreDeviceV1(long address, String codename, String uuid) {
+        super(address, codename, uuid);
+        digitalOutChanelN1=formDOProperty(401, codename+".DIGITAL_OUT_1");
+        digitalOutChanelN2=formDOProperty(402, codename+".DIGITAL_OUT_2");
+        digitalOutChanelN3=formDOProperty(403, codename+".DIGITAL_OUT_3");
+        digitalOutChanelN4=formDOProperty(404, codename+".DIGITAL_OUT_4");
+        digitalOutChanelN5=formDOProperty(405, codename+".DIGITAL_OUT_5");
+        digitalOutChanelN6=formDOProperty(406, codename + ".DIGITAL_OUT_6");
 
-        analogInChanelN1=formAIProperty(101, "ANALOG_IN_1", "Аналоговый вход", centralSystem, uuids);
-        analogInChanelN2=formAIProperty(102, "ANALOG_IN_2", "Аналоговый вход", centralSystem, uuids);
-        analogInChanelN3=formAIProperty(103, "ANALOG_IN_3", "Аналоговый вход", centralSystem, uuids);
-        analogInChanelN4=formAIProperty(104, "ANALOG_IN_4", "Аналоговый вход", centralSystem, uuids);
+        digitalInChanelN1=formDIProperty(301, codename + ".DIGITAL_IN_1");
+        digitalInChanelN2=formDIProperty(302, codename + ".DIGITAL_IN_2");
+        digitalInChanelN3=formDIProperty(303, codename + ".DIGITAL_IN_3");
+        digitalInChanelN4=formDIProperty(304, codename + ".DIGITAL_IN_4");
+        digitalInChanelN5=formDIProperty(305, codename + ".DIGITAL_IN_5");
+        digitalInChanelN6=formDIProperty(306, codename + ".DIGITAL_IN_6");
 
-        analogOutChanelN1=formAOProperty(201, "ANALOG_OUT_1", "Аналоговый выход", centralSystem, uuids);
-        analogOutChanelN2=formAOProperty(202, "ANALOG_OUT_2", "Аналоговый выход", centralSystem, uuids);
-        analogOutChanelN3=formAOProperty(203, "ANALOG_OUT_3", "Аналоговый выход", centralSystem, uuids);
-        analogOutChanelN4=formAOProperty(204, "ANALOG_OUT_4", "Аналоговый выход", centralSystem, uuids);
+        analogInChanelN1=formAIProperty(101, codename + ".ANALOG_IN_1");
+        analogInChanelN2=formAIProperty(102, codename + ".ANALOG_IN_2");
+        analogInChanelN3=formAIProperty(103, codename + ".ANALOG_IN_3");
+        analogInChanelN4=formAIProperty(104, codename + ".ANALOG_IN_4");
 
-        lineSelect=new SoftLongProperty("RS_LINE_SELECT",getUiidFromMap("RS_LINE_SELECT",uuids),"Выбор внешней RS линии",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        analogOutChanelN1=formAOProperty(201, codename + ".ANALOG_OUT_1");
+        analogOutChanelN2=formAOProperty(202, codename + ".ANALOG_OUT_2");
+        analogOutChanelN3=formAOProperty(203, codename + ".ANALOG_OUT_3");
+        analogOutChanelN4=formAOProperty(204, codename + ".ANALOG_OUT_4");
+
+        lineSelect=new SoftLongProperty(codename+".RS_LINE_SELECT",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         lineSelect.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 501L);
 
-        configdeviceAddress=new SoftShortProperty("CONFIGURE_DEVICE_ADDRESS",getUiidFromMap("CONFIGURE_DEVICE_ADDRESS",uuids),"Установка адреса кстройства",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        configdeviceAddress=new SoftShortProperty(codename+".CONFIGURE_DEVICE_ADDRESS",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         configdeviceAddress.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 001L);
 
-        configdeviceSpeed=new SoftShortProperty("CONFIGURE_DEVICE_SPEED",getUiidFromMap("CONFIGURE_DEVICE_SPEED",uuids),"Установка скорости устройства",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        configdeviceSpeed=new SoftShortProperty(codename+".CONFIGURE_DEVICE_SPEED",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         configdeviceSpeed.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 002L);
 
-        readAllDI=formCommandNameProperty("READ_ALL_DI", "READ ALL DIGITAL INs", centralSystem, uuids);
-        readAllDO=formCommandNameProperty("READ_ALL_DO", "READ ALL DIGITAL OUTs", centralSystem, uuids);
-        readAllAI=formCommandNameProperty("READ_ALL_AI", "READ ALL ANALOG INs", centralSystem, uuids);
-        readAllAO=formCommandNameProperty("READ_ALL_AO", "READ ALL ANALOG OUTs", centralSystem, uuids);
-        writeAllDO=formCommandNameProperty("WRITE_ALL_DO", "WRITE ALL DIGITAL OUTs", centralSystem, uuids);
-        writeAllAO=formCommandNameProperty("WRITE_ALL_AO", "WRITE ALL ANALOG OUTs", centralSystem, uuids);
+        readAllDI=formCommandNameProperty(codename+".READ_ALL_DI","READ_ALL_DI");
+        readAllDO=formCommandNameProperty(codename+".READ_ALL_DO","READ_ALL_DO");
+        readAllAI=formCommandNameProperty(codename+".READ_ALL_AI","READ_ALL_AI");
+        readAllAO=formCommandNameProperty(codename+".READ_ALL_AO","READ_ALL_AO");
+        writeAllDO=formCommandNameProperty(codename+".WRITE_ALL_DO","WRITE_ALL_DO");
+        writeAllAO=formCommandNameProperty(codename+".WRITE_ALL_AO","WRITE_ALL_AO");
         addCommands(readAllAI);
         addCommands(readAllAO);
         addCommands(readAllDI);
@@ -176,8 +169,8 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
     }
 
     @Override
-    protected SoftBoolProperty formBoolProperty(long address, String name, String description, MessageSubSystem centralSystem, HashMap<String, String> uuids, boolean initialValue) {
-        SoftBoolProperty prp= super.formDeviceBoolProperty(address, name, description, centralSystem, uuids, initialValue);
+    protected SoftBoolProperty formBoolProperty(long address, String name, boolean initialValue) {
+        SoftBoolProperty prp= super.formDeviceBoolProperty(address, name, initialValue);
         return prp;
     }
 
@@ -238,9 +231,9 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
             for(int i=0;i<buffer.length-2;i++){sum+=buffer_test[i];}
             buffer_test[buffer_test.length-2]=CommunicationUtils.getHalfByteHex((sum & 0xF0) >> 4);
             buffer_test[buffer_test.length-1]=CommunicationUtils.getHalfByteHex(sum&0xF);
-            Long devTO=(Long)getInternalValue((ValueProperty<Long>)deviceTimeOut);
-            Long devTOP=(Long)getInternalValue((ValueProperty<Long>)deviceTimeOutPause);
-            Long devWP=(Long)getInternalValue((ValueProperty<Long>)deviceWritePause);
+            Long devTO=(Long)getInternalValue(deviceTimeOut);
+            Long devTOP=(Long)getInternalValue(deviceTimeOutPause);
+            Long devWP=(Long)getInternalValue(deviceWritePause);
             long maxRetry=(Long)getInternalValue(retryCount);
             LineSelector ls=new LineSelector(buffer,buffer_test,lineparams,devTO+lineSelect.getPropertyTimeOutRead(),devTOP+lineSelect.getPropertyPauseBeforeRead(),devWP+lineSelect.getPropertyPauseBeforeWrite());
             return ls;
@@ -863,7 +856,7 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
         val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[pos++]) << 4;
         val += CommunicationUtils.getHalfByteFromChar((char) recivedMessage[pos++]);
         float value = (val*10.0f) / 0x3FF ;
-        setHardWareInternalValue((ValueProperty<Float>) property,value);
+        setHardWareInternalValue(property,value);
         return pos;
     }
 
@@ -1037,7 +1030,7 @@ public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevic
                 readAllAO.activate();
                 readAllDI.activate();
                 readAllDO.activate();
-                setInternalValue((ValueProperty<Boolean>)refreshCommand,false);
+                setInternalValue(refreshCommand,false);
                 return null;
             }
         }

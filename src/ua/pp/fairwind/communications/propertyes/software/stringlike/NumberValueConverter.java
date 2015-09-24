@@ -1,10 +1,10 @@
 package ua.pp.fairwind.communications.propertyes.software.stringlike;
 
 public interface NumberValueConverter<T extends Number> {
-	public boolean checkValue(String val);
-	public String getValue(String val,String format,String defaultValue);
-	public void setMinValue(T val);
-	public void setMaxValue(T val);
-	public T getMinValue();
-	public T getMaxValue();
+	boolean checkValue(String val);
+	String getValue(String val, String format, String defaultValue);
+	void setMinValue(T val);
+	void setMaxValue(T val);
+	T getMinValue();
+	T getMaxValue();
 }

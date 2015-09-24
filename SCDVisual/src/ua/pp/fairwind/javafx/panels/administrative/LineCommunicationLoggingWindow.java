@@ -28,7 +28,7 @@ public class LineCommunicationLoggingWindow extends SimpleMenuView{
     private final int maxEventinLog;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
     private final SCADASystem scadaSystem;
-    private final LoggingDevice dev=new LoggingDevice("lineMonitoringDevice", null, "Line Monitoring Device", null,
+    private final LoggingDevice dev=new LoggingDevice("lineMonitoringDevice", null,
             (event)->list.add(event) );
 
     public LineCommunicationLoggingWindow(String menuItem, String menuHint, int maxEventinLog) {

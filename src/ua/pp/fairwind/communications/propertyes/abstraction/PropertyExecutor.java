@@ -12,28 +12,12 @@ import java.util.HashMap;
  * Created by Сергей on 13.09.2015.
  */
 public abstract class PropertyExecutor extends SystemEllement {
-    public PropertyExecutor(String name, MessageSubSystem centralSystem) {
-        super(name, centralSystem);
+    public PropertyExecutor(String codename) {
+        super(codename);
     }
 
-    public PropertyExecutor(String name, String description, MessageSubSystem centralSystem) {
-        super(name, description, centralSystem);
-    }
-
-    public PropertyExecutor(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
-    }
-
-    public PropertyExecutor(String name, String uuid, String description, MessageSubSystem centralSystem, HashMap<String, String> uuids) {
-        super(name, uuid, description, centralSystem, uuids);
-    }
-
-    public PropertyExecutor(String name, String uuid, String description, SystemElementDirectory centralSystem, HashMap<String, String> uuids) {
-        super(name, uuid, description, centralSystem, uuids);
-    }
-
-    public PropertyExecutor(String name, String uuid, String description, SystemElementDirectory centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public PropertyExecutor(String codename, String uuid) {
+        super(codename, uuid);
     }
 
     protected void setInternalValue(ValueProperty property, final Comparable value,boolean silent,boolean fromHardWare){

@@ -53,8 +53,8 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
         return null;
     }
 
-    public StaticGroupProperty(String name, String uuid, String description, MessageSubSystem centralSystem,AbstractProperty... propertyList) {
-        super(name, uuid, description, centralSystem);
+    public StaticGroupProperty(String name, String uuid,AbstractProperty... propertyList) {
+        super(name, uuid);
         properties =new ConcurrentHashMap<>();
         propertiesUUID =new ConcurrentHashMap<>();
         addPropertyies(propertyList);
@@ -100,11 +100,7 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
 
     public boolean isBubleEvent() {
         Object value=getAdditionalInfo(PROPERTY_BUBLE_EVENT);
-        if(value!=null&&value instanceof Boolean&&(boolean)value){
-            return true;
-        } else {
-            return false;
-        }
+        return value != null && value instanceof Boolean && (boolean) value;
     }
 
     public void setBubleEvent(boolean bubleEvent) {

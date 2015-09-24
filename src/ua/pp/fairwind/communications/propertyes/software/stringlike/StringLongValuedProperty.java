@@ -28,7 +28,7 @@ public class StringLongValuedProperty extends StringValuedPropertry {
     }
 
     public StringLongValuedProperty(String name, String uuid, String description, MessageSubSystem centralSystem, String defauleValue, String format, Long minValue, Long maxValue, String... correctValues) {
-        super(name, uuid, description, centralSystem, defauleValue, format, new LongValueConverter(minValue,maxValue), correctValues);
+        super(name, uuid, defauleValue, format, new LongValueConverter(minValue,maxValue), correctValues);
         if(minValue==null && maxValue==null){
             setConverter(null);
         }

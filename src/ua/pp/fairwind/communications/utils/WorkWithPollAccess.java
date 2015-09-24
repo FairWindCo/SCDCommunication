@@ -7,5 +7,5 @@ import java.util.concurrent.ExecutorService;
  */
 @FunctionalInterface
 public interface WorkWithPollAccess {
-    public void process(ExecutorService serviceForExecute);
+    void process(ExecutorService serviceForExecute);
 }

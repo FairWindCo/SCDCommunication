@@ -27,24 +27,13 @@ public class SystemElementDirectory extends SystemEllement{
     final private ConcurrentHashMap<UUID,LineInterface> lines=new ConcurrentHashMap<>();
     final private ConcurrentHashMap<UUID,SystemElementDirectory> subsystems=new ConcurrentHashMap<>();
 
-    public SystemElementDirectory(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public SystemElementDirectory(String codename, String uuid) {
+        super(codename, uuid);
     }
 
-    public SystemElementDirectory(String name, String uuid, String description) {
-        super(name, uuid, description, new MessageSubSystemMultiDipatch());
-    }
 
-    public SystemElementDirectory(String name, String description) {
-        super(name, null, description, new MessageSubSystemMultiDipatch());
-    }
-
-    public MessageSubSystem getChileMessageSubsystems(UUID clientUUID){
-        return centralSystem.getNewChild(clientUUID);
-    }
-
-    public MessageSubSystem getChileMessageSubsystems(){
-        return centralSystem;
+    public SystemElementDirectory(String codename) {
+        super(codename, null);
     }
 
     public void addElemnt(ElementInterface element){

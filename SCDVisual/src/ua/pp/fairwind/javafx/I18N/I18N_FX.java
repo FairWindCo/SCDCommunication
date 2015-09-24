@@ -1,25 +1,30 @@
 package ua.pp.fairwind.javafx.I18N;
 
+import ua.pp.fairwind.communications.internatianalisation.UTF8Control;
+
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-public enum I18N {
-	COMMON_RESOURCE("images.application",null),
+public enum I18N_FX {
+	COMMON_RESOURCE("ua.pp.fairwind.communications.javafx.common",null),
+	APPLICATION_CONFIG("images.config",new MyResources()),
 	APPLICATION_RESOURCE("images.application",null),
-	APPLICATION("ua.pp.fairwind.javafx.internatianalisation.application",null),
-	COMMON("ua.pp.fairwind.communications.javafx.common",new ua.pp.fairwind.javafx.I18N.MyResources());
+	APPLICATION_STANDART("ua.pp.fairwind.javafx.I18N.application",null),
+	COMMON_STANDART("ua.pp.fairwind.javafx.I18N.common",null),
+	APPLICATION_LIB("ua.pp.fairwind.communications.internatianalisation.application",null),
+	COMMON_LIB("ua.pp.fairwind.communications.internatianalisation.common",null);
 
 
 	final private ResourceBundle resourceBundle;
 
-	I18N(String bundleFile,ResourceBundle defaultresourceBundle) {
+	I18N_FX(String bundleFile, ResourceBundle defaultresourceBundle) {
 		ResourceBundle resource=null;
 		try {
-			resource = ResourceBundle.getBundle(bundleFile);
+			resource = ResourceBundle.getBundle(bundleFile,new UTF8Control());
 		}catch (MissingResourceException ex){
 			try {
-				resource = ResourceBundle.getBundle(bundleFile, Locale.ENGLISH);
+				resource = ResourceBundle.getBundle(bundleFile, Locale.ENGLISH,new UTF8Control());
 			} catch (MissingResourceException e){
 				resource=defaultresourceBundle;
 			}
@@ -67,7 +72,7 @@ public enum I18N {
 
 	public static String getLocalizedString(String key){
 		String value=null;
-		for(I18N oneenum: I18N.values()){
+		for(I18N_FX oneenum: I18N_FX.values()){
 			value=oneenum.getStringInternal(key);
 			if(value!=null)break;
 		}
@@ -77,7 +82,7 @@ public enum I18N {
 
 	public static String getLocalizedStringErr(String key){
 		String value=null;
-		for(I18N oneenum: I18N.values()){
+		for(I18N_FX oneenum: I18N_FX.values()){
 			value=oneenum.getStringInternal(key);
 			if(value!=null)break;
 		}
@@ -90,7 +95,7 @@ public enum I18N {
 
 	public static Object getObject(String key){
 		Object value=null;
-		for(I18N oneenum: I18N.values()){
+		for(I18N_FX oneenum: I18N_FX.values()){
 			value=oneenum.getValueInternal(key);
 			if(value!=null)break;
 		}
@@ -99,7 +104,7 @@ public enum I18N {
 
 	public static Object getObjectErr(String key){
 		Object value=null;
-		for(I18N oneenum: I18N.values()){
+		for(I18N_FX oneenum: I18N_FX.values()){
 			value=oneenum.getValueInternal(key);
 			if(value!=null)break;
 		}

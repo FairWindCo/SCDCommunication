@@ -55,7 +55,7 @@ public class MessageSubSystemMultiDipatch extends MessageSubSystemSimple{
     }
 
     @Override
-    public MessageSubSystem getNewChild(UUID elementForGetMessageSubSystem) {
+    public MessageSubSystem getNewChild() {
         return new MessageSubSystemMultiDipatch();
     }
 

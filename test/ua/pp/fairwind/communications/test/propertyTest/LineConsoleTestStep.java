@@ -20,10 +20,9 @@ import ua.pp.fairwind.communications.utils.CommunicationUtils;
  */
 public class LineConsoleTestStep {
     public static void main(String[] args) {
-        MessageSubSystem ms=new MessageSubSystemMultiDipatch();
-        SerialLine line=new SerialLine("com9","RS232 Line#1",null,"Serial port",ms,5000);
-        FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L,"Favirit Ventel",null,"",ms);
-        LoggingDevice ldev=new LoggingDevice("Logging Device", null, "", null, new LineMonitorInterface() {
+        SerialLine line=new SerialLine("com9","RS232 Line#1",null,5000);
+        FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L);
+        LoggingDevice ldev=new LoggingDevice("Logging Device", null,new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
@@ -33,7 +32,7 @@ public class LineConsoleTestStep {
         //line.addReadMonitoringDevice(ldev);
         line.setLineSelector(favorit);
 
-        StepDriver motorDrive=new StepDriver(1L,"StepDrive",null,"PanDrive Step Motor",ms,null);
+        StepDriver motorDrive=new StepDriver(1L,"StepDrive",null);
         motorDrive.setReadTimeOut(250);
         motorDrive.setPrimerayLine(line);
 

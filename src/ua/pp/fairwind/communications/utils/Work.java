@@ -5,5 +5,5 @@ package ua.pp.fairwind.communications.utils;
  */
 @FunctionalInterface
 public interface Work {
-    public void action();
+    void action();
 }

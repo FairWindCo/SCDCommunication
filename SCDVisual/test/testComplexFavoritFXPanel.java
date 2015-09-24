@@ -8,6 +8,7 @@ import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
+import ua.pp.fairwind.communications.messagesystems.MessageSystemManager;
 import ua.pp.fairwind.communications.timeaction.PropertyTimer;
 import ua.pp.fairwind.javafx.panels.devices.FavoritComplexPanel;
 
@@ -17,8 +18,7 @@ import java.util.List;
  * Created by Сергей on 28.08.2015.
  */
 public class testComplexFavoritFXPanel extends Application {
-    final MessageSubSystem ms=new MessageSubSystemMultiDipatch();
-    final List<LineInterface> lines=SerialLine.getSerialLines(ms,5000);
+    final List<LineInterface> lines=SerialLine.getSerialLines(5000);
 
     public static void main(String[] args) {
         launch(args);
@@ -34,7 +34,7 @@ public class testComplexFavoritFXPanel extends Application {
         }
 
         LineInterface oneLine=lines.get(0);
-        FavoritCoreDeviceV1 dev=new FavoritCoreDeviceV1(1,"Favorit Ventil V1",null,"Test Description",ms);
+        FavoritCoreDeviceV1 dev=new FavoritCoreDeviceV1(1);
         dev.setPrimerayLine(oneLine);
         FavoritComplexPanel panel=new FavoritComplexPanel(oneLine,dev, lines);
         panel.setId("mainPanel");
@@ -51,7 +51,7 @@ public class testComplexFavoritFXPanel extends Application {
     public void stop() throws Exception {
         if(lines!=null)lines.stream().forEach(line->line.destroy());
         PropertyTimer.stopWork();
-        ms.destroyService();
+        MessageSystemManager.destroy();
         super.stop();
     }
 }

@@ -10,7 +10,7 @@ import java.util.Arrays;
  */
 public class DeviceTest {
     public static void main(String[] args) {
-        FavoritCoreDeviceV1 dev=new FavoritCoreDeviceV1(1L,"Test Device",null,"Device for test",(MessageSubSystem)null);
+        FavoritCoreDeviceV1 dev=new FavoritCoreDeviceV1(1L,"Test Device",null);
         String[] lst=dev.getPropertyesName();
         Arrays.stream(lst).forEach(System.out::println);
         String[] lstcmd=dev.getCommandsName();

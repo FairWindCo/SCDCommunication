@@ -1,16 +1,24 @@
 package ua.pp.fairwind.communications.propertyes;
 
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-
 /**
  * Created by FairWindCo on 07.07.2015
  */
 public class DeviceNamedCommandProperty extends AbsractCommandProperty {
 
 
-    public DeviceNamedCommandProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public DeviceNamedCommandProperty(String name, String uuid) {
+        super(name, uuid);
     }
+
+    public DeviceNamedCommandProperty(String name) {
+        super(name, null);
+    }
+
+    public DeviceNamedCommandProperty(String name, String uuid,String command) {
+        super(name, uuid,command);
+    }
+
+
 
     public void activate(){
         super.activate();

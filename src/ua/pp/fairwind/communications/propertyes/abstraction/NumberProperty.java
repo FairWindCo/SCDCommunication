@@ -13,60 +13,38 @@ public abstract class NumberProperty<M extends Number & Comparable<? super M>> e
     volatile private int readradix=10;
     volatile private String readformat;
 
-    public NumberProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
-        super(name, uuid, description, centralSystem, softOperationType);
+    public NumberProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, softOperationType);
     }
 
-    public NumberProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, M value) {
-        super(name, uuid, description, centralSystem, softOperationType, value);
+    public NumberProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, M value) {
+        super(name, uuid, softOperationType, value);
     }
 
-    public NumberProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        this(name, uuid, description, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE);
+    public NumberProperty(String name, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, null, softOperationType);
     }
 
-    public NumberProperty(String name, String description, MessageSubSystem centralSystem) {
-        this(name, null, description, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE);
+    public NumberProperty(String name, SOFT_OPERATION_TYPE softOperationType, M value) {
+        super(name, null, softOperationType, value);
     }
 
-    public NumberProperty(String name, MessageSubSystem centralSystem) {
-        this(name, null, null, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE);
-    }
 
-    public NumberProperty(String name, String uuid, String description) {
-        this(name, uuid, description, null, SOFT_OPERATION_TYPE.READ_WRITE);
-    }
-
-    public NumberProperty(String name, String description) {
-        this(name, null, description, null, SOFT_OPERATION_TYPE.READ_WRITE);
+    public NumberProperty(String name, String uuid) {
+        this(name, uuid, SOFT_OPERATION_TYPE.READ_WRITE);
     }
 
     public NumberProperty(String name) {
-        this(name, null, null, null, SOFT_OPERATION_TYPE.READ_WRITE);
+        this(name, null, SOFT_OPERATION_TYPE.READ_WRITE);
     }
 
-    public NumberProperty(String name, String uuid, String description, MessageSubSystem centralSystem, M value) {
-        this(name, uuid, description, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE,value);
+
+    public NumberProperty(String name, String uuid, M value) {
+        this(name, uuid, SOFT_OPERATION_TYPE.READ_WRITE,value);
     }
 
-    public NumberProperty(String name, String description, MessageSubSystem centralSystem, M value) {
-        this(name, null, description, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE,value);
-    }
-
-    public NumberProperty(String name, MessageSubSystem centralSystem, M value) {
-        this(name, null, null, centralSystem, SOFT_OPERATION_TYPE.READ_WRITE,value);
-    }
-
-    public NumberProperty(String name, String uuid, String description, M value) {
-        this(name, uuid, description, null, SOFT_OPERATION_TYPE.READ_WRITE,value);
-    }
-
-    public NumberProperty(String name, String description, M value) {
-        this(name, null, description, null, SOFT_OPERATION_TYPE.READ_WRITE, value);
-    }
-
-    public NumberProperty(String name, M value) {
-        this(name, null, null, null, SOFT_OPERATION_TYPE.READ_WRITE, value);
+    public NumberProperty(String name,  M value) {
+        this(name, null, SOFT_OPERATION_TYPE.READ_WRITE,value);
     }
 
     @Override

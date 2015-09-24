@@ -25,7 +25,7 @@ public class LogLineBufferView extends SimpleView{
     private final ObservableList<LineMonitoringEvent> list= FXCollections.observableArrayList();
     private final int maxEventinLog;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
-    private final LoggingDevice dev=new LoggingDevice("lineMonitoringDevice", null, "Line Monitoring Device", null,(event)->list.add(event) );
+    private final LoggingDevice dev=new LoggingDevice("lineMonitoringDevice", null,(event)->list.add(event) );
 
     public LogLineBufferView(int maxEventinLog) {
         this.maxEventinLog = maxEventinLog;

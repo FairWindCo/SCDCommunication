@@ -35,60 +35,52 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
 
     //КОНСТРУКТОР
-    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
-        super(name, uuid, description, centralSystem);
+    protected ValueProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid);
         this.softOperationType = softOperationType;
     }
 
-    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType,T value) {
-        super(name, uuid, description, centralSystem);
+    protected ValueProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType,T value) {
+        super(name, uuid);
         this.softOperationType = softOperationType;
         this.value.set(value);
     }
 
-    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    protected ValueProperty(String name, String uuid) {
+        super(name, uuid);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
-    protected ValueProperty(String name, String uuid, String description, MessageSubSystem centralSystem,T value) {
-        super(name, uuid, description, centralSystem);
+    protected ValueProperty(String name, String uuid, T value) {
+        super(name, uuid);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);
     }
 
-    protected ValueProperty(String name, String uuid, String description) {
-        super(name, uuid, description, null);
-        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
-    }
-
-    protected ValueProperty(String name, String uuid, String description,T value) {
-        super(name, uuid, description, null);
-        this.value.set(value);
-        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
-    }
-
-    protected ValueProperty(String name, String description) {
-        super(name, null, description, null);
-        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
-    }
-
-    protected ValueProperty(String name, String description,T value) {
-        super(name, null, description, null);
-        this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
-        this.value.set(value);
-    }
 
     protected ValueProperty(String name) {
-        super(name, null, null, null);
+        super(name, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
     }
 
     protected ValueProperty(String name, T value) {
-        super(name, null, null, null);
+        super(name, null);
         this.softOperationType = SOFT_OPERATION_TYPE.READ_WRITE;
         this.value.set(value);
     }
+
+
+    protected ValueProperty(String name, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, null);
+        this.softOperationType = softOperationType;
+    }
+
+    protected ValueProperty(String name, SOFT_OPERATION_TYPE softOperationType,T value) {
+        super(name, null);
+        this.value.set(value);
+        this.softOperationType = softOperationType;
+    }
+
 
 
     //Метод преобразует полученное значение в значение хранимого типа
@@ -208,8 +200,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         if(value.get()==null) return false;
 
         long lastchange=lastChangeTime.get();
-        if(dataLifeTime>=0 && System.currentTimeMillis()-lastchange>dataLifeTime) return false;
-        return true;
+        return !(dataLifeTime >= 0 && System.currentTimeMillis() - lastchange > dataLifeTime);
     }
 
     @Override

@@ -24,7 +24,7 @@ public interface ValueConvertor<FROM extends Comparable<? super FROM>,TO extends
 
     static String converBooleanToStringBIN(Boolean value,Object oldVal){
         if(value==null) return null;
-        if(((Boolean) value).booleanValue()){
+        if(value.booleanValue()){
             return "1";
         } else {
             return "0";

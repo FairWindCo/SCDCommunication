@@ -11,9 +11,15 @@ import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
  * Created by FairWindCo on 07.07.2015
  */
 abstract public class AbsractCommandProperty extends SoftBoolProperty {
+    private final String command;
+    public AbsractCommandProperty(String name, String uuid) {
+        super(name, uuid);
+        this.command=name;
+    }
 
-    public AbsractCommandProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public AbsractCommandProperty(String name, String uuid,String command) {
+        super(name, uuid);
+        this.command=command;
     }
 
     public void activate(){
@@ -76,5 +82,9 @@ abstract public class AbsractCommandProperty extends SoftBoolProperty {
     protected void rollback() {
         setInternalValue(false);
         invalidate();
+    }
+
+    public String getCommand() {
+        return command;
     }
 }

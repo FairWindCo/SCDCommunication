@@ -23,10 +23,9 @@ import java.io.IOException;
  */
 public class LineConsoleTestComplex {
     public static void main(String[] args) throws IOException {
-        MessageSubSystem ms=new MessageSubSystemMultiDipatch();
-        SerialLine line=new SerialLine("com9","RS232 Line#1",null,"Serial port",ms,5000);
-        FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L,"Favirit Ventel",null,"",ms);
-        LoggingDevice ldev=new LoggingDevice("Logging Device", null, "", null, new LineMonitorInterface() {
+        SerialLine line=new SerialLine("com9","RS232 Line#1",null,5000);
+        FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L);
+        LoggingDevice ldev=new LoggingDevice("Logging Device", null,new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
@@ -36,7 +35,7 @@ public class LineConsoleTestComplex {
         line.addReadMonitoringDevice(ldev);
         line.setLineSelector(favorit);
         favorit.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_2, SerialPort.PARITY_NONE, SerialPort.FLOWCONTROL_NONE));
-        Encoder encoder=new Encoder(3L,"Encoder",null,"Baumer Encoder",ms,null);
+        Encoder encoder=new Encoder(3L,"Encoder",null);
         encoder.setPauseBeforeRead(100L);
         encoder.setReadTimeOut(3500L);
         encoder.setPrimerayLine(line);
@@ -53,7 +52,7 @@ public class LineConsoleTestComplex {
         encoder.getRevolution().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
 
 
-        StepDriver motorDrive=new StepDriver(1L,"StepDrive",null,"PanDrive Step Motor",ms,null);
+        StepDriver motorDrive=new StepDriver(1L,"StepDrive",null);
         motorDrive.setReadTimeOut(250);
         motorDrive.setPrimerayLine(line);
 

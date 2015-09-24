@@ -79,8 +79,9 @@ public class LineParametersDialog {
         rsclearrx.setSelected(clearRX);
         CheckBox rscleartx=new CheckBox();
         rscleartx.setSelected(clearTX);
+        Object curentLine=curent!=null?curent.getLineParameter(LineParameters.SUB_LINE_NUMBER):null;
 
-        IntegerInputText intEditor=new IntegerInputText((Integer)curent.getLineParameter(LineParameters.SUB_LINE_NUMBER),10);
+        IntegerInputText intEditor=curentLine!=null?new IntegerInputText((Integer)curentLine,10):new IntegerInputText(0,10);
         grid.add(new Label("BAUD RATE:"), 0, 0);
         grid.add(rsspeed, 1, 0);
         grid.add(new Label("DATA BIT:"), 0, 1);
@@ -109,10 +110,10 @@ public class LineParametersDialog {
         // Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                int sspeed=rsspeed.getSelectionModel().getSelectedItem()==null?SerialPort.BAUDRATE_9600:(int)rsspeed.getSelectionModel().getSelectedItem();
-                int sdatabit=rsdata.getSelectionModel().getSelectedItem()==null?SerialPort.DATABITS_8:(int)rsdata.getSelectionModel().getSelectedItem();
-                int sstopbit=rsstop.getSelectionModel().getSelectedItem()==null?SerialPort.STOPBITS_2:(int)rsstop.getSelectionModel().getSelectedItem();
-                int sparity=rsparity.getSelectionModel().getSelectedItem()==null?SerialPort.PARITY_NONE:(int)rsparity.getSelectionModel().getSelectedItem();
+                int sspeed=rsspeed.getSelectionModel().getSelectedItem()==null?SerialPort.BAUDRATE_9600: rsspeed.getSelectionModel().getSelectedItem();
+                int sdatabit=rsdata.getSelectionModel().getSelectedItem()==null?SerialPort.DATABITS_8: rsdata.getSelectionModel().getSelectedItem();
+                int sstopbit=rsstop.getSelectionModel().getSelectedItem()==null?SerialPort.STOPBITS_2: rsstop.getSelectionModel().getSelectedItem();
+                int sparity=rsparity.getSelectionModel().getSelectedItem()==null?SerialPort.PARITY_NONE: rsparity.getSelectionModel().getSelectedItem();
                 int sfloatcontrol=rsflow.getSelectionModel().getSelectedItem()==null?SerialPort.FLOWCONTROL_NONE:rsflow.getSelectionModel().getSelectedItem();
                 return new CommunicationLineParameters(sspeed,sdatabit,sparity,sstopbit,sfloatcontrol,rsdtr.isSelected(),rsrts.isSelected(),rsclearrx.isSelected(),rscleartx.isSelected());
             }

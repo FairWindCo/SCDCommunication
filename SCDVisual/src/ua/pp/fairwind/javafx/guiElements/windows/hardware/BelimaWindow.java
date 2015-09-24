@@ -15,17 +15,16 @@ import java.util.List;
  */
 public class BelimaWindow extends SimpleHardWareViewMenu {
 
-    public BelimaWindow(String menuItem, SCADASystem centralsystem, String deviceName, String deviceNameDecription) {
-        super(menuItem, centralsystem, AutoCreateDeviceFunction.BELIMA_ENCODER, deviceName, deviceNameDecription);
+    public BelimaWindow(String menuItem, SCADASystem centralsystem, String deviceName) {
+        super(menuItem,"", centralsystem,AutoCreateDeviceFunction.BELIMA_ENCODER, deviceName);
     }
 
     public BelimaWindow(String menuItem, SCADASystem centralsystem) {
-        super(menuItem, centralsystem, AutoCreateDeviceFunction.BELIMA_ENCODER, menuItem, null);
+        super(menuItem,"", centralsystem,AutoCreateDeviceFunction.BELIMA_ENCODER,"BAUMER");
     }
-
     @Override
     protected Node createView() {
-        Encoder device=(Encoder)centralsystem.createDevice(deviceType, deviceName, deviceNameDecription);
+        Encoder device=(Encoder)centralsystem.createDevice(deviceType, deviceName);
         List<LineInterface> lines=centralsystem.getListLines();
         LineInterface oneLine=lines.get(0);
         BelimaEncoderComplexPanel panel=new BelimaEncoderComplexPanel(oneLine,device, lines);

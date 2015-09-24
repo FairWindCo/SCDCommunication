@@ -10,13 +10,13 @@ import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
  */
 public class ByteToLongConvertor extends PropertyValueBindingElement<Byte,Long> {
 
-    private ByteToLongConvertor(ValueProperty<Byte> readingProperty, ValueProperty<Long> writingProperty, ValueConvertor<Byte, Long> readConvertor, ValueConvertor<Long, Byte> writeConvertor, MessageSubSystem centralSystem, int byteNumber) {
-        super(readingProperty, writingProperty, readConvertor, writeConvertor, centralSystem);
+    private ByteToLongConvertor(ValueProperty<Byte> readingProperty, ValueProperty<Long> writingProperty, ValueConvertor<Byte, Long> readConvertor, ValueConvertor<Long, Byte> writeConvertor, int byteNumber) {
+        super(readingProperty, writingProperty, readConvertor, writeConvertor);
         int byteNumber1 = byteNumber;
 
     }
 
-    static public ByteToLongConvertor createByteToLongConvertor(SoftByteProperty from,SoftLongProperty to,int byteNumber, MessageSubSystem centralSystem){
+    static public ByteToLongConvertor createByteToLongConvertor(SoftByteProperty from,SoftLongProperty to,int byteNumber){
         final ValueConvertor<Byte, Long> readConvertor=(FROM,OLD_TO)->{
             if(FROM==null) return null;
             if(OLD_TO==null)OLD_TO=0L;
@@ -24,10 +24,10 @@ public class ByteToLongConvertor extends PropertyValueBindingElement<Byte,Long> 
         };
         final ValueConvertor<Long, Byte> writeConvertor=(FROM,OLD_TO)->{
             if(FROM==null) return null;
-            byte val=(byte)((((long)FROM)>>byteNumber)&0xFF);
+            byte val=(byte)((FROM >>byteNumber)&0xFF);
             return val;
         };
-        return new ByteToLongConvertor(from,to,readConvertor,writeConvertor,centralSystem,byteNumber);
+        return new ByteToLongConvertor(from,to,readConvertor,writeConvertor,byteNumber);
     }
 
     public static long longFromBytePos(byte newValue,long oldValue,int pos){

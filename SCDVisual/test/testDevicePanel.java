@@ -7,6 +7,7 @@ import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCore
 import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
+import ua.pp.fairwind.communications.messagesystems.MessageSystemManager;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.timeaction.PropertyTimer;
 import ua.pp.fairwind.javafx.panels.LineInfoBar;
@@ -19,7 +20,6 @@ import ua.pp.fairwind.javafx.panels.devices.SimpleDeviceConfigPanel;
 
 public class testDevicePanel extends Application {
     SerialLine line;
-    MessageSubSystem ms=new MessageSubSystemMultiDipatch();
 
     public static void main(String[] args) {
         launch(args);
@@ -30,7 +30,7 @@ public class testDevicePanel extends Application {
         MyResourceLoader resloader=new MyResourceLoader();
         VBox vbox=new VBox();
         vbox.setId("mainPanel");
-        line=new SerialLine("com6","SERIAL PORT #6",null,"RS LINE PORT",ms,5000);
+        line=new SerialLine("com6","SERIAL PORT #6",null,5000);
         line.setPerformanceMonitor(true);
         line.addEventListener((elemnt, event, params) -> {
             if (event == EventType.PERFORMANCE) {
@@ -38,7 +38,7 @@ public class testDevicePanel extends Application {
             }
         });
         LineInfoBar infoBar=new LineInfoBar(50,line);
-        FavoritCoreDeviceV1 dev=new FavoritCoreDeviceV1(1,"Favorit Ventil V1",null,"Test Description",ms);
+        FavoritCoreDeviceV1 dev=new FavoritCoreDeviceV1(1);
         dev.setPrimerayLine(line);
         //dev.getErrorCommunicationStatus().setInternalValue(true);
         //DeviceConfigPanel panel=new DeviceConfigPanel(dev);
@@ -59,7 +59,7 @@ public class testDevicePanel extends Application {
     public void stop() throws Exception {
         if(line!=null)line.destroy();
         PropertyTimer.stopWork();
-        MessageSubSystemMultiDipatch.destroyAllService();
+        MessageSystemManager.destroy();
         super.stop();
     }
 }

@@ -19,10 +19,9 @@ import ua.pp.fairwind.communications.propertyes.event.EventType;
  */
 public class LineConsoleTestARG {
     public static void main(String[] args) {
-        MessageSubSystem ms=new MessageSubSystemMultiDipatch();
-        SerialLine line=new SerialLine("com9","RS232 Line#1",null,"Serial port",ms,5000);
-        FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L,"Favirit Ventel",null,"",ms);
-        LoggingDevice ldev=new LoggingDevice("Logging Device", null, "", null, new LineMonitorInterface() {
+        SerialLine line=new SerialLine("com9","RS232 Line#1",null,5000);
+        FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L);
+        LoggingDevice ldev=new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
@@ -32,7 +31,7 @@ public class LineConsoleTestARG {
         line.addReadMonitoringDevice(ldev);
         line.setLineSelector(favorit);
 
-        ArgMicroDevice argMicro=new ArgMicroDevice(10L,"ARG",null,"ARG Micro",ms,null);
+        ArgMicroDevice argMicro=new ArgMicroDevice(10L,"ARG",null);
         argMicro.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE,
                 SerialPort.FLOWCONTROL_NONE,4));
         argMicro.setReadTimeOut(1050);

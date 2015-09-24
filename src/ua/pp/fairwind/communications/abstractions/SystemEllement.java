@@ -4,6 +4,7 @@ import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemSimple;
+import ua.pp.fairwind.communications.messagesystems.MessageSystemManager;
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 
@@ -19,68 +20,37 @@ public abstract class SystemEllement implements ElementInterface{
     final protected MessageSubSystem centralSystem;
     final private String description;
     protected volatile boolean eventactive=true;
+    final private String codename;
 
-    protected SystemEllement(String name,MessageSubSystem centralSystem) {
-        if(name==null || name.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
-        this.name = name;
-        this.uuid=UUID.randomUUID();
-        this.centralSystem=centralSystem!=null?centralSystem.getNewChild(this.uuid):new MessageSubSystemSimple();
-        this.description="";
-    }
-
-    protected SystemEllement(String name, String description,MessageSubSystem centralSystem) {
-        if(name==null || name.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
-        this.name = name;
-        this.description = description;
-        this.uuid=UUID.randomUUID();
-        this.centralSystem=centralSystem!=null?centralSystem.getNewChild(this.uuid):new MessageSubSystemSimple();
+    protected SystemEllement(String codename) {
+        if(codename==null || codename.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
+        this.codename=codename;
+        this.name = localizeName(codename);
+        this.description = localizeDescription(codename);
+        this.uuid=I18N.getUUIDFromCodeNAme(codename);
+        this.centralSystem= MessageSystemManager.getElementMessageSystem();
     }
 
 
-    protected SystemEllement(String name, String uuid,String description,MessageSubSystem centralSystem) {
-        this.name = name;
-        this.description = description;
-        if(name==null || name.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
-        UUID uid=null;
-        if(uuid!=null) uid = UUID.fromString(uuid);
-        if (uid == null) {
-            this.uuid = UUID.randomUUID();
-        } else {
-            this.uuid = uid;
-        }
-        this.centralSystem=centralSystem!=null?centralSystem.getNewChild(this.uuid):new MessageSubSystemSimple();
+    protected SystemEllement(String codename, String uuid) {
+        this.codename=codename;
+        this.name = localizeName(codename);
+        this.description = localizeDescription(codename);
+        if(codename==null || codename.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
+        this.uuid=I18N.getUUIDFromCodeNAme(uuid,codename);
+        this.centralSystem= MessageSystemManager.getElementMessageSystem();
     }
 
-    protected SystemEllement(String name, String uuid,String description,MessageSubSystem centralSystem,HashMap<String,String> uuids) {
-        this.name = name;
-        this.description = description;
-        if(name==null || name.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
-        UUID uid=null;
-        if(uuid!=null) uid = UUID.fromString(uuid);
-        if(uuids!=null && uuid==null) uuid=uuids.get(name);
-        if(uuid!=null) uid = UUID.fromString(uuid);
-        if (uid == null) {
-            this.uuid = UUID.randomUUID();
-        } else {
-            this.uuid = uid;
-        }
-        this.centralSystem=centralSystem!=null?centralSystem.getNewChild(this.uuid):new MessageSubSystemSimple();
+    private String localizeName(String key){
+        String str=I18N.getLocalizedString(key+".name");
+        if(str==null || str.isEmpty()) return key;
+        return str;
     }
 
-    protected SystemEllement(String name, String uuid,String description,SystemElementDirectory centralSystem,HashMap<String,String> uuids) {
-        this(name,uuid,description,centralSystem.getChileMessageSubsystems(),uuids);
+    private String localizeDescription(String key){
+        return I18N.getLocalizedString(key+".description");
     }
 
-    protected SystemEllement(String name, String uuid,String description,SystemElementDirectory centralSystem) {
-        this(name,uuid,description,centralSystem.getChileMessageSubsystems());
-    }
-
-    public static String localizeName(String goupName,String key){
-        return I18N.getLocalizedString(goupName+'.'+key+".name");
-    }
-    public static String localizeDescription(String goupName,String key){
-        return I18N.getLocalizedString(goupName+'.'+key+".description");
-    }
     public static String localizeError(String goupName,String key){
         return I18N.getLocalizedString(goupName+'.'+key+".error");
     }
@@ -149,5 +119,9 @@ public abstract class SystemEllement implements ElementInterface{
     @Override
     public boolean isEnabled() {
         return eventactive;
+    }
+
+    public String getCodename() {
+        return codename;
     }
 }

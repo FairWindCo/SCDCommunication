@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Modality;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
 
@@ -28,13 +29,13 @@ public class MenuHolder implements EventHandler<ActionEvent>{
 	}
 
 	protected void formStandartMenu(){
-		MenuConfigElements quit=new MenuConfigElementsExitAction("Выход");
+		MenuConfigElements quit=new MenuConfigElementsExitAction("EXIT");
 		//MenuConfigElements view=new MenuConfigElements("view1",new SimpleView());
 		//MenuConfigElements view2=new MenuConfigElements("view2",new TreeViewWindow("test",new TreeMenuHolder(executor,true)));
 		//MenuConfigElements file=new MenuConfigElements("����","",null,view,view2,quit);
-		MenuConfigElements file=new MenuConfigElements("Файл","",null,quit);
-		MenuConfigElements about=new MenuConfigElementsForm("О программе", Modality.NONE,new SimpleView("about..."));
-		MenuConfigElements help=new MenuConfigElements("Помощь","",null,about);
+		MenuConfigElements file=new MenuConfigElements("FILE","",null,quit);
+		MenuConfigElements about=new MenuConfigElementsForm("ABOUT", Modality.NONE,new SimpleView("about..."));
+		MenuConfigElements help=new MenuConfigElements("HELP","",null,about);
 		
 		menus.add(file);
 		menus.add(help);
@@ -68,6 +69,7 @@ public class MenuHolder implements EventHandler<ActionEvent>{
 			if(item.getCreatedMenu()==null){
 				if(item.getChilds()!=null || topLevel){
                     curent=new Menu(item.getName());
+					//Tooltip.install(curent,new Tooltip(item.getHint()));
 				} else {
                     curent=new MenuItem(item.getName());
 				}

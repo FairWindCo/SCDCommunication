@@ -8,6 +8,7 @@ import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions
 import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -38,8 +39,8 @@ public abstract class AbstractProperty extends SystemEllement{
 
 
 
-    protected AbstractProperty(String name, String uuid, String description,MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    protected AbstractProperty(String name, String uuid) {
+        super(name, uuid);
     }
 
     public void readValueRequest(){

@@ -8,12 +8,12 @@ import javafx.scene.layout.*;
 import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
 import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
-import ua.pp.fairwind.javafx.I18N.I18N;
+import ua.pp.fairwind.javafx.I18N.I18N_FX;
 
 public class TCPConnectPanel extends StackPane{
-	private Label portLabel=new Label(I18N.COMMON.getString("IPLabel"));
+	private Label portLabel=new Label(I18N_FX.getLocalizedString("IPLabel"));
 	private TextField ipaddress=new TextField("127.0.0.1");
-	private Label ipLabel=new Label(I18N.COMMON.getString("IPPort"));
+	private Label ipLabel=new Label(I18N_FX.getLocalizedString("IPPort"));
 	private TextField ipport=new TextField("9000");
 	private int pauseBeforeCommand=0;
 	DeviceInterface dev=null;
@@ -43,7 +43,7 @@ public class TCPConnectPanel extends StackPane{
 		hbox.setPadding(new Insets(15, 12, 15, 12));
 		hbox.setSpacing(10);
 		hbox.setStyle("-fx-background-color: #336699;");
-        Button buttonConnect = new Button(I18N.COMMON.getString("SAVE"));
+        Button buttonConnect = new Button(I18N_FX.getLocalizedString("SAVE"));
 		buttonConnect.setPrefSize(100, 20);
 		hbox.getChildren().addAll(buttonConnect);
 		vbox.getChildren().add(hbox);

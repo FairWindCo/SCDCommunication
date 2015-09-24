@@ -8,84 +8,36 @@ import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
  * Created by FairWindCo on 07.07.2015
  */
 public class SoftLongProperty extends NumberProperty<Long> {
-    public SoftLongProperty(String name, String uuid, String description, MessageSubSystem centralSystem,SOFT_OPERATION_TYPE softOperationType) {
-        super(name, uuid, description, centralSystem, softOperationType);
+    public SoftLongProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, softOperationType);
     }
 
-    public SoftLongProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, Long value) {
-        super(name, uuid, description, centralSystem, softOperationType, value);
+    public SoftLongProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, Long value) {
+        super(name, uuid, softOperationType, value);
     }
 
-    public SoftLongProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public SoftLongProperty(String name, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, softOperationType);
     }
 
-    public SoftLongProperty(String name, String description, MessageSubSystem centralSystem) {
-        super(name, description, centralSystem);
+    public SoftLongProperty(String name, SOFT_OPERATION_TYPE softOperationType, Long value) {
+        super(name, softOperationType, value);
     }
 
-    public SoftLongProperty(String name, MessageSubSystem centralSystem) {
-        super(name, centralSystem);
-    }
-
-    public SoftLongProperty(String name, String uuid, String description) {
-        super(name, uuid, description);
-    }
-
-    public SoftLongProperty(String name, String description) {
-        super(name, description);
+    public SoftLongProperty(String name, String uuid) {
+        super(name, uuid);
     }
 
     public SoftLongProperty(String name) {
         super(name);
     }
 
-    public SoftLongProperty(String name, String uuid, String description, MessageSubSystem centralSystem, Long value) {
-        super(name, uuid, description, centralSystem, value);
-    }
-
-    public SoftLongProperty(String name, String description, MessageSubSystem centralSystem, Long value) {
-        super(name, description, centralSystem, value);
-    }
-
-    public SoftLongProperty(String name, MessageSubSystem centralSystem, Long value) {
-        super(name, centralSystem, value);
-    }
-
-    public SoftLongProperty(String name, String uuid, String description, Long value) {
-        super(name, uuid, description, value);
-    }
-
-    public SoftLongProperty(String name, String description, Long value) {
-        super(name, description, value);
+    public SoftLongProperty(String name, String uuid, Long value) {
+        super(name, uuid, value);
     }
 
     public SoftLongProperty(String name, Long value) {
         super(name, value);
-    }
-
-    public static SoftLongProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Long value){
-        SoftLongProperty property=new SoftLongProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftLongProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
-        SoftLongProperty property=new SoftLongProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftLongProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
-        SoftLongProperty property=new SoftLongProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftLongProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
-        SoftLongProperty property=new SoftLongProperty(name,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
     }
 
     @Override

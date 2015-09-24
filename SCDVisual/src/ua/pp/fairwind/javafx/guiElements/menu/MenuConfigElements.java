@@ -1,6 +1,7 @@
 package ua.pp.fairwind.javafx.guiElements.menu;
 
 import javafx.scene.control.MenuItem;
+import ua.pp.fairwind.javafx.I18N.I18N_FX;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,23 +15,23 @@ public class MenuConfigElements {
 
 
     public MenuConfigElements(String name, String hint) {
-        this.name = name;
+        this.name = I18N_FX.getLocalizedString(name);
         this.hint = hint;
     }
 
 	public MenuConfigElements(String name) {
-		this.name = name;
+		this.name = I18N_FX.getLocalizedString(name);
 		this.hint = null;
 	}
 
 	public MenuConfigElements(String name, String hint,MenuConfigElements... childs) {
-		this.name = name;
+		this.name = I18N_FX.getLocalizedString(name);
 		this.hint = hint;
 		setAddChilds(childs);
 	}
 
 	public MenuConfigElements(String name,MenuConfigElements... childs) {
-		this.name = name;
+		this.name = I18N_FX.getLocalizedString(name);
 		this.hint = null;
 		setAddChilds(childs);
 	}

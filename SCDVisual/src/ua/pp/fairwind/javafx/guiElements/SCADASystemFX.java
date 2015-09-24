@@ -8,7 +8,7 @@ import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
-import ua.pp.fairwind.javafx.I18N.I18N;
+import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuConfigElements;
 import ua.pp.fairwind.javafx.panels.administrative.AllEventMonitorWindow;
 import ua.pp.fairwind.javafx.panels.administrative.ErrorEventMonitorWindow;
@@ -28,31 +28,30 @@ public class SCADASystemFX extends SCADASystem {
     final private ErrorEventMonitorWindow eventErrorWindow;
     final private AtomicBoolean menuCreated=new AtomicBoolean(false);
     final private AtomicReference<MenuConfigElements> menu=new AtomicReference<>();
-    final boolean canLogAllError= I18N.getObject("LOGGING_ALL_ERROR")!=null?(boolean)I18N.getObject("LOGGING_ALL_ERROR"):false;
-    final boolean canLogAllEvent= I18N.getObject("LOGGING_ALL_EVENT")!=null?(boolean)I18N.getObject("LOGGING_ALL_EVENT"):false;
-    final boolean canLogLineDeviceError = I18N.getObject("LOGGING_LINEDEVICE_ERROR")!=null?(boolean)I18N.getObject("LOGGING_LINEDEVICE_ERROR"):false;
+    final boolean canLogAllError= I18N_FX.getObject("LOGGING_ALL_ERROR")!=null?(boolean) I18N_FX.getObject("LOGGING_ALL_ERROR"):false;
+    final boolean canLogAllEvent= I18N_FX.getObject("LOGGING_ALL_EVENT")!=null?(boolean) I18N_FX.getObject("LOGGING_ALL_EVENT"):false;
+    final boolean canLogLineDeviceError = I18N_FX.getObject("LOGGING_LINEDEVICE_ERROR")!=null?(boolean) I18N_FX.getObject("LOGGING_LINEDEVICE_ERROR"):false;
 
-    static public SCADASystemFX createScadaSystem(String name,String description,HashMap<String,String> uuids,int maxTrunsactionTime){
-        MessageSubSystem topLevel=new MessageSubSystemMultiDipatch();
-        SCADASystemFX scada=new SCADASystemFX(name,description,topLevel,uuids,null,300);
-        List<LineInterface> serialLines= SerialLine.getSerialLines(scada, maxTrunsactionTime);
+    static public SCADASystemFX createScadaSystem(String name,int maxTrunsactionTime){
+        SCADASystemFX scada=new SCADASystemFX(name,null,300);
+        List<LineInterface> serialLines= SerialLine.getSerialLines(maxTrunsactionTime);
         scada.addLines(serialLines);
         return scada;
     }
 
     static public SCADASystemFX createScadaSystem(String name,String description,HashMap<String,String> uuids,int maxTrunsactionTime,int maxLogSize){
         MessageSubSystem topLevel=new MessageSubSystemMultiDipatch();
-        SCADASystemFX scada=new SCADASystemFX(name,description,topLevel,uuids,null,maxLogSize);
-        List<LineInterface> serialLines= SerialLine.getSerialLines(scada, maxTrunsactionTime);
+        SCADASystemFX scada=new SCADASystemFX(name,null,maxLogSize);
+        List<LineInterface> serialLines= SerialLine.getSerialLines(maxTrunsactionTime);
         scada.addLines(serialLines);
         return scada;
     }
 
-    protected SCADASystemFX(String name, String description, MessageSubSystem topLevel, HashMap<String, String> uuids, AutoCreateDeviceFunction createDeviceFunction,int maxLogSize) {
-        super(name, description, topLevel, uuids, createDeviceFunction);
-        logingWindow=new LineCommunicationLoggingWindow("Lines Communications Logs",maxLogSize);
-        eventLogingWindow=new AllEventMonitorWindow("Event Logs",maxLogSize);
-        eventErrorWindow=new ErrorEventMonitorWindow("Error Logs",maxLogSize);
+    protected SCADASystemFX(String name, AutoCreateDeviceFunction createDeviceFunction,int maxLogSize) {
+        super(name, createDeviceFunction);
+        logingWindow=new LineCommunicationLoggingWindow("Lines_Communications_Logs",maxLogSize);
+        eventLogingWindow=new AllEventMonitorWindow("Event_Logs",maxLogSize);
+        eventErrorWindow=new ErrorEventMonitorWindow("Error_Logs",maxLogSize);
     }
 
     public MenuConfigElements getLineCommunicationLoggingMenu(){

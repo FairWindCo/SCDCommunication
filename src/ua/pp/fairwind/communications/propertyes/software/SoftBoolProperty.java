@@ -11,38 +11,20 @@ import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
  * Created by Сергей on 06.07.2015.
  */
 public class SoftBoolProperty extends ValueProperty<Boolean> implements BooleanPropertyInterface{
-
-
-    public SoftBoolProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
-        super(name, uuid, description, centralSystem, softOperationType);
+    public SoftBoolProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, softOperationType);
     }
 
-    public SoftBoolProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, Boolean value) {
-        super(name, uuid, description, centralSystem, softOperationType, value);
+    public SoftBoolProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, Boolean value) {
+        super(name, uuid, softOperationType, value);
     }
 
-    public SoftBoolProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public SoftBoolProperty(String name, String uuid) {
+        super(name, uuid);
     }
 
-    public SoftBoolProperty(String name, String uuid, String description, MessageSubSystem centralSystem, Boolean value) {
-        super(name, uuid, description, centralSystem, value);
-    }
-
-    public SoftBoolProperty(String name, String uuid, String description) {
-        super(name, uuid, description);
-    }
-
-    public SoftBoolProperty(String name, String uuid, String description, Boolean value) {
-        super(name, uuid, description, value);
-    }
-
-    public SoftBoolProperty(String name, String description) {
-        super(name, description);
-    }
-
-    public SoftBoolProperty(String name, String description, Boolean value) {
-        super(name, description, value);
+    public SoftBoolProperty(String name, String uuid, Boolean value) {
+        super(name, uuid, value);
     }
 
     public SoftBoolProperty(String name) {
@@ -51,6 +33,14 @@ public class SoftBoolProperty extends ValueProperty<Boolean> implements BooleanP
 
     public SoftBoolProperty(String name, Boolean value) {
         super(name, value);
+    }
+
+    public SoftBoolProperty(String name, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, softOperationType);
+    }
+
+    public SoftBoolProperty(String name, SOFT_OPERATION_TYPE softOperationType, Boolean value) {
+        super(name, softOperationType, value);
     }
 
     @Override
@@ -111,29 +101,5 @@ public class SoftBoolProperty extends ValueProperty<Boolean> implements BooleanP
             setValue(!value);
         }
 
-    }
-
-    public static SoftBoolProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Boolean value){
-        SoftBoolProperty property=new SoftBoolProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftBoolProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
-        SoftBoolProperty property=new SoftBoolProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftBoolProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
-        SoftBoolProperty property=new SoftBoolProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftBoolProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
-        SoftBoolProperty property=new SoftBoolProperty(name,null,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
     }
 }

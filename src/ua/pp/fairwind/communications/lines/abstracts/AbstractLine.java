@@ -6,7 +6,6 @@ import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.devices.abstracts.ImitatorDevice;
 import ua.pp.fairwind.communications.devices.abstracts.LineSelectDevice;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
@@ -15,7 +14,6 @@ import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 import ua.pp.fairwind.communications.lines.performance.PerformanceMonitorEventData;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
@@ -49,32 +47,21 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     private volatile LineParameters curentLineParameters;
     private volatile Object curentLine;
 
-    protected AbstractLine(String name, String uuid, String description, MessageSubSystem centralSystem,long maxTransactionTime) {
-        super(name, uuid, description, centralSystem);
+    protected AbstractLine(String codename, String uuid, long maxTransactionTime) {
+        super(codename, uuid);
         this.maxTransactionTime = maxTransactionTime;
     }
 
-    protected AbstractLine(String name, String uuid, String description, SystemElementDirectory centralSystem,long maxTransactionTime) {
-        super(name, uuid, description, centralSystem);
+    protected AbstractLine(String codename, long maxTransactionTime) {
+        super(codename, null);
         this.maxTransactionTime = maxTransactionTime;
     }
 
-    protected AbstractLine(String name, String uuid, String description, MessageSubSystem centralSystem,HashMap<String,String> uuids,long maxTransactionTime) {
-        super(name, uuid, description, centralSystem);
-        this.maxTransactionTime = maxTransactionTime;
+    protected AbstractLine(String codename, String uuid) {
+        super(codename, uuid);
+        this.maxTransactionTime = 5000;
     }
 
-    protected AbstractLine(String name, String uuid, String description, SystemElementDirectory centralSystem,HashMap<String,String> uuids,long maxTransactionTime) {
-        super(name, uuid, description, centralSystem);
-        this.maxTransactionTime = maxTransactionTime;
-    }
-
-    public static String localizeName(String key){
-        return localizeName("line", key);
-    }
-    public static String localizeDescription(String key){
-        return localizeDescription("line", key);
-    }
     public static String localizeError(String key){
         return localizeError("line", key);
     }
@@ -137,8 +124,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
                 transuction.set(false);
                 return false;
             } else {
-                if(uuid.equals(trunsactionUUID)) return false;
-                return true;
+                return !uuid.equals(trunsactionUUID);
             }
         } else {
             return false;
@@ -232,15 +218,17 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     abstract protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException,LineTimeOutException;
     abstract protected byte[] reciveMessage(long timeOut,long bytesForReadCount, LineParameters params) throws LineErrorException,LineTimeOutException;
-    abstract protected boolean setepLineParameters(LineParameters params,LineParameters curentLineParameters,boolean alwaysSet);
+    abstract protected boolean setupLineParameters(LineParameters params, LineParameters curentLineParameters, boolean alwaysSet);
+    abstract protected boolean clearBuffers(LineParameters parameters);
     abstract protected void onStartTrunsaction();
     abstract protected void onEndTrunsaction();
     abstract protected void closeUsedResources();
     abstract protected boolean testIdentialyLineParameters(LineParameters current,LineParameters newparmeters);
 
     protected boolean setLineParameters(LineParameters params){
+        if(!clearBuffers(params)) return false;
         if(params==null){
-            return setepLineParameters(params,curentLineParameters,true);
+            return setupLineParameters(params, curentLineParameters, true);
         }
         Object always_set_line_param=params.getLineParameter(LineParameters.ALWAYS_SET_LINE_PARAM);
         boolean need_set_line_param=false;
@@ -248,10 +236,10 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             need_set_line_param=(Boolean)always_set_line_param;
         }
         if(need_set_line_param){
-            return setepLineParameters(params,curentLineParameters,true);
+            return setupLineParameters(params, curentLineParameters, true);
         } else {
             if(!testIdentialyLineParameters(curentLineParameters,params)){
-                if(setepLineParameters(params,curentLineParameters,false)){
+                if(setupLineParameters(params, curentLineParameters, false)){
                     curentLineParameters=params;
                     return true;
                 } else {

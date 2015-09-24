@@ -15,17 +15,18 @@ import java.util.List;
  */
 public class PanDriveWindow extends SimpleHardWareViewMenu {
 
-    public PanDriveWindow(String menuItem, SCADASystem centralsystem, String deviceName, String deviceNameDecription) {
-        super(menuItem, centralsystem, AutoCreateDeviceFunction.PANDRIVE_MOTOR, deviceName, deviceNameDecription);
+    public PanDriveWindow(String menuItem, SCADASystem centralsystem, String deviceName) {
+        super(menuItem,"", centralsystem,AutoCreateDeviceFunction.PANDRIVE_MOTOR, deviceName);
     }
 
     public PanDriveWindow(String menuItem, SCADASystem centralsystem) {
-        super(menuItem, centralsystem, AutoCreateDeviceFunction.PANDRIVE_MOTOR, menuItem, null);
+        super(menuItem,"", centralsystem,AutoCreateDeviceFunction.PANDRIVE_MOTOR, "PANDRIVE");
     }
+
 
     @Override
     protected Node createView() {
-        StepDriver device=(StepDriver)centralsystem.createDevice(deviceType, deviceName, deviceNameDecription);
+        StepDriver device=(StepDriver)centralsystem.createDevice(deviceType, deviceName);
         List<LineInterface> lines=centralsystem.getListLines();
         LineInterface oneLine=lines.get(0);
         PanDriveComplexPanel panel=new PanDriveComplexPanel(oneLine,device, lines);

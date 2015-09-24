@@ -203,8 +203,7 @@ public class CommunicationLineParameters implements LineParameters{
 
     static public boolean compare_RS_PARAMETERS(LineParameters curent,LineParameters newvalue){
         if(curent==null){
-            if(newvalue==null) return true;
-            return false;
+            return newvalue == null;
         } else {
             if(newvalue==null) return false;
         }
@@ -218,8 +217,8 @@ public class CommunicationLineParameters implements LineParameters{
             result&=((CommunicationLineParameters) curent).flowcontrol==((CommunicationLineParameters) newvalue).flowcontrol;
             result&=((CommunicationLineParameters) curent).dtr==((CommunicationLineParameters) newvalue).dtr;
             result&=((CommunicationLineParameters) curent).rts==((CommunicationLineParameters) newvalue).rts;
-            result&=((CommunicationLineParameters) curent).purge_rx==((CommunicationLineParameters) newvalue).purge_rx;
-            result&=((CommunicationLineParameters) curent).purge_tx==((CommunicationLineParameters) newvalue).purge_tx;
+            //result&=((CommunicationLineParameters) curent).purge_rx==((CommunicationLineParameters) newvalue).purge_rx;
+            //result&=((CommunicationLineParameters) curent).purge_tx==((CommunicationLineParameters) newvalue).purge_tx;
         } else {
             if(LineParameters.getBooleanParameter(newvalue,RS_PURGE_RX)||LineParameters.getBooleanParameter(newvalue,RS_PURGE_TX))return false;
             result=LineParameters.compareLineParameter(curent,newvalue,RS_SPEED);
@@ -229,16 +228,15 @@ public class CommunicationLineParameters implements LineParameters{
             result&=LineParameters.compareLineParameter(curent,newvalue,RS_FLOWCONTROL);
             result&=LineParameters.compareLineParameter(curent,newvalue,RS_DTR);
             result&=LineParameters.compareLineParameter(curent,newvalue,RS_RTS);
-            result&=LineParameters.compareLineParameter(curent,newvalue,RS_PURGE_RX);
-            result&=LineParameters.compareLineParameter(curent,newvalue,RS_PURGE_TX);
+            //result&=LineParameters.compareLineParameter(curent,newvalue,RS_PURGE_RX);
+            //result&=LineParameters.compareLineParameter(curent,newvalue,RS_PURGE_TX);
         }
         return result;
     }
 
     static public boolean compare_RS_BAUD(LineParameters curent,LineParameters newvalue){
         if(curent==null){
-            if(newvalue==null) return true;
-            return false;
+            return newvalue == null;
         } else {
             if(newvalue==null) return false;
         }

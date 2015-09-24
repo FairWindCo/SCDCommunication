@@ -15,17 +15,17 @@ import java.util.List;
  */
 public class ArgMicroWindow extends SimpleHardWareViewMenu {
 
-    public ArgMicroWindow(String menuItem, SCADASystem centralsystem, String deviceName, String deviceNameDecription) {
-        super(menuItem, centralsystem, AutoCreateDeviceFunction.ARG_MICRO, deviceName, deviceNameDecription);
+    public ArgMicroWindow(String menuItem, SCADASystem centralsystem, String deviceName) {
+        super(menuItem,"", centralsystem,AutoCreateDeviceFunction.ARG_MICRO, deviceName);
     }
 
     public ArgMicroWindow(String menuItem, SCADASystem centralsystem) {
-        super(menuItem, centralsystem, AutoCreateDeviceFunction.ARG_MICRO, menuItem, null);
+        super(menuItem,"", centralsystem,AutoCreateDeviceFunction.ARG_MICRO, "ARGMICRO");
     }
 
     @Override
     protected Node createView() {
-        ArgMicroDevice device=(ArgMicroDevice)centralsystem.createDevice(deviceType, deviceName, deviceNameDecription);
+        ArgMicroDevice device=(ArgMicroDevice)centralsystem.createDevice(deviceType, deviceName);
         List<LineInterface> lines=centralsystem.getListLines();
         LineInterface oneLine=lines.get(0);
         ArgMicroComplexPanel panel=new ArgMicroComplexPanel(oneLine,device, lines);

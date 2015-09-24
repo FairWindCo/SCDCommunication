@@ -4,17 +4,13 @@ import jssc.SerialPort;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
-import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.internatianalisation.I18N_panDrive;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
-
-import java.util.HashMap;
 
 /**
  * Created by Сергей on 07.09.2015.
@@ -54,74 +50,59 @@ public class StepDriver extends RSLineDevice {
     private final DeviceNamedCommandProperty stepRight;
 
 
-    public StepDriver(long address, String name, String uuid, String description, MessageSubSystem centralSystem, HashMap<String, String> uuids) {
-        super(address, name, uuid, description, centralSystem, uuids);
-        speed=new SoftShortProperty(I18N_panDrive.COMMON.getStringEx("speed"),getUiidFromMap(I18N_panDrive.COMMON.getStringEx("speed"), uuids),I18N_panDrive.COMMON.getStringEx("speed_title"),centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+    public StepDriver(long address, String codename, String uuid) {
+        super(address, codename, uuid);
+        speed=new SoftShortProperty("PANDRIVE.SPEED", ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         speed.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 1L);
-        position=new SoftLongProperty("POSITION",getUiidFromMap("POSITION",uuids),"Номер измерения",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        position=new SoftLongProperty("PANDRIVE.POSITION",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         position.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 2L);
-        statusCode=new SoftShortProperty("STATUSCODE",getUiidFromMap("STATUSCODE",uuids),"Статус последней команды",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+        statusCode=new SoftShortProperty("PANDRIVE.STATUSCODE",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         statusCode.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 3L);
-        step=new SoftLongProperty("STEP",getUiidFromMap("STEP",uuids),"Шаг",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        step=new SoftLongProperty("PANDRIVE.STEP",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         step.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 4L);
 
         /*CONFIGURATION PROPERTY*/
-        magic=new SoftShortProperty("MAGIC",getUiidFromMap("MAGIC",uuids),"Setting this parameter to a different value as\n" +
-                "$E4 will cause re-initialization of the axis and\n" +
-                "global parameters (to factory defaults) after\n" +
-                "the next power up. This is useful in case of\n" +
-                "miss-configuration",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        magic=new SoftShortProperty("PANDRIVE.MAGIC", ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         magic.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 64L);
-        rsspeed=new SoftShortProperty("RS_BAUD_RATE",getUiidFromMap("RS_BAUD_RATE",uuids),"RS485 baud rate",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        rsspeed=new SoftShortProperty("PANDRIVE.RS_BAUD_RATE", ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         rsspeed.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 65L);
-        rsadress=new SoftShortProperty("RS_ADDRESS",getUiidFromMap("RS_ADDRESS",uuids),"RS485 Serial address",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        rsadress=new SoftShortProperty("PANDRIVE.RS_ADDRESS", ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         rsadress.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 66L);
-        mode=new SoftShortProperty("MODE",getUiidFromMap("MODE",uuids),"ASCII mode",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        mode=new SoftShortProperty("PANDRIVE.MODE",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         mode.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 67L);
-        serialHeartbeat=new SoftLongProperty("HEATBEAT",getUiidFromMap("HEATBEAT",uuids),"Serial heartbeat for the RS485 interface. If this\n" +
-                "time limit is up and no further command is\n" +
-                "noticed the motor will be stopped.\n" +
-                "0 – parameter is disabled",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        serialHeartbeat=new SoftLongProperty("PANDRIVE.HEATBEAT",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         serialHeartbeat.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 68L);
-        configurationEpromLock=new SoftBoolProperty("EPROMLOCK",getUiidFromMap("EPROMLOCK",uuids),"Configuration\n" +
-                "EEPROM lock flag",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        configurationEpromLock=new SoftBoolProperty("PANDRIVE.EPROMLOCK",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         configurationEpromLock.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 73L);
-        telegramPauseTime=new SoftShortProperty("RS_PAUSE",getUiidFromMap("RS_PAUSE",uuids),"Pause time before the reply via RS485 is sent.\n" +
-                "For RS485 it is often necessary to set it to 15\n" +
-                "(for RS485 adapters controlled by the RTS pin).",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        telegramPauseTime=new SoftShortProperty("PANDRIVE.RS_PAUSE",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         telegramPauseTime.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 75L);
-        serialHostAdress=new SoftShortProperty("RS_HOSTADDRESS",getUiidFromMap("RS_HOSTADDRESS",uuids),"Host address used in the reply telegrams sent\n" +
-                "back via RS485.",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        serialHostAdress=new SoftShortProperty("PANDRIVE.RS_HOSTADDRESS", ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         serialHostAdress.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 76L);
-        serialSecondAdress=new SoftShortProperty("RS_SECOND_ADDRESS",getUiidFromMap("RS_SECOND_ADDRESS",uuids),"RS485 Second module (target) address. This is the\n" +
-                "group or broadcast address of the module. ",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        serialSecondAdress=new SoftShortProperty("PANDRIVE.RS_SECOND_ADDRESS", ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         serialSecondAdress.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 87L);
 
-        TMCLaplicationStatus=new SoftShortProperty("TMCL_STATUS",getUiidFromMap("TMCL_STATUS",uuids),"TMCL application status",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        TMCLaplicationStatus=new SoftShortProperty("PANDRIVE.TMCL_STATUS", ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         TMCLaplicationStatus.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 128L);
-        dowloadMode=new SoftBoolProperty("D_MODE",getUiidFromMap("D_MODE",uuids),"Download mode",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        dowloadMode=new SoftBoolProperty("PANDRIVE.D_MODE", ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         dowloadMode.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 129L);
-        autoStartTMCL=new SoftBoolProperty("TMCL_AutoStart",getUiidFromMap("TMCL_AutoStart",uuids),"Auto start mode",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        autoStartTMCL=new SoftBoolProperty("PANDRIVE.TMCL_AutoStart", ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         autoStartTMCL.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 77L);
-        endSwichPolarity=new SoftBoolProperty("SWITCH_POLARITY",getUiidFromMap("SWITCH_POLARITY",uuids),"End switch polarity",centralSystem, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        endSwichPolarity=new SoftBoolProperty("PANDRIVE.SWITCH_POLARITY", ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         endSwichPolarity.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 79L);
 
-        tickTimer=new SoftLongProperty("TICK",getUiidFromMap("TICK",uuids),"A 32 bit counter that gets incremented by one\n" +
-                "every millisecond. It can also be reset to any\n" +
-                "start value",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        tickTimer=new SoftLongProperty("PANDRIVE.TICK",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         tickTimer.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 132L);
-        randomNumber=new SoftLongProperty("RANDOM",getUiidFromMap("RANDOM",uuids),"Choose a random number.",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+        randomNumber=new SoftLongProperty("PANDRIVE.RANDOM",ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         randomNumber.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 133L);
-        TMCLprogramCounter=new SoftLongProperty("PROGRAM_COUNTER",getUiidFromMap("PROGRAM_COUNTER",uuids),"The index of the currently executed TMCL\n" +
-                "instruction. ",centralSystem,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+        TMCLprogramCounter=new SoftLongProperty("PANDRIVE.PROGRAM_COUNTER",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         TMCLprogramCounter.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 130L);
         //-----------------------------------------------------------------------------
-        rotateLeft=formCommandNameProperty("ROL", "ROTATE LEFT", centralSystem, uuids);
-        rotateRight=formCommandNameProperty("ROR", "ROTATE RIGHT", centralSystem, uuids);
-        motorStop=formCommandNameProperty("MST", "MOTOR STOP", centralSystem, uuids);
-        referenceSearch=formCommandNameProperty("MST", "REFERENCE SEARCH", centralSystem, uuids);
-        stepLeft=formCommandNameProperty("STPL", "MOTOR STEP LEFT", centralSystem, uuids);
-        stepRight=formCommandNameProperty("STPR", "MOTOR STEP RIGHT", centralSystem, uuids);
+        rotateLeft=formCommandNameProperty("PANDRIVE.ROL","ROL");
+        rotateRight=formCommandNameProperty("PANDRIVE.ROR","ROR");
+        motorStop=formCommandNameProperty("PANDRIVE.MST","MST");
+        referenceSearch=formCommandNameProperty("PANDRIVE.MST","MST");
+        stepLeft=formCommandNameProperty("PANDRIVE.STPL","STPL");
+        stepRight=formCommandNameProperty("PANDRIVE.STPR","STPR");
         setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.PARITY_NONE,SerialPort.STOPBITS_1,
                 SerialPort.FLOWCONTROL_NONE));
         addPropertys(position);

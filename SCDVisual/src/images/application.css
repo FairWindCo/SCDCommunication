@@ -108,3 +108,14 @@
     -fx-background-color:
         linear-gradient(rgb(35,49,80),rgb(50,50,100), rgb(35,49,80));
 }
+
+.tooltip {
+    -fx-background: rgba(249,200,13,1);
+    -fx-text-fill: #000000;
+    -fx-background-color: rgba(249, 231, 47, 0.8);
+    -fx-background-radius: 6px;
+    -fx-background-insets: 0;
+    -fx-font-size: 1.2em;
+    -fx-padding: 0.667em 0.75em 0.667em 0.75em; /* 10px */
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.5) , 10, 0.0 , 0 , 3 );
+}

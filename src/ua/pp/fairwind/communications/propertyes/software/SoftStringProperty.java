@@ -108,34 +108,30 @@ public class SoftStringProperty extends ValueProperty<String> implements StringP
 
     @Override
     public void bindWriteNumberProperty(NumberProperty<?> property, int radix) {
-        bindPropertyForWrite((AbstractProperty)property, null, radix, 0, -1, false);
+        bindPropertyForWrite(property, null, radix, 0, -1, false);
     }
 
 
     @Override
     public void bindWriteNumberProperty(NumberProperty<?> property) {
-        bindPropertyForWrite((AbstractProperty) property, null, 10, 0, -1, false);
+        bindPropertyForWrite(property, null, 10, 0, -1, false);
     }
 
     @Override
     public void bindWriteNumberProperty(NumberProperty<?> property, String format) {
-        bindPropertyForWrite((AbstractProperty) property, format, 10, 0, -1, false);
+        bindPropertyForWrite(property, format, 10, 0, -1, false);
     }
 
-    public SoftStringProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
-        super(name, uuid, description, centralSystem, softOperationType);
+    public SoftStringProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, softOperationType);
     }
 
-    public SoftStringProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType, String value) {
-        super(name, uuid, description, centralSystem, softOperationType, value);
+    public SoftStringProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, String value) {
+        super(name, uuid, softOperationType, value);
     }
 
-    public SoftStringProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
-    }
-
-    public SoftStringProperty(String name, String uuid, String description, MessageSubSystem centralSystem, String value) {
-        super(name, uuid, description, centralSystem, value);
+    public SoftStringProperty(String name, String uuid, String value) {
+        super(name, uuid, value);
     }
 
 
@@ -143,32 +139,5 @@ public class SoftStringProperty extends ValueProperty<String> implements StringP
         super(name);
     }
 
-    public SoftStringProperty(String name, String uuid, String description, String value) {
-        super(name, uuid, description, value);
-    }
-
-    public static SoftStringProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, String value){
-        SoftStringProperty property=new SoftStringProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftStringProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
-        SoftStringProperty property=new SoftStringProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftStringProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
-        SoftStringProperty property=new SoftStringProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftStringProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
-        SoftStringProperty property=new SoftStringProperty(name,null,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
-    }
 
 }

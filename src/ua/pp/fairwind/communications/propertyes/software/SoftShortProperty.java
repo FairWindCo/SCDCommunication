@@ -8,87 +8,37 @@ import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
  * Created by FairWindCo on 07.07.2015
  */
 public class SoftShortProperty extends NumberProperty<Short> {
-    public SoftShortProperty(String name, String uuid, String description, MessageSubSystem centralSystem, SOFT_OPERATION_TYPE softOperationType) {
-        super(name, uuid, description, centralSystem, softOperationType);
+    public SoftShortProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, uuid, softOperationType);
     }
 
-    public SoftShortProperty(String name, String uuid, String description, MessageSubSystem centralSystem,SOFT_OPERATION_TYPE softOperationType, Short value) {
-        super(name, uuid, description, centralSystem, softOperationType, value);
+    public SoftShortProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, Short value) {
+        super(name, uuid, softOperationType, value);
     }
 
-    public SoftShortProperty(String name, String uuid, String description, MessageSubSystem centralSystem) {
-        super(name, uuid, description, centralSystem);
+    public SoftShortProperty(String name, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, softOperationType);
     }
 
-    public SoftShortProperty(String name, String description, MessageSubSystem centralSystem) {
-        super(name, description, centralSystem);
+    public SoftShortProperty(String name, SOFT_OPERATION_TYPE softOperationType, Short value) {
+        super(name, softOperationType, value);
     }
 
-    public SoftShortProperty(String name, MessageSubSystem centralSystem) {
-        super(name, centralSystem);
-    }
-
-    public SoftShortProperty(String name, String uuid, String description) {
-        super(name, uuid, description);
-    }
-
-    public SoftShortProperty(String name, String description) {
-        super(name, description);
+    public SoftShortProperty(String name, String uuid) {
+        super(name, uuid);
     }
 
     public SoftShortProperty(String name) {
         super(name);
     }
 
-    public SoftShortProperty(String name, String uuid, String description, MessageSubSystem centralSystem, Short value) {
-        super(name, uuid, description, centralSystem, value);
-    }
-
-    public SoftShortProperty(String name, String description, MessageSubSystem centralSystem, Short value) {
-        super(name, description, centralSystem, value);
-    }
-
-    public SoftShortProperty(String name, MessageSubSystem centralSystem, Short value) {
-        super(name, centralSystem, value);
-    }
-
-    public SoftShortProperty(String name, String uuid, String description, Short value) {
-        super(name, uuid, description, value);
-    }
-
-    public SoftShortProperty(String name, String description, Short value) {
-        super(name, description, value);
+    public SoftShortProperty(String name, String uuid, Short value) {
+        super(name, uuid, value);
     }
 
     public SoftShortProperty(String name, Short value) {
         super(name, value);
     }
-
-
-    public static SoftShortProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType, Short value){
-        SoftShortProperty property=new SoftShortProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType,value);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftShortProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem,SOFT_OPERATION_TYPE softOperationType){
-        SoftShortProperty property=new SoftShortProperty(name,uuid,description,parentSystem.getChileMessageSubsystems(),softOperationType);
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftShortProperty createShortProperty(String name, String uuid, String description, SystemElementDirectory parentSystem){
-        SoftShortProperty property=new SoftShortProperty(name,uuid,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
-    public static SoftShortProperty createShortProperty(String name, String description, SystemElementDirectory parentSystem){
-        SoftShortProperty property=new SoftShortProperty(name,description,parentSystem.getChileMessageSubsystems());
-        parentSystem.addElemnt(property);
-        return property;
-    }
-
 
     protected Short convertFromNumber(Number value){
         if(value!=null) return value.shortValue();return null;

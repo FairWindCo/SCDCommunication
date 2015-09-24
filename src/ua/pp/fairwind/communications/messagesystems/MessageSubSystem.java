@@ -21,5 +21,5 @@ public interface MessageSubSystem {
         void clear();
         void destroy();
         void destroyService();
-        MessageSubSystem getNewChild(UUID elementForGetMessageSubSystem);
+        MessageSubSystem getNewChild();
 }
