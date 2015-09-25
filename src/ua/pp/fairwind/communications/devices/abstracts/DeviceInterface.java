@@ -6,6 +6,7 @@ import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
+import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
 
 /**
  * Created by Сергей on 07.07.2015.
@@ -22,10 +23,12 @@ public interface DeviceInterface extends ElementInterface{
 
     long getReadTimeOut();
     void setReadTimeOut(long timeOut);
-
-
     long getPauseBeforeRead();
     void setPauseBeforeRead(long pause);
+    long getPauseBeforeWrite();
+    void setPauseBeforeWrite(long pause);
+    long getMaxRetry();
+    void setMaxRetry(long pause);
 
     void setPrimerayLine(LineInterface line);
     void setSecondaryLine(LineInterface line);
@@ -38,4 +41,11 @@ public interface DeviceInterface extends ElementInterface{
 
     void setActivete(boolean activeted);
     boolean isActive();
+
+    SoftLongProperty getRetryCount();
+    SoftLongProperty getDeviceTimeOut();
+    SoftLongProperty getDeviceTimeOutPause();
+    SoftLongProperty getDeviceWritePause();
+
+
 }

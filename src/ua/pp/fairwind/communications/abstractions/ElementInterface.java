@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.abstractions;
 
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 
 import java.util.UUID;
 
@@ -14,6 +15,12 @@ public interface ElementInterface {
     String getDescription();
 
     void addEventListener(ElementEventListener listener);
+    void addEventListener(ElementEventListener listener,EventType... recivedEventsTypes);
+    void addEventListener(ElementEventListener listener,UUID ignore);
+    void addEventListener(ElementEventListener listener,UUID ignore,EventType... recivedEventsTypes);
+    void addEventListener(ElementEventListener listener,UUID ignore,Object processorParam);
+    void addEventListener(ElementEventListener listener,UUID ignore,Object processorParam,EventType... recivedEventsTypes);
+
     void removeEventListener(ElementEventListener listener);
     void destroy();
 

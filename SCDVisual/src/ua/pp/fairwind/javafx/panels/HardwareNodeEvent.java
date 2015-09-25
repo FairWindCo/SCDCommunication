@@ -1,6 +1,6 @@
 package ua.pp.fairwind.javafx.panels;
 
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 
 /**
  * Created by Сергей on 16.07.2015.

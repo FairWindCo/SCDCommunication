@@ -1,8 +1,8 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.propertyes.groups.GroupPropertyInterface;
 
 import java.util.Collection;
@@ -18,28 +18,30 @@ public abstract class AbstractGroupedProperty<BigValue extends Comparable<? supe
     final private Map<String,ValueProperty<SmallValue>> properties=new ConcurrentHashMap<>();
     final private Map<UUID,ValueProperty<SmallValue>> propertiesUUID=new ConcurrentHashMap<>();
 
-    final private ElementEventListener listener= (element, typeEvent, params) -> {
-        if(typeEvent== EventType.ELEMENT_CHANGE) {
+    final private ElementEventListener listener= (event,param) -> {
+        if(event.getTypeEvent()== EventType.ELEMENT_CHANGE) {
             Object value = getAdditionalInfo(PROPERTY_BUBLE_EVENT);
             if (value != null && value instanceof Boolean && (boolean) value) {
-                fireEvent(typeEvent, params);
+                fireEvent(event.getTypeEvent(), event.getParams());
             }
             BigValue big = getInternalValue();
             for (ValueProperty<SmallValue> property : properties.values()) {
                 big = formExternalValue(property.getInternalValue(), big, property);
             }
-            if(isBubleEvent())setInternalValue(big);else setInternalValue(big,true,false);
+            if(isBubleEvent())setInternalValue(big,event);else setInternalValue(big,event);
         }
     };
 
     @Override
-    protected void setInternalValue(BigValue value, boolean silent, boolean fromHardWare) {
+    protected void setInternalValue(BigValue value, Event parent) {
         for(ValueProperty<SmallValue> property:properties.values()){
             SmallValue small=formInternalValue(value, property);
-            property.setInternalValue(small,silent,true);
+            property.setInternalValue(small,parent);
         }
-        super.setInternalValue(value, silent, fromHardWare);
+        super.setInternalValue(value,parent);
     }
+
+
 
     protected abstract SmallValue formInternalValue(BigValue value, ValueProperty<SmallValue> internalProperty);
     protected abstract BigValue   formExternalValue(SmallValue value,BigValue bigvalue,ValueProperty<SmallValue> internalProperty);

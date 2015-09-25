@@ -1,7 +1,6 @@
 package ua.pp.fairwind.communications.lines;
 
 import jssc.*;
-import ua.pp.fairwind.communications.SCADASystem;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.lines.abstracts.AbstractLine;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
@@ -9,8 +8,7 @@ import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
 import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
 import java.util.ArrayList;

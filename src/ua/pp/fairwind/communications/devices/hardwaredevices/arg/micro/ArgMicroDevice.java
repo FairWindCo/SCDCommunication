@@ -5,14 +5,12 @@ import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
-
-import java.util.HashMap;
 
 /**
  * Created by Сергей on 07.09.2015.
@@ -51,7 +49,7 @@ public class ArgMicroDevice extends RSLineDevice {
     }
 
     @Override
-    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property) {
+    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property,final Event sourceEvent) {
         long deviceaddress=deviceAddress.getValue();
         if(recivedMessage!=null && recivedMessage.length>=10){
             for(int i=0;i<recivedMessage.length;i++) {
@@ -59,13 +57,13 @@ public class ArgMicroDevice extends RSLineDevice {
                     byte ccrc = CRC(recivedMessage, i, 8);
                     if (ccrc == recivedMessage[i + 8]) {
                         short mnumberMeasurement=(short)(recivedMessage[i+1] & 0xFF);
-                        this.setHardWareInternalValue(numberMeasurementm,mnumberMeasurement);
+                        this.setHardWareInternalValue(numberMeasurementm,mnumberMeasurement,sourceEvent);
                         try {
                             float val=Float.parseFloat(CommunicationUtils.formStringFomByteBuffer(recivedMessage, i + 2, 6));
-                            setHardWareInternalValue(rate,val);
+                            setHardWareInternalValue(rate,val,sourceEvent);
                             return true;
                         } catch (NumberFormatException ex) {
-                            setHardWareInternalValue(rate ,0.0f);
+                            setHardWareInternalValue(rate ,0.0f,sourceEvent);
                             return false;
                         }
                     }

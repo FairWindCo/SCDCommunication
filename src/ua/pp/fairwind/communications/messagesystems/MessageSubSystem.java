@@ -1,10 +1,7 @@
 package ua.pp.fairwind.communications.messagesystems;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
+import ua.pp.fairwind.communications.messagesystems.event.*;
 
 import java.util.UUID;
 
@@ -13,13 +10,18 @@ import java.util.UUID;
  */
 public interface MessageSubSystem {
         void fireEvent(ElementInterface element,EventType type,Object param);
+        void fireEvent(ElementInterface element,EventType type,Object param,Event parent);
+        void fireEvent(final Event event);
         void fireEvent(final ValueChangeEvent<?> event);
         void addEventListener(ElementEventListener listener);
+        void addEventListener(ElementEventListener listener,UUID ignore);
+        void addEventListener(ElementEventListener listener,UUID ignore,EventType... recivedEcentTypes);
+        void addEventListener(ElementEventListener listener,EventType... recivedEcentTypes);
         void addChangeEventListener(ValueChangeListener<?> listener);
         void removeEventListener(ElementEventListener listener);
         void removeChangeEventListener(ValueChangeListener<?> listener);
         void clear();
         void destroy();
         void destroyService();
-        MessageSubSystem getNewChild();
+        MessageSubSystem getNewChild(final UUID requestedElement);
 }

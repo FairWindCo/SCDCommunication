@@ -15,9 +15,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import ua.pp.fairwind.communications.SCADASystem;
-import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleMenuView;
 import ua.pp.fairwind.javafx.panels.HardwareNodeEvent;
@@ -147,14 +147,14 @@ public class ErrorEventMonitorWindow extends SimpleMenuView implements ElementEv
 	}
 
 	@Override
-	public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-		if(typeEvent==EventType.FATAL_ERROR ||typeEvent==EventType.ERROR || typeEvent==EventType.PARSE_ERROR) {
-			if(typeEvent==EventType.FATAL_ERROR){
-				dialog.setHeaderText("FATAL ERROR:"+element != null ? element.getName() : "");
-				dialog.setContentText(params != null ? params.toString() : "FATAL ERROR OCCURRED!");
+	public void elementEvent(Event event,Object params) {
+		if(event.typeEvent==EventType.FATAL_ERROR ||event.typeEvent==EventType.ERROR || event.typeEvent==EventType.PARSE_ERROR) {
+			if(event.typeEvent==EventType.FATAL_ERROR){
+				dialog.setHeaderText("FATAL ERROR:"+event.sourceElement != null ? event.sourceElement.getName() : "");
+				dialog.setContentText(event.params != null ? event.params.toString() : "FATAL ERROR OCCURRED!");
 				executeInJavaFXThread(()->dialog.show());
 			}
-			errorRecived(new HardwareNodeEvent(element != null ? element.getName() : null, typeEvent, params != null ? params.toString() : ""));
+			errorRecived(new HardwareNodeEvent(event.sourceElement != null ? event.sourceElement.getName() : null, event.typeEvent, event.params != null ? event.params.toString() : ""));
 		}
 	}
 

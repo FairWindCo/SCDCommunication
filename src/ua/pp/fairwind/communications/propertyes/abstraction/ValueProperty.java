@@ -1,12 +1,13 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
 import ua.pp.fairwind.communications.internatianalisation.I18N;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ValueChangeEvent;
+import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 
 import java.util.Date;
+import java.util.IllegalFormatConversionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -97,28 +98,38 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
 
     @Override
-    protected void reciveValueFromBindingWrite(AbstractProperty property, Object valueForWtite, String formatForWrite, int radixForWrite, int positionForWrite, int lengthForWrite, boolean convertBoolToBinaryForWrite) {
-        if(valueForWtite!=null){
-            T newVal=convertValue(valueForWtite);
-            if(newVal!=null) setValue(newVal);
+    protected void reciveValueFromBindingRead(AbstractProperty property, Object valueForWtite, Object bindingProcessor, Event parentEvent) {
+        if(bindingProcessor!=null){
+            if(bindingProcessor instanceof BindingValueProcessot){
+                BindingValueProcessot processor=(BindingValueProcessot)bindingProcessor;
+                try {
+                    if (valueForWtite != null) {
+                        T newVal = (T) processor.convertValue(valueForWtite);
+                        if (newVal != null) setValueForBinding(newVal, parentEvent);
+                    } else {
+                        if (property != null && property instanceof ValueProperty<?>) {
+                            setValueForBinding((T) processor.convertValue(((ValueProperty<T>) property).getValue()), parentEvent);
+                        }
+                    }
+                }catch (IllegalFormatConversionException ex){
+                    fireEvent(EventType.ERROR, String.format(I18N.getLocalizedString("binding.value.translate.error"),ex.getLocalizedMessage()));
+                }
+            } else if(bindingProcessor instanceof BindingPropertyProcessor){
+                super.reciveValueFromBindingRead(property,valueForWtite,bindingProcessor,parentEvent);
+            }
         } else {
-            if (property!=null && property instanceof ValueProperty<?>) {
-                setValue(convertValue(((ValueProperty<T>) property).getValue()));
+            if (valueForWtite != null) {
+                T newVal = convertValue(valueForWtite);
+                if (newVal != null) setValueForBinding(newVal, parentEvent);
+            } else {
+                if (property != null && property instanceof ValueProperty<?>) {
+                    setValueForBinding(convertValue(((ValueProperty<T>) property).getValue()), parentEvent);
+                }
             }
         }
     }
 
-    @Override
-    protected void reciveValueFromBindingRead(AbstractProperty property, Object valueForWtite) {
-        if(valueForWtite!=null){
-            T newVal=convertValue(valueForWtite);
-            if(newVal!=null) setValue(newVal);
-        } else {
-            if (property!=null && property instanceof ValueProperty<?>) {
-                setValue(convertValue(((ValueProperty<T>) property).getValue()));
-            }
-        }
-    }
+
 
 
     protected T getInternalValue() {
@@ -135,39 +146,39 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         return getInternalValue();
     }
 
-    protected void setHardWareInternalValue(final T value) {
-        setInternalValue(value, false, true);
-    }
-
-    protected void setSilentInternalValue(final T value) {
-        setInternalValue(value,true,false);
-    }
-
-    protected void setInternalValue(final T value) {
-        setInternalValue(value, false, false);
-    }
-
-    protected void setInternalValue(final T value,boolean silent,boolean fromHardWare) {
+    protected void setInternalValue(final T value,Event parentEvent) {
         if(value==null) return;
         this.valide.set(true);
-        if(silent){
+        if (this.value.get() == null) {
             this.value.set(value);
             //lastChangeTime = System.currentTimeMillis();
             lastChangeTime.set(System.currentTimeMillis());
-        } else {
-            if (this.value.get() == null) {
-                this.value.set(value);
-                //lastChangeTime = System.currentTimeMillis();
-                lastChangeTime.set(System.currentTimeMillis());
-                fireChangeEvent(null, value,fromHardWare);
-            } else if (value.compareTo(this.value.get()) != 0) {
-                T old = this.value.get();
-                this.value.set(value);
-                this.oldvalue.set(old);
-                //lastChangeTime = System.currentTimeMillis();
-                lastChangeTime.set(System.currentTimeMillis());
-                fireChangeEvent(old, value,fromHardWare);
-            }
+            fireChangeEvent(null, value,parentEvent);
+        } else if (value.compareTo(this.value.get()) != 0) {
+            T old = this.value.get();
+            this.value.set(value);
+            this.oldvalue.set(old);
+            //lastChangeTime = System.currentTimeMillis();
+            lastChangeTime.set(System.currentTimeMillis());
+            fireChangeEvent(old, value,parentEvent);
+        }
+    }
+
+    protected void setInternalValue(final T value) {
+        if(value==null) return;
+        this.valide.set(true);
+        if (this.value.get() == null) {
+            this.value.set(value);
+            //lastChangeTime = System.currentTimeMillis();
+            lastChangeTime.set(System.currentTimeMillis());
+            fireChangeEvent(null, value,null);
+        } else if (value.compareTo(this.value.get()) != 0) {
+            T old = this.value.get();
+            this.value.set(value);
+            this.oldvalue.set(old);
+            //lastChangeTime = System.currentTimeMillis();
+            lastChangeTime.set(System.currentTimeMillis());
+            fireChangeEvent(old, value,null);
         }
     }
 
@@ -184,13 +195,35 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
                 ValueValidator<T> valueValidator=(ValueValidator<T>)setupedvalidator;
                 T validate=valueValidator==null?value:valueValidator.validateNewValue(this.value.get(), value, additionalParameters,(event,param)->fireEvent(event,param));
                 if(validate!=null) {
-                    setInternalValue(validate, false, false);
+                    setInternalValue(validate);
                 }
             } catch (ClassCastException ex){
-                setInternalValue(value, false, false);
+                setInternalValue(value);
             }
         } else {
-            setInternalValue(value, false, false);
+            setInternalValue(value);
+        }
+    }
+
+    protected void setValueForBinding(final T value,Event event) {
+        if(softOperationType==SOFT_OPERATION_TYPE.READ_ONLY){
+            fireEvent(EventType.ERROR, I18N.getLocalizedString("property.readonly.error"));
+            return;
+        }
+        Object setupedvalidator=getAdditionalInfo(VALUE_VALIDATOR);
+
+        if(setupedvalidator!=null && setupedvalidator instanceof ValueValidator) {
+            try {
+                ValueValidator<T> valueValidator=(ValueValidator<T>)setupedvalidator;
+                T validate=valueValidator==null?value:valueValidator.validateNewValue(this.value.get(), value, additionalParameters,(ev,param)->fireEvent(ev,param));
+                if(validate!=null) {
+                    setInternalValue(validate,event);
+                }
+            } catch (ClassCastException ex){
+                setInternalValue(value,event);
+            }
+        } else {
+            setInternalValue(value,event);
         }
     }
 
@@ -208,16 +241,11 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         return new Date(lastChangeTime.get());
     }
 
-    private void fireChangeEvent(T oldValue,T newValue,boolean fromHardWare){
+    private void fireChangeEvent(T oldValue,T newValue,Event parentEvent){
         if(eventactive) {
             final ValueChangeEvent<T> event = new ValueChangeEvent<>(this.getUUIDString(), this.getName(), this, oldValue, newValue);
             centralSystem.fireEvent(event);
-            if(fromHardWare){
-                fireEvent(EventType.ELEMENT_CHANGE_FROM_HARDWARE, newValue);
-            } else {
-                fireEvent(EventType.ELEMENT_CHANGE, newValue);
-            }
-            writeBinding(newValue);
+            fireEvent(EventType.ELEMENT_CHANGE, newValue,parentEvent);
         }
     }
 
@@ -234,22 +262,12 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public void bindReadProperty(ValueProperty<? extends T> property){
-        bindPropertyForRead(property);
+        bindPropertyForRead(property, null);
     }
 
     @Override
     public void bindWriteProperty(ValueProperty<? super T> property){
-        bindPropertyForWrite(property, null, 10, -1, 0, false);
-    }
-
-    @Override
-    public  void unbindReadProperty(){
-        unbindPropertyForRead();
-    }
-
-    @Override
-    public  void unbindWriteProperty(){
-        unbindPropertyForWrite();
+        bindPropertyForWrite(property, null);
     }
 
 
@@ -266,8 +284,6 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     public void destroy() {
         super.destroy();
         centralSystem.clear();
-        unbindReadProperty();
-        unbindWriteProperty();
     }
 
 
@@ -300,24 +316,26 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         return oldvalue.get();
     }
 
-    protected void rollback(){
-        invalidate();
+    protected void rollback(Event parent){
+        valide.set(false);
         //setHardWareInternalValue(oldvalue.get());
         T newVal = this.oldvalue.get();
         T oldVel = this.value.get();
         this.value.set(newVal);
         //lastChangeTime = System.currentTimeMillis();
         lastChangeTime.set(System.currentTimeMillis());
-        fireChangeEvent(oldVel, newVal, true);
+        fireChangeEvent(oldVel, newVal,parent);
     }
 
 
-    protected void invalidate(){
+    protected void invalidate(Event parent){
         valide.set(false);
-        fireEvent(EventType.INVALIDATE,null);
+        fireEvent(EventType.INVALIDATE,null,parent);
     }
 
     public void checkValide(){
         if(isValidProperty()) fireEvent(EventType.INVALIDATE,null);
     }
+
+
 }

@@ -1,7 +1,6 @@
 package ua.pp.fairwind.communications.test.propertyTest;
 
 import jssc.SerialPort;
-import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.devices.hardwaredevices.arg.micro.ArgMicroDevice;
 import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
@@ -9,10 +8,7 @@ import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
 import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
 
 /**
  * Created by Сергей on 17.08.2015.
@@ -37,14 +33,9 @@ public class LineConsoleTestARG {
         argMicro.setReadTimeOut(1050);
         argMicro.setPrimerayLine(line);
 
-        argMicro.addEventListener(new ElementEventListener() {
-            @Override
-            public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-                System.out.println(typeEvent + " : " + element.toString() + " - " + params);
-            }
-        });
-        argMicro.getNumberMeasurementm().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
-        argMicro.getRate().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
+        argMicro.addEventListener(ElementEventListener.println);
+        argMicro.getNumberMeasurementm().addEventListener(ElementEventListener.println);
+        argMicro.getRate().addEventListener(ElementEventListener.println);
         argMicro.getRate().readValueRequest();
 
         //fav.getLineSelect().setRequestTrunsaction(new OperationTrunsactionReadWriteSeparate());

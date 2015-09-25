@@ -5,9 +5,9 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import ua.pp.fairwind.communications.messagesystems.event.ValueChangeEvent;
+import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 

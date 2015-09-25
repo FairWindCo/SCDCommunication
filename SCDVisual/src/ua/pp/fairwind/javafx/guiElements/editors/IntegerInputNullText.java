@@ -8,33 +8,33 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
 
-
-public class IntegerInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
+public class IntegerInputNullText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
 	final private static String DIGITPATERN="[-]{0,1}[0123456789]{1,}";
 	final private static String EMPTYSTRING="";
 	private int maxValue=Integer.MAX_VALUE;
 	private int minValue=Integer.MIN_VALUE;
 	private SimpleIntegerProperty integerValueProperty=new SimpleIntegerProperty(0);
-	
-	public IntegerInputText() {
+	private boolean empty=true;
+
+	public IntegerInputNullText() {
 		super();
 		onInitialisation();
 	}
-	
-	
 
-	public IntegerInputText(Integer arg0) {
+
+
+	public IntegerInputNullText(Integer arg0) {
 		super(arg0.toString());
 		onInitialisation();
 	}
 
-	public IntegerInputText(Integer arg0,int maxVal) {
+	public IntegerInputNullText(Integer arg0, int maxVal) {
 		super(arg0==null?null:arg0.toString());
 		this.maxValue = maxVal;
 		onInitialisation();
 	}
-	
-	public IntegerInputText(int maxVal) {
+
+	public IntegerInputNullText(int maxVal) {
 		super();
 		this.maxValue = maxVal;
 		onInitialisation();
@@ -59,8 +59,8 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 		}
 		return intVal;
 	}
-
-	private void setIntVal(Integer val){
+	
+	private void setIntVal(int val){
 		if(val>=minValue && val<=maxValue){
 			setText(Integer.toString(val));
 		} else {
@@ -147,13 +147,15 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 	@Override
 	public void changed(ObservableValue<? extends String> value, String olds,String newValue) {
 		if(newValue==null || EMPTYSTRING.equals(newValue)){
-			setText("0");
-			integerValueProperty.set(0);
+			setText(EMPTYSTRING);
+			integerValueProperty.setValue(null);
+			empty=true;
 			return;
 		}
 		if("-".equals(newValue)){
 			if(minValue>=0){
 				setText(EMPTYSTRING);
+				empty=true;
 			}
 		} else {
 			int intVal = Integer.parseInt(newValue);
@@ -162,6 +164,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 				return;
 			}
 			integerValueProperty.set(intVal);
+			empty=false;
 		}
 	}
 
@@ -169,7 +172,10 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 		return integerValueProperty;
 	}
 	
-	
+	public Integer getValue(){
+		if(empty)return null;
+		return integerValueProperty.getValue();
+	}
 	
 	
 }

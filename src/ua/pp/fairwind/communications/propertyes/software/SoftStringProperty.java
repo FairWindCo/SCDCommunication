@@ -1,8 +1,5 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.StringPropertyInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
@@ -77,49 +74,37 @@ public class SoftStringProperty extends ValueProperty<String> implements StringP
     @Override
     public void bindReadNumberProperty(NumberProperty<?> property, int radix) {
           this.readradix=radix;
-          bindPropertyForRead(property);
+          bindPropertyForRead(property,null);
           this.readformat=null;
     }
 
     @Override
     public void bindReadNumberProperty(NumberProperty<?> property) {
         this.readradix=10;
-        bindPropertyForRead(property);
+        bindPropertyForRead(property,null);
         this.readformat=null;
     }
 
 
     @Override
-    public void unbindReadNumberProperty() {
-        readformat=null;
-        unbindPropertyForRead();
-    }
-
-    @Override
-    public void unbindWriteNumberProperty() {
-        unbindPropertyForWrite();
-    }
-
-    @Override
     public void bindReadNumberProperty(NumberProperty<?> property, String format) {
-        bindPropertyForRead(property);
-        this.readformat=format;
+        bindPropertyForRead(property,format);
     }
 
     @Override
     public void bindWriteNumberProperty(NumberProperty<?> property, int radix) {
-        bindPropertyForWrite(property, null, radix, 0, -1, false);
+        bindPropertyForWrite(property, null);
     }
 
 
     @Override
     public void bindWriteNumberProperty(NumberProperty<?> property) {
-        bindPropertyForWrite(property, null, 10, 0, -1, false);
+        bindPropertyForWrite(property, null);
     }
 
     @Override
     public void bindWriteNumberProperty(NumberProperty<?> property, String format) {
-        bindPropertyForWrite(property, format, 10, 0, -1, false);
+        bindPropertyForWrite(property, format);
     }
 
     public SoftStringProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {

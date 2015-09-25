@@ -4,7 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.javafx.guiElements.ButtonPanel;
 
 import java.time.LocalDateTime;

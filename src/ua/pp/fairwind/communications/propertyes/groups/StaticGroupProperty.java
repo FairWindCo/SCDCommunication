@@ -1,9 +1,8 @@
 package ua.pp.fairwind.communications.propertyes.groups;
 
 
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 
 import java.util.Collection;
 import java.util.Map;
@@ -18,10 +17,10 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
     final private Map<String,AbstractProperty> properties;
     final private Map<UUID,AbstractProperty> propertiesUUID;
 
-    final private ElementEventListener listener= (element, typeEvent, params) -> {
+    final private ElementEventListener listener= (event,param) -> {
         Object value=getAdditionalInfo(PROPERTY_BUBLE_EVENT);
         if(value!=null&&value instanceof Boolean&&(boolean)value){
-          fireEvent(typeEvent,params);
+          fireEvent(event.getTypeEvent(),event.getParams());
         }
     };
 
@@ -88,16 +87,6 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
     }
 
 
-    @Override
-    protected void reciveValueFromBindingWrite(AbstractProperty property, Object valueForWtite, String formatForWrite, int radixForWrite, int positionForWrite, int lengthForWrite, boolean convertBoolToBinaryForWrite) {
-
-    }
-
-    @Override
-    protected void reciveValueFromBindingRead(AbstractProperty property, Object valueForWtite) {
-
-    }
-
     public boolean isBubleEvent() {
         Object value=getAdditionalInfo(PROPERTY_BUBLE_EVENT);
         return value != null && value instanceof Boolean && (boolean) value;
@@ -106,4 +95,5 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
     public void setBubleEvent(boolean bubleEvent) {
         setAdditionalInfo(PROPERTY_BUBLE_EVENT,bubleEvent);
     }
+
 }

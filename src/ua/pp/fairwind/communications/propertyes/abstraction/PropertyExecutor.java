@@ -1,12 +1,9 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OPERATION_TYPE;
 import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OperationTrunsactions;
-
-import java.util.HashMap;
 
 /**
  * Created by Сергей on 13.09.2015.
@@ -20,21 +17,16 @@ public abstract class PropertyExecutor extends SystemEllement {
         super(codename, uuid);
     }
 
-    protected void setInternalValue(ValueProperty property, final Comparable value,boolean silent,boolean fromHardWare){
-        property.setInternalValue(value, silent, fromHardWare);
+    protected void setInternalValue(ValueProperty property, final Comparable value){
+        property.setInternalValue(value,null);
     }
 
-    protected void setHardWareInternalValue(ValueProperty property, final Comparable value) {
-        setInternalValue(property, value, false, true);
+
+    protected void setHardWareInternalValue(ValueProperty property, final Comparable value,Event parent){
+        property.setInternalValue(value,parent);
     }
 
-    protected void setSilentInternalValue(ValueProperty property, final Comparable value) {
-        setInternalValue(property, value, true, false);
-    }
 
-    protected void setInternalValue(ValueProperty property, final Comparable value) {
-        setInternalValue(property, value, false, false);
-    }
 
     protected Comparable getInternalValue(ValueProperty property) {
         return property.getInternalValue();
@@ -64,12 +56,12 @@ public abstract class PropertyExecutor extends SystemEllement {
         property.setRequestTrunsaction(requestTrunsaction);
     }
 
-    protected void rollback(ValueProperty property){
-        property.rollback();
+    protected void rollback(ValueProperty property,Event parent){
+        property.rollback(parent);
     }
 
-    protected void invalidate(ValueProperty property){
-        property.invalidate();
+    protected void invalidate(ValueProperty property,Event parent){
+        property.invalidate(parent);
     }
 
 }

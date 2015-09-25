@@ -5,10 +5,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.lines.SerialLine;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.messagesystems.MessageSystemManager;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.timeaction.PropertyTimer;
 import ua.pp.fairwind.javafx.panels.LineInfoBar;
 import ua.pp.fairwind.javafx.panels.devices.FavoritPanel;
@@ -32,9 +30,9 @@ public class testDevicePanel extends Application {
         vbox.setId("mainPanel");
         line=new SerialLine("com6","SERIAL PORT #6",null,5000);
         line.setPerformanceMonitor(true);
-        line.addEventListener((elemnt, event, params) -> {
-            if (event == EventType.PERFORMANCE) {
-                if (params != null) System.out.println(params);
+        line.addEventListener((event,params) -> {
+            if (event.typeEvent == EventType.PERFORMANCE) {
+                if (event.params != null) System.out.println(event.params);
             }
         });
         LineInfoBar infoBar=new LineInfoBar(50,line);

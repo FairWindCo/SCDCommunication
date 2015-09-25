@@ -1,4 +1,4 @@
-package ua.pp.fairwind.communications.propertyes.event;
+package ua.pp.fairwind.communications.messagesystems.event;
 
 /**
  * Created by ������ on 30.06.2015.

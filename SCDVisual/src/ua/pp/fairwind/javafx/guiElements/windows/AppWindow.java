@@ -12,7 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
 import ua.pp.fairwind.javafx.guiElements.ButtonPanel;
 import ua.pp.fairwind.javafx.guiElements.HeaderPanel;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;

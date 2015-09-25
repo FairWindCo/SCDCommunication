@@ -14,9 +14,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import ua.pp.fairwind.communications.SCADASystem;
-import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleMenuView;
 import ua.pp.fairwind.javafx.panels.HardwareNodeEvent;
@@ -145,8 +145,8 @@ public class AllEventMonitorWindow extends SimpleMenuView implements ElementEven
 	}
 
 	@Override
-	public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-		errorRecived(new HardwareNodeEvent(element!=null?element.getName():null,typeEvent,params!=null?params.toString():""));
+	public void elementEvent(Event event,Object params) {
+		errorRecived(new HardwareNodeEvent(event.sourceElement!=null?event.sourceElement.getName():null,event.typeEvent,event.params!=null?event.params.toString():""));
 	}
 
 	@Override

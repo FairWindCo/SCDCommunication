@@ -90,7 +90,7 @@ public class TCPNetworkConnectionForm  extends SimpleView {
 		Button ok=new Button("SAVE");
 		ok.onActionProperty().setValue(arg0 -> {
             if(dev!=null){
-				CommunicationLineParameters newparams=new CommunicationLineParameters(address.getValue(), port.intValue(),0);
+				CommunicationLineParameters newparams=new CommunicationLineParameters(address.getValue(), port.intValue());
 				dev.setLineParameters(newparams);
                 closeWindow();
             }

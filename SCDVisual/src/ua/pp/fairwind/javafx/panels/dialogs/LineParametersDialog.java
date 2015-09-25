@@ -8,7 +8,9 @@ import jssc.SerialPort;
 import ua.pp.fairwind.communications.devices.abstracts.SerialDeviceInterface;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
 import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
-import ua.pp.fairwind.javafx.guiElements.editors.IntegerInputText;
+import ua.pp.fairwind.javafx.I18N.I18N_FX;
+import ua.pp.fairwind.javafx.guiElements.editors.IntegerInputNullText;
+import ua.pp.fairwind.javafx.guiElements.editors.LongInputText;
 
 import java.util.Optional;
 
@@ -17,10 +19,11 @@ import java.util.Optional;
  */
 public class LineParametersDialog {
 
+
     public static void getSerialLineParameterDialog(SerialDeviceInterface serialDevice){
         if(serialDevice==null)return;
         Dialog<LineParameters> dialog = new Dialog<>();
-        dialog.setTitle("Line Parameters Dialog");
+        dialog.setTitle(I18N_FX.getLocalizedString("Line_Parameters_Dialog"));
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         LineParameters curent=serialDevice.getLineParameters();
         GridPane grid = new GridPane();
@@ -37,6 +40,10 @@ public class LineParametersDialog {
         boolean dts=false;
         boolean clearRX=false;
         boolean clearTX=false;
+
+        boolean NEED_LINE_CHANGE=false;
+        boolean ALWAYS_SET_LINE_PARAM=false;
+        boolean ALWAYS_SET_LINE=false;
         if(curent!=null && curent.getLineParameter(LineParameters.RS_SPEED)!=null){
             speed=(int)curent.getLineParameter(LineParameters.RS_SPEED);
         }
@@ -66,42 +73,104 @@ public class LineParametersDialog {
             clearTX=(boolean)curent.getLineParameter(LineParameters.RS_PURGE_TX);
         }
 
+        if(curent!=null && curent.getLineParameter(LineParameters.NEED_LINE_CHANGE)!=null){
+            NEED_LINE_CHANGE=(boolean)curent.getLineParameter(LineParameters.NEED_LINE_CHANGE);
+        }
+
+        if(curent!=null && curent.getLineParameter(LineParameters.ALWAYS_SET_LINE_PARAM)!=null){
+            ALWAYS_SET_LINE_PARAM=(boolean)curent.getLineParameter(LineParameters.ALWAYS_SET_LINE_PARAM);
+        }
+
+        if(curent!=null && curent.getLineParameter(LineParameters.ALWAYS_SET_LINE)!=null){
+            ALWAYS_SET_LINE=(boolean)curent.getLineParameter(LineParameters.ALWAYS_SET_LINE);
+        }
+
         ComboBox<Integer>rsspeed=createSpeedSelect(speed);
+        Tooltip.install(rsspeed,new Tooltip(I18N_FX.getLocalizedString("BAUD_RATE.description")));
         ComboBox<Integer>rsdata=createDataBitSelect(databit);
+        Tooltip.install(rsdata,new Tooltip(I18N_FX.getLocalizedString("DATA_BIT.description")));
         ComboBox<Integer>rsstop=createStopBitSelect(stopbit);
+        Tooltip.install(rsstop, new Tooltip(I18N_FX.getLocalizedString("STOP_BIT.description")));
         ComboBox<Integer>rsparity=createParitySelect(parity);
+        Tooltip.install(rsparity,new Tooltip(I18N_FX.getLocalizedString("PARITY.description")));
         ComboBox<Integer>rsflow=createFlowControlSelect(floatcontrol);
+        Tooltip.install(rsflow, new Tooltip(I18N_FX.getLocalizedString("FLOW_CONTROL.description")));
         CheckBox rsdtr=new CheckBox();
+        Tooltip.install(rsdtr,new Tooltip(I18N_FX.getLocalizedString("SET_DTR.description")));
         rsdtr.setSelected(dts);
         CheckBox rsrts=new CheckBox();
+        Tooltip.install(rsrts,new Tooltip(I18N_FX.getLocalizedString("SET_RTS.description")));
         rsrts.setSelected(rts);
         CheckBox rsclearrx=new CheckBox();
+        Tooltip.install(rsclearrx,new Tooltip(I18N_FX.getLocalizedString("SET_CLEAR_RX.description")));
         rsclearrx.setSelected(clearRX);
         CheckBox rscleartx=new CheckBox();
+        Tooltip.install(rscleartx, new Tooltip(I18N_FX.getLocalizedString("SET_CLEAR_TX.description")));
         rscleartx.setSelected(clearTX);
+
+
         Object curentLine=curent!=null?curent.getLineParameter(LineParameters.SUB_LINE_NUMBER):null;
 
-        IntegerInputText intEditor=curentLine!=null?new IntegerInputText((Integer)curentLine,10):new IntegerInputText(0,10);
-        grid.add(new Label("BAUD RATE:"), 0, 0);
+        CheckBox NEED_LINE_CHANGEB=new CheckBox();
+        NEED_LINE_CHANGEB.setSelected(NEED_LINE_CHANGE);
+        Tooltip.install(NEED_LINE_CHANGEB, new Tooltip(I18N_FX.getLocalizedString("SET_NEED_LINE_CHANGE.description")));
+        CheckBox ALWAYS_SET_LINE_PARAMB=new CheckBox();
+        ALWAYS_SET_LINE_PARAMB.setSelected(ALWAYS_SET_LINE_PARAM);
+        Tooltip.install(ALWAYS_SET_LINE_PARAMB, new Tooltip(I18N_FX.getLocalizedString("SET_ALWAYS_SET_LINE_PARAM.description")));
+        CheckBox ALWAYS_SET_LINEB=new CheckBox();
+        ALWAYS_SET_LINEB.setSelected(ALWAYS_SET_LINE);
+        Tooltip.install(ALWAYS_SET_LINEB, new Tooltip(I18N_FX.getLocalizedString("SET_ALWAYS_SET_LINE.description")));
+
+        IntegerInputNullText intEditor=curentLine!=null?new IntegerInputNullText((Integer)curentLine,10):new IntegerInputNullText(null,10);
+        Tooltip.install(intEditor, new Tooltip(I18N_FX.getLocalizedString("SET_LINE_NUMBER.description")));
+
+        grid.add(new Label(I18N_FX.getLocalizedString("BAUD_RATE")), 0, 0);
         grid.add(rsspeed, 1, 0);
-        grid.add(new Label("DATA BIT:"), 0, 1);
+        grid.add(new Label(I18N_FX.getLocalizedString("DATA_BIT")), 0, 1);
         grid.add(rsdata, 1, 1);
-        grid.add(new Label("STOP BIT:"), 0, 2);
+        grid.add(new Label(I18N_FX.getLocalizedString("STOP_BIT")), 0, 2);
         grid.add(rsstop, 1, 2);
-        grid.add(new Label("PARITY:"), 0, 3);
+        grid.add(new Label(I18N_FX.getLocalizedString("PARITY")), 0, 3);
         grid.add(rsparity, 1, 3);
-        grid.add(new Label("FLOW CONTROL:"), 0, 4);
+        grid.add(new Label(I18N_FX.getLocalizedString("FLOW_CONTROL")), 0, 4);
         grid.add(rsflow, 1, 4);
-        grid.add(new Label("SET DTR:"), 0, 5);
-        grid.add(rsdtr, 1, 5);
-        grid.add(new Label("SET RTS:"), 0, 6);
-        grid.add(rsrts, 1, 6);
-        grid.add(new Label("SET CLEAR RX:"), 2, 5);
-        grid.add(rsclearrx, 3, 5);
-        grid.add(new Label("SET CLEAR TX:"), 2, 6);
-        grid.add(rscleartx, 3, 6);
-        grid.add(new Label("SET LINE NUMBER:"), 0,7);
-        grid.add(intEditor, 1, 7);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_DTR")), 2, 0);
+        grid.add(rsdtr, 3, 0);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_RTS")), 2, 1);
+        grid.add(rsrts, 3, 1);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_CLEAR_RX")), 2, 2);
+        grid.add(rsclearrx, 3, 2);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_CLEAR_TX")), 2, 3);
+        grid.add(rscleartx, 3, 3);
+
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_LINE_NUMBER")), 0,5);
+        grid.add(intEditor, 1, 5);
+
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_NEED_LINE_CHANGE")), 2,6);
+        grid.add(NEED_LINE_CHANGEB, 3, 6);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_ALWAYS_SET_LINE_PARAM")), 2,7);
+        grid.add(ALWAYS_SET_LINE_PARAMB, 3, 7);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_ALWAYS_SET_LINE")), 2,8);
+        grid.add(ALWAYS_SET_LINEB, 3, 8);
+
+        LongInputText editorRertyCount=new LongInputText(serialDevice.getMaxRetry(),5);
+        LongInputText editorDeviceTimeOut=new LongInputText(serialDevice.getReadTimeOut(),60000);
+        LongInputText editorBeforeReadPause=new LongInputText(serialDevice.getPauseBeforeRead(),1000);
+        LongInputText editorBeforeWritePause=new LongInputText(serialDevice.getPauseBeforeWrite(),1000);
+
+        Tooltip.install(editorRertyCount, new Tooltip(I18N_FX.getLocalizedString("SET_MAX_RETRY.description")));
+        Tooltip.install(editorDeviceTimeOut, new Tooltip(I18N_FX.getLocalizedString("SET_READ_TIMEOUT.description")));
+        Tooltip.install(editorBeforeReadPause, new Tooltip(I18N_FX.getLocalizedString("SET_PAUSE_BEFORE_READ.description")));
+        Tooltip.install(editorBeforeWritePause, new Tooltip(I18N_FX.getLocalizedString("SET_PAUSE_BEFORE_WRITE.description")));
+
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_MAX_RETRY")), 0,6);
+        grid.add(editorRertyCount, 1, 6);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_READ_TIMEOUT")), 0,7);
+        grid.add(editorDeviceTimeOut, 1, 7);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_PAUSE_BEFORE_READ")), 0, 8);
+        grid.add(editorBeforeReadPause, 1, 8);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_PAUSE_BEFORE_WRITE")), 0, 9);
+        grid.add(editorBeforeWritePause, 1, 9);
 
         dialog.getDialogPane().setContent(grid);
 
@@ -110,12 +179,22 @@ public class LineParametersDialog {
         // Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
+                serialDevice.setMaxRetry(editorRertyCount.getValue());
+                serialDevice.setPauseBeforeRead(editorBeforeReadPause.getValue());
+                serialDevice.setPauseBeforeWrite(editorBeforeWritePause.getValue());
+                serialDevice.setReadTimeOut(editorDeviceTimeOut.getValue());
                 int sspeed=rsspeed.getSelectionModel().getSelectedItem()==null?SerialPort.BAUDRATE_9600: rsspeed.getSelectionModel().getSelectedItem();
                 int sdatabit=rsdata.getSelectionModel().getSelectedItem()==null?SerialPort.DATABITS_8: rsdata.getSelectionModel().getSelectedItem();
                 int sstopbit=rsstop.getSelectionModel().getSelectedItem()==null?SerialPort.STOPBITS_2: rsstop.getSelectionModel().getSelectedItem();
                 int sparity=rsparity.getSelectionModel().getSelectedItem()==null?SerialPort.PARITY_NONE: rsparity.getSelectionModel().getSelectedItem();
                 int sfloatcontrol=rsflow.getSelectionModel().getSelectedItem()==null?SerialPort.FLOWCONTROL_NONE:rsflow.getSelectionModel().getSelectedItem();
-                return new CommunicationLineParameters(sspeed,sdatabit,sparity,sstopbit,sfloatcontrol,rsdtr.isSelected(),rsrts.isSelected(),rsclearrx.isSelected(),rscleartx.isSelected());
+                Integer line=intEditor.getValue();
+                if(line!=null) {
+                    //(String ipadress, int port, long timeOut, int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol, boolean dtr, boolean rts, int sublinenum,  boolean needLineChange, boolean purge_rx, boolean purge_tx, boolean always_set_line_param, boolean always_set_line) {
+                    return new CommunicationLineParameters(null,0,sspeed, sdatabit, sparity, sstopbit, sfloatcontrol, rsdtr.isSelected(), rsrts.isSelected(),line,NEED_LINE_CHANGEB.isSelected(),rsclearrx.isSelected(), rscleartx.isSelected(),ALWAYS_SET_LINEB.isSelected(),ALWAYS_SET_LINE_PARAMB.isSelected());
+                } else {
+                    return new CommunicationLineParameters(null,0,sspeed, sdatabit, sparity, sstopbit, sfloatcontrol, rsdtr.isSelected(), rsrts.isSelected(),0,false,rsclearrx.isSelected(), rscleartx.isSelected(),false,ALWAYS_SET_LINE_PARAMB.isSelected());
+                }
             }
             return null;
         });

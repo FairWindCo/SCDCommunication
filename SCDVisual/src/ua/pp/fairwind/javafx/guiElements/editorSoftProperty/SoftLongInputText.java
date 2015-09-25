@@ -1,82 +1,81 @@
-package ua.pp.fairwind.javafx.guiElements.editors;
+package ua.pp.fairwind.javafx.guiElements.editorSoftProperty;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
 
 
-
-public class IntegerInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
+public class SoftLongInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
 	final private static String DIGITPATERN="[-]{0,1}[0123456789]{1,}";
 	final private static String EMPTYSTRING="";
-	private int maxValue=Integer.MAX_VALUE;
-	private int minValue=Integer.MIN_VALUE;
-	private SimpleIntegerProperty integerValueProperty=new SimpleIntegerProperty(0);
-	
-	public IntegerInputText() {
-		super();
-		onInitialisation();
-	}
-	
-	
+	private long maxValue=Long.MAX_VALUE;
+	private long minValue=Long.MIN_VALUE;
+	final private SoftLongProperty property;
 
-	public IntegerInputText(Integer arg0) {
-		super(arg0.toString());
+
+	public SoftLongInputText(SoftLongProperty property) {
+		super(property.getValue() == null ? null : property.getValue().toString());
+		this.property=property;
 		onInitialisation();
 	}
 
-	public IntegerInputText(Integer arg0,int maxVal) {
-		super(arg0==null?null:arg0.toString());
+	public SoftLongInputText(SoftLongProperty property, long minVal, long maxVal) {
+		super(property.getValue() == null ? null : property.getValue().toString());
+		this.property=property;
 		this.maxValue = maxVal;
+		this.minValue = minVal;
 		onInitialisation();
 	}
-	
-	public IntegerInputText(int maxVal) {
-		super();
+
+	public SoftLongInputText(SoftLongProperty property, int maxVal) {
+		super(property.getValue() == null ? null : property.getValue().toString());
+		this.property=property;
 		this.maxValue = maxVal;
 		onInitialisation();
 	}
 
 	private void checkConstraints(){
 		if(minValue>maxValue){
-			int v=maxValue;
+			long v=maxValue;
 			maxValue=minValue;
 			minValue=v;
 		}
 	}
 	
-	private int parseString(String str){
+	private long parseString(String str){
 		if(str==null || EMPTYSTRING.equals(str)){
 			setText("0");
 			return 0;
 		}
-		int intVal=Integer.parseInt(str);
+		long intVal=Long.parseLong(str);
 		if(intVal<minValue || intVal>maxValue){
 			return 0;
 		}
 		return intVal;
 	}
 
-	private void setIntVal(Integer val){
+	private void setIntVal(Long val){
 		if(val>=minValue && val<=maxValue){
-			setText(Integer.toString(val));
+			setText(Long.toString(val));
 		} else {
-			integerValueProperty.setValue(parseString(getText()));
+			property.setValue(parseString(getText()));
 		}
 	}
-	
+
+	ValueChangeListener<Long> eventListener=event -> {
+		if (event.getNewValue()!= null)
+			setIntVal((Long)event.getNewValue());
+	};
+
 	private void onInitialisation(){
 		checkConstraints();
 		this.addEventFilter(KeyEvent.KEY_TYPED, this);
 		this.textProperty().addListener(this);
-		integerValueProperty.addListener((arg0, arg1, newval) -> {
-            if(newval!=null)
-            setIntVal(newval.intValue());
-        });
-		
+		property.addChangeEventListener(eventListener);
 	}
 	
 	@Override
@@ -118,7 +117,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 
 	
 	
-	public int getMaxValue() {
+	public long getMaxValue() {
 		return maxValue;
 	}
 
@@ -127,7 +126,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 		checkConstraints();
 	}
 
-	public int getMinValue() {
+	public long getMinValue() {
 		return minValue;
 	}
 
@@ -148,7 +147,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 	public void changed(ObservableValue<? extends String> value, String olds,String newValue) {
 		if(newValue==null || EMPTYSTRING.equals(newValue)){
 			setText("0");
-			integerValueProperty.set(0);
+			property.setValue(0L);
 			return;
 		}
 		if("-".equals(newValue)){
@@ -156,20 +155,26 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 				setText(EMPTYSTRING);
 			}
 		} else {
-			int intVal = Integer.parseInt(newValue);
+			long intVal = Long.parseLong(newValue);
 			if (intVal < minValue || intVal > maxValue) {
 				setText(olds);
 				return;
 			}
-			integerValueProperty.set(intVal);
+			property.setValue(intVal);
 		}
 	}
 
-	public SimpleIntegerProperty getIntegerValueProperty() {
-		return integerValueProperty;
+	public SoftLongProperty getIntegerValueProperty() {
+		return property;
 	}
 	
-	
-	
-	
+	public void destroy(){
+		if(property!=null)property.removeChangeEventListener(eventListener);
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		destroy();
+		super.finalize();
+	}
 }

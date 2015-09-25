@@ -1,37 +1,42 @@
 package ua.pp.fairwind.communications.messagesystems;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
+import ua.pp.fairwind.communications.messagesystems.event.*;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Created by Сергей on 27.08.2015.
  */
 public class MessageSubSystemSimple implements MessageSubSystem{
-    protected final CopyOnWriteArrayList<ElementEventListener> eventDispatcher=new CopyOnWriteArrayList<>();
+    protected final CopyOnWriteArrayList<ListenerHolder> eventDispatcher=new CopyOnWriteArrayList<>();
     protected final CopyOnWriteArrayList<ValueChangeListener<?>> calueEventDispatcher=new CopyOnWriteArrayList<>();
 
-    protected void fireEventExecute(ElementInterface element,EventType type,Object param){
-        for(ElementEventListener listener:eventDispatcher){
-            listener.elementEvent(element, type, param);
+    @Override
+    public void fireEvent(ElementInterface element, EventType type, Object param, Event parent) {
+        fireEvent(new Event(element,type,param,parent));
+    }
+
+    @Override
+    public void fireEvent(Event event) {
+        for(ListenerHolder listener:eventDispatcher){
+            listener.executeEvent(event);
         }
     }
+
+    @Override
+    public void fireEvent(ElementInterface element,EventType type,Object param){
+        fireEvent(new Event(element,type,param));
+    }
+
 
     protected void fireEventExecute(final ValueChangeEvent<?> event){
         for(ValueChangeListener listener:calueEventDispatcher){
             listener.valueChange(event);
         }
-    }
-
-
-    @Override
-    public void fireEvent(ElementInterface element,EventType type,Object param){
-        fireEventExecute(element,type,param);
     }
 
     @Override
@@ -42,13 +47,36 @@ public class MessageSubSystemSimple implements MessageSubSystem{
     @Override
     public void addEventListener(ElementEventListener listener) {
         if(listener!=null){
-            eventDispatcher.add(listener);
+            eventDispatcher.add(new ListenerHolder(listener,null));
         }
     }
+
+    @Override
+    public void addEventListener(ElementEventListener listener, EventType... recivedEcentTypes) {
+        if(listener!=null){
+            eventDispatcher.add(new ListenerHolder(listener,null,recivedEcentTypes));
+        }
+    }
+
+    @Override
+    public void addEventListener(ElementEventListener listener, UUID ignore) {
+        if(listener!=null){
+            eventDispatcher.add(new ListenerHolder(listener,ignore));
+        }
+    }
+
+    @Override
+    public void addEventListener(ElementEventListener listener, UUID ignore, EventType... recivedEcentTypes) {
+        if(listener!=null){
+            eventDispatcher.add(new ListenerHolder(listener,ignore,recivedEcentTypes));
+        }
+    }
+
     @Override
     public void removeEventListener(ElementEventListener listener) {
+        List<ListenerHolder> removs=eventDispatcher.stream().filter(holder->holder.getListener().equals(listener)).collect(Collectors.toList());
         if(listener!=null){
-            eventDispatcher.remove(listener);
+            eventDispatcher.removeAll(removs);
         }
     }
 
@@ -82,7 +110,7 @@ public class MessageSubSystemSimple implements MessageSubSystem{
     }
 
     @Override
-    public MessageSubSystem getNewChild() {
+    public MessageSubSystem getNewChild(UUID requestedElement) {
         return new MessageSubSystemSimple();
     }
 }

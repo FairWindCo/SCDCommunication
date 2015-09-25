@@ -9,8 +9,9 @@ import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.lines.abstracts.AbstractLine;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.lines.performance.PerformanceMonitorEventData;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,13 +33,13 @@ public class LineInfoBar extends Pane {
 
     private final ElementEventListener listener=new ElementEventListener() {
         @Override
-        public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-            if (typeEvent == EventType.PERFORMANCE && params instanceof PerformanceMonitorEventData) {
-                Platform.runLater(() -> updateStatInfo((PerformanceMonitorEventData) params));
-            } else if (typeEvent == EventType.ERROR || typeEvent == EventType.FATAL_ERROR || typeEvent == EventType.PARSE_ERROR) {
-                Platform.runLater(() -> updateInfo(element, typeEvent, params));
-            } else if (typeEvent == EventType.TIMEOUT) {
-                Platform.runLater(() -> updateInfo(element, typeEvent, params));
+        public void elementEvent(Event event,Object params) {
+            if (event.typeEvent == EventType.PERFORMANCE && event.params instanceof PerformanceMonitorEventData) {
+                Platform.runLater(() -> updateStatInfo((PerformanceMonitorEventData) event.params));
+            } else if (event.typeEvent == EventType.ERROR || event.typeEvent == EventType.FATAL_ERROR || event.typeEvent == EventType.PARSE_ERROR) {
+                Platform.runLater(() -> updateInfo(event.sourceElement, event.typeEvent, event.params));
+            } else if (event.typeEvent == EventType.TIMEOUT) {
+                Platform.runLater(() -> updateInfo(event.sourceElement, event.typeEvent, event.params));
             }
         }
     };

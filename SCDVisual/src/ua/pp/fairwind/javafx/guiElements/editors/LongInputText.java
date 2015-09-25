@@ -1,6 +1,6 @@
 package ua.pp.fairwind.javafx.guiElements.editors;
 
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -8,33 +8,32 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
 
-
-public class IntegerInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
+public class LongInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
 	final private static String DIGITPATERN="[-]{0,1}[0123456789]{1,}";
 	final private static String EMPTYSTRING="";
-	private int maxValue=Integer.MAX_VALUE;
-	private int minValue=Integer.MIN_VALUE;
-	private SimpleIntegerProperty integerValueProperty=new SimpleIntegerProperty(0);
-	
-	public IntegerInputText() {
+	private long maxValue=Long.MAX_VALUE;
+	private long minValue=Long.MIN_VALUE;
+	private SimpleLongProperty integerValueProperty=new SimpleLongProperty(0);
+
+	public LongInputText() {
 		super();
 		onInitialisation();
 	}
-	
-	
 
-	public IntegerInputText(Integer arg0) {
+
+
+	public LongInputText(Long arg0) {
 		super(arg0.toString());
 		onInitialisation();
 	}
 
-	public IntegerInputText(Integer arg0,int maxVal) {
+	public LongInputText(Long arg0, long maxVal) {
 		super(arg0==null?null:arg0.toString());
 		this.maxValue = maxVal;
 		onInitialisation();
 	}
-	
-	public IntegerInputText(int maxVal) {
+
+	public LongInputText(long maxVal) {
 		super();
 		this.maxValue = maxVal;
 		onInitialisation();
@@ -42,18 +41,18 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 
 	private void checkConstraints(){
 		if(minValue>maxValue){
-			int v=maxValue;
+			long v=maxValue;
 			maxValue=minValue;
 			minValue=v;
 		}
 	}
 	
-	private int parseString(String str){
+	private long parseString(String str){
 		if(str==null || EMPTYSTRING.equals(str)){
 			setText("0");
 			return 0;
 		}
-		int intVal=Integer.parseInt(str);
+		long intVal=Long.parseLong(str);
 		if(intVal<minValue || intVal>maxValue){
 			return 0;
 		}
@@ -118,20 +117,20 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 
 	
 	
-	public int getMaxValue() {
+	public long getMaxValue() {
 		return maxValue;
 	}
 
-	public void setMaxValue(int maxValue) {
+	public void setMaxValue(long maxValue) {
 		this.maxValue = maxValue;
 		checkConstraints();
 	}
 
-	public int getMinValue() {
+	public long getMinValue() {
 		return minValue;
 	}
 
-	public void setMinValue(int minValue) {
+	public void setMinValue(long minValue) {
 		this.minValue = minValue;
 		checkConstraints();
 	}
@@ -156,7 +155,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 				setText(EMPTYSTRING);
 			}
 		} else {
-			int intVal = Integer.parseInt(newValue);
+			long intVal = Long.parseLong(newValue);
 			if (intVal < minValue || intVal > maxValue) {
 				setText(olds);
 				return;
@@ -165,11 +164,13 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 		}
 	}
 
-	public SimpleIntegerProperty getIntegerValueProperty() {
+	public SimpleLongProperty getIntegerValueProperty() {
 		return integerValueProperty;
 	}
-	
-	
+
+	public long getValue(){
+		return integerValueProperty.getValue()==null?0:integerValueProperty.get();
+	}
 	
 	
 }

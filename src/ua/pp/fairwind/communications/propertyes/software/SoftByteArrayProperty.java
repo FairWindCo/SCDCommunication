@@ -1,6 +1,5 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ByteArrayPropertyInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberPropertyInterface;
@@ -15,16 +14,6 @@ public class SoftByteArrayProperty extends AbstractProperty implements ByteArray
         super(name, uuid);
     }
 
-
-    @Override
-    protected void reciveValueFromBindingWrite(AbstractProperty property, Object valueForWtite, String formatForWrite, int radixForWrite, int positionForWrite, int lengthForWrite, boolean convertBoolToBinaryForWrite) {
-
-    }
-
-    @Override
-    protected void reciveValueFromBindingRead(AbstractProperty property, Object valueForWtite) {
-
-    }
 
     @Override
     public void bindReadCharProperty(StringPropertyInterface property) {
@@ -53,16 +42,6 @@ public class SoftByteArrayProperty extends AbstractProperty implements ByteArray
 
     @Override
     public void bindWriteCharProperty(StringPropertyInterface property, int position, int length) {
-
-    }
-
-    @Override
-    public void unbindReadCharProperty() {
-
-    }
-
-    @Override
-    public void unbindWriteCharProperty() {
 
     }
 
@@ -106,15 +85,6 @@ public class SoftByteArrayProperty extends AbstractProperty implements ByteArray
 
     }
 
-    @Override
-    public void unbindReadStringProperty() {
-
-    }
-
-    @Override
-    public void unbindWriteStringProperty() {
-
-    }
 
     @Override
     public void bindReadNumberProperty(NumberPropertyInterface<?> property) {
@@ -146,13 +116,4 @@ public class SoftByteArrayProperty extends AbstractProperty implements ByteArray
 
     }
 
-    @Override
-    public void unbindReadNumberProperty() {
-
-    }
-
-    @Override
-    public void unbindWriteNumberProperty() {
-
-    }
 }

@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.abstractions;
 
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 
 /**
  * Created by Сергей on 27.08.2015.

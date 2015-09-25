@@ -8,7 +8,7 @@ import javafx.scene.control.Dialog;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
 import ua.pp.fairwind.javafx.guiElements.windows.AppWindow;
 import ua.pp.fairwind.javafx.guiElements.windows.ApplicationView;
 import ua.pp.fairwind.javafx.guiElements.windows.ApplicationWindow;

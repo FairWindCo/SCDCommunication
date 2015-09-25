@@ -5,11 +5,9 @@ import ua.pp.fairwind.communications.abstractions.SystemEllement;
 import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.devices.abstracts.ImitatorDevice;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
 
 import java.util.ArrayList;
 import java.util.Collection;

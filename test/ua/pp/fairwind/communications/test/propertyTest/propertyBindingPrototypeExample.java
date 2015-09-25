@@ -1,10 +1,10 @@
 package ua.pp.fairwind.communications.test.propertyTest;
 
+import ua.pp.fairwind.communications.messagesystems.event.ValueChangeEvent;
+import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValuedPropertyConvertor;
 import ua.pp.fairwind.communications.propertyes.binding.NumberPropertyBindingelement;
 import ua.pp.fairwind.communications.propertyes.binding.ValueConvertor;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
 import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftIntegerProperty;
 

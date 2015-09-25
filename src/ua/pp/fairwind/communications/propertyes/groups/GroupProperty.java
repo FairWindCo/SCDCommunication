@@ -1,6 +1,5 @@
 package ua.pp.fairwind.communications.propertyes.groups;
 
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 
 /**
@@ -31,4 +30,6 @@ public class GroupProperty extends StaticGroupProperty {
     public void destroy() {
         super.destroy();
     }
+
+
 }

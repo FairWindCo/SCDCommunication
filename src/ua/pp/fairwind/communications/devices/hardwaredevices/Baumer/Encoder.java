@@ -5,12 +5,10 @@ import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
-
-import java.util.HashMap;
 
 /**
  * Created by Сергей on 07.09.2015.
@@ -57,7 +55,7 @@ public class Encoder extends RSLineDevice {
     }
 
     @Override
-    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property) {
+    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property,final Event sourceEvent) {
         long deviceaddress=deviceAddress.getValue();
         if(recivedMessage!=null && recivedMessage.length>=8) {
             for (int i = 0; i < recivedMessage.length-7; i++) {
@@ -66,8 +64,8 @@ public class Encoder extends RSLineDevice {
                     if (ccrc == recivedMessage[i + 6]) {
                         short revolve=(short)(((recivedMessage[i + 2]<<8)+recivedMessage[i + 3])&0xFF);
                         short steps=(short)(((recivedMessage[i + 4]<<8)+recivedMessage[i + 5])&0xFF);
-                        setHardWareInternalValue(this.revolution,revolve);
-                        setHardWareInternalValue(this.steps,steps);
+                        setHardWareInternalValue(this.revolution,revolve,sourceEvent);
+                        setHardWareInternalValue(this.steps,steps,sourceEvent);
                         return true;
                     }
                 }

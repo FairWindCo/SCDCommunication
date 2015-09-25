@@ -1,7 +1,7 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
+import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 
 import java.util.Date;
 
@@ -24,10 +24,6 @@ public interface ValuePropertyInterface<T extends Comparable<? super T>> extends
     void bindReadProperty(ValueProperty<? extends T> property);
 
     void bindWriteProperty(ValueProperty<? super T> property);
-
-    void unbindReadProperty();
-
-    void unbindWriteProperty();
 
     @Override
     int compareTo(T o);

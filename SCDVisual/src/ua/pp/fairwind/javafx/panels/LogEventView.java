@@ -10,9 +10,9 @@ import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
-import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
 
 import java.text.SimpleDateFormat;
@@ -100,8 +100,8 @@ public class LogEventView extends SimpleView implements ElementEventListener{
     }
 
     @Override
-    public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-        addEvent(new HardwareNodeEvent(element.getHardwareName(),typeEvent,params));
+    public void elementEvent(Event event,Object params) {
+        addEvent(new HardwareNodeEvent(event.sourceElement.getHardwareName(),event.typeEvent,event.params));
     }
 
 }

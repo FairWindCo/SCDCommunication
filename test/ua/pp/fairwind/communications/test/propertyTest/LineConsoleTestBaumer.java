@@ -1,7 +1,6 @@
 package ua.pp.fairwind.communications.test.propertyTest;
 
 import jssc.SerialPort;
-import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.devices.hardwaredevices.Baumer.Encoder;
 import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
@@ -9,10 +8,7 @@ import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
 import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
 
 /**
  * Created by Сергей on 17.08.2015.
@@ -37,14 +33,9 @@ public class LineConsoleTestBaumer {
         fav.setPrimerayLine(line);
         fav.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE, SerialPort.FLOWCONTROL_NONE,4));
 
-        fav.addEventListener(new ElementEventListener() {
-            @Override
-            public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-                System.out.println(typeEvent + " : " + element.toString() + " - " + params);
-            }
-        });
-        fav.getSteps().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
-        fav.getRevolution().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
+        fav.addEventListener(ElementEventListener.println);
+        fav.getSteps().addEventListener(ElementEventListener.println);
+        fav.getRevolution().addEventListener(ElementEventListener.println);
         fav.getSteps().readValueRequest();
 
         //fav.getLineSelect().setRequestTrunsaction(new OperationTrunsactionReadWriteSeparate());

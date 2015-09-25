@@ -1,7 +1,6 @@
 package ua.pp.fairwind.communications.test.propertyTest;
 
 import jssc.SerialPort;
-import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.devices.hardwaredevices.Baumer.Encoder;
 import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver;
@@ -10,10 +9,8 @@ import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
 import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
 import java.io.IOException;
@@ -41,31 +38,21 @@ public class LineConsoleTestComplex {
         encoder.setPrimerayLine(line);
         encoder.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE, SerialPort.FLOWCONTROL_NONE, 4));
 
-        encoder.addEventListener(new ElementEventListener() {
-            @Override
-            public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-                System.out.println(typeEvent + " : " + element.toString() + " - " + params);
-            }
-        });
+        encoder.addEventListener(ElementEventListener.println);
 
-        encoder.getSteps().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
-        encoder.getRevolution().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
+        encoder.getSteps().addEventListener(ElementEventListener.println);
+        encoder.getRevolution().addEventListener(ElementEventListener.println);
 
 
         StepDriver motorDrive=new StepDriver(1L,"StepDrive",null);
         motorDrive.setReadTimeOut(250);
         motorDrive.setPrimerayLine(line);
 
-        motorDrive.addEventListener(new ElementEventListener() {
-            @Override
-            public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-                System.out.println(typeEvent + " : " + element.toString() + " - " + params);
-            }
-        });
+        motorDrive.addEventListener(ElementEventListener.println);
         motorDrive.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE, SerialPort.FLOWCONTROL_NONE, 3));
-        motorDrive.getSpeed().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
-        motorDrive.getPosition().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
-        motorDrive.getStatusCode().addEventListener((element, typeEvent, params) -> System.out.println(typeEvent + " : " + element.toString() + " - " + params));
+        motorDrive.getSpeed().addEventListener(ElementEventListener.println);
+        motorDrive.getPosition().addEventListener(ElementEventListener.println);
+        motorDrive.getStatusCode().addEventListener(ElementEventListener.println);
         //motorDrive.getPosition().readValueRequest();
 
         motorDrive.getSpeed().readValueRequest();

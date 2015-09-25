@@ -10,10 +10,6 @@ public interface NumberPropertyInterface<M extends Number & Comparable<? super M
 
     void bindWriteNumberProperty(NumberProperty<? extends Number> property);
 
-    void unbindReadNumberProperty();
-
-    void unbindWriteNumberProperty();
-
     void bindReadStringProperty(StringPropertyInterface property);
 
     void bindWriteStringProperty(StringPropertyInterface property);
@@ -26,7 +22,4 @@ public interface NumberPropertyInterface<M extends Number & Comparable<? super M
 
     void bindWriteStringProperty(StringPropertyInterface property,String format);
 
-    void unbindReadStringProperty();
-
-    void unbindWriteStringProperty();
 }

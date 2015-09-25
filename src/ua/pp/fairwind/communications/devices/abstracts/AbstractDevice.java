@@ -1,20 +1,19 @@
 package ua.pp.fairwind.communications.devices.abstracts;
 
 import ua.pp.fairwind.communications.devices.RequestInformation;
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.PropertyExecutor;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
@@ -61,28 +60,28 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
     protected volatile LineInterface secondaryLine;
     protected volatile LineParameters lineparams;
 
-    private final ElementEventListener changeListener=(element,type,param)->{
-        if(element!=null && element instanceof ValueProperty) {
-            ValueProperty<?> hardwarePoperty=(ValueProperty<?>)element;
+    private final ElementEventListener changeListener=(event,param)->{
+        if(event.sourceElement!=null && event.sourceElement instanceof ValueProperty) {
+            ValueProperty<?> hardwarePoperty=(ValueProperty<?>)event.sourceElement;
             boolean isImidiatlyWrite=hardwarePoperty.getAdditionalInfo(IMMEDIATELY_WRITE_FLAG)==null?false:(boolean)hardwarePoperty.getAdditionalInfo(IMMEDIATELY_WRITE_FLAG);
             if(hardwarePoperty.isActive()) {
-                if (type == EventType.ELEMENT_CHANGE || type == EventType.NEED_WRITE_VALUE) {
-                    if(type == EventType.ELEMENT_CHANGE && !isImidiatlyWrite){
+                if (event.typeEvent== EventType.ELEMENT_CHANGE || event.typeEvent == EventType.NEED_WRITE_VALUE) {
+                    if(event.typeEvent == EventType.ELEMENT_CHANGE && !isImidiatlyWrite){
                         return;
                     }
-                    if(getInternalValue(hardwarePoperty)!=null)writeProperty(hardwarePoperty);
-                } else if (type == EventType.NEED_READ_VALUE) {
-                    readProperty(hardwarePoperty);
+                    if(getInternalValue(hardwarePoperty)!=null)writeProperty(hardwarePoperty,event);
+                } else if (event.typeEvent == EventType.NEED_READ_VALUE) {
+                    readProperty(hardwarePoperty,event);
                 }
             }
         }
     };
 
-    private final ElementEventListener commandListener=(element,type,param) ->{
-        if(element!=null && element instanceof DeviceNamedCommandProperty) {
-            DeviceNamedCommandProperty hardwareCommaand=(DeviceNamedCommandProperty)element;
-                if (type == EventType.ELEMENT_CHANGE || type == EventType.NEED_WRITE_VALUE || type == EventType.NEED_READ_VALUE) {
-                    executeCommandName(hardwareCommaand);
+    private final ElementEventListener commandListener=(event,param) ->{
+        if(event.sourceElement!=null && event.sourceElement instanceof DeviceNamedCommandProperty) {
+            DeviceNamedCommandProperty hardwareCommaand=(DeviceNamedCommandProperty)event.sourceElement;
+                if (event.typeEvent == EventType.ELEMENT_CHANGE || event.typeEvent == EventType.NEED_WRITE_VALUE || event.typeEvent == EventType.NEED_READ_VALUE) {
+                    executeCommandName(hardwareCommaand,event);
                 }
         }
     };
@@ -90,13 +89,13 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
 
     protected DeviceNamedCommandProperty formCommandNameProperty(String name,String command){
         DeviceNamedCommandProperty cmd=new DeviceNamedCommandProperty(name,null,command);
-        cmd.addEventListener(commandListener);
+        cmd.addEventListener(commandListener,EventType.ELEMENT_CHANGE,EventType.NEED_READ_VALUE,EventType.NEED_WRITE_VALUE);
         return cmd;
     }
 
     protected DeviceNamedCommandProperty formCommandNameProperty(String name){
         DeviceNamedCommandProperty cmd=new DeviceNamedCommandProperty(name);
-        cmd.addEventListener(commandListener);
+        cmd.addEventListener(commandListener,EventType.ELEMENT_CHANGE,EventType.NEED_READ_VALUE,EventType.NEED_WRITE_VALUE);
         return cmd;
     }
 
@@ -155,7 +154,7 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
         errorCommunicationStatusLine1 =  formIndicatorProperty(-10,"device.lasterrorcommunicationstatusline1_property",false);
         errorCommunicationStatusLine2 =  formIndicatorProperty(-11, "device.lasterrorcommunicationstatusline2_property", false);
         activate = formBoolProperty(-12, "device.activate_property", true);
-        activate.addEventListener((element,type,param)->{if(type==EventType.ELEMENT_CHANGE)super.setEnabled(getInternalValue(activate) == null ? false : (Boolean) getInternalValue(activate));});
+        activate.addEventListener((event,param)->{if(event.getTypeEvent()==EventType.ELEMENT_CHANGE)super.setEnabled(getInternalValue(activate) == null ? false : (Boolean) getInternalValue(activate));},EventType.ELEMENT_CHANGE);
         deviceWritePause=formLongProperty(-13, "device.bausebeforewrite_property", 0L);
         retryCount=formLongProperty(-14,"device.retrycount_property",1);
 
@@ -184,9 +183,9 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
         listOfCommands.addAll(cmds);
     }
 
-    protected CommunicationProtocolRequest formCommunicationProtocolRequest(CommunicationProtocolRequest.REQUEST_TYPE reqType,RequestInformation needOperation,AbstractProperty property){
+    protected CommunicationProtocolRequest formCommunicationProtocolRequest(CommunicationProtocolRequest.REQUEST_TYPE reqType,RequestInformation needOperation,AbstractProperty property,Event sourceEvent){
         if(needOperation==null) return null;
-        CommunicationProtocolRequest subrequest=formCommunicationProtocolRequest(reqType,needOperation.getSubrequest(),property);
+        CommunicationProtocolRequest subrequest=formCommunicationProtocolRequest(reqType,needOperation.getSubrequest(),property,sourceEvent);
         CommunicationProtocolRequest request;
         byte[] buffer=needOperation.getBufferForWrite();
         if(buffer!=null){
@@ -200,10 +199,10 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
                 devTOP=property.getPropertyPauseBeforeRead()>0?property.getPropertyPauseBeforeRead():devTOP+property.getPropertyPauseBeforeReadAddon();
                 devTO=property.getPropertyTimeOutRead()>0?property.getPropertyTimeOutRead():devTO+property.getPropertyTimeOutReadAddon();
                 devWP=property.getPropertyPauseBeforeWrite()>0?property.getPropertyPauseBeforeWrite():devWP+property.getPropertyPauseBeforeWriteAddon();
-                request=CommunicationProtocolRequest.createReuest(reqType,buffer,needReadByteCount,this, devTO,devTOP,devWP,lineparams,property,primaryLine!=null?secondaryLine:null,needRollBack,maxRetry,subrequest);
+                request=CommunicationProtocolRequest.createReuest(reqType,buffer,needReadByteCount,this, devTO,devTOP,devWP,lineparams,property,primaryLine!=null?secondaryLine:null,needRollBack,maxRetry,subrequest,sourceEvent);
                 return request;
             } else {
-                request=CommunicationProtocolRequest.createReuest(reqType,buffer,needReadByteCount,this, devTO,devTOP,devWP,lineparams,null,primaryLine!=null?secondaryLine:null,needRollBack,maxRetry,subrequest);
+                request=CommunicationProtocolRequest.createReuest(reqType,buffer,needReadByteCount,this, devTO,devTOP,devWP,lineparams,null,primaryLine!=null?secondaryLine:null,needRollBack,maxRetry,subrequest,sourceEvent);
                 return request;
             }
         } else {
@@ -211,8 +210,8 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
         }
     }
 
-    protected void sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE reqType,RequestInformation requestInformation,AbstractProperty property){
-        CommunicationProtocolRequest request=formCommunicationProtocolRequest(reqType,requestInformation,property);
+    protected void sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE reqType,RequestInformation requestInformation,AbstractProperty property,Event sourceEvent){
+        CommunicationProtocolRequest request=formCommunicationProtocolRequest(reqType,requestInformation,property,sourceEvent);
         if(request!=null) {
             if (primaryLine != null) {
                 setInternalValue(deviceLastTryCommunicateTime,System.currentTimeMillis());
@@ -227,22 +226,22 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
         }
     }
 
-    protected void readProperty(AbstractProperty property){
+    protected void readProperty(AbstractProperty property,Event sourceEvent){
         RequestInformation req=formReadRequest(property);
-        if(req!=null) sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.READ_PROPERTY,req,property);
+        if(req!=null) sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.READ_PROPERTY,req,property,sourceEvent);
     }
 
-    protected void writeProperty(AbstractProperty property) {
+    protected void writeProperty(AbstractProperty property,Event sourceEvent) {
         RequestInformation req=formWriteRequest(property);
-        if(req!=null) sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.WRITE_PROPERTY,req,property);
+        if(req!=null) sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.WRITE_PROPERTY,req,property,sourceEvent);
     }
 
-    protected void executeCommandName(DeviceNamedCommandProperty property){
+    protected void executeCommandName(DeviceNamedCommandProperty property,Event sourceEvent){
         RequestInformation req=processCommandRequest(property.getCommand());
         if(req==null){
             property.executed();
         } else {
-            sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.COMMAND_EXECUTE,req,property);
+            sendBuffer(CommunicationProtocolRequest.REQUEST_TYPE.COMMAND_EXECUTE,req,property,sourceEvent);
         }
     }
 
@@ -304,13 +303,13 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
                         byte[] readBuf=answer.getRecivedMessage();
                         byte[] sendBuf=answer.getRequest()==null?null:answer.getRequest().getBytesForSend();
                         AbstractProperty property=answer.getRequest()==null?null:answer.getRequest().getProperty();
-                        if(!processRecivedMessage(readBuf,sendBuf,property)){
+                        if(!processRecivedMessage(readBuf,sendBuf,property,answer.getSourceEvent())){
                             answer.sendOverReservLine();
                             byte[] readBuf1=answer.getRecivedMessage();
                             byte[] sendBuf1=answer.getRequest()==null?null:answer.getRequest().getBytesForSend();
                             AbstractProperty property1=answer.getRequest()==null?null:answer.getRequest().getProperty();
                             try {
-                                if (!processRecivedMessage(readBuf1, sendBuf1, property1)) {
+                                if (!processRecivedMessage(readBuf1, sendBuf1, property1,answer.getSourceEvent())) {
                                     setLine1Error();
                                     if(!line.equals(secondaryLine)) {
                                         if(!answer.sendOverReservLine()) setLine2Error();
@@ -332,7 +331,7 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
                         byte[] sendBuf=answer.getRequest()==null?null:answer.getRequest().getBytesForSend();
                         AbstractProperty property=answer.getRequest()==null?null:answer.getRequest().getProperty();
                         try{
-                            if(!processRecivedMessage(readBuf,sendBuf,property)){
+                            if(!processRecivedMessage(readBuf,sendBuf,property,answer.getSourceEvent())){
                                 setLine2Error();
                                 answer.invalidate();
                             } else {
@@ -354,7 +353,7 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
             answer.destroy();
         }
     }
-    protected abstract boolean processRecivedMessage(final byte[] recivedMessage,final byte[] sendMessage,final AbstractProperty property);
+    protected abstract boolean processRecivedMessage(final byte[] recivedMessage,final byte[] sendMessage,final AbstractProperty property,final Event sourceEvent);
     protected abstract RequestInformation formReadRequest(AbstractProperty property);
     protected abstract RequestInformation formWriteRequest(AbstractProperty  property);
     public abstract String getDeviceType();
@@ -402,14 +401,14 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
     protected void addCommands(DeviceNamedCommandProperty commands){
         if(commands!=null){
             listOfCommands.add(commands);
-            commands.addEventListener(commandListener);
+            commands.addEventListener(commandListener,EventType.ELEMENT_CHANGE);
         }
     }
 
     protected void addPropertys(AbstractProperty property){
         if (property!=null){
             listOfPropertyes.add(property);
-            property.addEventListener(changeListener);
+            property.addEventListener(changeListener,EventType.ELEMENT_CHANGE,EventType.NEED_READ_VALUE,EventType.NEED_WRITE_VALUE);
         }
     }
 
@@ -631,5 +630,32 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
     @Override
     public void setEnabled(boolean enabled) {
         activate.setValue(enabled);
+    }
+
+    public SoftLongProperty getDeviceTimeOut() {
+        return deviceTimeOut;
+    }
+
+    public SoftLongProperty getDeviceTimeOutPause() {
+        return deviceTimeOutPause;
+    }
+
+    public SoftLongProperty getDeviceWritePause() {
+        return deviceWritePause;
+    }
+
+    @Override
+    public long getPauseBeforeWrite() {
+        return deviceWritePause.getValue();
+    }
+
+    @Override
+    public long getMaxRetry() {
+        return retryCount.getValue();
+    }
+
+    @Override
+    public void setMaxRetry(long pause) {
+        retryCount.setValue(pause);
     }
 }

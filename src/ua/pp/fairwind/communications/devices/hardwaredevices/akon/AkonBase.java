@@ -2,17 +2,16 @@ package ua.pp.fairwind.communications.devices.hardwaredevices.akon;
 
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
-import ua.pp.fairwind.communications.internatianalisation.I18N;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
 import ua.pp.fairwind.communications.propertyes.groups.GroupProperty;
-import ua.pp.fairwind.communications.propertyes.software.*;
+import ua.pp.fairwind.communications.propertyes.software.SoftByteProperty;
+import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
+import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
 import ua.pp.fairwind.communications.propertyes.software.bytedpropertyes.SoftIntegerToByteProperty;
-
-import java.util.HashMap;
 
 /**
  * Created by Сергей on 11.09.2015.
@@ -130,19 +129,19 @@ public class AkonBase extends RSLineDevice {
 
 
     @Override
-    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property) {
+    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property,final Event sourceEvent) {
         short protocol=akonProtocol.getValue();
         long deviceAddress=super.deviceAddress.getValue();
         if(protocol==OBJECTNET_PROTOCOL){
             try {
-                return AkonProtocol.processResponse(recivedMessage,(ValueProperty)property,(int)deviceAddress);
+                return AkonProtocol.processResponse(recivedMessage,(ValueProperty)property,(int)deviceAddress,sourceEvent);
             } catch (IllegalArgumentException e){
                 fireEvent(EventType.ERROR,e.getLocalizedMessage());
                 return false;
             }
         } else if(protocol==MODBUS_PROTOCOL) {
             try {
-                return ModBusProtocol.processResponse(recivedMessage, (ValueProperty) property, (int) deviceAddress);
+                return ModBusProtocol.processResponse(recivedMessage, (ValueProperty) property, (int) deviceAddress,sourceEvent);
             } catch (IllegalArgumentException e) {
                 fireEvent(EventType.ERROR, e.getLocalizedMessage());
                 return false;

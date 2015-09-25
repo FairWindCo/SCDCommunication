@@ -16,8 +16,6 @@ public interface LineParameters {
     String RS_FLOWCONTROL="RS_FLOWCONTROL";
     String RS_PURGE_TX="RS_PURGE_TX";
     String RS_PURGE_RX="RS_PURGE_RX";
-
-    String TIME_OUT="TIME_OUT";
     String NEED_LINE_CHANGE="NEED_LINE_CHANGE";
     String SUB_LINE_NUMBER="SUB_LINE_NUMBER";
 

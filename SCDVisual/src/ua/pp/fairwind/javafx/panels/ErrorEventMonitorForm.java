@@ -13,9 +13,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
 
 public class ErrorEventMonitorForm extends SimpleView implements ElementEventListener{
@@ -147,8 +147,8 @@ public class ErrorEventMonitorForm extends SimpleView implements ElementEventLis
 	}
 
 	@Override
-	public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-		errorRecived(new HardwareNodeEvent(element!=null?element.getName():null,typeEvent,params));
+	public void elementEvent(Event event,Object params) {
+		errorRecived(new HardwareNodeEvent(event.sourceElement!=null?event.sourceElement.getName():null,event.typeEvent,event.params));
 	}
 
 }

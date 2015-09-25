@@ -3,6 +3,7 @@ package ua.pp.fairwind.communications.lines.operations;
 import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractTrunsactionExecutor;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
@@ -51,53 +52,24 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor{
     private final AtomicBoolean requestValidated=new AtomicBoolean(false);
     private final REQUEST_TYPE requestType;
     private final CommunicationProtocolRequest subrequest;
+    private final Event sourceEvent;
 
 
-    public static CommunicationProtocolRequest createReuest(REQUEST_TYPE requestType,byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite,LineParameters parameters, AbstractProperty property, LineInterface nextLine,boolean needRollBack,long maxTryCount,CommunicationProtocolRequest subrequest){
+    public static CommunicationProtocolRequest createReuest(REQUEST_TYPE requestType,byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite,LineParameters parameters, AbstractProperty property, LineInterface nextLine,boolean needRollBack,long maxTryCount,CommunicationProtocolRequest subrequest,Event sourceEvent){
         if(senderDevice==null) return null;
         if(property!=null &&!startRequest(property,requestType.getPropertyOperationType())){
             return null;
         }
-        return new CommunicationProtocolRequest(requestType,bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,property,nextLine,needRollBack,maxTryCount,subrequest);
+        return new CommunicationProtocolRequest(requestType,bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,property,nextLine,needRollBack,maxTryCount,subrequest,sourceEvent);
     }
 
-    public static CommunicationProtocolRequest createReuestNextLine(REQUEST_TYPE requestType,byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite,LineParameters parameters, AbstractProperty property, LineInterface nextLine,boolean needRollBack,long maxTryCount,CommunicationProtocolRequest subrequest){
+
+    public static CommunicationProtocolRequest createReuestNextLine(REQUEST_TYPE requestType,byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite,LineParameters parameters, AbstractProperty property, LineInterface nextLine,boolean needRollBack,long maxTryCount,Event sourceEvent){
         if(senderDevice==null) return null;
-        return new CommunicationProtocolRequest(requestType,bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,property,nextLine,needRollBack,maxTryCount,subrequest);
+        return new CommunicationProtocolRequest(requestType,bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,property,nextLine,needRollBack,maxTryCount,null,sourceEvent);
     }
 
-    public static CommunicationProtocolRequest createReuest(byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite, LineParameters parameters, LineInterface nextLine,boolean needRollBack,long maxTryCount,CommunicationProtocolRequest subrequest) {
-        if(senderDevice==null) return null;
-        return new CommunicationProtocolRequest(REQUEST_TYPE.CUSTOM__BUFFER,bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,null,nextLine,needRollBack,maxTryCount,subrequest);
-    }
 
-    public static CommunicationProtocolRequest createReuest(long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite, LineParameters parameters, LineInterface nextLine,boolean needRollBack,long maxTryCount,CommunicationProtocolRequest subrequest) {
-        if(senderDevice==null) return null;
-        return new CommunicationProtocolRequest(REQUEST_TYPE.CUSTOM__BUFFER,null,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,null,nextLine,needRollBack,maxTryCount,subrequest);
-    }
-
-    public static CommunicationProtocolRequest createReuest(REQUEST_TYPE requestType,byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite,LineParameters parameters, AbstractProperty property, LineInterface nextLine,boolean needRollBack,long maxTryCount){
-        if(senderDevice==null) return null;
-        if(property!=null &&!startRequest(property,requestType.getPropertyOperationType())){
-            return null;
-        }
-        return new CommunicationProtocolRequest(requestType,bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,property,nextLine,needRollBack,maxTryCount,null);
-    }
-
-    public static CommunicationProtocolRequest createReuestNextLine(REQUEST_TYPE requestType,byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite,LineParameters parameters, AbstractProperty property, LineInterface nextLine,boolean needRollBack,long maxTryCount){
-        if(senderDevice==null) return null;
-        return new CommunicationProtocolRequest(requestType,bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,property,nextLine,needRollBack,maxTryCount,null);
-    }
-
-    public static CommunicationProtocolRequest createReuest(byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite, LineParameters parameters, LineInterface nextLine,boolean needRollBack,long maxTryCount) {
-        if(senderDevice==null) return null;
-        return new CommunicationProtocolRequest(REQUEST_TYPE.CUSTOM__BUFFER,bytesForSend,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,null,nextLine,needRollBack,maxTryCount,null);
-    }
-
-    public static CommunicationProtocolRequest createReuest(long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite, LineParameters parameters, LineInterface nextLine,boolean needRollBack,long maxTryCount) {
-        if(senderDevice==null) return null;
-        return new CommunicationProtocolRequest(REQUEST_TYPE.CUSTOM__BUFFER,null,bytesForReadCount,senderDevice,timeOut,pauseBeforeRead,pauseBeforeWrite,parameters,null,nextLine,needRollBack,maxTryCount,null);
-    }
     //Сформировать запрос для переотправки в случае если произошел TimeOut
     public static CommunicationProtocolRequest createReuest(CommunicationProtocolRequest notSuccessRequest){
         if(notSuccessRequest==null)return null;
@@ -107,7 +79,7 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor{
         return new CommunicationProtocolRequest(notSuccessRequest);
     }
 
-    private CommunicationProtocolRequest(REQUEST_TYPE requestType,byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite,LineParameters parameters, AbstractProperty property, LineInterface nextLine,boolean needRollBack,long maxTryCount,CommunicationProtocolRequest surequest){
+    private CommunicationProtocolRequest(REQUEST_TYPE requestType,byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite,LineParameters parameters, AbstractProperty property, LineInterface nextLine,boolean needRollBack,long maxTryCount,CommunicationProtocolRequest surequest,Event sourceEvent){
         this.bytesForSend = bytesForSend;
         this.senderDevice = senderDevice;
         this.timeOut = timeOut;
@@ -121,6 +93,7 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor{
         this.requestType=requestType;
         this.maxTryCount=maxTryCount;
         this.subrequest=surequest;
+        this.sourceEvent=sourceEvent;
         tryCount=0;
     }
 
@@ -140,6 +113,7 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor{
         this.requestType=notSuccessRequest.requestType;
         this.maxTryCount=notSuccessRequest.maxTryCount;
         this.subrequest=notSuccessRequest.subrequest;
+        this.sourceEvent=notSuccessRequest.sourceEvent;
     }
 
     public byte[] getBytesForSend() {
@@ -179,7 +153,7 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor{
     }
 
     public CommunicationProtocolRequest formRequestForNextLine(){
-        return createReuestNextLine(requestType,bytesForSend, bytesForReadCount, senderDevice, timeOut, pauseBeforeRead, pauseBeforeWrite, parameters, property, null, needRollBack,maxTryCount);
+        return createReuestNextLine(requestType,bytesForSend, bytesForReadCount, senderDevice, timeOut, pauseBeforeRead, pauseBeforeWrite, parameters, property, null, needRollBack,maxTryCount,sourceEvent);
     }
 
     public boolean sendRequestOverReservLine(){
@@ -230,8 +204,8 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor{
     public void invalidate(){
         if(property!=null && property instanceof ValueProperty){
             if(requestValidated.compareAndSet(false,true)) endRequest(property, requestType.propertyOperationType);
-            if(needRollBack)rollback((ValueProperty) property);
-            else invalidate((ValueProperty)property);
+            if(needRollBack)rollback((ValueProperty) property,sourceEvent);
+            else invalidate((ValueProperty)property,sourceEvent);
         }
         if(subrequest!=null)subrequest.invalidate();
     }
@@ -246,6 +220,10 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor{
     protected void finalize() throws Throwable {
         destroy();
         super.finalize();
+    }
+
+    public Event getSourceEvent() {
+        return sourceEvent;
     }
 
     public CommunicationProtocolRequest getSubrequest() {

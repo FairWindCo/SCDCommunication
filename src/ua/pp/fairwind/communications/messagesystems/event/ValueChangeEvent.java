@@ -1,9 +1,9 @@
-package ua.pp.fairwind.communications.propertyes.event;
+package ua.pp.fairwind.communications.messagesystems.event;
 
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
 
 /**
- * Created by Сергей on 30.06.2015.
+ * Created by пїЅпїЅпїЅпїЅпїЅпїЅ on 30.06.2015.
  */
 public class ValueChangeEvent<T> {
     final private String uuidFrom;

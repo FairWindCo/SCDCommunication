@@ -53,7 +53,7 @@ public class TCPConnectPanel extends StackPane{
 		
 		buttonConnect.setOnAction(event -> {
 			if(dev!=null){
-				CommunicationLineParameters newparams=new CommunicationLineParameters(ipaddress.getText(), Integer.valueOf(ipport.getText()),0);
+				CommunicationLineParameters newparams=new CommunicationLineParameters(ipaddress.getText(), Integer.valueOf(ipport.getText()));
 				dev.setLineParameters(newparams);
 			}
         });

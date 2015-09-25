@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.test.propertyTest;
 
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.software.bytedpropertyes.SoftIntegerToByteProperty;
 
 /**
@@ -8,11 +9,11 @@ import ua.pp.fairwind.communications.propertyes.software.bytedpropertyes.SoftInt
 public class ToByteTest {
     public static void main(String[] args) {
         SoftIntegerToByteProperty itb=new SoftIntegerToByteProperty("test",null);
-        itb.addEventListener(((element, typeEvent, params) -> System.out.println(typeEvent + " " + element + " " + params)));
-        itb.getByte1().addEventListener(((element, typeEvent, params) -> System.out.println(typeEvent + " " + element + " " + params)));
-        itb.getByte2().addEventListener(((element, typeEvent, params) -> System.out.println(typeEvent + " " + element + " " + params)));
-        itb.getByte3().addEventListener(((element, typeEvent, params) -> System.out.println(typeEvent + " " + element + " " + params)));
-        itb.getByte4().addEventListener(((element, typeEvent, params) -> System.out.println(typeEvent + " " + element + " " + params)));
+        itb.addEventListener(ElementEventListener.println);
+        itb.getByte1().addEventListener(ElementEventListener.println);
+        itb.getByte2().addEventListener(ElementEventListener.println);
+        itb.getByte3().addEventListener(ElementEventListener.println);
+        itb.getByte4().addEventListener(ElementEventListener.println);
 
         itb.setValue(65540);
         itb.setBubleEvent(false);

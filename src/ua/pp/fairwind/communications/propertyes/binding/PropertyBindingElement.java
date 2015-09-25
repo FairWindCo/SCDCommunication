@@ -1,12 +1,11 @@
 package ua.pp.fairwind.communications.propertyes.binding;
 
-import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -34,7 +33,7 @@ public class PropertyBindingElement<FROM extends AbstractProperty,TO extends Abs
     public void bindRead(){
         if(readbinded.compareAndSet(false,true)) {
             readingProperty.addEventListener(this);
-            elementEvent(readingProperty, EventType.ELEMENT_CHANGE, null);
+            elementEvent(new Event(readingProperty, EventType.ELEMENT_CHANGE, null),null);
         }
     }
 
@@ -47,7 +46,7 @@ public class PropertyBindingElement<FROM extends AbstractProperty,TO extends Abs
     public void bindWrite(){
         if(writebinded.compareAndSet(false,true)) {
             writingProperty.addEventListener(this);
-            elementEvent(writingProperty,EventType.ELEMENT_CHANGE,null);
+            elementEvent(new Event(writingProperty,EventType.ELEMENT_CHANGE,null),null);
         }
     }
 
@@ -71,15 +70,15 @@ public class PropertyBindingElement<FROM extends AbstractProperty,TO extends Abs
 
 
     @Override
-    public void elementEvent(ElementInterface element, EventType typeEvent, Object params) {
-           if((typeEvent==EventType.ELEMENT_CHANGE || typeEvent==EventType.ELEMENT_CHANGE_FROM_HARDWARE)&& element!=null){
-               System.out.printf("EVENT FROM %s\n",element);
+    public void elementEvent(Event event,Object param) {
+           if((event.typeEvent==EventType.ELEMENT_CHANGE /*|| event.typeEvent==EventType.ELEMENT_CHANGE_FROM_HARDWARE/**/)&& event.sourceElement!=null){
+               System.out.printf("EVENT FROM %s\n",event.sourceElement);
                try {
                    boolean res=false;
-                   if(element==readingProperty){
+                   if(event.sourceElement==readingProperty){
                        res=readConvertor.convertValue(readingProperty, writingProperty);
                    }
-                   if(element==writingProperty){
+                   if(event.sourceElement==writingProperty){
                        res=writeConvertor.convertValue(writingProperty, readingProperty);
                    }
                    if(!res){

@@ -1,10 +1,8 @@
 package ua.pp.fairwind.communications.messagesystems;
 
-import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeEvent;
-import ua.pp.fairwind.communications.propertyes.event.ValueChangeListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.ValueChangeEvent;
+import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -16,19 +14,23 @@ import java.util.concurrent.Executors;
 public class MessageSubSystemMultiDipatch extends MessageSubSystemSimple{
     static private final ExecutorService service= Executors.newCachedThreadPool();
 
+
+
     @Override
-    protected void fireEventExecute(ElementInterface element,EventType type,Object param){
-        for(ElementEventListener listener:eventDispatcher){
+    public void fireEvent(Event event) {
+        for(ListenerHolder listener:eventDispatcher){
             service.submit(() -> {
                 try {
                     //System.out.println("EVENT "+type+" FROM "+element +" PARAM: "+param);
-                    listener.elementEvent(element, type, param);
+                    listener.executeEvent(event);
                 }catch (Exception ex){
                     System.err.println(ex.toString());
                 }
             });
         }
     }
+
+
 
     protected void fireEventExecute(final ValueChangeEvent<?> event){
         for(ValueChangeListener listener:calueEventDispatcher){
@@ -55,7 +57,7 @@ public class MessageSubSystemMultiDipatch extends MessageSubSystemSimple{
     }
 
     @Override
-    public MessageSubSystem getNewChild() {
+    public MessageSubSystem getNewChild(UUID requestedElement) {
         return new MessageSubSystemMultiDipatch();
     }
 

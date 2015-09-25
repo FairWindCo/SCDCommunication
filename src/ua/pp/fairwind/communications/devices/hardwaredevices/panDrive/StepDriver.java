@@ -5,6 +5,7 @@ import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
@@ -147,7 +148,7 @@ public class StepDriver extends RSLineDevice {
     }
 
     @Override
-    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property) {
+    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property,final Event sourceEvent) {
         if(recivedMessage!=null && recivedMessage.length>8) {
             long deviceaddress = deviceAddress.getValue();
             for(int i=0;i<recivedMessage.length-8;i++) {
@@ -158,7 +159,7 @@ public class StepDriver extends RSLineDevice {
                         byte ststus=recivedMessage[i+2];
                         //byte module=recivedMessage[i+1];
                         byte commandNum=recivedMessage[i+3];
-                        setHardWareInternalValue(statusCode, (short)ststus);
+                        setHardWareInternalValue(statusCode, (short)ststus,sourceEvent);
                         switch (commandNum){
                             case 6:{
                                 long value=0;
@@ -167,10 +168,10 @@ public class StepDriver extends RSLineDevice {
                                 value|=((recivedMessage[i+6]&0xFF)<< 8);
                                 value|=((recivedMessage[i+7]&0xFF)    );
                                 if(property==speed){
-                                    setHardWareInternalValue(speed, (short) (value & 0xFFFF));
+                                    setHardWareInternalValue(speed, (short) (value & 0xFFFF),sourceEvent);
                                 } else
                                 if(property==position){
-                                    setHardWareInternalValue(position,value);
+                                    setHardWareInternalValue(position,value,sourceEvent);
                                 }
                                 break;
                             }
@@ -183,7 +184,7 @@ public class StepDriver extends RSLineDevice {
                                 value|=((recivedMessage[i+5]&0xFF)<<16);
                                 value|=((recivedMessage[i+6]&0xFF)<< 8);
                                 value|=((recivedMessage[i+7]&0xFF)    );
-                                setupConfigurationParameters(module,value);
+                                setupConfigurationParameters(module,value,sourceEvent);
                                 break;
                             }
                         }
@@ -354,52 +355,52 @@ public class StepDriver extends RSLineDevice {
         return super.processCommandRequest(commandName);
     }
 
-    private void setupConfigurationParameters(int number,long value){
+    private void setupConfigurationParameters(int number,long value,final Event sourceEvent){
         switch (number){
-            case 64:setHardWareInternalValue(magic,(short)value);break;
-            case 65:setHardWareInternalValue(rsspeed,(short)value);break;
-            case 66:setHardWareInternalValue(rsadress,(short)value);break;
-            case 67:setHardWareInternalValue(mode,(short)value);break;
-            case 68:setHardWareInternalValue(serialHeartbeat,value);break;
+            case 64:setHardWareInternalValue(magic,(short)value,sourceEvent);break;
+            case 65:setHardWareInternalValue(rsspeed,(short)value,sourceEvent);break;
+            case 66:setHardWareInternalValue(rsadress,(short)value,sourceEvent);break;
+            case 67:setHardWareInternalValue(mode,(short)value,sourceEvent);break;
+            case 68:setHardWareInternalValue(serialHeartbeat,value,sourceEvent);break;
             case 73:{
                 if(value==0){
-                    setHardWareInternalValue(configurationEpromLock,false);
+                    setHardWareInternalValue(configurationEpromLock,false,sourceEvent);
                 } else {
-                    setHardWareInternalValue(configurationEpromLock,true);
+                    setHardWareInternalValue(configurationEpromLock,true,sourceEvent);
                 }
                 break;
             }
-            case 75:setHardWareInternalValue(telegramPauseTime,(short)value);break;
-            case 76:setHardWareInternalValue(serialHostAdress,(short)value);break;
+            case 75:setHardWareInternalValue(telegramPauseTime,(short)value,sourceEvent);break;
+            case 76:setHardWareInternalValue(serialHostAdress,(short)value,sourceEvent);break;
             case 77:{
                 if(value==0){
-                    setHardWareInternalValue(autoStartTMCL,false);
+                    setHardWareInternalValue(autoStartTMCL,false,sourceEvent);
                 } else {
-                    setHardWareInternalValue(autoStartTMCL,true);
+                    setHardWareInternalValue(autoStartTMCL,true,sourceEvent);
                 }
                 break;
             }
             case 79:{
                 if(value==0){
-                    setHardWareInternalValue(endSwichPolarity,false);
+                    setHardWareInternalValue(endSwichPolarity,false,sourceEvent);
                 } else {
-                    setHardWareInternalValue(endSwichPolarity,true);
+                    setHardWareInternalValue(endSwichPolarity,true,sourceEvent);
                 }
                 break;
             }
-            case 128:setHardWareInternalValue(TMCLaplicationStatus,(short)value);break;
-            case 87:setHardWareInternalValue(serialSecondAdress,(short)value);break;
+            case 128:setHardWareInternalValue(TMCLaplicationStatus,(short)value,sourceEvent);break;
+            case 87:setHardWareInternalValue(serialSecondAdress,(short)value,sourceEvent);break;
             case 129:{
                 if(value==0){
-                    setHardWareInternalValue(dowloadMode,false);
+                    setHardWareInternalValue(dowloadMode,false,sourceEvent);
                 } else {
-                    setHardWareInternalValue(dowloadMode,true);
+                    setHardWareInternalValue(dowloadMode,true,sourceEvent);
                 }
                 break;
             }
-            case 130:setHardWareInternalValue(TMCLprogramCounter,value);break;
-            case 132:setHardWareInternalValue(tickTimer,value);break;
-            case 133:setHardWareInternalValue(randomNumber,value);break;
+            case 130:setHardWareInternalValue(TMCLprogramCounter,value,sourceEvent);break;
+            case 132:setHardWareInternalValue(tickTimer,value,sourceEvent);break;
+            case 133:setHardWareInternalValue(randomNumber,value,sourceEvent);break;
         }
     }
 

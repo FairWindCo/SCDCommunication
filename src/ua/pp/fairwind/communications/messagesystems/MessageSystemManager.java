@@ -2,6 +2,8 @@ package ua.pp.fairwind.communications.messagesystems;
 
 import ua.pp.fairwind.communications.internatianalisation.I18N;
 
+import java.util.UUID;
+
 /**
  * Created by Сергей on 24.09.2015.
  */
@@ -35,8 +37,8 @@ public class MessageSystemManager {
         return messagesystem;
     }
 
-    public static MessageSubSystem getElementMessageSystem() {
-        return messagesystem.getNewChild();
+    public static MessageSubSystem getElementMessageSystem(UUID requestedElement) {
+        return messagesystem.getNewChild(requestedElement);
     }
 
     static public void destroy(){

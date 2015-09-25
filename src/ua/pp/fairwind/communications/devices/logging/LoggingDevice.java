@@ -4,10 +4,8 @@ import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
-
-import java.util.HashMap;
 
 /**
  * Created by Сергей on 13.08.2015.
@@ -26,7 +24,7 @@ public class LoggingDevice extends AbstractDevice {
     }
 
     @Override
-    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property) {
+    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property,final Event sourceEvent) {
         return true;
     }
 

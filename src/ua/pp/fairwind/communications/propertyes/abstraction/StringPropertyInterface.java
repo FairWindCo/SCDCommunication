@@ -10,7 +10,4 @@ public interface StringPropertyInterface extends ValuePropertyInterface<String> 
     void bindWriteNumberProperty(NumberProperty<?> property,String format);
     void bindReadNumberProperty(NumberProperty<?> property);
     void bindWriteNumberProperty(NumberProperty<?> property);
-
-    void unbindReadNumberProperty();
-    void unbindWriteNumberProperty();
 }

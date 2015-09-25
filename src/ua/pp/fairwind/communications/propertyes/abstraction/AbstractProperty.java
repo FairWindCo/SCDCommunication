@@ -1,14 +1,16 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
+import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
+import ua.pp.fairwind.communications.internatianalisation.I18N;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OPERATION_TYPE;
 import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OperationTrunsactions;
 import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OperationTrunsactionsSingle;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
 
-import java.util.HashMap;
+import java.util.IllegalFormatConversionException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,19 +27,24 @@ public abstract class AbstractProperty extends SystemEllement{
     final public static String PROPERTY_PAUSE_BEFORE_WRITE="PROPERTY_PAUSE_BEFORE_WRITE";
     final public static String TIMER="TIMER";
     final public static String TIMERS="TIMERS";
-    private AbstractProperty bindedForReadPoperty;
-    private AbstractProperty bindedForWritePoperty;
-    private String formatForWrite=null;
-    private int radixForWrite=10;
-    private int positionForWrite=0;
-    private int lengthForWrite=0;
-    private boolean convertBoolToBinaryForWrite=false;
-    protected volatile long dataLifeTime=-1;
-    volatile private OperationTrunsactions requestTrunsaction=new OperationTrunsactionsSingle();
 
+
+    volatile private OperationTrunsactions requestTrunsaction=new OperationTrunsactionsSingle();
+    protected volatile long dataLifeTime;
     protected final Map<String,Object> additionalParameters=new ConcurrentHashMap<>();
 
-
+    //Внутренний прослушиватель событий об изменении занчения другого свойства.
+    //Используется для реализации функции связывания.
+    final private ElementEventListener elementevent=(event,processingParameter)->{
+        if(event.getTypeEvent()==EventType.ELEMENT_CHANGE && event.getParams()!=null){
+            ElementInterface element=event.getSourceElement();
+            if(element!=null && element instanceof AbstractProperty) {
+                reciveValueFromBindingRead((AbstractProperty)element, event.getParams(), processingParameter, event);
+            } else {
+                reciveValueFromBindingRead(null, event.getParams(), processingParameter, event);
+            }
+        }
+    };
 
     protected AbstractProperty(String name, String uuid) {
         super(name, uuid);
@@ -51,52 +58,40 @@ public abstract class AbstractProperty extends SystemEllement{
         fireEvent(EventType.NEED_WRITE_VALUE, null);
     }
 
-    //Внутренний прослушиватель событий об изменении занчения другого свойства.
-    //Используется для реализации функции связывания.
-    final private ElementEventListener elementevent=(element,typeEvent,params)->{
-        if(typeEvent==EventType.ELEMENT_CHANGE && params!=null){
-            reciveValueFromBindingRead(null, params);
-        }
-    };
+
 
 
 
 
     //Внутренний метод для связывания по чтению с другим методом
-    protected void bindPropertyForRead(AbstractProperty property){
+    protected void bindPropertyForRead(AbstractProperty property,Object bindingProcessor){
         if(property!=null){
-            synchronized (elementevent) {
-                if(bindedForReadPoperty!=null) unbindPropertyForRead();
-                this.bindedForReadPoperty = property;
-                reciveValueFromBindingRead(property, null);
-                property.addEventListener(elementevent);
-            }
+                property.addEventListener(elementevent,getUUID(),bindingProcessor,EventType.ELEMENT_CHANGE);
         }
     }
     //Внутренний метод для связывания по записи с другим методом
-    protected void bindPropertyForWrite(AbstractProperty property, String formatForWrite,int radixForWrite,int positionForWrite,int lengthForWrite,boolean convertBoolToBinaryForWrite){
+    protected void bindPropertyForWrite(AbstractProperty property, Object bindingProcessor){
         if(property!=null){
-            synchronized (elementevent) {
-                if(bindedForWritePoperty!=null) unbindPropertyForWrite();
-                this.formatForWrite=formatForWrite;
-                this.radixForWrite=radixForWrite;
-                this.positionForWrite=positionForWrite;
-                this.lengthForWrite=lengthForWrite;
-                this.convertBoolToBinaryForWrite=convertBoolToBinaryForWrite;
-                this.bindedForWritePoperty = property;
-            }
+            addEventListener(property.elementevent,getUUID(),bindingProcessor,EventType.ELEMENT_CHANGE);
         }
     }
 
 
-    //Метод чтения значений для биндинга по зенвчению
-    //Если передано значение то анализируется она (парметр newValue)
+    //Метод чтения значений для биндинга по значению
+    //Если передано значение то оно анализируется (парметр newValue)
     //Если значения нет то пытаемся импользовать свойство
     //Метод позволяющий непосредственно осуществить соединение по записи
     //Необходим в том случае если для связывания необходимо передать некоторые параметр
     //Например такой как формат значения длс строков параметров.
-    abstract protected void reciveValueFromBindingWrite(final AbstractProperty property,final Object valueForWtite, String formatForWrite,int radixForWrite,int positionForWrite,int lengthForWrite,boolean convertBoolToBinaryForWrite);
-    abstract protected void reciveValueFromBindingRead(final AbstractProperty property,final Object valueForWtite);
+    protected void reciveValueFromBindingRead(final AbstractProperty property,final Object valueForWtite, Object bindingProcessor,final Event parentEvent){
+        if(bindingProcessor!=null && bindingProcessor instanceof BindingPropertyProcessor){
+            try{
+                ((BindingPropertyProcessor) bindingProcessor).convert(property,this);
+            }catch (IllegalFormatConversionException e){
+                fireEvent(EventType.ERROR, String.format(I18N.getLocalizedString("binding.value.translate.error"),e.getLocalizedMessage()));
+            }
+        }
+    }
 
     public boolean isValidProperty(){
         return true;
@@ -111,36 +106,13 @@ public abstract class AbstractProperty extends SystemEllement{
         this.dataLifeTime = dataLifeTime;
     }
 
-    protected void writeBinding(Object valueForWtite){
-        synchronized (elementevent) {
-            if (bindedForWritePoperty != null) {
-                bindedForWritePoperty.reciveValueFromBindingWrite(this, valueForWtite, formatForWrite, radixForWrite, positionForWrite, lengthForWrite,convertBoolToBinaryForWrite);
-            }
-        }
-    }
-
-
     //Разрыв связывания по чтению
-    protected void unbindPropertyForRead(){
-        synchronized (elementevent) {
-            if(bindedForReadPoperty!=null){
-                bindedForReadPoperty.removeEventListener(elementevent);
-                bindedForReadPoperty=null;
-            }
-        }
+    protected void unbindPropertyForRead(AbstractProperty property){
+        if(property!=null)property.removeEventListener(elementevent);
     }
     //Разрыв связывания по записи
-    protected void unbindPropertyForWrite(){
-        synchronized (elementevent) {
-            if(bindedForWritePoperty!=null){
-                bindedForWritePoperty=null;
-                formatForWrite=null;
-                radixForWrite=10;
-                positionForWrite=0;
-                lengthForWrite=0;
-                convertBoolToBinaryForWrite=false;
-            }
-        }
+    protected void unbindPropertyForWrite(AbstractProperty property){
+        if(property!=null)removeEventListener(property.elementevent);
     }
 
     public void setAdditionalInfo(String paramsName,Object value){

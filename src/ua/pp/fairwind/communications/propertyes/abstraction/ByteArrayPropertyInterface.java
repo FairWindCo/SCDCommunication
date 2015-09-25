@@ -16,8 +16,6 @@ public interface ByteArrayPropertyInterface extends ElementInterface{
     void bindWriteStringProperty(StringPropertyInterface property,int position);
     void bindReadStringProperty(StringPropertyInterface property,int position,int length);
     void bindWriteStringProperty(StringPropertyInterface property,int position,int length);
-    void unbindReadStringProperty();
-    void unbindWriteStringProperty();
 
 
     void bindReadNumberProperty(NumberPropertyInterface<?> property);
@@ -26,8 +24,6 @@ public interface ByteArrayPropertyInterface extends ElementInterface{
     void bindWriteNumberProperty(NumberPropertyInterface<?> property,int position);
     void bindReadNumberProperty(NumberPropertyInterface<?> property,int position,int length);
     void bindWriteNumberProperty(NumberPropertyInterface<?> property,int position,int length);
-    void unbindReadNumberProperty();
-    void unbindWriteNumberProperty();
 
 
     void bindReadCharProperty(StringPropertyInterface property);
@@ -36,6 +32,4 @@ public interface ByteArrayPropertyInterface extends ElementInterface{
     void bindWriteCharProperty(StringPropertyInterface property,int position);
     void bindReadCharProperty(StringPropertyInterface property,int position,int length);
     void bindWriteCharProperty(StringPropertyInterface property,int position,int length);
-    void unbindReadCharProperty();
-    void unbindWriteCharProperty();
 }

@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.lines.operations;
 
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
 
 import java.util.Date;
 
@@ -100,5 +101,10 @@ public class CommunicationAnswer {
         if(request!=null){
             request.invalidate();
         }
+    }
+
+    public Event getSourceEvent(){
+        if(request==null)return null;
+        return request.getSourceEvent();
     }
 }

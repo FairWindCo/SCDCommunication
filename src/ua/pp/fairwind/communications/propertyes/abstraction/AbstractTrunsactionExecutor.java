@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
+import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OPERATION_TYPE;
 import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions.OperationTrunsactions;
 
@@ -32,11 +33,11 @@ public class AbstractTrunsactionExecutor {
         property.setRequestTrunsaction( requestTrunsaction);
     }
 
-    static protected void rollback(ValueProperty property){
-        property.rollback();
+    static protected void rollback(ValueProperty property,Event source){
+        property.rollback(source);
     }
 
-    static protected void invalidate(ValueProperty property){
-        property.invalidate();
+    static protected void invalidate(ValueProperty property,Event source){
+        property.invalidate(source);
     }
 }

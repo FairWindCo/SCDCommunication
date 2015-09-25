@@ -1,14 +1,12 @@
 package ua.pp.fairwind.communications.abstractions;
 
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystemSimple;
 import ua.pp.fairwind.communications.messagesystems.MessageSystemManager;
-import ua.pp.fairwind.communications.propertyes.event.ElementEventListener;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.communications.messagesystems.event.Event;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 
-import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -28,7 +26,7 @@ public abstract class SystemEllement implements ElementInterface{
         this.name = localizeName(codename);
         this.description = localizeDescription(codename);
         this.uuid=I18N.getUUIDFromCodeNAme(codename);
-        this.centralSystem= MessageSystemManager.getElementMessageSystem();
+        this.centralSystem= MessageSystemManager.getElementMessageSystem(uuid);
     }
 
 
@@ -38,7 +36,7 @@ public abstract class SystemEllement implements ElementInterface{
         this.description = localizeDescription(codename);
         if(codename==null || codename.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
         this.uuid=I18N.getUUIDFromCodeNAme(uuid,codename);
-        this.centralSystem= MessageSystemManager.getElementMessageSystem();
+        this.centralSystem= MessageSystemManager.getElementMessageSystem(this.uuid);
     }
 
     private String localizeName(String key){
@@ -75,10 +73,40 @@ public abstract class SystemEllement implements ElementInterface{
         if(eventactive)centralSystem.fireEvent(this,type,param);
     }
 
+    protected void fireEvent(EventType type,Object param,Event parent){
+        if(eventactive)centralSystem.fireEvent(this,type,param,parent);
+    }
+
     @Override
     public void addEventListener(ElementEventListener listener) {
         centralSystem.addEventListener(listener);
     }
+
+    @Override
+    public void addEventListener(ElementEventListener listener, EventType... recivedEventsTypes) {
+        centralSystem.addEventListener(listener,recivedEventsTypes);
+    }
+
+    @Override
+    public void addEventListener(ElementEventListener listener,UUID ignore) {
+        centralSystem.addEventListener(listener,ignore);
+    }
+
+    @Override
+    public void addEventListener(ElementEventListener listener,UUID ignore, EventType... recivedEventsTypes) {
+        centralSystem.addEventListener(listener,ignore,recivedEventsTypes);
+    }
+
+    @Override
+    public void addEventListener(ElementEventListener listener,UUID ignore,Object processotParam) {
+        centralSystem.addEventListener(listener,ignore);
+    }
+
+    @Override
+    public void addEventListener(ElementEventListener listener,UUID ignore,Object processotParam, EventType... recivedEventsTypes) {
+        centralSystem.addEventListener(listener,ignore,recivedEventsTypes);
+    }
+
 
     @Override
     public void removeEventListener(ElementEventListener listener) {

@@ -14,11 +14,17 @@ import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 import ua.pp.fairwind.communications.lines.performance.PerformanceMonitorEventData;
-import ua.pp.fairwind.communications.propertyes.event.EventType;
+import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 

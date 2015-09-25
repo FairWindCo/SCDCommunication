@@ -6,7 +6,6 @@ package ua.pp.fairwind.communications.lines.lineparams;
 public class CommunicationLineParameters implements LineParameters{
     final private String ipadress;
     final private int port;
-    final private long timeOut;
     final private int baoudrate;
     final private int databits;
     final private int paritytype;
@@ -21,15 +20,14 @@ public class CommunicationLineParameters implements LineParameters{
     final private boolean always_set_line_param;
     final private boolean always_set_line;
 
-    public CommunicationLineParameters(String ipadress, int port, long timeOut) {
-        this(ipadress, port, timeOut, 0, 0, 0, 0, 0,false,false,0,false,false,false,false,false);
+    public CommunicationLineParameters(String ipadress, int port) {
+        this(ipadress, port, 0, 0, 0, 0, 0,false,false,0,false,false,false,false,false);
     }
 
-    public CommunicationLineParameters(String ipadress, int port, long timeOut, int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol, boolean dtr, boolean rts, int sublinenum,  boolean needLineChange, boolean purge_rx, boolean purge_tx, boolean always_set_line_param, boolean always_set_line) {
+    public CommunicationLineParameters(String ipadress, int port, int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol, boolean dtr, boolean rts, int sublinenum,  boolean needLineChange, boolean purge_rx, boolean purge_tx, boolean always_set_line_param, boolean always_set_line) {
     //public CommunicationLineParameters(String ipadress, int port, long timeOut, int baoudrate, int databits, int paritytype, int stopbit, int sublinenum,boolean dtr, boolean rts,int flowcontrol,   boolean needLineChange, boolean purge_rx, boolean purge_tx, boolean always_set_line_param, boolean always_set_line) {
         this.ipadress = ipadress;
         this.port = port;
-        this.timeOut = timeOut;
         this.baoudrate = baoudrate;
         this.databits = databits;
         this.paritytype = paritytype;
@@ -46,35 +44,35 @@ public class CommunicationLineParameters implements LineParameters{
     }
 //ipadress, port,timeOut,baoudrate,databits,paritytype,stopbit, int sublinenum, boolean dtr, boolean rts, int flowcontrol, boolean needLineChange, boolean purge_rx, boolean purge_tx, boolean always_set_line_param, boolean always_set_line
     public CommunicationLineParameters(int baoudrate, int databits, int paritytype, int stopbit) {
-        this(null,0,0,baoudrate,databits,paritytype,stopbit,0,false,false,0,false,false,false,false,false);
+        this(null,0,baoudrate,databits,paritytype,stopbit,0,false,false,0,false,false,false,false,false);
     }
     public CommunicationLineParameters(int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol) {
-        this(null,0,0,baoudrate,databits,paritytype,stopbit,flowcontrol,false,false,0,false,false,false,false,false);
+        this(null,0,baoudrate,databits,paritytype,stopbit,flowcontrol,false,false,0,false,false,false,false,false);
     }
     public CommunicationLineParameters(int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol,boolean setDTR,boolean setRTS) {
-        this(null,0,0,baoudrate,databits,paritytype,stopbit,flowcontrol,setRTS,setDTR,0,false,false,false,false,false);
+        this(null,0,baoudrate,databits,paritytype,stopbit,flowcontrol,setRTS,setDTR,0,false,false,false,false,false);
     }
 
     public CommunicationLineParameters(int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol,int sublinenum) {
-        this(null,0,0,baoudrate,databits,paritytype,stopbit,flowcontrol,false,false,sublinenum,true,false,false,false,false);
+        this(null,0,baoudrate,databits,paritytype,stopbit,flowcontrol,false,false,sublinenum,true,false,false,false,false);
     }
     public CommunicationLineParameters(int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol,boolean setDTR,boolean setRTS,int sublinenum) {
-        this(null,0,0,baoudrate,databits,paritytype,stopbit,flowcontrol,setRTS,setDTR,sublinenum,true,false,false,false,false);
+        this(null,0,baoudrate,databits,paritytype,stopbit,flowcontrol,setRTS,setDTR,sublinenum,true,false,false,false,false);
     }
 
     public CommunicationLineParameters(int baoudrate, int databits, int paritytype, int stopbit,boolean purge_rx,boolean purge_tx) {
-        this(null,0,0,baoudrate,databits,paritytype,stopbit,0,false,false,0,false,purge_rx,purge_tx,false,false);
+        this(null,0,baoudrate,databits,paritytype,stopbit,0,false,false,0,false,purge_rx,purge_tx,false,false);
     }
 
     public CommunicationLineParameters(int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol,boolean setDTR,boolean setRTS,boolean purge_rx,boolean purge_tx) {
-        this(null,0,0,baoudrate,databits,paritytype,stopbit,flowcontrol,setRTS,setDTR,0,false,purge_rx,purge_tx,false,false);
+        this(null,0,baoudrate,databits,paritytype,stopbit,flowcontrol,setRTS,setDTR,0,false,purge_rx,purge_tx,false,false);
     }
 
     public CommunicationLineParameters(int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol,int sublinenum,boolean purge_rx,boolean purge_tx) {
-        this(null,0,0,baoudrate,databits,paritytype,stopbit,flowcontrol,false,false,sublinenum,true,purge_rx,purge_tx,false,false);
+        this(null,0,baoudrate,databits,paritytype,stopbit,flowcontrol,false,false,sublinenum,true,purge_rx,purge_tx,false,false);
     }
     public CommunicationLineParameters(int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol,boolean setDTR,boolean setRTS,int sublinenum,boolean purge_rx,boolean purge_tx) {
-        this(null,0,0,baoudrate,databits,paritytype,stopbit,flowcontrol,setRTS,setDTR,sublinenum,true,purge_rx,purge_tx,false,false);
+        this(null,0,baoudrate,databits,paritytype,stopbit,flowcontrol,setRTS,setDTR,sublinenum,true,purge_rx,purge_tx,false,false);
     }
 
 
@@ -112,7 +110,6 @@ public class CommunicationLineParameters implements LineParameters{
         switch (name){
             case LineParameters.IP_ADDRESS:return ipadress;
             case LineParameters.IP_PORT:return port;
-            case LineParameters.TIME_OUT:return timeOut;
             case LineParameters.RS_SPEED:return baoudrate;
             case LineParameters.RS_PARITY:return paritytype;
             case LineParameters.RS_STOBIT:return stopbit;
@@ -141,10 +138,6 @@ public class CommunicationLineParameters implements LineParameters{
 
     public int getPort() {
         return port;
-    }
-
-    public long getTimeOut() {
-        return timeOut;
     }
 
     public int getBaoudrate() {

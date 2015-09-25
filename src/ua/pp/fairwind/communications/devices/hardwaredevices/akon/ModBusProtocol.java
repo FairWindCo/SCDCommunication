@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.akon;
 
 
+import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractValuePropertyExecutor;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.software.*;
@@ -37,7 +38,7 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
         return buffer;
     }
 
-    public static boolean processResponse(byte[] recivedBuffer,ValueProperty property,int device_addess){
+    public static boolean processResponse(byte[] recivedBuffer,ValueProperty property,int device_addess,Event modificator){
         if(recivedBuffer==null||recivedBuffer.length<8)return false;
 
         for(int i=0;i<recivedBuffer.length-7;i++){
@@ -55,7 +56,7 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
                         value|=((recivedBuffer[i+4]&0xFF)<<16);
                         value|=((recivedBuffer[i+5]&0xFF)<<8);
                         value|=((recivedBuffer[i+6]&0xFF));
-                        setValueFromTransfer(property,value);
+                        setValueFromTransfer(property,value,modificator);
                         return true;
                     }
                 } else if(mfunction==WRITE_PROPERTYS){
@@ -128,33 +129,33 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
         return 0;
     }
 
-    static public void setValueFromTransfer(ValueProperty property,long value){
+    static public void setValueFromTransfer(ValueProperty property,long value,Event modificator){
         if(property==null)return;
         if(property instanceof SoftBoolProperty){
-            if(value==0){setHardWareInternalValue(property,false);
+            if(value==0){setInternalValue(property, false,modificator);
             } else {
-                setHardWareInternalValue(property,true);
+                setInternalValue(property, true,modificator);
             }
         } else if(property instanceof SoftLongProperty){
-            setHardWareInternalValue(property, value);
+            setInternalValue(property, value,modificator);
         } else if(property instanceof SoftShortProperty){
-            setHardWareInternalValue(property, (short) value);
+            setInternalValue(property, (short) value,modificator);
         } else if(property instanceof SoftIntegerProperty){
-            setHardWareInternalValue(property, (int) value);
+            setInternalValue(property, (int) value,modificator);
         } else if(property instanceof SoftByteProperty){
-            setHardWareInternalValue(property, (byte) value);
+            setInternalValue(property, (byte) value,modificator);
         } else if(property instanceof SoftCharProperty){
-            setHardWareInternalValue(property, (char) value);
+            setInternalValue(property, (char) value,modificator);
         } else if(property instanceof SoftFloatProperty){
-            setHardWareInternalValue(property, Float.intBitsToFloat((int)value));
+            setInternalValue(property, Float.intBitsToFloat((int) value),modificator);
         } else if(property instanceof SoftDoubleProperty){
-            setHardWareInternalValue(property,Double.longBitsToDouble(value));
+            setInternalValue(property, Double.longBitsToDouble(value),modificator);
         } else if(property instanceof SoftDateTimeProperty){
-            setHardWareInternalValue(property,new Date(value));
+            setInternalValue(property, new Date(value),modificator);
         } else if(property instanceof SoftBigDecimalProperty){
-            setHardWareInternalValue(property,BigDecimal.valueOf(value));
+            setInternalValue(property, BigDecimal.valueOf(value),modificator);
         } else if(property instanceof SoftBigIntegerProperty){
-            setHardWareInternalValue(property,BigInteger.valueOf(value));
+            setInternalValue(property, BigInteger.valueOf(value),modificator);
         }
     }
 }

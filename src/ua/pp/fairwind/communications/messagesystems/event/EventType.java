@@ -1,11 +1,11 @@
-package ua.pp.fairwind.communications.propertyes.event;
+package ua.pp.fairwind.communications.messagesystems.event;
 
 /**
  * Created by ������ on 01.07.2015.
  */
 public enum EventType {
     ELEMENT_CHANGE,
-    ELEMENT_CHANGE_FROM_HARDWARE,
+    //ELEMENT_CHANGE_FROM_HARDWARE,
     INVALIDATE,
     NEED_READ_VALUE,
     NEED_WRITE_VALUE,
@@ -17,5 +17,5 @@ public enum EventType {
     WRITE_MONITOR,
     PERFORMANCE,
     VALIDATION_ERROR,
-    TRASHHOL
+    TRASHHOLD
 }
