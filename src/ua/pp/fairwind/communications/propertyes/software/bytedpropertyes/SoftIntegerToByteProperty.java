@@ -1,6 +1,5 @@
 package ua.pp.fairwind.communications.propertyes.software.bytedpropertyes;
 
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractGroupedProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftByteProperty;
@@ -119,5 +118,10 @@ public class SoftIntegerToByteProperty extends AbstractGroupedProperty<Integer,B
 
     public SoftByteProperty getByte4() {
         return byte4;
+    }
+
+    @Override
+    public int propertyCount() {
+        return 4;
     }
 }

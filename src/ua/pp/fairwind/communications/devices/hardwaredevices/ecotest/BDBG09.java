@@ -1,8 +1,10 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.ecotest;
 
+import jssc.SerialPort;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
+import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
 import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
@@ -14,12 +16,12 @@ import ua.pp.fairwind.communications.propertyes.software.*;
  * Created by Сергей on 28.09.2015.
  */
 public class BDBG09 extends RSLineDevice {
-    final public static short PROTOCOL_V1=0;
-    final public static short PROTOCOL_V2=1;
-    final public static short PROTOCOL_V3=2;
+    final public static short PROTOCOL_V1=1;
+    final public static short PROTOCOL_V2=2;
+    final public static short PROTOCOL_V3=3;
     final public static String FRAME_CODE="FRAME_CODE";
     //Основные свойства
-    protected final SoftShortProperty protocol=new SoftShortProperty("BDBG09_PROTOCOL_SELECTOR");
+    protected final SoftShortProperty protocol=new SoftShortProperty("BDBG09_PROTOCOL_SELECTOR",PROTOCOL_V3);
     protected final SoftFloatProperty med=new SoftFloatProperty("BDBG09.MED", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
     protected final SoftByteProperty miss=new SoftByteProperty("BDBG09.MISS", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
     protected final SoftBoolProperty status=new SoftBoolProperty("BDBG09.STATUS", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
@@ -30,7 +32,8 @@ public class BDBG09 extends RSLineDevice {
     //Грепповое свойство MED (чтение за раз)
     protected final GroupProperty GROUP_MED=new GroupProperty("GROUP_MED",null,med,miss,status,HIGHT_ERROR,LOW_ERROR,MULTI);
 
-    protected final SoftLongProperty serial_number=new SoftLongProperty("BDBG09.SERIAL_NUMBER", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+    //protected final SoftLongProperty serial_number=new SoftLongProperty("BDBG09.SERIAL_NUMBER", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+    protected final SoftStringProperty serial_number=new SoftStringProperty("BDBG09.SERIAL_NUMBER", null,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
     protected final SoftFloatProperty temp=new SoftFloatProperty("BDBG09.TEMP", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
     protected final SoftShortProperty configured_device_address=new SoftShortProperty("BDBG09.CONFIGURED_DEVICE_ADDRESS");
     protected final SoftShortProperty configured_response_constant=new SoftShortProperty("BDBG09.configured_response_constant");
@@ -59,11 +62,12 @@ public class BDBG09 extends RSLineDevice {
         addPropertys(configured_device_address);
         addPropertys(GROUP_KOIF);
 
-        GROUP_MED.setAdditionalInfo(FRAME_CODE,0x0);
+        GROUP_MED.setAdditionalInfo(FRAME_CODE, 0x0);
         serial_number.setAdditionalInfo(FRAME_CODE, 0x5);
         configured_device_address.setAdditionalInfo(FRAME_CODE, 0x6);
         temp.setAdditionalInfo(FRAME_CODE, 0x8);
         GROUP_KOIF.setAdditionalInfo(FRAME_CODE, 0x4);
+        setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_19200, SerialPort.DATABITS_8, SerialPort.PARITY_NONE, SerialPort.STOPBITS_1, SerialPort.FLOWCONTROL_NONE));
     }
 
     public BDBG09(long address, String codename) {
@@ -87,19 +91,19 @@ public class BDBG09 extends RSLineDevice {
                         int frame_code=(recivedMessage[startpos + 2]>>4)&0xF;
                         switch (frame_code){
                             case 0x1:{
-                                if(startpos+10>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,9)){
+                                if(startpos+10>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,9)){
                                     readMED(recivedMessage,startpos+3,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x2:{
-                                if(startpos+40>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,39)){
+                                if(startpos+40>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,39)){
                                     readKoificient(recivedMessage,startpos+3,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x5:{
-                                if(startpos+8>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
+                                if(startpos+8>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
                                     readSERIAL(recivedMessage, startpos + 3, sourceEvent);
                                     return true;
                                 }
@@ -117,29 +121,30 @@ public class BDBG09 extends RSLineDevice {
             }
         } else if (protocol == PROTOCOL_V2) {
             if(recivedMessage!=null && recivedMessage.length>=3) {
-                for(int startpos=0;startpos<recivedMessage.length-6;startpos++) {
+                for(int startpos=0;startpos<recivedMessage.length-3;startpos++) {
                     if (recivedMessage[startpos] == (byte) 0x55 && recivedMessage[startpos + 1] == (byte) 0xAA && (recivedMessage[startpos + 2]&0xF)==(deviceAddress&0xF)) {
                         int frame_code=(recivedMessage[startpos + 2]>>4)&0xF;
                         switch (frame_code){
                             case 1:{
-                                if(startpos+10>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,9)){
+                                if(startpos+10>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,9)){
                                     readMED(recivedMessage,startpos+3,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x2:{
-                                if(startpos+40>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,39)){
+                                if(startpos+40>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,39)){
                                     readKoificient(recivedMessage,startpos+3,sourceEvent);
+                                    return true;
                                 }
                             }break;
                             case 0x5:{
-                                if(startpos+8>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
+                                if(startpos+8>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
                                     readSERIAL(recivedMessage,startpos+3,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x8:{
-                                if(startpos+6>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,5)){
+                                if(startpos+6>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,5)){
                                     readTEMP(recivedMessage, startpos + 3, sourceEvent);
                                     return true;
                                 }
@@ -162,14 +167,15 @@ public class BDBG09 extends RSLineDevice {
                         int frame_code=recivedMessage[startpos + 4]&0xFF;
                         switch (frame_code){
                             case 0x1:{
-                                if(startpos+12>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,11)){
+                                if(startpos+12>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,11)){
                                     readMED(recivedMessage,startpos+5,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x2:{
-                                if(startpos+42>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,41)){
+                                if(startpos+42>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,41)){
                                     readKoificient(recivedMessage,startpos+5,sourceEvent);
+                                    return true;
                                 }
                             }break;
                             case 0x3:{
@@ -178,13 +184,13 @@ public class BDBG09 extends RSLineDevice {
                                 }
                             }
                             case 0x5:{
-                                if(startpos+11>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,10)){
-                                    readSERIAL_v3(recivedMessage,startpos+3,sourceEvent);
+                                if(startpos+11>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,10)){
+                                    readSERIAL_v3(recivedMessage,startpos+5,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x8:{
-                                if(startpos+8>recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
+                                if(startpos+8>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
                                     readTEMP(recivedMessage,startpos+5,sourceEvent);
                                     return true;
                                 }
@@ -205,8 +211,8 @@ public class BDBG09 extends RSLineDevice {
 
     private void readTEMP(byte[] recivedMessage,int pos, Event sourceEvent){
         float res=0.0f;
-        int bits = (((int)(recivedMessage[pos+1]<<8)) & 0xFF00);
-        bits+=((int)(recivedMessage[pos+0] & 0x7));
+        int bits = (recivedMessage[pos+1]<<8)&0xFF00;
+        bits+=(recivedMessage[pos+0])&0xFF;
         int j=-4;int mask=1;
         for(int i=0;i<10;i++){
             res+=Math.pow(2, j)*(bits & mask);
@@ -221,10 +227,10 @@ public class BDBG09 extends RSLineDevice {
     }
 
     private void readMED(byte[] recivedMessage,int pos, Event sourceEvent){
-        long med = (recivedMessage[pos++] << 24);
+        long med = (recivedMessage[pos++]);
+        med += (recivedMessage[pos++] << 8);
         med += (recivedMessage[pos++] << 16);
-        med += (recivedMessage[pos++] << 8 );
-        med += (recivedMessage[pos++]      );
+        med += (recivedMessage[pos++] << 24);
         short miss=(short)(recivedMessage[pos++]&0xFF);
         byte flag=recivedMessage[pos++];
         boolean err_hi=(flag & 0b0000_0001)==0?false:true;
@@ -241,19 +247,21 @@ public class BDBG09 extends RSLineDevice {
     }
 
     private void readSERIAL(byte[] recivedMessage,int pos, Event sourceEvent){
-        long ser = (recivedMessage[pos++] << 24);
+        long ser = (recivedMessage[pos++]);
+        ser += (recivedMessage[pos++] << 8);
         ser += (recivedMessage[pos++] << 16);
-        ser += (recivedMessage[pos++] << 8 );
-        ser += (recivedMessage[pos++]      );
-        setHardWareInternalValue(this.serial_number,ser,sourceEvent);
+        ser += (recivedMessage[pos++] << 24);
+        String serial=String.format("%h",ser);
+        setHardWareInternalValue(this.serial_number,serial,sourceEvent);
     }
 
     private void readSERIAL_v3(byte[] recivedMessage,int pos, Event sourceEvent){
-        long ser = (recivedMessage[pos++] << 24);
+        long ser = (recivedMessage[pos++]);
+        ser += (recivedMessage[pos++] << 8);
         ser += (recivedMessage[pos++] << 16);
-        ser += (recivedMessage[pos++] << 8 );
-        ser += (recivedMessage[pos++]      );
-        setHardWareInternalValue(this.serial_number,ser,sourceEvent);
+        ser += (recivedMessage[pos++] << 24);
+        String serial=String.format("%h",ser);
+        setHardWareInternalValue(this.serial_number,serial,sourceEvent);
         int respconst=recivedMessage[pos]&0xFF;
         setHardWareInternalValue(this.configured_response_constant,respconst,sourceEvent);
     }
@@ -421,7 +429,7 @@ public class BDBG09 extends RSLineDevice {
         return miss;
     }
 
-    public SoftLongProperty getSerial_number() {
+    public SoftStringProperty getSerial_number() {
         return serial_number;
     }
 
@@ -455,5 +463,9 @@ public class BDBG09 extends RSLineDevice {
 
     public SoftBoolProperty getTEMP_ERROR() {
         return TEMP_ERROR;
+    }
+
+    public GroupProperty getGROUP_MED() {
+        return GROUP_MED;
     }
 }

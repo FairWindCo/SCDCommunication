@@ -5,9 +5,9 @@ import ua.pp.fairwind.communications.devices.hardwaredevices.Baumer.Encoder;
 import ua.pp.fairwind.communications.devices.hardwaredevices.akon.AkonBase;
 import ua.pp.fairwind.communications.devices.hardwaredevices.akon.WAD_A06_BUS;
 import ua.pp.fairwind.communications.devices.hardwaredevices.arg.micro.ArgMicroDevice;
+import ua.pp.fairwind.communications.devices.hardwaredevices.ecotest.BDBG09;
 import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
 import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 
 import java.util.HashMap;
 
@@ -21,6 +21,7 @@ public interface AutoCreateDeviceFunction{
     String ARG_MICRO="ArgMicro";
     String AKON="AkonBase";
     String AKON_WAD_A06_BUS="WAD_A06_BUS";
+    String BDBG09="BDBG_09";
 
     DeviceInterface createDevice(Long address,String typeOfDevice,String name);
 
@@ -55,6 +56,10 @@ public interface AutoCreateDeviceFunction{
             }
             case AKON_WAD_A06_BUS:{
                 newdevice=new WAD_A06_BUS(address==null?10:address,name,null);
+                break;
+            }
+            case BDBG09:{
+                newdevice=new BDBG09(address==null?1:address,name!=null?name:"BDBG09",null);
                 break;
             }
         }

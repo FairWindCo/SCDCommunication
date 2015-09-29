@@ -24,6 +24,10 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
         }
     };
 
+    @Override
+    public int propertyCount() {
+        return properties.size();
+    }
 
     @Override
     public AbstractProperty get(String name){

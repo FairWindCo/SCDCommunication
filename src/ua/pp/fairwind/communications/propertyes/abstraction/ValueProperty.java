@@ -289,12 +289,12 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     @Override
     public boolean isReadAccepted() {
-        return softOperationType==SOFT_OPERATION_TYPE.READ_ONLY;
+        return softOperationType!=SOFT_OPERATION_TYPE.WRITE_ONLY;
     }
 
     @Override
     public boolean isWriteAccepted() {
-        return softOperationType==SOFT_OPERATION_TYPE.WRITE_ONLY;
+        return softOperationType!=SOFT_OPERATION_TYPE.READ_ONLY;
     }
 
     @Override

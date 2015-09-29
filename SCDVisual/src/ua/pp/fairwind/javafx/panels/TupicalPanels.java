@@ -7,10 +7,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
+import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
+import ua.pp.fairwind.communications.propertyes.groups.GroupPropertyInterface;
 import ua.pp.fairwind.communications.propertyes.software.*;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.VisualControls;
-import ua.pp.fairwind.javafx.panels.devices.DeviceConfigPanel;
 
 /**
  * Created by Сергей on 24.09.2015.
@@ -121,6 +123,22 @@ public class TupicalPanels {
         return rowindex;
     }
 
+    public static int setChanelControlRO(GridPane grid,SoftByteProperty chanel,String name,int rowindex,int col){
+        grid.add(new Label(I18N_FX.getLocalizedString(name)), col++, rowindex);
+        grid.add(VisualControls.createLcdIndicator(chanel), col++, rowindex);
+        grid.add(VisualControls.createReReadButton(chanel), col++, rowindex);
+        grid.add(VisualControls.createConfigureProppearty(chanel), col++, rowindex++);
+        return rowindex;
+    }
+
+    public static int setChanelControlRO(GridPane grid,SoftStringProperty chanel,String name,int rowindex,int col){
+        grid.add(new Label(I18N_FX.getLocalizedString(name)), col++, rowindex);
+        grid.add(VisualControls.createLcdIndicator(chanel), col++, rowindex);
+        grid.add(VisualControls.createReReadButton(chanel), col++, rowindex);
+        grid.add(VisualControls.createConfigureProppearty(chanel), col++, rowindex++);
+        return rowindex;
+    }
+
     public static int setChanelControlRO(GridPane grid,SoftLongProperty chanel,String name,int rowindex,int col){
         grid.add(new Label(I18N_FX.getLocalizedString(name)), col++, rowindex);
         grid.add(VisualControls.createLcdIndicator(chanel), col++, rowindex);
@@ -145,4 +163,44 @@ public class TupicalPanels {
         grid.add(VisualControls.createConfigureProppearty(chanel), col++, rowindex++);
         return rowindex;
     }
+
+    public static int setChanelControl(GridPane grid,ValueProperty chanel,int rowindex,int col){
+        return setChanelControl(grid,chanel,null,rowindex,col);
+    }
+
+    public static int setChanelControl(GridPane grid,GroupPropertyInterface chanel,int rowindex,int col){
+        if(chanel!=null && chanel.propertyCount()>0){
+            for(int i=0;i<chanel.propertyCount();i++) {
+                AbstractProperty prop=chanel.getPopertyByIndex(i);
+                if(prop instanceof ValueProperty) {
+                    rowindex = setChanelControl(grid,(ValueProperty)prop , rowindex, col);
+                }
+                if(prop instanceof GroupPropertyInterface){
+                    rowindex = setChanelControl(grid,(GroupPropertyInterface)prop,rowindex,col);
+                }
+            }
+        }
+        return rowindex;
+    }
+
+    public static int setChanelControl(GridPane grid,ValueProperty chanel,String name,int rowindex,int col){
+        if(name==null)name=chanel.getName();
+        grid.add(new Label(I18N_FX.getLocalizedString(name)), col++, rowindex);
+        grid.add(VisualControls.getPropertyControl(chanel), col++, rowindex);
+        if(chanel.isReadAccepted()) {
+            grid.add(VisualControls.createReReadButton(chanel), col++, rowindex);
+        } else {
+            col++;
+        }
+        if(chanel.isWriteAccepted()) {
+            grid.add(VisualControls.createReWriteButton(chanel), col++, rowindex);
+        } else {
+            col++;
+        }
+        grid.add(VisualControls.createConfigureProppearty(chanel), col++, rowindex++);
+        return rowindex;
+    }
+
+
+
 }

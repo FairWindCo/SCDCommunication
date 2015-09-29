@@ -1,14 +1,11 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.akon;
 
 import ua.pp.fairwind.communications.internatianalisation.I18N;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.groups.GroupProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftIntegerProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
-
-import java.util.HashMap;
 
 /**
  * Created by Сергей on 23.09.2015.
@@ -119,7 +116,7 @@ public class WAD_A06_BUS extends AkonBase {
     }
 
     private GroupProperty formSpecial(String deviceName){
-        String name=I18N.getLocalizedString("");
+        String name=I18N.getLocalizedString("WAD");
         SoftShortProperty options=new SoftShortProperty(deviceName+".chanel");
         options.setAdditionalInfo(PROPERTY_MODBUS, 0x2000);
         SoftFloatProperty floattemp=new SoftFloatProperty(deviceName+".chanel");

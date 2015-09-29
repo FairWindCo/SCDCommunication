@@ -18,4 +18,5 @@ public interface GroupPropertyInterface {
 
     boolean isBubleEvent();
     void setBubleEvent(boolean bubleEvent);
+    int propertyCount();
 }

@@ -61,17 +61,30 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
     protected volatile LineParameters lineparams;
 
     private final ElementEventListener changeListener=(event,param)->{
-        if(event.sourceElement!=null && event.sourceElement instanceof ValueProperty) {
-            ValueProperty<?> hardwarePoperty=(ValueProperty<?>)event.sourceElement;
-            boolean isImidiatlyWrite=hardwarePoperty.getAdditionalInfo(IMMEDIATELY_WRITE_FLAG)==null?false:(boolean)hardwarePoperty.getAdditionalInfo(IMMEDIATELY_WRITE_FLAG);
-            if(hardwarePoperty.isActive()) {
-                if (event.typeEvent== EventType.ELEMENT_CHANGE || event.typeEvent == EventType.NEED_WRITE_VALUE) {
-                    if(event.typeEvent == EventType.ELEMENT_CHANGE && !isImidiatlyWrite){
-                        return;
+        if(event.sourceElement!=null){
+            if(event.sourceElement instanceof ValueProperty) {
+                ValueProperty<?> hardwarePoperty=(ValueProperty<?>)event.sourceElement;
+                boolean isImidiatlyWrite=hardwarePoperty.getAdditionalInfo(IMMEDIATELY_WRITE_FLAG)==null?false:(boolean)hardwarePoperty.getAdditionalInfo(IMMEDIATELY_WRITE_FLAG);
+                if(hardwarePoperty.isActive()) {
+                    if (event.typeEvent== EventType.ELEMENT_CHANGE || event.typeEvent == EventType.NEED_WRITE_VALUE) {
+                        if(event.typeEvent == EventType.ELEMENT_CHANGE && !isImidiatlyWrite){
+                            return;
+                        }
+                        if(getInternalValue(hardwarePoperty)!=null)writeProperty(hardwarePoperty,event);
+                    } else if (event.typeEvent == EventType.NEED_READ_VALUE) {
+                        readProperty(hardwarePoperty,event);
                     }
-                    if(getInternalValue(hardwarePoperty)!=null)writeProperty(hardwarePoperty,event);
+                }
+            } else if(event.sourceElement instanceof AbstractProperty) {
+                AbstractProperty hardwarePoperty=(AbstractProperty)event.sourceElement;
+                boolean isImidiatlyWrite=hardwarePoperty.getAdditionalInfo(IMMEDIATELY_WRITE_FLAG)==null?false:(boolean)hardwarePoperty.getAdditionalInfo(IMMEDIATELY_WRITE_FLAG);
+                if (event.typeEvent== EventType.ELEMENT_CHANGE || event.typeEvent == EventType.NEED_WRITE_VALUE) {
+                        if(event.typeEvent == EventType.ELEMENT_CHANGE && !isImidiatlyWrite){
+                            return;
+                        }
+                        writeProperty(hardwarePoperty,event);
                 } else if (event.typeEvent == EventType.NEED_READ_VALUE) {
-                    readProperty(hardwarePoperty,event);
+                        readProperty(hardwarePoperty,event);
                 }
             }
         }

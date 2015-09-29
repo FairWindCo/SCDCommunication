@@ -11,12 +11,15 @@ import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.SerialDeviceInterface;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.software.*;
 import ua.pp.fairwind.io.javafx.propertys.*;
+import ua.pp.fairwind.io.javafx.propertys.special.BytePropertyFXAdapterSpec;
 import ua.pp.fairwind.io.javafx.propertys.special.LongPropertyFXAdapterSpec;
 import ua.pp.fairwind.io.javafx.propertys.special.ShortPropertyFXAdapterSpec;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.controls.slidecheckbox.SlideCheckBox;
+import ua.pp.fairwind.javafx.guiElements.editorSoftProperty.*;
 import ua.pp.fairwind.javafx.guiElements.editors.IntegerInputText;
 import ua.pp.fairwind.javafx.panels.dialogs.LineParametersDialog;
 import ua.pp.fairwind.javafx.panels.dialogs.PropertyConfigDialog;
@@ -140,6 +143,43 @@ public class VisualControls {
         return lcd;
     }
 
+    public static Lcd createLcdIndicator(SoftByteProperty property){
+        Lcd lcd = LcdBuilder.create()
+                .prefWidth(170)
+                .prefHeight(50)
+                .styleClass(Lcd.STYLE_CLASS_STANDARD)
+                .backgroundVisible(true)
+                .foregroundShadowVisible(true)
+                .crystalOverlayVisible(true)
+                .title(property.getName())
+                .titleVisible(true)
+                .decimals(0)
+                .valueFont(Lcd.LcdFont.LCD)
+                .animated(true)
+                .build();
+        lcd.valueProperty().bind(new BytePropertyFXAdapterSpec(property));
+        Tooltip.install(lcd, new Tooltip(property.getDescription()));
+        return lcd;
+    }
+
+    public static Lcd createLcdIndicator(SoftStringProperty property){
+        Lcd lcd = LcdBuilder.create()
+                .prefWidth(170)
+                .prefHeight(50)
+                .styleClass(Lcd.STYLE_CLASS_LIGHTGREEN)
+                .backgroundVisible(true)
+                .foregroundShadowVisible(true)
+                .crystalOverlayVisible(true)
+                .title(property.getName())
+                .titleVisible(true)
+                .textMode(true)
+                .animated(true)
+                .build();
+        lcd.textProperty().bind(new StringPropertyFXAdapter(property));
+        Tooltip.install(lcd, new Tooltip(property.getDescription()));
+        return lcd;
+    }
+
     public static Lcd createLcdIndicator(SoftIntegerProperty property){
         Lcd lcd = LcdBuilder.create()
                 .prefWidth(170)
@@ -218,6 +258,35 @@ public class VisualControls {
                     case "ObjectNet":return 0x0;
                     case "MobBus RTU":return 0x1;
                     default:return 0x0;
+                }
+            }
+        });
+        box.valueProperty().bindBidirectional(new ShortPropertyFXAdapterSpec(addressProperty));
+        Tooltip.install(box, new Tooltip(addressProperty.getDescription()));
+        return box;
+    }
+
+    public static ComboBox<Short> createBDBGProtoclSelect(SoftShortProperty addressProperty){
+        ComboBox<Short> box=new ComboBox<>();
+        for(int i=0x1;i<0x4;i++)box.getItems().add((short)i);
+        box.setConverter(new StringConverter<Short>() {
+            @Override
+            public String toString(Short value) {
+                switch (value){
+                    case 0x1:return"Version 1";
+                    case 0x2:return"Version 2";
+                    case 0x3:return"Version 3";
+                    default:return "Version 3";
+                }
+            }
+
+            @Override
+            public Short fromString(String value) {
+                switch (value){
+                    case "Version 1":return 0x1;
+                    case "Version 2":return 0x2;
+                    case "Version 3":return 0x3;
+                    default:return 0x3;
                 }
             }
         });
@@ -478,6 +547,30 @@ public class VisualControls {
         box.valueProperty().bindBidirectional(new ShortPropertyFXAdapterSpec(addressProperty));
         Tooltip.install(box, new Tooltip(addressProperty.getDescription()));
         return box;
+    }
+
+    public static Control getPropertyControl(ValueProperty property){
+        TextField editor;
+        if(property instanceof SoftStringProperty){
+            editor=new SoftStringInputText((SoftStringProperty)property);
+        } else if(property instanceof SoftByteProperty){
+            editor=new SoftByteInputText((SoftByteProperty)property);
+        } else if(property instanceof SoftShortProperty){
+            editor=new SoftShortInputText((SoftShortProperty)property);
+        } else if(property instanceof SoftIntegerProperty){
+            editor=new SoftIntInputText((SoftIntegerProperty)property);
+        } else if(property instanceof SoftLongProperty){
+            editor=new SoftLongInputText((SoftLongProperty)property);
+        } else if(property instanceof SoftFloatProperty){
+            editor=new SoftFloatInputText((SoftFloatProperty)property);
+        } else if(property instanceof SoftDoubleProperty){
+            editor=new SoftDoubleInputText((SoftDoubleProperty)property);
+        } else {
+            editor=new TextField();
+        }
+        editor.setEditable(property.isWriteAccepted());
+        Tooltip.install(editor, new Tooltip(property.getDescription()));
+        return editor;
     }
 
 }

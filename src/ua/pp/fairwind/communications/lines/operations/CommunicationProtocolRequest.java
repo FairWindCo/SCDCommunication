@@ -206,12 +206,16 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor{
             if(requestValidated.compareAndSet(false,true)) endRequest(property, requestType.propertyOperationType);
             if(needRollBack)rollback((ValueProperty) property,sourceEvent);
             else invalidate((ValueProperty)property,sourceEvent);
+        } else {
+            if(requestValidated.compareAndSet(false,true)) endRequest(property,requestType.propertyOperationType);
         }
         if(subrequest!=null)subrequest.invalidate();
     }
 
     public void destroy(){
         if(property!=null && property instanceof ValueProperty<?>){
+            if(requestValidated.compareAndSet(false,true)) endRequest(property,requestType.propertyOperationType);
+        } else {
             if(requestValidated.compareAndSet(false,true)) endRequest(property,requestType.propertyOperationType);
         }
     }

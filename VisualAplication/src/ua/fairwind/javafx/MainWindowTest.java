@@ -58,6 +58,7 @@ public class MainWindowTest extends Application {
         MenuConfigElements pandrive=new PanDriveWindow("Pan_Drive_Step_Motor",scada);
         MenuConfigElements argMicro=new ArgMicroWindow("Arg_Micro",scada);
         MenuConfigElements encoder=new BelimaWindow("Baumer_Incremental_Encoder",scada);
+        MenuConfigElements bdbg09=new BDBG09Window("BDBG09",scada);
         MenuConfigElements akonbase=new AkonBaseWindow("AKON_Base",scada,"baseakon");
         testDev.setAddChild(akon);
         akon.setAddChild(akonbase);
@@ -65,6 +66,7 @@ public class MainWindowTest extends Application {
         testDev.setAddChild(pandrive);
         testDev.setAddChild(argMicro);
         testDev.setAddChild(encoder);
+        testDev.setAddChild(bdbg09);
         holderMenu.setMenuPoint(testDev);
         holderMenu.setMenuPoint(test);
         holderMenu.setMenuPoint(log);
