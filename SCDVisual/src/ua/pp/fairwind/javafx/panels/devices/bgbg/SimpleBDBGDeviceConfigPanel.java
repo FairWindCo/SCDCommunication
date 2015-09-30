@@ -81,15 +81,18 @@ public class SimpleBDBGDeviceConfigPanel extends HBox {
         if(lines!=null && !lines.isEmpty()){
             grid.add(new Label(I18N_FX.getLocalizedString("SELECT_LINE_PRIMARY")), 3, rowindex);
             grid.add(createLineComboBoxP(), 4, rowindex);
+            grid.add(VisualControls.createPClosePortButton(device),5,rowindex);
             grid.add(new Label(I18N_FX.getLocalizedString("SELECT_LINE_SECONDARY")), 3, rowindex+1);
             grid.add(createLineComboBoxS(), 4, rowindex+1);
+            grid.add(VisualControls.createSClosePortButton(device),5,rowindex+1);
         }
         grid.add(VisualControls.createConfigureButton(device), 2, rowindex++);
         grid.add(new Label(I18N_FX.getLocalizedString("DEVICE_PROTOCOL")), 0, rowindex);
         grid.add(VisualControls.createBDBGProtoclSelect(device.getProtocol()), 2, rowindex++);
         grid.add(new Label(I18N_FX.getLocalizedString("DEVICE_STATUS")), 0, rowindex);
         grid.add(VisualControls.createLedIndicator(device.getLastCommunicationStatus(), Color.GREENYELLOW), 1, rowindex);
-        grid.add(VisualControls.createLedIndicator(device.getErrorCommunicationStatus(), Color.RED), 2, rowindex++);
+        grid.add(VisualControls.createLedIndicator(device.getErrorCommunicationStatus(), Color.RED), 2, rowindex);
+        grid.add(VisualControls.createCommandExecuteButton2(device.getValidateErrorCommand()), 5, rowindex++);
         grid.add(new Label(I18N_FX.getLocalizedString("LAST_COMMUNICATE_TIME")), 0, rowindex);
         grid.add(VisualControls.createTimeLabel(device.getDeviceLastExchangeTimeProperty()), 1, rowindex);
         grid.add(new Label(I18N_FX.getLocalizedString("LAST_TRY_COMMUNICATE_TIME")), 2, rowindex);

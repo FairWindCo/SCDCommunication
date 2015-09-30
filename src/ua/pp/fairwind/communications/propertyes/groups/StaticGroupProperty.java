@@ -4,10 +4,11 @@ package ua.pp.fairwind.communications.propertyes.groups;
 import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
 /**
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 public abstract class StaticGroupProperty extends AbstractProperty implements GroupPropertyInterface {
     final private Map<String,AbstractProperty> properties;
     final private Map<UUID,AbstractProperty> propertiesUUID;
+    final private List<AbstractProperty> listproperty;
 
     final private ElementEventListener listener= (event,param) -> {
         Object value=getAdditionalInfo(PROPERTY_BUBLE_EVENT);
@@ -26,7 +28,7 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
 
     @Override
     public int propertyCount() {
-        return properties.size();
+        return listproperty.size();
     }
 
     @Override
@@ -47,19 +49,14 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
 
     @Override
     public AbstractProperty getPopertyByIndex(int index){
-        Collection<AbstractProperty> list=properties.values();
-        int in=0;
-        for(AbstractProperty prp:list){
-            if(in==index) return prp;
-            in++;
-        }
-        return null;
+        return listproperty.get(index);
     }
 
     public StaticGroupProperty(String name, String uuid,AbstractProperty... propertyList) {
         super(name, uuid);
         properties =new ConcurrentHashMap<>();
         propertiesUUID =new ConcurrentHashMap<>();
+        listproperty=new CopyOnWriteArrayList<>();
         addPropertyies(propertyList);
     }
 
@@ -68,8 +65,11 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
         if(propertyList!=null && propertyList.length>0){
             for(AbstractProperty property:propertyList){
                 property.addEventListener(listener);
-                properties.put(property.getName(), property);
-                propertiesUUID.put(property.getUUID(), property);
+                AbstractProperty previos=properties.put(property.getName(), property);
+                if(previos!=null)listproperty.remove(previos);
+                previos=propertiesUUID.put(property.getUUID(), property);
+                if(previos!=null)listproperty.remove(previos);
+                listproperty.add(property);
             }
         }
     }
@@ -79,6 +79,11 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
             property.addEventListener(listener);
             properties.put(property.getName(), property);
             propertiesUUID.put(property.getUUID(), property);
+            AbstractProperty previos=properties.put(property.getName(), property);
+            if(previos!=null)listproperty.remove(previos);
+            previos=propertiesUUID.put(property.getUUID(), property);
+            if(previos!=null)listproperty.remove(previos);
+            listproperty.add(property);
         }
     }
 

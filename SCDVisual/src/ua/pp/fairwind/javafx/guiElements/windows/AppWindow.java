@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
+import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.guiElements.ButtonPanel;
 import ua.pp.fairwind.javafx.guiElements.HeaderPanel;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
@@ -43,7 +44,7 @@ public class AppWindow extends SimpleView implements ApplicationWindow {
 			this.sceneRoot = sceneRoot;
 			this.buttonPanel = buttonPanel;
 			if(headerPanel==null){
-				this.headerPanel=new HeaderPanel(66,resloader);
+				this.headerPanel=new HeaderPanel(66, I18N_FX.getLocalizedString("APP_HEADER_TEXT"),resloader);
 			} else {
 				this.headerPanel = headerPanel;
 			}			
@@ -54,7 +55,7 @@ public class AppWindow extends SimpleView implements ApplicationWindow {
 			super(title, icon, prefferedSize,resloader);
 			this.mainMenuExecutor = mainMenuExecutor;
 			this.menuHold = menuHold;		
-			headerPanel=new HeaderPanel(66,resloader);
+			headerPanel=new HeaderPanel(66,I18N_FX.getLocalizedString("APP_HEADER_TEXT"),resloader);
 		}
 
 		public AppWindow(String title, PrefferedSize prefferedSize,MenuHolder menuHold,MyResourceLoader resloader){

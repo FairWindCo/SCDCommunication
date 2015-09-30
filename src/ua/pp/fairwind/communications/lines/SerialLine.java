@@ -229,13 +229,13 @@ public class SerialLine extends AbstractLine {
 
     @Override
     synchronized public void destroy() {
-        super.destroy();
         try {
             if (port.isOpened())
                 port.closePort();
         } catch (SerialPortException exc){
         //do nothing
         }
+        super.destroy();
     }
 
     @Override
@@ -246,5 +246,15 @@ public class SerialLine extends AbstractLine {
     @Override
     protected boolean testIdentialyLineParameters(LineParameters current, LineParameters newparmeters) {
         return CommunicationLineParameters.compare_RS_PARAMETERS(current,newparmeters);
+    }
+
+    @Override
+    public void closeLine() {
+        try {
+            if (port.isOpened())
+                port.closePort();
+        } catch (SerialPortException exc){
+            fireEvent(EventType.ERROR,exc.getLocalizedMessage());
+        }
     }
 }

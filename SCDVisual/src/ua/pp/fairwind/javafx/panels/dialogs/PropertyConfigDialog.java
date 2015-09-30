@@ -1,8 +1,11 @@
 package ua.pp.fairwind.javafx.panels.dialogs;
 
+import images.MyResourceLoader;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
@@ -131,6 +134,9 @@ public class PropertyConfigDialog {
 
     public static Button crateConfigButton(final AbstractProperty property){
         Button but=new Button(I18N_FX.getLocalizedString("CONFIG.name"));
+        but.getStyleClass().add("rich-blue");
+        Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("setting_ico.png"));
+        but.setGraphic(new ImageView(imageDecline));
         but.setOnAction(action -> showConfigDialog(property));
         Tooltip.install(but, new Tooltip(I18N_FX.getLocalizedString("CONFIG.description")));
         return but;

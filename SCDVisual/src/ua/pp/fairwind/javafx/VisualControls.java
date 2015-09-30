@@ -3,8 +3,11 @@ package ua.pp.fairwind.javafx;
 import eu.hansolo.enzo.canvasled.Led;
 import eu.hansolo.enzo.lcd.Lcd;
 import eu.hansolo.enzo.lcd.LcdBuilder;
+import images.MyResourceLoader;
 import javafx.application.Platform;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
@@ -55,8 +58,35 @@ public class VisualControls {
         return led;
     }
 
+    public static Button createPClosePortButton(AbstractDevice device){
+        Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("close2.png"));
+        Button button = new Button();
+        button.setGraphic(new ImageView(imageDecline));
+        button.getStyleClass().add("rich-blue");
+        button.setOnAction(event -> {
+            if (device != null && device.getPrimaryLine() != null) device.getPrimaryLine().closeLine();
+        });
+        Tooltip.install(button, new Tooltip(I18N_FX.getLocalizedString("P_LINE_CLOSE")));
+        return button;
+    }
+
+    public static Button createSClosePortButton(AbstractDevice device){
+        Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("close2.png"));
+        Button button = new Button();
+        button.setGraphic(new ImageView(imageDecline));
+        button.getStyleClass().add("rich-blue");
+        button.setOnAction(event -> {
+            if (device != null && device.getSecondaryLine() != null) device.getSecondaryLine().closeLine();
+        });
+        Tooltip.install(button, new Tooltip(I18N_FX.getLocalizedString("S_LINE_CLOSE")));
+        return button;
+    }
+
     public static Button createConfigureButton(SerialDeviceInterface device){
         Button button=new Button(I18N_FX.getLocalizedString("CONFIG_DEVICE_DIALOG"));
+        Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("setting_ico.png"));
+        button.setGraphic(new ImageView(imageDecline));
+        button.getStyleClass().add("rich-blue");
         button.setOnAction(action -> LineParametersDialog.getSerialLineParameterDialog(device));
         Tooltip.install(button, new Tooltip(I18N_FX.getLocalizedString("CONFIG_DEVICE_DIALOG.description")));
         return button;
@@ -64,6 +94,17 @@ public class VisualControls {
 
     public static Button createCommandExecuteButton(DeviceNamedCommandProperty command){
         Button button=new Button(command.getName());
+        button.getStyleClass().add("rich-blue");
+        button.setOnAction(event -> command.activate());
+        Tooltip.install(button, new Tooltip(command.getDescription()));
+        return button;
+    }
+
+    public static Button createCommandExecuteButton2(DeviceNamedCommandProperty command){
+        Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("ok-icon.png"));
+        Button button = new Button();
+        button.getStyleClass().add("rich-blue");
+        button.setGraphic(new ImageView(imageDecline));
         button.setOnAction(event -> command.activate());
         Tooltip.install(button, new Tooltip(command.getDescription()));
         return button;
@@ -111,6 +152,9 @@ public class VisualControls {
 
     public static Button createReReadButton(AbstractProperty command){
         Button button=new Button(I18N_FX.getLocalizedString("READ.name"));
+        Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("download-ico.png"));
+        button.setGraphic(new ImageView(imageDecline));
+        button.getStyleClass().add("rich-green");
         button.setOnAction(event -> command.readValueRequest());
         Tooltip.install(button, new Tooltip(I18N_FX.getLocalizedString("READ.description")));
         return button;
@@ -118,6 +162,9 @@ public class VisualControls {
 
     public static Button createReWriteButton(AbstractProperty command){
         Button button=new Button(I18N_FX.getLocalizedString("SAVE.name"));
+        Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("upload-ico.png"));
+        button.getStyleClass().add("rich-red");
+        button.setGraphic(new ImageView(imageDecline));
         Tooltip.install(button, new Tooltip(I18N_FX.getLocalizedString("SAVE.description")));
         button.setOnAction(event -> command.writeValueRequest());
         return button;

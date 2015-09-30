@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import ua.pp.fairwind.communications.propertyes.software.stringlike.StringIntegerValuedProperty;
+import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.guiElements.SCADASystemFX;
 import ua.pp.fairwind.javafx.guiElements.menu.*;
 import ua.pp.fairwind.javafx.guiElements.windows.AppWindow;
@@ -42,7 +43,7 @@ public class MainWindowTest extends Application {
         mainView=new AppWindow(resloader);
         mainmenuexec.setResloader(resloader);
         mainView.setMainMenuExecutor(mainmenuexec);
-        mainView.setTitle("TEST WINDOWS");
+        mainView.setTitle(I18N_FX.getLocalizedString("APP_TITLE_TEXT"));
         mainView.setIcon(new Image(resloader.getExternalResourceURILink("icon-48x48.png")));
         MenuConfigElements testDev=new MenuConfigElements("Single_Devies", "");
         MenuConfigElements akon=new MenuConfigElements("AKON", "");

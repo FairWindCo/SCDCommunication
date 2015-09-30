@@ -565,4 +565,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     public ImitatorDevice[] getDeivicesForService(){
         return deviceForService.toArray(new ImitatorDevice[deviceForService.size()]);
     }
+
+    @Override
+    public abstract void closeLine();
 }

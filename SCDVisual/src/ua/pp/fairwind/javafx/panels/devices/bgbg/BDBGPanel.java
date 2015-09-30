@@ -3,12 +3,10 @@ package ua.pp.fairwind.javafx.panels.devices.bgbg;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import ua.pp.fairwind.communications.devices.hardwaredevices.ecotest.BDBG09;
 import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
@@ -38,7 +36,7 @@ public class BDBGPanel extends HBox {
     }
 
     private void  intiCONFIGPane(){
-        final Tab initTab=new Tab(I18N_FX.getLocalizedString("DEVICE_INFO"));
+        final Tab initTab=new Tab(I18N_FX.getLocalizedString("KOEFICIENTS"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -50,10 +48,11 @@ public class BDBGPanel extends HBox {
             grid.setPadding(new Insets(10, 10, 10, 10));
 
             int rowIndex = 0;
-            rowIndex = TupicalPanels.setChanelControl(grid, device.getGROUP_KOIF(), rowIndex, 0);
-            grid.add(VisualControls.createReReadButton(device.getGROUP_KOIF()), 0, rowIndex,2,1);
-            grid.add(VisualControls.createReWriteButton(device.getGROUP_KOIF()), 2, rowIndex,2,1);
-            initTab.setContent(grid);
+            rowIndex = TupicalPanels.setChanelControl(grid, device.getGROUP_KOIF(), rowIndex, 0,false);
+            ScrollPane scrol=new ScrollPane(grid);
+            scrol.setFitToWidth(true);
+            scrol.setFitToHeight(true);
+            initTab.setContent(scrol);
         });
     }
 
@@ -78,6 +77,17 @@ public class BDBGPanel extends HBox {
             grid.add(new Label(I18N_FX.getLocalizedString("MISS")), 0, rowIndex);
             grid.add(VisualControls.createLcdIndicator(device.getMiss()), 1, rowIndex++);
             rowIndex = TupicalPanels.setChanelControlRO(grid, device.getTemp(), "TEMP", rowIndex, 0);
+
+            grid.add(VisualControls.createLedIndicator(device.getStatus(),Color.YELLOW), 0, rowIndex);
+            grid.add(VisualControls.createLedIndicator(device.getMULTI(),Color.GREEN), 1, rowIndex);
+            grid.add(VisualControls.createLedIndicator(device.getHIGHT_ERROR(), Color.RED), 2, rowIndex);
+            grid.add(VisualControls.createLedIndicator(device.getLOW_ERROR(), Color.RED), 3, rowIndex);
+            grid.add(VisualControls.createLedIndicator(device.getTEMP_ERROR(), Color.RED), 4, rowIndex++);
+
+            grid.add(new Label(I18N_FX.getLocalizedString("BDBG09.STAT")), 0, rowIndex);
+            grid.add(new Label(I18N_FX.getLocalizedString("BDBG09.MULTI")), 1, rowIndex);
+            grid.add(new Label(I18N_FX.getLocalizedString("BDBG09.ERROR")), 2, rowIndex++,3,1);
+
             initTab.setContent(grid);
         });
     }
@@ -114,10 +124,10 @@ public class BDBGPanel extends HBox {
 
     private void initControl(){
         setAlignment(Pos.CENTER);
-        intiStatusPane();
         intiDeviceControlPane();
         intiDeviceConfigPane();
         intiCONFIGPane();
+        intiStatusPane();
         tabs.setPrefHeight(430);
         getChildren().add(tabs);
     }

@@ -222,7 +222,7 @@ public class BDBG09 extends RSLineDevice {
             res=-res;
         }
         setHardWareInternalValue(this.temp,res,sourceEvent);
-        boolean det_error=(bits&0b1000_0000)==0?false:true;
+        boolean det_error=(bits&0b1000_0000_0000_0000)==0?false:true;
         setHardWareInternalValue(this.getTEMP_ERROR(),det_error,sourceEvent);
     }
 

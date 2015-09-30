@@ -4,20 +4,15 @@ package ua.pp.fairwind.javafx.panels.devices.argMicro;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.devices.hardwaredevices.arg.micro.ArgMicroDevice;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
-import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
-import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
-import ua.pp.fairwind.javafx.VisualControls;
 import ua.pp.fairwind.javafx.panels.TupicalPanels;
-import ua.pp.fairwind.javafx.panels.devices.DeviceConfigPanel;
 import ua.pp.fairwind.javafx.panels.dialogs.PropertyConfigDialog;
 
 
@@ -60,8 +55,8 @@ public class ArgMicroPanel extends HBox {
             rowIndex=setAOChanelControl(grid, device.getAnalogOutChanelN4(), I18N_FX.getLocalizedStringEx("AO4"), rowIndex++, 0);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getReadAllAO()), 0, rowIndex, 3, 1);
             grid.add(DeviceConfigPanel.createCommandExecuteButton(device.getWriteAllAO()), 2, rowIndex++,3,1);/**/
-            rowIndex = TupicalPanels.setFloatChanelControl(grid, device.getRate(), I18N_FX.getLocalizedString("RATE"), rowIndex++, 0);
-            rowIndex = TupicalPanels.setShortChanelControl(grid, device.getNumberMeasurementm(), I18N_FX.getLocalizedString("NUMBER_MEASUREMENT"), rowIndex++, 0);
+            rowIndex = TupicalPanels.setFloatChanelControlRO(grid, device.getRate(), I18N_FX.getLocalizedString("RATE"), rowIndex++, 0);
+            rowIndex = TupicalPanels.setShortChanelControlRO(grid, device.getNumberMeasurementm(), I18N_FX.getLocalizedString("NUMBER_MEASUREMENT"), rowIndex++, 0);
             initTab.setContent(grid);
         });
     }
