@@ -4,6 +4,7 @@ import ua.pp.fairwind.communications.SCADASystem;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.elementsdirecotry.AutoCreateDeviceFunction;
+import ua.pp.fairwind.communications.lines.LoopBackLine;
 import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
@@ -36,6 +37,7 @@ public class SCADASystemFX extends SCADASystem {
         SCADASystemFX scada=new SCADASystemFX(name,null,300);
         List<LineInterface> serialLines= SerialLine.getSerialLines(maxTrunsactionTime);
         scada.addLines(serialLines);
+        scada.addElemnt(new LoopBackLine());
         return scada;
     }
 

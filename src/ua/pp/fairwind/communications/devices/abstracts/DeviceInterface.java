@@ -18,6 +18,8 @@ public interface DeviceInterface extends ElementInterface{
     AbstractProperty getProperty(String name);
     AbsractCommandProperty[] getCommands();
     AbstractProperty[] getPropertys();
+    void setActivete(boolean activeted);
+    boolean isActive();
 
     void processRecivedMessage(CommunicationAnswer answer);
 
@@ -39,8 +41,7 @@ public interface DeviceInterface extends ElementInterface{
     void setLineParameters(LineParameters params);
     LineParameters getLineParameters();
 
-    void setActivete(boolean activeted);
-    boolean isActive();
+
 
     SoftLongProperty getRetryCount();
     SoftLongProperty getDeviceTimeOut();

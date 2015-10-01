@@ -49,34 +49,28 @@ public class SerialLine extends AbstractLine {
             }
         };
     }
-
     @Override
-    public void setServerLineParameter(boolean setServerMode, LineParameters serverLineParameter) {
-        if(setServerMode){
-            try {
-                if(!port.isOpened()){
-                    port.openPort();
-                    setLineParameters(serverLineParameter);
-                }
-                port.addEventListener(eventlistener);
-            } catch (SerialPortException e){
-                serverMode.set(false);
-                fireEvent(EventType.FATAL_ERROR,e.getLocalizedMessage());
-                return;
+    protected void activateServerMode(LineParameters serverLineParameter,SERVICE_MODE mode){
+        try {
+            if(!port.isOpened()){
+                port.openPort();
+                setLineParameters(serverLineParameter);
             }
-
-        } else {
-            try{
-                port.removeEventListener();
-                port.closePort();
-            } catch (SerialPortException e){
-                serverMode.set(false);
-                fireEvent(EventType.FATAL_ERROR,e.getLocalizedMessage());
-                return;
-            }
+            port.addEventListener(eventlistener);
+        } catch (SerialPortException e){
+            fireEvent(EventType.FATAL_ERROR,e.getLocalizedMessage());
         }
-        super.setServerLineParameter(setServerMode, serverLineParameter);
     }
+    @Override
+    protected void deactivateServerMode(){
+        try{
+            port.removeEventListener();
+            port.closePort();
+        } catch (SerialPortException e){
+            fireEvent(EventType.FATAL_ERROR,e.getLocalizedMessage());
+        }
+    }
+
 
     @Override
     synchronized protected void closeUsedResources() {

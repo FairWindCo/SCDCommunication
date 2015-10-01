@@ -15,6 +15,11 @@ import java.util.UUID;
  * Created by Сергей on 07.07.2015.
  */
 public interface LineInterface  extends ElementInterface {
+    enum SERVICE_MODE{
+        CLIENT_ONLY,
+        SERVER_ONLY,
+        CLIENT_SERVER
+    }
     void startTransaction(UUID uuid,long waitTime) throws TrunsactionError;
     void endTransaction(UUID uuid);
 
@@ -32,6 +37,10 @@ public interface LineInterface  extends ElementInterface {
 
     boolean isPaused();
     void setPaused(boolean pause);
+
+    void setServiceMode(SERVICE_MODE mode,LineParameters serverLineParameter);
+    void setClientMode();
+    SERVICE_MODE getServiceMode();
 
     ImitatorDevice[] getDeivicesForService();
     void addDeviceToService(ImitatorDevice device);

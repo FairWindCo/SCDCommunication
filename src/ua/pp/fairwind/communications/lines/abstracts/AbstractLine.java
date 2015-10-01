@@ -39,7 +39,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     private final AtomicBoolean threadPaused=new AtomicBoolean(false);
     private final AtomicBoolean performanceMonitor=new AtomicBoolean(false);
     private final AtomicBoolean threadTrunsactionPaused=new AtomicBoolean(false);
-    protected final AtomicBoolean serverMode=new AtomicBoolean(false);
+    protected volatile SERVICE_MODE serverMode=SERVICE_MODE.CLIENT_ONLY;
     private volatile long startTrunsactionTime=-1;
     private volatile UUID trunsactionUUID;
     private final long maxTransactionTime;
@@ -71,7 +71,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
     public static String localizeError(String key){
         return localizeError("line", key);
     }
-
+    //Проверка активности атранзакций (внутренний для других методов)
     synchronized private boolean isTrunsactionActive(){
         if(transuction.get()){
             if(startTrunsactionTime+ maxTransactionTime >System.currentTimeMillis()){
@@ -84,45 +84,47 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             return false;
         }
     }
-
-    protected void serviceRecivedFromLineDataInServerMode(final byte[] data){
-        if(serverMode.get() && data!=null && data.length>0){
-            try {
-                if (lock.tryLock(maxTransactionTime * 3, TimeUnit.MILLISECONDS)) {
-                        deviceForService.forEach(device -> {
-                            byte[] copydata = Arrays.copyOf(data, data.length);
-                            byte[] answer = device.process_line_data(copydata);
-                            if (answer != null && answer.length > 0) {
-                                long starttime=System.currentTimeMillis();
-                                try {
-                                    sendMessage(answer, serverLineParameter);
-                                    perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION, System.currentTimeMillis() - starttime);
-                                    writemonitor(answer, null);
-                                } catch (LineErrorException e) {
-                                    fireEvent(EventType.FATAL_ERROR, e);
-                                } catch (LineTimeOutException e) {
-                                    fireEvent(EventType.FATAL_ERROR, e);
-                                }
-                            }
-                        });
+    //Отправка данных из серверного режима
+    protected void sendMessageFromServerMode(byte[] data, LineParameters params) throws LineErrorException,LineTimeOutException{
+        sendMessage(data, serverLineParameter);
+    }
+    //Обработка запроса при серверном режиме
+    protected void serviceRecivedFromLineDataInServerMode(byte[] recivvedBuffer){
+        if(!threadPaused.get() && serverMode!=SERVICE_MODE.CLIENT_ONLY && recivvedBuffer!=null && recivvedBuffer.length>0) {
+            readmonitor(recivvedBuffer,null);
+            deviceForService.parallelStream().forEach(device -> {
+                try {
+                    byte[] copydata = Arrays.copyOf(recivvedBuffer, recivvedBuffer.length);
+                    byte[] answer = device.process_line_data(copydata);
+                    if (answer != null && answer.length > 0) {
+                        try {
+                            lock.lock();
+                            long starttime=System.currentTimeMillis();
+                            sendMessageFromServerMode(answer, serverLineParameter);
+                            perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE.WRITE_OPERATION, System.currentTimeMillis() - starttime);
+                            writemonitor(answer, null);
+                        } catch (Exception e) {
+                            fireEvent(EventType.ERROR, e.getLocalizedMessage());
+                            device.errorDuringSend();
+                        } finally {
+                            lock.unlock();
+                        }
+                    }
+                } catch (Exception err) {
+                    fireEvent(EventType.ERROR, err.getLocalizedMessage());
                 }
-            }catch (InterruptedException ex){
-                //do nothing
-            } catch (Exception ex){
-                fireEvent(EventType.FATAL_ERROR,ex);
-            }finally {
-                lock.unlock();
-            }
+            });
         }
     }
 
+    //Метод записи сообщений производителности
     private void perfarmanceMonitoring(PerformanceMonitorEventData.EXECUTE_TYPE typeExecute,long time){
         if(performanceMonitor.get()) {
             PerformanceMonitorEventData data=new PerformanceMonitorEventData(typeExecute,time);
-            fireEvent(EventType.PERFORMANCE,data);
+            fireEvent(EventType.PERFORMANCE, data);
         }
     }
-
+    //метод проверки что транзакция свободна, требует значение UUID того, кто хочет занять транзакцтию
     synchronized private boolean isTrunsactionActive(UUID uuid){
         if(uuid==null) return false;
         if(transuction.get()){
@@ -139,7 +141,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
 
 
-
+    //метод активации транзакции для абонента с UUID (параметр время, которое ожидается возможность получения транзакции
     @Override
     synchronized public void startTransaction(UUID uuid,long waitTime) throws TrunsactionError {
         if(uuid==null) throw new TrunsactionError( localizeError("uuid_error"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
@@ -161,6 +163,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
+    //Метод выполняет переключение линии на указанную линию параметром, если для линии был выставлено устройство переключения
     public boolean lineSelectorExecute(Object selectLine){
         if(lineSelector!=null&&selectLine!=null) {
             return lineSelectorExecute(lineSelector.selectLine(selectLine));
@@ -168,7 +171,8 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         return true;
     }
 
-    public boolean lineSelectorExecute(LineSelector selectData){
+    //Метод выполняет переключение линии  при помощи устройства переключения линий (выполняет формирование,  отравку запроса и контроль ответа от коммутатора линий)
+    protected boolean lineSelectorExecute(LineSelector selectData){
         if(selectData==null) return false;
         if(!selectData.isAlreadySelect()){
             try{
@@ -191,7 +195,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
         return true;
     }
-
+    //Еще один метод в цепочке переключения линий ВЕРХНИЙ УРОВЕНЬ (выполняет к контроль за параметрами линии и необходимостью переключения)
     private boolean lineSelectorExecute(LineParameters params){
         if(lineSelector!=null) {
             Object always_set_line=params.getLineParameter(LineParameters.ALWAYS_SET_LINE);
@@ -221,16 +225,33 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
         return true;
     }
-
+    //МЕТОДЫ ДЛЯ РЕАЛИЗАЦИИ В ДОЧЕРНИХ ОБЪЕКТАХ
+    //метод выполняет отправку данных в линию (физическое действие по отправке, с перестройков параметров линии на указанные) ВНИМАНИЕ: параметры линии проверяются на идентичноить к уже установленнымм
     abstract protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException,LineTimeOutException;
+    //метод выполняет чтение данных из линии (физическое действие по приему указанного количества байт за указанное время, с перестройков параметров линии на указанные) ВНИМАНИЕ: параметры линии проверяются на идентичноить к уже установленнымм
+    //КОЛИЧЕСТВО может быть указано как положительное так и отрицательное, положительное надо точно такое количество байт, отрицательное надо не меннее указанного количество (при этом всегда выдерживается пауза)
     abstract protected byte[] reciveMessage(long timeOut,long bytesForReadCount, LineParameters params) throws LineErrorException,LineTimeOutException;
+    //метод который физически перестраивает параметры линии
     abstract protected boolean setupLineParameters(LineParameters params, LineParameters curentLineParameters, boolean alwaysSet);
+    //метод выполняющий очистку внутренних буфером линии
     abstract protected boolean clearBuffers(LineParameters parameters);
+    //метод вызывается всякий раз при старте новой транзакции
     abstract protected void onStartTrunsaction();
+    //метод вызывается всякий раз при завершении транзакции
     abstract protected void onEndTrunsaction();
+    //метод освобождает ресурсы занятые линией (завершение работы)
     abstract protected void closeUsedResources();
+    //Метод сравнения параметров линии запрошенных у уже установленными для предотвращения излишних действий по перестроке параметров
     abstract protected boolean testIdentialyLineParameters(LineParameters current,LineParameters newparmeters);
+    //Метод вызывается всякий раз при активации серверного режима
+    abstract protected void activateServerMode(LineParameters serverLineParameter,SERVICE_MODE mode);
+    //Метод вызывается всякий раз при де активации серверного режима
+    abstract protected void deactivateServerMode();
+    //МЕТОД закрывает линии (например в случае сокеты или порта)
+    @Override
+    public abstract void closeLine();
 
+    //Внутренний метод переключения параметров линии со сравнением с уже установленным значением
     protected boolean setLineParameters(LineParameters params){
         if(!clearBuffers(params)) return false;
         if(params==null){
@@ -257,7 +278,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
-
+    ///МЕТОД для пользователей объекта позволяет завершить ранее начятую транзакцию
     @Override
     synchronized public void endTransaction(UUID uuid) {
         if(uuid!=null && isTrunsactionActive() && uuid.equals(trunsactionUUID)){
@@ -268,9 +289,10 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
+    //Метод отправки сообщения в линии (для пользователя объекта) требует наличия UUID для проверки того, что UUID ранее открыл транзакцию и она еще не завершилась
     @Override
     public void sendMessage(UUID uuid,final byte[] data, LineParameters params) throws TrunsactionError,LineErrorException,LineTimeOutException {
-        if(!isTrunsactionActive(uuid)){
+        if(!isTrunsactionActive(uuid) && serverMode!=SERVICE_MODE.SERVER_ONLY){
             try {
                 if (lock.tryLock(maxTransactionTime, TimeUnit.MILLISECONDS)) {
                     if (lineSelectorExecute(params)) {
@@ -296,6 +318,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
+    //внетренний метод для выдачи данных на объеты мониторинга линии (в объеты мониторинга передается содержимое принятых данных)
     private void readmonitor(final byte[] data,final CommunicationProtocolRequest request){
         if(data!=null && data.length>0) {
             fireEvent(EventType.READ_MONITOR,new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.READ,data,this,request!=null?request.getSenderDevice():null,request!=null?request.getProperty():null));
@@ -305,10 +328,10 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             }
         }
     }
-
+    //внетренний метод для выдачи данных на объеты мониторинга линии (в объеты мониторинга передается содержимое отправляемых данных)
     private void writemonitor(final byte[] data,final CommunicationProtocolRequest request){
         if(data!=null && data.length>0) {
-            fireEvent(EventType.WRITE_MONITOR,new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.WRITE,data,this,request!=null?request.getSenderDevice():null,request!=null?request.getProperty():null));
+            fireEvent(EventType.WRITE_MONITOR, new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.WRITE, data, this, request != null ? request.getSenderDevice() : null, request != null ? request.getProperty() : null));
             if (writemonitoring.size() > 0 && data != null && data.length > 0) {
                 final CommunicationAnswer comans = new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.WRITE_MONITOR, data, null, this,0,0);
                 writemonitoring.parallelStream().forEach(dev -> dev.processRecivedMessage(comans));
@@ -316,9 +339,10 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
+    //Метод получения сообщения их линии (для пользователя объекта) требует наличия UUID для проверки того, что UUID ранее открыл транзакцию и она еще не завершилась
     @Override
     public byte[] reciveMessage(UUID uuid,long timeOut,long bytesForReadCount, LineParameters params) throws TrunsactionError,LineTimeOutException,LineErrorException {
-        if(!isTrunsactionActive(uuid)){
+        if(!isTrunsactionActive(uuid)&& serverMode!=SERVICE_MODE.SERVER_ONLY){
             try {
                 if (lock.tryLock(maxTransactionTime, TimeUnit.MILLISECONDS)) {
                     if (lineSelectorExecute(params)&&setLineParameters(params)) {
@@ -345,9 +369,10 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             throw new TrunsactionError(localizeError("another_trunsaction"), TrunsactionError.TrunsactionErrorType.TRUNSACTION_ERROR);
         }
     }
-    //функция выплолнения операций чтения записи в линию для запроса
+
+    //функция выплолнения операций чтения записи в линию для запроса (работает для обслуживания устройств) Внутренний метод вызывемый из executeRequest
     private CommunicationAnswer processCommunicationOperationForRequest(final CommunicationProtocolRequest request){
-        if(request!=null && !serverMode.get()){
+        if(request!=null && serverMode!=SERVICE_MODE.SERVER_ONLY){
             if(!setLineParameters(request.getParameters())){
                 CommunicationAnswer answ=new CommunicationAnswer(request, CommunicationAnswer.CommunicationResult.ERROR,null,localizeError("line_parameters_error"),this,0,0);
             }
@@ -434,6 +459,10 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
+    //МЕТОД СЕРВИСА ОБРАБОТКИ ЗАПРОСОВ ОТ УСТРОЙСТВ
+    //отвечает за запуск потока обработки запросов и контроль за ним, а также за поддержку транзакций
+    //метод в омент выполнения запроса блокирует любые другие действия,
+    //также данный метод может быть заблокирован методом обработки серверных запросов
     @Override
     public void async_communicate(CommunicationProtocolRequest requesting) {
         //System.out.println("ADD REQUEST"+requesting);
@@ -446,7 +475,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
             Thread processor=new Thread(() -> {
                 threadRunned.set(true);
                 while (threadRunned.get()){
-                    if(!threadPaused.get() && !threadTrunsactionPaused.get() &&!serverMode.get() ) {
+                    if(!threadPaused.get() && !threadTrunsactionPaused.get() && serverMode!=SERVICE_MODE.SERVER_ONLY ) {
                         try {
                             lock.lock();
                             CommunicationProtocolRequest request = requests.poll(1,TimeUnit.SECONDS);
@@ -478,31 +507,35 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         }
     }
 
+    //Метод добавляет к линии устройство мониторинга за данными принимаемыми линией
     @Override
     public void addReadMonitoringDevice(DeviceInterface device) {
         readmonitoring.add(device);
     }
-
+    //Метод добавляет к линии устройство мониторинга за данными отправляемым линией
     @Override
     public void addWriteMonitoringDevice(DeviceInterface device) {
         writemonitoring.add(device);
     }
 
+    //Метод удаляет из линии устройство мониторинга за данными принимаемыми линией
     @Override
     public void removeReadMonitoringDevice(DeviceInterface device) {
         readmonitoring.remove(device);
     }
-
+    //Метод удаляет из линии устройство мониторинга за данными отправляемым линией
     @Override
     public void removeWriteMonitoringDevice(DeviceInterface device) {
         writemonitoring.remove(device);
     }
 
+    //Метод проверяет не остановлена ли линия
     @Override
     public boolean isPaused() {
         return threadPaused.get();
     }
 
+    //Метод позволяет остановить функционирование линии
     @Override
     public void setPaused(boolean pause) {
         threadPaused.set(pause);
@@ -510,9 +543,11 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
 
     @Override
     public String toString() {
-        return String.format(I18N.getLocalizedString("line.description"),getName(),getUUIDString(),getDescription());
+        return String.format(I18N.getLocalizedString("line.description"), getName(), getUUIDString(), getDescription());
     }
 
+
+    //Метод ДОЛЖЕН БЫТЬ ВЫЗВАН ДЛЯ КОРРЕКТНОГО ЗАВЕРШЕНИЯ РАБОТЫ ЛИНИИ
     @Override
     public void destroy(){
         closeUsedResources();
@@ -521,51 +556,71 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         super.destroy();
     }
 
+    //МЕТОД УКАЗЫВАЕТ формирует ли линиия сообщения о производительности операций чтения/записи
     public boolean isPerformanceMonitor() {
         return performanceMonitor.get();
     }
-
+    //МЕТОД АКТИВИРАУЕТ/ДЕ АКТИВИРАУЕТ формирование линиией сообщений о производительности операций чтения/записи
     public void setPerformanceMonitor(boolean state) {
         performanceMonitor.set(state);
     }
 
+    //Возврщает установленное для линии устройство отвечающие за коммутацию (переключение) линий
     public LineSelectDevice getLineSelector() {
         return lineSelector;
     }
-
+    //Установливает для линии устройство отвечающие за коммутацию (переключение) линий
     public void setLineSelector(LineSelectDevice lineSelector) {
         this.lineSelector = lineSelector;
     }
 
-    public void setServerLineParameter(boolean setServerMode,LineParameters serverLineParameter) {
-        if(setServerMode) {
-            this.serverLineParameter = serverLineParameter;
-            serverMode.set(false);
-        } else {
-            serverMode.set(false);
+
+    //МЕТОД ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ РАБОТЫ ЛИНИИ
+    @Override
+    public void setServiceMode(SERVICE_MODE mode, LineParameters serverLineParameter) {
+        this.serverLineParameter = serverLineParameter;
+        if(this.serverMode==SERVICE_MODE.SERVER_ONLY && mode!=SERVICE_MODE.SERVER_ONLY) {
+            threadPaused.set(true);
+        } else if(this.serverMode!=SERVICE_MODE.SERVER_ONLY && mode==SERVICE_MODE.SERVER_ONLY) {
+            threadPaused.set(false);
         }
+        if(mode!=SERVICE_MODE.CLIENT_ONLY){
+            setLineParameters(serverLineParameter);
+            activateServerMode(serverLineParameter,mode);
+        } else {
+            deactivateServerMode();
+        }
+        this.serverMode=mode;
     }
 
-    public void stopServerMode() {
-        setServerLineParameter(false, null);
+    //МЕТОД АКТИВАЦИИ КЛИЕНТСКОГО РЕЖИМА
+    @Override
+    public void setClientMode() {
+        setServiceMode(SERVICE_MODE.CLIENT_ONLY, null);
     }
 
+    //метод возвращает текущий режим линии
+    @Override
+    public SERVICE_MODE getServiceMode() {
+        return serverMode;
+    }
+
+    //метод осуществялет проверку что линия находится в серверном режиме
     public boolean isServerMode() {
-        return serverMode.get();
+        return serverMode!=SERVICE_MODE.CLIENT_ONLY;
     }
 
+    //добавляет устройство которое будет принимать запросы от линии в сервеном режиме
     public void addDeviceToService(ImitatorDevice device){
         if(device!=null)deviceForService.add(device);
     }
-
+    //удаляет устройство которое будет принимать запросы от линии в сервеном режиме
     public void removeDeviceToService(ImitatorDevice device){
         if(device!=null)deviceForService.remove(device);
     }
-
+    //возвращяет массив устройств которые будут принимать запросы от линии в сервеном режиме
     public ImitatorDevice[] getDeivicesForService(){
         return deviceForService.toArray(new ImitatorDevice[deviceForService.size()]);
     }
 
-    @Override
-    public abstract void closeLine();
 }

@@ -91,19 +91,19 @@ public class BDBG09 extends RSLineDevice {
                         int frame_code=(recivedMessage[startpos + 2]>>4)&0xF;
                         switch (frame_code){
                             case 0x1:{
-                                if(startpos+10>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,9)){
+                                if(startpos+10<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,9)){
                                     readMED(recivedMessage,startpos+3,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x2:{
-                                if(startpos+40>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,39)){
+                                if(startpos+40<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,39)){
                                     readKoificient(recivedMessage,startpos+3,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x5:{
-                                if(startpos+8>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
+                                if(startpos+8<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
                                     readSERIAL(recivedMessage, startpos + 3, sourceEvent);
                                     return true;
                                 }
@@ -126,25 +126,25 @@ public class BDBG09 extends RSLineDevice {
                         int frame_code=(recivedMessage[startpos + 2]>>4)&0xF;
                         switch (frame_code){
                             case 1:{
-                                if(startpos+10>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,9)){
+                                if(startpos+10<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,9)){
                                     readMED(recivedMessage,startpos+3,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x2:{
-                                if(startpos+40>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,39)){
+                                if(startpos+40<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,39)){
                                     readKoificient(recivedMessage,startpos+3,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x5:{
-                                if(startpos+8>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
+                                if(startpos+8<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
                                     readSERIAL(recivedMessage,startpos+3,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x8:{
-                                if(startpos+6>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,5)){
+                                if(startpos+6<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,5)){
                                     readTEMP(recivedMessage, startpos + 3, sourceEvent);
                                     return true;
                                 }
@@ -162,18 +162,18 @@ public class BDBG09 extends RSLineDevice {
             }
         } else if (protocol == PROTOCOL_V3) {
             if(recivedMessage!=null && recivedMessage.length>=5) {
-                for(int startpos=0;startpos<recivedMessage.length-6;startpos++) {
+                for(int startpos=0;startpos<recivedMessage.length-5;startpos++) {
                     if (recivedMessage[startpos] == (byte) 0x55 && recivedMessage[startpos + 1] == (byte) 0xAA && recivedMessage[startpos + 2] == (byte) 0x70 && (recivedMessage[startpos + 3]&0xFF)==(deviceAddress&0xFF)) {
                         int frame_code=recivedMessage[startpos + 4]&0xFF;
                         switch (frame_code){
                             case 0x1:{
-                                if(startpos+12>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,11)){
+                                if(startpos+12<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,11)){
                                     readMED(recivedMessage,startpos+5,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x2:{
-                                if(startpos+42>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,41)){
+                                if(startpos+42<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,41)){
                                     readKoificient(recivedMessage,startpos+5,sourceEvent);
                                     return true;
                                 }
@@ -184,13 +184,13 @@ public class BDBG09 extends RSLineDevice {
                                 }
                             }
                             case 0x5:{
-                                if(startpos+11>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,10)){
+                                if(startpos+11<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,10)){
                                     readSERIAL_v3(recivedMessage,startpos+5,sourceEvent);
                                     return true;
                                 }
                             }break;
                             case 0x8:{
-                                if(startpos+8>=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
+                                if(startpos+8<=recivedMessage.length && BDBG09_protocol.checkCRC(recivedMessage,startpos,7)){
                                     readTEMP(recivedMessage,startpos+5,sourceEvent);
                                     return true;
                                 }

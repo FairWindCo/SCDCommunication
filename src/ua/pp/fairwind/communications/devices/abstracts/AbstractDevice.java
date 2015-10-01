@@ -11,6 +11,7 @@ import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
+import ua.pp.fairwind.communications.propertyes.Randomizer;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.PropertyExecutor;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
@@ -34,6 +35,8 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
     public static final String COMMAND_VALIDATE_LINE1="VALIDATE_LINE1";
     public static final String COMMAND_VALIDATE_LINE2="VALIDATE_LINE2";
     public static final String COMMAND_VALIDATE_ALL="VALIDATE";
+    public static final String COMMAND_RANDOM="COMMAND_RANDOM";
+
 
     protected final SoftLongProperty deviceTimeOut;
     protected final SoftLongProperty deviceTimeOutPause;
@@ -52,6 +55,7 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
     private final DeviceNamedCommandProperty validateErrorCommandLine1;
     private final DeviceNamedCommandProperty validateErrorCommandLine2;
     private final DeviceNamedCommandProperty validateAllErrorCommand;
+    private final DeviceNamedCommandProperty randomCommand;
     protected final SoftLongProperty retryCount;
 
     final protected CopyOnWriteArrayList<AbstractProperty> listOfPropertyes=new CopyOnWriteArrayList<>();
@@ -153,13 +157,14 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
         super(codename, uuid);
         deviceTimeOut=formLongProperty(-2, "device.timeout_property",500L);
         deviceTimeOutPause=formLongProperty(-3, "device.bausebeforeread_property", 0L);
-        deviceLastTryCommunicateTime = formLongConfigProperty(-4, "device.lastcommunicationtime_property" );
+        deviceLastTryCommunicateTime = formLongConfigProperty(-4, "device.lastcommunicationtime_property");
         deviceLastSuccessCommunicateTime=formLongConfigProperty(-5,"device.lastsuccesscommunicationtime_property");
         refreshCommand=formCommandNameProperty(COMMAND_REFRESH);
         validateErrorCommand=formCommandNameProperty(COMMAND_VALIDATE);
         validateErrorCommandLine1=formCommandNameProperty(COMMAND_VALIDATE_LINE1);
         validateErrorCommandLine2=formCommandNameProperty(COMMAND_VALIDATE_LINE2);
         validateAllErrorCommand=formCommandNameProperty(COMMAND_VALIDATE_ALL);
+        randomCommand=formCommandNameProperty(COMMAND_RANDOM);
         lastCommunicationStatus      =  formIndicatorProperty(-6, "device.lastcommunicationstatus_property", false);
         errorCommunicationStatus     =  formIndicatorProperty(-7, "device.lasterrorcommunicationstatus_property", false);
         lastCommunicationStatusLine1 =  formIndicatorProperty(-8,"device.lastcommunicationstatusline1_property",false);
@@ -193,6 +198,7 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
         cmds.add(validateErrorCommandLine1);
         cmds.add(validateErrorCommandLine2);
         cmds.add(validateAllErrorCommand);
+        cmds.add(randomCommand);
         listOfCommands.addAll(cmds);
     }
 
@@ -392,6 +398,10 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
                 setInternalValue(errorCommunicationStatus,false);
                 setInternalValue(errorCommunicationStatusLine1,false);
                 setInternalValue(errorCommunicationStatusLine2,false);
+                break;
+            }
+            case COMMAND_RANDOM:{
+                listOfPropertyes.parallelStream().forEach(property -> Randomizer.randomizeProperty(property));
                 break;
             }
         }
