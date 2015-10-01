@@ -803,6 +803,15 @@ public class CommunicationUtils {
         return buffer;
     }
 
-
+    public static byte[] cobineArrays(byte[] src,byte[] dst){
+        if(dst==null) return src;
+        if(src==null) return dst;
+        byte[] all = new byte[src.length + dst.length];
+        // copy first half
+        System.arraycopy(src, 0, all, 0, src.length);
+        // copy second half
+        System.arraycopy(dst, 0, all, src.length, dst.length);
+        return  all;
+    }
 
 }

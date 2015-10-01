@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.devices.abstracts;
 
 import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
+import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
 /**
  * Created by Сергей on 09.07.2015.
@@ -17,7 +18,7 @@ public abstract class RSLineImmitatorDevice extends AbstractImmitatorDevice impl
     }
 
     protected RSLineImmitatorDevice(long address, String codename) {
-        this(address, codename,null);
+        this(address, codename, null);
     }
 
 
@@ -59,4 +60,20 @@ public abstract class RSLineImmitatorDevice extends AbstractImmitatorDevice impl
     public SoftLongProperty getDeviceWritePause() {
         return reserv;
     }
+
+    @Override
+    protected byte[] processDataFromLine(byte[] data_from_line) {
+        byte[] result=null;
+        if(data_from_line!=null && data_from_line.length>0) {
+            long deviceaddress = deviceAddress.getValue();
+            for(int i=0;i<data_from_line.length;i++){
+                byte[] res=setState(data_from_line[i],deviceaddress);
+                result=CommunicationUtils.cobineArrays(result,res);
+            }
+        }
+        return result;
+    }
+
+    abstract protected byte[] setState(byte curentByte,long deviceAddress);
+
 }
