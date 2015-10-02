@@ -623,4 +623,7 @@ abstract  public class AbstractLine extends SystemEllement implements LineInterf
         return deviceForService.toArray(new ImitatorDevice[deviceForService.size()]);
     }
 
+    public LineParameters getServerLineParameter() {
+        return serverLineParameter;
+    }
 }

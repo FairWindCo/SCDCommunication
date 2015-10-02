@@ -12,10 +12,13 @@ import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
  * Created by Сергей on 07.07.2015.
  */
 public interface DeviceInterface extends ElementInterface{
+    String NO_RANDOM="NO_RANDOM";
     String[] getCommandsName();
     String[] getPropertyesName();
     AbsractCommandProperty getCommand(String name);
     AbstractProperty getProperty(String name);
+    AbsractCommandProperty getCommandByCodeName(String name);
+    AbstractProperty getPropertyByCodeName(String name);
     AbsractCommandProperty[] getCommands();
     AbstractProperty[] getPropertys();
     void setActivete(boolean activeted);

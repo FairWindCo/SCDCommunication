@@ -37,7 +37,6 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
     public static final String COMMAND_VALIDATE_ALL="VALIDATE";
     public static final String COMMAND_RANDOM="COMMAND_RANDOM";
 
-
     protected final SoftLongProperty deviceTimeOut;
     protected final SoftLongProperty deviceTimeOutPause;
     protected final SoftLongProperty deviceWritePause;
@@ -401,7 +400,10 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
                 break;
             }
             case COMMAND_RANDOM:{
-                listOfPropertyes.parallelStream().forEach(property -> Randomizer.randomizeProperty(property));
+                listOfPropertyes.parallelStream().forEach(property -> {
+                    if(!(property instanceof AbsractCommandProperty)&&(property.getAdditionalInfo("NO_RANDOM")==null||!((Boolean)property.getAdditionalInfo("NO_RANDOM"))))
+                    Randomizer.randomizeProperty(property);
+                });
                 break;
             }
         }
@@ -469,6 +471,29 @@ public abstract class AbstractDevice extends PropertyExecutor implements DeviceI
         } else return null;
     }
 
+    @Override
+    public AbsractCommandProperty getCommandByCodeName(final String name) {
+        if(name!=null){
+            try{
+                AbsractCommandProperty result=listOfCommands.parallelStream().filter(command->name.equals(command.getCodename())).findFirst().get();
+                return result;
+            } catch (NoSuchElementException ex){
+                return null;
+            }
+        } else return null;
+    }
+
+    @Override
+    public AbstractProperty getPropertyByCodeName(String name) {
+        if(name!=null){
+            try {
+                AbstractProperty result=listOfPropertyes.parallelStream().filter(command->name.equals(command.getCodename())).findFirst().get();
+                return result==null?null:result;
+            } catch (NoSuchElementException ex){
+                return null;
+            }
+        } else return null;
+    }
 
 
     @Override

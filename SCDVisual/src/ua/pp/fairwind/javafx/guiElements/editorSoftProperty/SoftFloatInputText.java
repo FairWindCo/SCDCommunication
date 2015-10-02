@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
+import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftFloatInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
@@ -68,7 +69,8 @@ public class SoftFloatInputText extends TextField implements EventHandler<KeyEve
 
 	ValueChangeListener<Float> eventListener=event -> {
 		if (event.getNewValue()!= null)
-			setIntVal((Float)event.getNewValue());
+			VisualControls.executeInJavaFXThread(()->
+			setIntVal((Float)event.getNewValue()));
 	};
 
 	private void onInitialisation(){
@@ -145,24 +147,24 @@ public class SoftFloatInputText extends TextField implements EventHandler<KeyEve
 
 	@Override
 	public void changed(ObservableValue<? extends String> value, String olds,String newValue) {
-		if(newValue==null || EMPTYSTRING.equals(newValue)){
-			setText("0");
-			property.setValue((float)0);
-			return;
-		}
-		if("-".equals(newValue)){
-			if(minValue>=0){
-				setText(EMPTYSTRING);
-			}
-		} else {
-			Float intVal = Float.parseFloat(newValue);
-			if (intVal < minValue || intVal > maxValue) {
-				setText(olds);
+			if (newValue == null || EMPTYSTRING.equals(newValue)) {
+				setText("0");
+				property.setValue((float) 0);
 				return;
 			}
-			property.setValue(intVal);
+			if ("-".equals(newValue)) {
+				if (minValue >= 0) {
+					setText(EMPTYSTRING);
+				}
+			} else {
+				Float intVal = Float.parseFloat(newValue);
+				if (intVal < minValue || intVal > maxValue) {
+					setText(olds);
+					return;
+				}
+				property.setValue(intVal);
+			}
 		}
-	}
 
 	public SoftFloatProperty getFloatValueProperty() {
 		return property;

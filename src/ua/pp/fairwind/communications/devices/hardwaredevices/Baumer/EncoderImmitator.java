@@ -2,7 +2,6 @@ package ua.pp.fairwind.communications.devices.hardwaredevices.Baumer;
 
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineImmitatorDevice;
-import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
 
 /**
@@ -15,9 +14,9 @@ public class EncoderImmitator extends RSLineImmitatorDevice {
 
     public EncoderImmitator(long address, String codename, String uuid) {
         super(address, codename, uuid);
-        revolution=new SoftShortProperty("BAUMER.REVOLUTION", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+        revolution=new SoftShortProperty("BAUMER.REVOLUTION");
         revolution.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 001L);
-        steps=new SoftShortProperty("BAUMER.STEPS", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+        steps=new SoftShortProperty("BAUMER.STEPS");
         steps.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 002L);
         addPropertys(revolution);
         addPropertys(steps);
@@ -58,10 +57,10 @@ public class EncoderImmitator extends RSLineImmitatorDevice {
                 }
             }break;
             case 4:{
-                if(curentByte==(byte)0x80){
+                if(curentByte==(byte)0x4){
                     curentState=0;
-                    int revolve=this.revolution.getValue(); //(short)(((recivedMessage[i + 2]<<8)+recivedMessage[i + 3])&0xFF);
-                    int steps=this.steps.getValue();//(short)(((recivedMessage[i + 4]<<8)+recivedMessage[i + 5])&0xFF);
+                    int revolve=this.revolution.getValue()==null?0:this.revolution.getValue(); //(short)(((recivedMessage[i + 2]<<8)+recivedMessage[i + 3])&0xFF);
+                    int steps=this.steps.getValue()==null?0:this.steps.getValue();//(short)(((recivedMessage[i + 4]<<8)+recivedMessage[i + 5])&0xFF);
                     byte[] result=new byte[8];
                     result[0]=(byte)0x1;
                     result[1]=(byte)((deviceAddress & 0x7)+0x30);
@@ -81,4 +80,14 @@ public class EncoderImmitator extends RSLineImmitatorDevice {
         }
         return null;
     }
+
+    public SoftShortProperty getRevolution() {
+        return revolution;
+    }
+
+    public SoftShortProperty getSteps() {
+        return steps;
+    }
+
+
 }

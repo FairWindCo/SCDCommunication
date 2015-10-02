@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
+import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftShortInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
@@ -60,7 +61,7 @@ public class SoftShortInputText extends TextField implements EventHandler<KeyEve
 
 	private void setIntVal(Short val){
 		if(val>=minValue && val<=maxValue){
-			setText(Long.toString(val));
+			setText(Short.toString(val));
 		} else {
 			property.setValue(parseString(getText()));
 		}
@@ -68,7 +69,8 @@ public class SoftShortInputText extends TextField implements EventHandler<KeyEve
 
 	ValueChangeListener<Short> eventListener=event -> {
 		if (event.getNewValue()!= null)
-			setIntVal((Short)event.getNewValue());
+			VisualControls.executeInJavaFXThread(() ->
+					setIntVal((Short) event.getNewValue()));
 	};
 
 	private void onInitialisation(){
@@ -145,23 +147,23 @@ public class SoftShortInputText extends TextField implements EventHandler<KeyEve
 
 	@Override
 	public void changed(ObservableValue<? extends String> value, String olds,String newValue) {
-		if(newValue==null || EMPTYSTRING.equals(newValue)){
-			setText("0");
-			property.setValue((short)0);
-			return;
-		}
-		if("-".equals(newValue)){
-			if(minValue>=0){
-				setText(EMPTYSTRING);
-			}
-		} else {
-			short intVal = Short.parseShort(newValue);
-			if (intVal < minValue || intVal > maxValue) {
-				setText(olds);
+		if (newValue == null || EMPTYSTRING.equals(newValue)) {
+				setText("0");
+				property.setValue((short) 0);
 				return;
 			}
-			property.setValue(intVal);
-		}
+			if ("-".equals(newValue)) {
+				if (minValue >= 0) {
+					setText(EMPTYSTRING);
+				}
+			} else {
+				short intVal = Short.parseShort(newValue);
+				if (intVal < minValue || intVal > maxValue) {
+					setText(olds);
+					return;
+				}
+				property.setValue(intVal);
+			}
 	}
 
 	public SoftShortProperty getShortValueProperty() {

@@ -1,11 +1,6 @@
 package ua.pp.fairwind.communications.devices.abstracts;
 
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
-
-import java.util.HashMap;
 
 /**
  * Created by Сергей on 09.07.2015.
@@ -18,6 +13,7 @@ public abstract class RSLineDevice extends AbstractDevice implements SerialDevic
     public RSLineDevice(long address, String codename, String uuid) {
         super(codename, uuid);
         deviceAddress=formLongProperty(-1, "device.address_property",address);
+        deviceAddress.setAdditionalInfo(NO_RANDOM,true);
         listOfPropertyes.add(deviceAddress);
     }
 

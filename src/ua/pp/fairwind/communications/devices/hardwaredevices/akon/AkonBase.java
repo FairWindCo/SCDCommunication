@@ -47,6 +47,7 @@ public class AkonBase extends RSLineDevice {
     public AkonBase(long address, String codename, String uuid) {
         super(address, codename, uuid);
         akonProtocol=formShortProperty(-30L,"baseakon.ENABLE_AKON_PROTOCOL", OBJECTNET_PROTOCOL);
+        akonProtocol.setAdditionalInfo(NO_RANDOM,true);
         serialNumber=formLongConfigProperty(1L, "baseakon.SERIAL_NUMBER");
         serialNumber.setAdditionalInfo(OBJECT_NUM,0);
         serialNumber.setAdditionalInfo(PROPERTY_NUM, 1);

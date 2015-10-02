@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
+import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftLongInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
@@ -68,7 +69,8 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
 
 	ValueChangeListener<Long> eventListener=event -> {
 		if (event.getNewValue()!= null)
-			setIntVal((Long)event.getNewValue());
+			VisualControls.executeInJavaFXThread(() ->
+					setIntVal((Long) event.getNewValue()));
 	};
 
 	private void onInitialisation(){
@@ -145,24 +147,24 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
 
 	@Override
 	public void changed(ObservableValue<? extends String> value, String olds,String newValue) {
-		if(newValue==null || EMPTYSTRING.equals(newValue)){
-			setText("0");
-			property.setValue(0L);
-			return;
-		}
-		if("-".equals(newValue)){
-			if(minValue>=0){
-				setText(EMPTYSTRING);
-			}
-		} else {
-			long intVal = Long.parseLong(newValue);
-			if (intVal < minValue || intVal > maxValue) {
-				setText(olds);
+			if (newValue == null || EMPTYSTRING.equals(newValue)) {
+				setText("0");
+				property.setValue(0L);
 				return;
 			}
-			property.setValue(intVal);
+			if ("-".equals(newValue)) {
+				if (minValue >= 0) {
+					setText(EMPTYSTRING);
+				}
+			} else {
+				long intVal = Long.parseLong(newValue);
+				if (intVal < minValue || intVal > maxValue) {
+					setText(olds);
+					return;
+				}
+				property.setValue(intVal);
+			}
 		}
-	}
 
 	public SoftLongProperty getIntegerValueProperty() {
 		return property;

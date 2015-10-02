@@ -14,6 +14,7 @@ public class LoopBackLine extends AbstractLine {
 
     public LoopBackLine(String codename, String uuid) {
         super(codename, uuid);
+        setServiceMode(SERVICE_MODE.CLIENT_SERVER,null);
     }
 
     public LoopBackLine(String codename) {
@@ -32,6 +33,7 @@ public class LoopBackLine extends AbstractLine {
     @Override
     protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException, LineTimeOutException {
         if(data!=null) internalBuffer=data.clone();
+        serviceRecivedFromLineDataInServerMode(internalBuffer);
     }
 
     @Override

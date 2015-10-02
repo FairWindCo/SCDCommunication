@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 import ua.pp.fairwind.communications.propertyes.software.SoftDoubleProperty;
+import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftDoubleInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
@@ -67,8 +68,9 @@ public class SoftDoubleInputText extends TextField implements EventHandler<KeyEv
 	}
 
 	ValueChangeListener<Double> eventListener=event -> {
-		if (event.getNewValue()!= null)
-			setIntVal((Double)event.getNewValue());
+			if (event.getNewValue() != null)
+				VisualControls.executeInJavaFXThread(() ->
+						setIntVal((Double) event.getNewValue()));
 	};
 
 	private void onInitialisation(){
@@ -145,24 +147,24 @@ public class SoftDoubleInputText extends TextField implements EventHandler<KeyEv
 
 	@Override
 	public void changed(ObservableValue<? extends String> value, String olds,String newValue) {
-		if(newValue==null || EMPTYSTRING.equals(newValue)){
-			setText("0");
-			property.setValue((double)0);
-			return;
-		}
-		if("-".equals(newValue)){
-			if(minValue>=0){
-				setText(EMPTYSTRING);
-			}
-		} else {
-			Double intVal = Double.parseDouble(newValue);
-			if (intVal < minValue || intVal > maxValue) {
-				setText(olds);
+			if (newValue == null || EMPTYSTRING.equals(newValue)) {
+				setText("0");
+				property.setValue((double) 0);
 				return;
 			}
-			property.setValue(intVal);
+			if ("-".equals(newValue)) {
+				if (minValue >= 0) {
+					setText(EMPTYSTRING);
+				}
+			} else {
+				Double intVal = Double.parseDouble(newValue);
+				if (intVal < minValue || intVal > maxValue) {
+					setText(olds);
+					return;
+				}
+				property.setValue(intVal);
+			}
 		}
-	}
 
 	public SoftDoubleProperty getDoubleValueProperty() {
 		return property;

@@ -13,6 +13,7 @@ public interface ElementInterface {
     UUID getUUID();
     String getUUIDString();
     String getDescription();
+    String getCodename();
 
     void addEventListener(ElementEventListener listener);
     void addEventListener(ElementEventListener listener,EventType... recivedEventsTypes);

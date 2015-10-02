@@ -14,6 +14,7 @@ public abstract class RSLineImmitatorDevice extends AbstractImmitatorDevice impl
     public RSLineImmitatorDevice(long address, String codename, String uuid) {
         super(codename, uuid);
         deviceAddress=formLongProperty(-1, "device.address_property",address);
+        deviceAddress.setAdditionalInfo(NO_RANDOM,true);
         listOfPropertyes.add(deviceAddress);
     }
 

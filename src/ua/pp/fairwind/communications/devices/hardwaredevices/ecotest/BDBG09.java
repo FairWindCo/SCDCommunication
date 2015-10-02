@@ -55,7 +55,7 @@ public class BDBG09 extends RSLineDevice {
 
     public BDBG09(long address, String codename, String uuid) {
         super(address, codename, uuid);
-
+        protocol.setAdditionalInfo(NO_RANDOM, true);
         addPropertys(GROUP_MED);
         addPropertys(temp);
         addPropertys(serial_number);

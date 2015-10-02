@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 import ua.pp.fairwind.communications.propertyes.software.SoftByteProperty;
+import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftByteInputText extends TextField implements EventHandler<KeyEvent>,ChangeListener<String> {
@@ -68,8 +69,10 @@ public class SoftByteInputText extends TextField implements EventHandler<KeyEven
 
 	ValueChangeListener<Byte> eventListener=event -> {
 		if (event.getNewValue()!= null)
-			setIntVal((Byte)event.getNewValue());
+			VisualControls.executeInJavaFXThread(() ->
+				setIntVal((Byte) event.getNewValue()));
 	};
+
 
 	private void onInitialisation(){
 		checkConstraints();

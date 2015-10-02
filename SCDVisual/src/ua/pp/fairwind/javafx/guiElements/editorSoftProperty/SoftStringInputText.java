@@ -5,6 +5,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
 import ua.pp.fairwind.communications.propertyes.software.SoftStringProperty;
+import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftStringInputText extends TextField implements ChangeListener<String> {
@@ -20,7 +21,8 @@ public class SoftStringInputText extends TextField implements ChangeListener<Str
 
 	ValueChangeListener<String> eventListener=event -> {
 		if (event.getNewValue()!= null) {
-			setText((String) event.getNewValue());
+			VisualControls.executeInJavaFXThread(() ->
+					setText((String) event.getNewValue()));
 		}
 	};
 

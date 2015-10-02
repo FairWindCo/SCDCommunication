@@ -10,6 +10,7 @@ import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
+import ua.pp.fairwind.communications.propertyes.Randomizer;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.PropertyExecutor;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
@@ -29,12 +30,14 @@ public abstract class AbstractImmitatorDevice extends PropertyExecutor implement
     public static final String IMMEDIATELY_WRITE_FLAG ="immediatelyWrite";
     public static final String PROPERTY_ADDRESS="propertyAddress";
     public static final String COMMAND_VALIDATE="VALIDATE";
+    public static final String COMMAND_RANDOM="COMMAND_RANDOM";
 
 
     protected final SoftBoolProperty activate;
     private final SoftBoolProperty lastCommunicationStatus;
     private final SoftBoolProperty errorCommunicationStatus;
     private final DeviceNamedCommandProperty validateErrorCommand;
+    private final DeviceNamedCommandProperty randomCommand;
 
     final protected CopyOnWriteArrayList<AbstractProperty> listOfPropertyes=new CopyOnWriteArrayList<>();
     final protected CopyOnWriteArrayList<DeviceNamedCommandProperty> listOfCommands=new CopyOnWriteArrayList<>();
@@ -102,6 +105,7 @@ public abstract class AbstractImmitatorDevice extends PropertyExecutor implement
     public AbstractImmitatorDevice(String codename, String uuid) {
         super(codename, uuid);
         validateErrorCommand=formCommandNameProperty(COMMAND_VALIDATE);
+        randomCommand=formCommandNameProperty(COMMAND_RANDOM);
         lastCommunicationStatus      =  formIndicatorProperty(-6, "device.lastcommunicationstatus_property", false);
         errorCommunicationStatus     =  formIndicatorProperty(-7, "device.lasterrorcommunicationstatus_property", false);
         activate = formBoolProperty(-12, "device.activate_property", true);
@@ -118,6 +122,7 @@ public abstract class AbstractImmitatorDevice extends PropertyExecutor implement
 
         ArrayList<DeviceNamedCommandProperty> cmds=new ArrayList<>();
         cmds.add(validateErrorCommand);
+        cmds.add(randomCommand);
         listOfCommands.addAll(cmds);
     }
 
@@ -147,6 +152,14 @@ public abstract class AbstractImmitatorDevice extends PropertyExecutor implement
         switch(commandName){
             case COMMAND_VALIDATE: {
                 setInternalValue(errorCommunicationStatus,false);
+                break;
+            }
+            case COMMAND_RANDOM:{
+                listOfPropertyes.parallelStream().forEach(property ->
+                {
+                    if(!(property instanceof AbsractCommandProperty)&&(property.getAdditionalInfo("NO_RANDOM")==null||!((Boolean)property.getAdditionalInfo("NO_RANDOM"))))
+                        Randomizer.randomizeProperty(property);
+                });
                 break;
             }
         }
@@ -344,5 +357,36 @@ public abstract class AbstractImmitatorDevice extends PropertyExecutor implement
         return result;
     }
 
+
+    @Override
+    public AbsractCommandProperty getCommandByCodeName(final String name) {
+        if(name!=null){
+            try{
+                AbsractCommandProperty result=listOfCommands.parallelStream().filter(command->name.equals(command.getCodename())).findFirst().get();
+                return result;
+            } catch (NoSuchElementException ex){
+                return null;
+            }
+        } else return null;
+    }
+
+    @Override
+    public AbstractProperty getPropertyByCodeName(String name) {
+        if(name!=null){
+            try {
+                AbstractProperty result=listOfPropertyes.parallelStream().filter(command->name.equals(command.getCodename())).findFirst().get();
+                return result==null?null:result;
+            } catch (NoSuchElementException ex){
+                return null;
+            }
+        } else return null;
+    }
+
+    public DeviceNamedCommandProperty getRandomCommand() {
+        return randomCommand;
+    }
+
     abstract protected byte[] processDataFromLine(byte[] data_from_line);
+
+
 }

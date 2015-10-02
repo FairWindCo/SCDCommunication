@@ -41,6 +41,7 @@ public interface LineInterface  extends ElementInterface {
     void setServiceMode(SERVICE_MODE mode,LineParameters serverLineParameter);
     void setClientMode();
     SERVICE_MODE getServiceMode();
+    LineParameters getServerLineParameter();
 
     ImitatorDevice[] getDeivicesForService();
     void addDeviceToService(ImitatorDevice device);
