@@ -19,13 +19,7 @@ public class BDBGComplexPanel extends BorderPane {
     private final BDBGPanel panel;
     private final LineInfoBar infoBarP;
     private final LineInfoBar infoBarS;
-
-
-    public BDBGComplexPanel(AbstractLine line, BDBG09 device) {
-        this(line, device, null);
-    }
-
-    SimpleBDBGDeviceConfigPanel.LineChange listner=new SimpleBDBGDeviceConfigPanel.LineChange() {
+    SimpleBDBGDeviceConfigPanel.LineChange listner = new SimpleBDBGDeviceConfigPanel.LineChange() {
         @Override
         public void primaryLineChange(LineInterface newline) {
             infoBarP.setupLine(newline);
@@ -38,25 +32,29 @@ public class BDBGComplexPanel extends BorderPane {
         }
     };
 
+    public BDBGComplexPanel(AbstractLine line, BDBG09 device) {
+        this(line, device, null);
+    }
+
     public BDBGComplexPanel(LineInterface line, BDBG09 device, List<LineInterface> lines) {
-        if(device==null)throw new RuntimeException("DEVICE CAN`T BE NULL!");
-        if(line!=null)device.setPrimerayLine(line);
+        if (device == null) throw new RuntimeException("DEVICE CAN`T BE NULL!");
+        if (line != null) device.setPrimerayLine(line);
         LineInterface line1 = line;
         List<LineInterface> lines1 = lines;
         BDBG09 device1 = device;
-        devpanel=new SimpleBDBGDeviceConfigPanel(device,line,lines,listner);
-        infoBarP=new LineInfoBar(35,device.getPrimaryLine());
-        infoBarS=new LineInfoBar(35,device.getSecondaryLine());
-        panel=new BDBGPanel(device);
+        devpanel = new SimpleBDBGDeviceConfigPanel(device, line, lines, listner);
+        infoBarP = new LineInfoBar(35, device.getPrimaryLine());
+        infoBarS = new LineInfoBar(35, device.getSecondaryLine());
+        panel = new BDBGPanel(device);
         initControl();
     }
 
-    private void initControl(){
+    private void initControl() {
 
         setTop(devpanel);
         setCenter(panel);
         setAlignment(panel, Pos.CENTER);
-        VBox down=new VBox();
+        VBox down = new VBox();
         down.getChildren().addAll(infoBarP, infoBarS);
 
         setBottom(down);

@@ -9,50 +9,48 @@ import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftStringInputText extends TextField implements ChangeListener<String> {
-	final private SoftStringProperty property;
+    final private SoftStringProperty property;
+    ValueChangeListener<String> eventListener = event -> {
+        if (event.getNewValue() != null) {
+            VisualControls.executeInJavaFXThread(() ->
+                    setText((String) event.getNewValue()));
+        }
+    };
 
 
-	public SoftStringInputText(SoftStringProperty property) {
-		super(property.getValue() == null ? null : property.getValue().toString());
-		this.property=property;
-		onInitialisation();
-	}
+    public SoftStringInputText(SoftStringProperty property) {
+        super(property.getValue() == null ? null : property.getValue().toString());
+        this.property = property;
+        onInitialisation();
+    }
 
+    private void onInitialisation() {
+        this.textProperty().addListener(this);
+        property.addChangeEventListener(eventListener);
+    }
 
-	ValueChangeListener<String> eventListener=event -> {
-		if (event.getNewValue()!= null) {
-			VisualControls.executeInJavaFXThread(() ->
-					setText((String) event.getNewValue()));
-		}
-	};
+    @Override
+    public void changed(ObservableValue<? extends String> value, String olds, String newValue) {
+        if (newValue == null || newValue.isEmpty()) {
+            setText("");
+            property.setValue("");
+            return;
+        } else {
+            property.setValue(newValue);
+        }
+    }
 
-	private void onInitialisation(){
-		this.textProperty().addListener(this);
-		property.addChangeEventListener(eventListener);
-	}
+    public SoftStringProperty getFloatValueProperty() {
+        return property;
+    }
 
-	@Override
-	public void changed(ObservableValue<? extends String> value, String olds,String newValue) {
-		if(newValue==null || newValue.isEmpty()){
-			setText("");
-			property.setValue("");
-			return;
-		} else {
-			property.setValue(newValue);
-		}
-	}
+    public void destroy() {
+        if (property != null) property.removeChangeEventListener(eventListener);
+    }
 
-	public SoftStringProperty getFloatValueProperty() {
-		return property;
-	}
-	
-	public void destroy(){
-		if(property!=null)property.removeChangeEventListener(eventListener);
-	}
-
-	@Override
-	protected void finalize() throws Throwable {
-		destroy();
-		super.finalize();
-	}
+    @Override
+    protected void finalize() throws Throwable {
+        destroy();
+        super.finalize();
+    }
 }

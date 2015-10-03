@@ -7,7 +7,7 @@ import java.util.ListResourceBundle;
  */
 public class MyResources extends ListResourceBundle {
     protected Object[][] getContents() {
-        return new Object[][] {
+        return new Object[][]{
                 // LOCALIZE THIS
                 {"LOGGING_ALL_EVENT", true},               // LOG ALL EVENT THAT OCCURRED IN SYSTEM
                 {"LOGGING_ALL_ERROR", true},               // LOG ALL ERROR THAT OCCURRED IN SYSTEM

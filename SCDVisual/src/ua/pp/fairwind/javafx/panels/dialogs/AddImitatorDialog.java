@@ -16,9 +16,9 @@ import java.util.Optional;
 public class AddImitatorDialog {
 
 
-    public static void getSerialLineParameterDialog(ImmitatorWindow windows){
-        if(windows==null)return;
-        ImitatorCreator creator=new ImitatorCreator();
+    public static void getSerialLineParameterDialog(ImmitatorWindow windows) {
+        if (windows == null) return;
+        ImitatorCreator creator = new ImitatorCreator();
         Dialog<ImitatorDevice> dialog = new Dialog<>();
         dialog.setTitle(I18N_FX.getLocalizedString("Add_Line_Imitator_Dialog"));
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -28,11 +28,11 @@ public class AddImitatorDialog {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
 
-        ComboBox<String>types=new ComboBox<>();
+        ComboBox<String> types = new ComboBox<>();
         types.getItems().addAll(creator.getAviableImitator());
-        Tooltip.install(types,new Tooltip(I18N_FX.getLocalizedString("IMITATOR_TYPE.description")));
-        ComboBox<Integer>addres=createAddressSelect(1);
-        Tooltip.install(addres,new Tooltip(I18N_FX.getLocalizedString("ADDRESS.description")));
+        Tooltip.install(types, new Tooltip(I18N_FX.getLocalizedString("IMITATOR_TYPE.description")));
+        ComboBox<Integer> addres = createAddressSelect(1);
+        Tooltip.install(addres, new Tooltip(I18N_FX.getLocalizedString("ADDRESS.description")));
 
         grid.add(new Label(I18N_FX.getLocalizedString("IMITATOR_TYPE")), 0, 0);
         grid.add(types, 1, 0);
@@ -41,26 +41,25 @@ public class AddImitatorDialog {
         dialog.getDialogPane().setContent(grid);
 
 
-
         // Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                int adr=addres.getSelectionModel().getSelectedItem()==null?0:addres.getSelectionModel().getSelectedItem();
-                String type=types.getSelectionModel().getSelectedItem()==null?"":types.getSelectionModel().getSelectedItem();
-                return creator.getImitatorDevice(type,(long)adr);
+                int adr = addres.getSelectionModel().getSelectedItem() == null ? 0 : addres.getSelectionModel().getSelectedItem();
+                String type = types.getSelectionModel().getSelectedItem() == null ? "" : types.getSelectionModel().getSelectedItem();
+                return creator.getImitatorDevice(type, (long) adr);
             }
             return null;
         });
 
-        Optional<ImitatorDevice> result=dialog.showAndWait();
-        result.ifPresent(lineparams->windows.addImitator(lineparams));
+        Optional<ImitatorDevice> result = dialog.showAndWait();
+        result.ifPresent(lineparams -> windows.addImitator(lineparams));
     }
 
 
-    public static ComboBox<Integer> createAddressSelect(int sinitialValue){
-        ComboBox<Integer> box=new ComboBox<>();
-        for(int i=0;i<255;i++)box.getItems().add(i);
-        box.getSelectionModel().select((Integer)sinitialValue);
+    public static ComboBox<Integer> createAddressSelect(int sinitialValue) {
+        ComboBox<Integer> box = new ComboBox<>();
+        for (int i = 0; i < 255; i++) box.getItems().add(i);
+        box.getSelectionModel().select((Integer) sinitialValue);
         return box;
     }
 

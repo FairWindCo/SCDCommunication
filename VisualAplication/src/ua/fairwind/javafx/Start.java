@@ -11,6 +11,7 @@ public class Start extends DefaultApplication<StackPane> {
     public static void main(String[] args) {
         preloadAndLaunch(args);
     }
+
     @Override
     public Class<? extends Model> getFirstModelClass() {
         return SampleModel.class;

@@ -3,13 +3,13 @@ package ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsaction
 /**
  * Created by Сергей on 27.08.2015.
  */
-public class OperationTrunsactionReadWriteSeparate  implements OperationTrunsactions{
-    final private OperationTrunsactionsSingle read=new OperationTrunsactionsSingle();
-    final private OperationTrunsactionsSingle write=new OperationTrunsactionsSingle();
+public class OperationTrunsactionReadWriteSeparate implements OperationTrunsactions {
+    final private OperationTrunsactionsSingle read = new OperationTrunsactionsSingle();
+    final private OperationTrunsactionsSingle write = new OperationTrunsactionsSingle();
 
     @Override
     public boolean isMultiRequestEnabled(OPERATION_TYPE type) {
-        switch (type){
+        switch (type) {
             case READ_PROPERTY:
                 return read.isMultiRequestEnabled(type);
             case WRITE_PROPERTY:
@@ -21,7 +21,7 @@ public class OperationTrunsactionReadWriteSeparate  implements OperationTrunsact
 
     @Override
     public void setMultiRequestEnabled(OPERATION_TYPE type, boolean state) {
-        switch (type){
+        switch (type) {
             case READ_PROPERTY:
                 read.setMultiRequestEnabled(type, state);
             case WRITE_PROPERTY:
@@ -31,7 +31,7 @@ public class OperationTrunsactionReadWriteSeparate  implements OperationTrunsact
 
     @Override
     public boolean isRequestActive(OPERATION_TYPE type) {
-        switch (type){
+        switch (type) {
             case READ_PROPERTY:
                 return read.isRequestActive(type);
             case WRITE_PROPERTY:
@@ -43,7 +43,7 @@ public class OperationTrunsactionReadWriteSeparate  implements OperationTrunsact
 
     @Override
     public boolean startRequest(OPERATION_TYPE type) {
-        switch (type){
+        switch (type) {
             case READ_PROPERTY:
                 return read.startRequest(type);
             case WRITE_PROPERTY:
@@ -55,7 +55,7 @@ public class OperationTrunsactionReadWriteSeparate  implements OperationTrunsact
 
     @Override
     public void endRequest(OPERATION_TYPE type) {
-        switch (type){
+        switch (type) {
             case READ_PROPERTY:
                 read.endRequest(type);
             case WRITE_PROPERTY:

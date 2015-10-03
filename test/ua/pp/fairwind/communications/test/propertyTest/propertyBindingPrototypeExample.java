@@ -14,23 +14,23 @@ import ua.pp.fairwind.communications.propertyes.software.SoftIntegerProperty;
 public class propertyBindingPrototypeExample {
 
     public static void main(String[] args) {
-        SoftIntegerProperty p1=new SoftIntegerProperty("test 1");
-        SoftIntegerProperty p2=new SoftIntegerProperty("bind test 1");
-        SoftIntegerProperty p3=new SoftIntegerProperty("bind test 2");
-        SoftFloatProperty f1=new SoftFloatProperty("bind float 1");
-        ValueChangeListener<Number> listener=new ValueChangeListener<Number>() {
+        SoftIntegerProperty p1 = new SoftIntegerProperty("test 1");
+        SoftIntegerProperty p2 = new SoftIntegerProperty("bind test 1");
+        SoftIntegerProperty p3 = new SoftIntegerProperty("bind test 2");
+        SoftFloatProperty f1 = new SoftFloatProperty("bind float 1");
+        ValueChangeListener<Number> listener = new ValueChangeListener<Number>() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                System.out.println("EVENT FROM: "+event.getNameFrom()+" OLD VALUE="+event.getOldValue()+" NEW VALUE="+event.getNewValue()+ " UUID="+event.getUuidFrom());
+                System.out.println("EVENT FROM: " + event.getNameFrom() + " OLD VALUE=" + event.getOldValue() + " NEW VALUE=" + event.getNewValue() + " UUID=" + event.getUuidFrom());
             }
         };
         p1.addChangeEventListener(listener);
         p2.addChangeEventListener(listener);
         p3.addChangeEventListener(listener);
         f1.addChangeEventListener(listener);
-        new NumberPropertyBindingelement<>(p1,p2,(fromValue1,oldValue) -> ValuedPropertyConvertor.convertIntegerFromNumber(fromValue1),ValueConvertor::convertIntegerFromNumber).bind();
-        new NumberPropertyBindingelement<>(p2,p3,(fromValue1,oldValue) -> ValuedPropertyConvertor.convertIntegerFromNumber(fromValue1),ValueConvertor::convertIntegerFromNumber).bind();
-        new NumberPropertyBindingelement<>(p3,f1,(fromValue1,oldValue) -> ValuedPropertyConvertor.convertFloatFromNumber(fromValue1),ValueConvertor::convertIntegerFromNumber).bindWrite();
+        new NumberPropertyBindingelement<>(p1, p2, (fromValue1, oldValue) -> ValuedPropertyConvertor.convertIntegerFromNumber(fromValue1), ValueConvertor::convertIntegerFromNumber).bind();
+        new NumberPropertyBindingelement<>(p2, p3, (fromValue1, oldValue) -> ValuedPropertyConvertor.convertIntegerFromNumber(fromValue1), ValueConvertor::convertIntegerFromNumber).bind();
+        new NumberPropertyBindingelement<>(p3, f1, (fromValue1, oldValue) -> ValuedPropertyConvertor.convertFloatFromNumber(fromValue1), ValueConvertor::convertIntegerFromNumber).bindWrite();
 
         p1.setValue(10);
         p1.setValue(20);

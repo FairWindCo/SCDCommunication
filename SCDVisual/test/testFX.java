@@ -17,13 +17,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import static java.lang.Math.random;
 
-public class testFX extends Application{
-	public static void main(String[] args) {
+public class testFX extends Application {
+    public static void main(String[] args) {
         launch(args);
     }
-    
+
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
@@ -35,7 +36,7 @@ public class testFX extends Application{
             circle.setStrokeType(StrokeType.OUTSIDE);
             circle.setStroke(Color.web("white", 0.16));
             circle.setStrokeWidth(4);
-            circle.setEffect(new Glow(Math.random()*133));
+            circle.setEffect(new Glow(Math.random() * 133));
             circles.getChildren().add(circle);
         }
         Rectangle colors = new Rectangle(scene.getWidth(), scene.getHeight(),
@@ -51,19 +52,19 @@ public class testFX extends Application{
         colors.heightProperty().bind(scene.heightProperty());
         Group blendModeGroup =
                 new Group(new Group(new Rectangle(scene.getWidth(), scene.getHeight(),
-                     Color.BLACK), circles), colors);
+                        Color.BLACK), circles), colors);
         colors.setBlendMode(BlendMode.OVERLAY);
-        root.getChildren().add(blendModeGroup);      
+        root.getChildren().add(blendModeGroup);
         circles.setEffect(new BoxBlur(10, 10, 3));
         Timeline timeline = new Timeline();
         for (Node circle : circles.getChildren()) {
             timeline.getKeyFrames().addAll(
                     new KeyFrame(Duration.ZERO, // set start position at 0
-                    new KeyValue(circle.translateXProperty(), random() * 800),
-                    new KeyValue(circle.translateYProperty(), random() * 600)),
+                            new KeyValue(circle.translateXProperty(), random() * 800),
+                            new KeyValue(circle.translateYProperty(), random() * 600)),
                     new KeyFrame(new Duration(40000), // set end position at 40s
-                    new KeyValue(circle.translateXProperty(), random() * 800),
-                    new KeyValue(circle.translateYProperty(), random() * 600)));
+                            new KeyValue(circle.translateXProperty(), random() * 800),
+                            new KeyValue(circle.translateYProperty(), random() * 600)));
         }
         // play 40s of animation
         timeline.play();

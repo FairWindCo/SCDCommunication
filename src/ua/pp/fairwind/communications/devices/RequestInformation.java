@@ -9,16 +9,16 @@ public class RequestInformation {
     final private boolean needRollBack;
     final private RequestInformation subrequest;
 
-    public RequestInformation(byte[] bufferForWrite, long neddedByteForRead,boolean needRollBack) {
-        this(bufferForWrite,neddedByteForRead,needRollBack,null);
+    public RequestInformation(byte[] bufferForWrite, long neddedByteForRead, boolean needRollBack) {
+        this(bufferForWrite, neddedByteForRead, needRollBack, null);
     }
 
     public RequestInformation(byte[] bufferForWrite, long neddedByteForRead) {
-        this(bufferForWrite,neddedByteForRead,false,null);
+        this(bufferForWrite, neddedByteForRead, false, null);
     }
 
     public RequestInformation(byte[] bufferForWrite, long neddedByteForRead, RequestInformation subrequest) {
-        this(bufferForWrite,neddedByteForRead,false,subrequest);
+        this(bufferForWrite, neddedByteForRead, false, subrequest);
     }
 
     public RequestInformation(byte[] bufferForWrite, long neddedByteForRead, boolean needRollBack, RequestInformation subrequest) {

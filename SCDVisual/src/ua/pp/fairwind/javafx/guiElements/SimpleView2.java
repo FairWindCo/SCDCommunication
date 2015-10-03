@@ -9,38 +9,34 @@ import ua.pp.fairwind.javafx.guiElements.menu.PrefferedSize;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
 
 public class SimpleView2 extends SimpleView {
-	final private ComboEditPanel editPanel;
-	final private StringIntegerValuedProperty confChanel;
-	
-	
-	
-	public SimpleView2(String title, Image icon, PrefferedSize prefferedSize,
-			final StringIntegerValuedProperty confChanel) {
-		super(title, icon, prefferedSize);
-		this.confChanel = confChanel;
-		if(confChanel!=null){
-		this.editPanel=new ComboEditPanel(confChanel,getResourceLoader());
-		} else {
-			this.editPanel=null;
-		}
-		if(confChanel!=null){
-			confChanel.addChangeEventListener((event) -> System.out.println("CURENT VAL" + event.getNewValue()));
-		}
-	}
+    final private ComboEditPanel editPanel;
+    final private StringIntegerValuedProperty confChanel;
 
 
+    public SimpleView2(String title, Image icon, PrefferedSize prefferedSize,
+                       final StringIntegerValuedProperty confChanel) {
+        super(title, icon, prefferedSize);
+        this.confChanel = confChanel;
+        if (confChanel != null) {
+            this.editPanel = new ComboEditPanel(confChanel, getResourceLoader());
+        } else {
+            this.editPanel = null;
+        }
+        if (confChanel != null) {
+            confChanel.addChangeEventListener((event) -> System.out.println("CURENT VAL" + event.getNewValue()));
+        }
+    }
 
-	@Override
-	protected Node createView() {
-		return editPanel==null?new Pane():editPanel;
-	}
+
+    @Override
+    protected Node createView() {
+        return editPanel == null ? new Pane() : editPanel;
+    }
 
 
+    public StringIntegerValuedProperty getConfChanel() {
+        return confChanel;
+    }
 
-	public StringIntegerValuedProperty getConfChanel() {
-		return confChanel;
-	}
 
-
-	
 }

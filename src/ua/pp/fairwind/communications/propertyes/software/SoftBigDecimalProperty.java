@@ -1,7 +1,5 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 import java.math.BigDecimal;
@@ -44,13 +42,13 @@ public class SoftBigDecimalProperty extends NumberProperty<BigDecimal> {
 
     @Override
     protected BigDecimal convertFromNumber(Number value) {
-        if(value==null) return null;
+        if (value == null) return null;
         return new BigDecimal(value.toString());
     }
 
     @Override
     protected BigDecimal convertFromString(String value, int radix) {
-        if(value==null) return null;
+        if (value == null) return null;
         return new BigDecimal(value);
     }
 

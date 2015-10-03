@@ -1,7 +1,5 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.DatePropertyInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.StringPropertyInterface;
@@ -12,7 +10,7 @@ import java.util.Date;
 /**
  * Created by ������ on 06.07.2015.
  */
-public class SoftDateTimeProperty extends ValueProperty<Date> implements DatePropertyInterface{
+public class SoftDateTimeProperty extends ValueProperty<Date> implements DatePropertyInterface {
     public SoftDateTimeProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }

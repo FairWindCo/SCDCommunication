@@ -16,13 +16,12 @@ import ua.pp.fairwind.javafx.panels.TupicalPanels;
 import ua.pp.fairwind.javafx.panels.dialogs.PropertyConfigDialog;
 
 
-
 /**
  * Created by Сергей on 27.08.2015.
  */
 public class ArgMicroPanel extends HBox {
     final private ArgMicroDevice device;
-    final private TabPane tabs=new TabPane();
+    final private TabPane tabs = new TabPane();
 
     public ArgMicroPanel(ArgMicroDevice device) {
         super();
@@ -30,15 +29,15 @@ public class ArgMicroPanel extends HBox {
         initControl();
     }
 
-    private void  intiStatusPane(){
-        final Tab initTab=new Tab(I18N_FX.getLocalizedString("STASUS"));
+    private void intiStatusPane() {
+        final Tab initTab = new Tab(I18N_FX.getLocalizedString("STASUS"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         initTab.setContent(TupicalPanels.createDeviceStatusPane(device));
     }
 
-    private void intiDeviceControlPane(){
-        final Tab initTab=new Tab(I18N_FX.getLocalizedString("DEVICE_VALUE"));
+    private void intiDeviceControlPane() {
+        final Tab initTab = new Tab(I18N_FX.getLocalizedString("DEVICE_VALUE"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -62,25 +61,18 @@ public class ArgMicroPanel extends HBox {
     }
 
 
-
-
-    private Button createConfigureProppearty(AbstractProperty command){
+    private Button createConfigureProppearty(AbstractProperty command) {
         return PropertyConfigDialog.crateConfigButton(command);
     }
 
 
-    private void initControl(){
+    private void initControl() {
         setAlignment(Pos.CENTER);
         intiDeviceControlPane();
         intiStatusPane();
         tabs.setPrefHeight(430);
         getChildren().add(tabs);
     }
-
-
-
-
-
 
 
 }

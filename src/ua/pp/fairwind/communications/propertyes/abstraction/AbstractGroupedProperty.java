@@ -14,12 +14,12 @@ import java.util.stream.Stream;
 /**
  * Created by Сергей on 20.09.2015.
  */
-public abstract class AbstractGroupedProperty<BigValue extends Comparable<? super BigValue>,SmallValue extends Comparable<? super SmallValue>> extends ValueProperty<BigValue> implements GroupPropertyInterface {
-    final private Map<String,ValueProperty<SmallValue>> properties=new ConcurrentHashMap<>();
-    final private Map<UUID,ValueProperty<SmallValue>> propertiesUUID=new ConcurrentHashMap<>();
+public abstract class AbstractGroupedProperty<BigValue extends Comparable<? super BigValue>, SmallValue extends Comparable<? super SmallValue>> extends ValueProperty<BigValue> implements GroupPropertyInterface {
+    final private Map<String, ValueProperty<SmallValue>> properties = new ConcurrentHashMap<>();
+    final private Map<UUID, ValueProperty<SmallValue>> propertiesUUID = new ConcurrentHashMap<>();
 
-    final private ElementEventListener listener= (event,param) -> {
-        if(event.getTypeEvent()== EventType.ELEMENT_CHANGE) {
+    final private ElementEventListener listener = (event, param) -> {
+        if (event.getTypeEvent() == EventType.ELEMENT_CHANGE) {
             Object value = getAdditionalInfo(PROPERTY_BUBLE_EVENT);
             if (value != null && value instanceof Boolean && (boolean) value) {
                 fireEvent(event.getTypeEvent(), event.getParams());
@@ -28,28 +28,15 @@ public abstract class AbstractGroupedProperty<BigValue extends Comparable<? supe
             for (ValueProperty<SmallValue> property : properties.values()) {
                 big = formExternalValue(property.getInternalValue(), big, property);
             }
-            if(isBubleEvent())setInternalValue(big,event);else setInternalValue(big,event);
+            if (isBubleEvent()) setInternalValue(big, event);
+            else setInternalValue(big, event);
         }
     };
-
-    @Override
-    protected void setInternalValue(BigValue value, Event parent) {
-        for(ValueProperty<SmallValue> property:properties.values()){
-            SmallValue small=formInternalValue(value, property);
-            property.setInternalValue(small,parent);
-        }
-        super.setInternalValue(value,parent);
-    }
-
-
-
-    protected abstract SmallValue formInternalValue(BigValue value, ValueProperty<SmallValue> internalProperty);
-    protected abstract BigValue   formExternalValue(SmallValue value,BigValue bigvalue,ValueProperty<SmallValue> internalProperty);
-
 
     public AbstractGroupedProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }
+
 
     public AbstractGroupedProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, BigValue value) {
         super(name, uuid, softOperationType, value);
@@ -58,6 +45,7 @@ public abstract class AbstractGroupedProperty<BigValue extends Comparable<? supe
     public AbstractGroupedProperty(String name, String uuid) {
         super(name, uuid);
     }
+
 
     public AbstractGroupedProperty(String name, String uuid, BigValue value) {
         super(name, uuid, value);
@@ -71,24 +59,37 @@ public abstract class AbstractGroupedProperty<BigValue extends Comparable<? supe
         super(name, value);
     }
 
-    protected void addPropertyies(final Collection<ValueProperty<SmallValue>> propertyList){
-        if(propertyList!=null && propertyList.size()>0){
-            for(ValueProperty<SmallValue> oneproperty:propertyList){
+    @Override
+    protected void setInternalValue(BigValue value, Event parent) {
+        for (ValueProperty<SmallValue> property : properties.values()) {
+            SmallValue small = formInternalValue(value, property);
+            property.setInternalValue(small, parent);
+        }
+        super.setInternalValue(value, parent);
+    }
+
+    protected abstract SmallValue formInternalValue(BigValue value, ValueProperty<SmallValue> internalProperty);
+
+    protected abstract BigValue formExternalValue(SmallValue value, BigValue bigvalue, ValueProperty<SmallValue> internalProperty);
+
+    protected void addPropertyies(final Collection<ValueProperty<SmallValue>> propertyList) {
+        if (propertyList != null && propertyList.size() > 0) {
+            for (ValueProperty<SmallValue> oneproperty : propertyList) {
                 addProperty(oneproperty);
             }
         }
     }
 
-    protected void addPropertyies(ValueProperty<SmallValue>... propertyList){
-        if(propertyList!=null && propertyList.length>0){
-            for(ValueProperty<SmallValue> oneproperty:propertyList){
+    protected void addPropertyies(ValueProperty<SmallValue>... propertyList) {
+        if (propertyList != null && propertyList.length > 0) {
+            for (ValueProperty<SmallValue> oneproperty : propertyList) {
                 addProperty(oneproperty);
             }
         }
     }
 
-    protected void addProperty(ValueProperty<SmallValue> property){
-        if(property!=null){
+    protected void addProperty(ValueProperty<SmallValue> property) {
+        if (property != null) {
             property.addEventListener(listener);
             properties.put(property.getName(), property);
             propertiesUUID.put(property.getUUID(), property);
@@ -96,39 +97,39 @@ public abstract class AbstractGroupedProperty<BigValue extends Comparable<? supe
     }
 
 
-    public AbstractProperty get(String name){
+    public AbstractProperty get(String name) {
         return properties.get(name);
     }
 
     @Override
-    public AbstractProperty getByUUID(String name){
+    public AbstractProperty getByUUID(String name) {
         return propertiesUUID.get(name);
     }
 
 
     @Override
-    public Stream<AbstractProperty> getStream(){
+    public Stream<AbstractProperty> getStream() {
         return properties.values().stream().map((val) -> (AbstractProperty) val);
     }
 
     @Override
-    public AbstractProperty getPopertyByIndex(int index){
-        Collection<ValueProperty<SmallValue>> list=properties.values();
-        int in=0;
-        for(AbstractProperty prp:list){
-            if(in==index) return prp;
+    public AbstractProperty getPopertyByIndex(int index) {
+        Collection<ValueProperty<SmallValue>> list = properties.values();
+        int in = 0;
+        for (AbstractProperty prp : list) {
+            if (in == index) return prp;
             in++;
         }
         return null;
     }
 
     public boolean isBubleEvent() {
-        Object value=getAdditionalInfo(PROPERTY_BUBLE_EVENT);
+        Object value = getAdditionalInfo(PROPERTY_BUBLE_EVENT);
         return value != null && value instanceof Boolean && (boolean) value;
     }
 
     public void setBubleEvent(boolean bubleEvent) {
-        setAdditionalInfo(PROPERTY_BUBLE_EVENT,bubleEvent);
+        setAdditionalInfo(PROPERTY_BUBLE_EVENT, bubleEvent);
     }
 
 }

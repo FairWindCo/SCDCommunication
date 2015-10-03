@@ -14,6 +14,6 @@ public class IntegerPropertyFXAdapter extends NumberFXPropertyAdapter<Integer> {
 
     @Override
     public void setValue(Number t) {
-        super.setValue(t!=null?t.intValue():null);
+        super.setValue(t != null ? t.intValue() : null);
     }
 }

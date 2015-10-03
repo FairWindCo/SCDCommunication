@@ -32,13 +32,13 @@ public class FavoritTestPanel extends HBox {
         initControl();
     }
 
-    private void initControl(){
+    private void initControl() {
         GridPane grid = new GridPane();
         getChildren().add(grid);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(10, 10, 10, 10));
-        int rowindex=0;
+        int rowindex = 0;
         grid.add(new Label(I18N_FX.getLocalizedString("DIGITAL IN")), 0, rowindex, 4, 1);
         grid.add(new Label(I18N_FX.getLocalizedString("DIGITAL OUT")), 5, rowindex++, 5, 1);
         grid.add(new Label(I18N_FX.getLocalizedString("DI1")), 0, rowindex);
@@ -113,8 +113,8 @@ public class FavoritTestPanel extends HBox {
         grid.add(createLedIndicator(device.getDigitalOutChanelN6()), 9, rowindex);
         grid.add(new Label(I18N_FX.getLocalizedString("DO6")), 10, rowindex++);
 
-        grid.add(new Label(I18N_FX.getLocalizedString("ANALOG IN")), 0, rowindex,4,1);
-        grid.add(new Label(I18N_FX.getLocalizedString("ANALOG OUT")), 5, rowindex++,5,1);
+        grid.add(new Label(I18N_FX.getLocalizedString("ANALOG IN")), 0, rowindex, 4, 1);
+        grid.add(new Label(I18N_FX.getLocalizedString("ANALOG OUT")), 5, rowindex++, 5, 1);
 
         grid.add(new Label(I18N_FX.getLocalizedString("AI1")), 0, rowindex);
         grid.add(createLcdIndicator(device.getAnalogInChanelN1()), 1, rowindex);
@@ -161,7 +161,7 @@ public class FavoritTestPanel extends HBox {
         grid.add(createLcdIndicator(device.getAnalogOutChanelN4()), 9, rowindex);
         grid.add(new Label(I18N_FX.getLocalizedString("AO4")), 10, rowindex++);
 
-        grid.add(new Label(I18N_FX.getLocalizedString("LINE SELECT")), 0, rowindex++,10,1);
+        grid.add(new Label(I18N_FX.getLocalizedString("LINE SELECT")), 0, rowindex++, 10, 1);
         grid.add(new Label(I18N_FX.getLocalizedString("SELECTED_LINE:")), 0, rowindex);
         grid.add(createLineIndicator(device.getLineSelect()), 1, rowindex);
         grid.add(createConfigureProppearty(device.getLineSelect()), 2, rowindex);
@@ -169,11 +169,11 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReWriteButton(device.getLineSelect()), 4, rowindex);
         grid.add(createSetLinebutton(device.getLineSelect(), 0), 6, rowindex);
         grid.add(createSetLinebutton(device.getLineSelect(), 1), 7, rowindex);
-        grid.add(createSetLinebutton(device.getLineSelect(),2), 8, rowindex);
-        grid.add(createSetLinebutton(device.getLineSelect(),3), 9, rowindex);
-        grid.add(createSetLinebutton(device.getLineSelect(),4), 10, rowindex++);
+        grid.add(createSetLinebutton(device.getLineSelect(), 2), 8, rowindex);
+        grid.add(createSetLinebutton(device.getLineSelect(), 3), 9, rowindex);
+        grid.add(createSetLinebutton(device.getLineSelect(), 4), 10, rowindex++);
 
-        grid.add(new Label(I18N_FX.getLocalizedString("DEVICE CONFIG")), 0, rowindex++,10,1);
+        grid.add(new Label(I18N_FX.getLocalizedString("DEVICE CONFIG")), 0, rowindex++, 10, 1);
         grid.add(new Label(I18N_FX.getLocalizedString("DEVICE ADDRESS")), 0, rowindex);
         grid.add(createReReadButton(device.getConfigdeviceAddress()), 3, rowindex);
         grid.add(createReWriteButton(device.getConfigdeviceAddress()), 4, rowindex);
@@ -183,47 +183,47 @@ public class FavoritTestPanel extends HBox {
         grid.add(createReWriteButton(device.getConfigdeviceSpeed()), 10, rowindex);
     }
 
-    private Button createConfigureProppearty(AbstractProperty command){
+    private Button createConfigureProppearty(AbstractProperty command) {
         return PropertyConfigDialog.crateConfigButton(command);
     }
 
-    private Button createCommandExecuteButton(DeviceNamedCommandProperty command){
-        Button button=new Button(command.getDescription());
-        button.setOnAction(event->command.activate());
+    private Button createCommandExecuteButton(DeviceNamedCommandProperty command) {
+        Button button = new Button(command.getDescription());
+        button.setOnAction(event -> command.activate());
         return button;
     }
 
-    private Button createSetLinebutton(SoftLongProperty property,final long value){
-        Button button=new Button(String.valueOf(value));
-        button.setOnAction(event->property.setValue(value));
+    private Button createSetLinebutton(SoftLongProperty property, final long value) {
+        Button button = new Button(String.valueOf(value));
+        button.setOnAction(event -> property.setValue(value));
         return button;
     }
 
-    private Button createBoolChangeCommandButton(SoftBoolProperty property){
-        Button button=new Button(I18N_FX.getLocalizedString("CHANGE"));
-        button.setOnAction(event->property.invertValue());
+    private Button createBoolChangeCommandButton(SoftBoolProperty property) {
+        Button button = new Button(I18N_FX.getLocalizedString("CHANGE"));
+        button.setOnAction(event -> property.invertValue());
         return button;
     }
 
-    private Button createReReadButton(AbstractProperty command){
-        Button button=new Button(I18N_FX.getLocalizedString("READ"));
-        button.setOnAction(event->command.readValueRequest());
+    private Button createReReadButton(AbstractProperty command) {
+        Button button = new Button(I18N_FX.getLocalizedString("READ"));
+        button.setOnAction(event -> command.readValueRequest());
         return button;
     }
 
-    private Button createReWriteButton(AbstractProperty command){
-        Button button=new Button(I18N_FX.getLocalizedString("SAVE"));
-        button.setOnAction(event->command.writeValueRequest());
+    private Button createReWriteButton(AbstractProperty command) {
+        Button button = new Button(I18N_FX.getLocalizedString("SAVE"));
+        button.setOnAction(event -> command.writeValueRequest());
         return button;
     }
 
-    private Led createLedIndicator(SoftBoolProperty property){
+    private Led createLedIndicator(SoftBoolProperty property) {
         Led led = new Led();
         led.onProperty().bind(new BooleanPropertyFXAdapter(property));
         return led;
     }
 
-    private Lcd  createLcdIndicator(SoftFloatProperty property){
+    private Lcd createLcdIndicator(SoftFloatProperty property) {
         Lcd lcd = LcdBuilder.create()
                 .prefWidth(170)
                 .prefHeight(50)
@@ -241,7 +241,7 @@ public class FavoritTestPanel extends HBox {
         return lcd;
     }
 
-    private Lcd  createLineIndicator(SoftLongProperty property){
+    private Lcd createLineIndicator(SoftLongProperty property) {
         Lcd lcd = LcdBuilder.create()
                 .prefWidth(130)
                 .prefHeight(40)

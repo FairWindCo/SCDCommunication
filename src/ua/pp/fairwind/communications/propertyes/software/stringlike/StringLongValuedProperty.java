@@ -9,8 +9,8 @@ import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 public class StringLongValuedProperty extends StringValuedPropertry {
 
     public StringLongValuedProperty(String name, Long minValue, Long maxValue, String defauleValue, String format, String... correctValues) {
-        super(name, new LongValueConverter(minValue,maxValue), defauleValue, format, correctValues);
-        if(minValue==null && maxValue==null){
+        super(name, new LongValueConverter(minValue, maxValue), defauleValue, format, correctValues);
+        if (minValue == null && maxValue == null) {
             setConverter(null);
         }
     }
@@ -23,13 +23,13 @@ public class StringLongValuedProperty extends StringValuedPropertry {
         this(name, minValue, maxValue, null, "%d", correctValues);
     }
 
-    public StringLongValuedProperty(String name,String description,String defaultValue, Long minValue, Long maxValue, String... correctValues) {
+    public StringLongValuedProperty(String name, String description, String defaultValue, Long minValue, Long maxValue, String... correctValues) {
         this(name, minValue, maxValue, defaultValue, "%d", correctValues);
     }
 
     public StringLongValuedProperty(String name, String uuid, String description, MessageSubSystem centralSystem, String defauleValue, String format, Long minValue, Long maxValue, String... correctValues) {
-        super(name, uuid, defauleValue, format, new LongValueConverter(minValue,maxValue), correctValues);
-        if(minValue==null && maxValue==null){
+        super(name, uuid, defauleValue, format, new LongValueConverter(minValue, maxValue), correctValues);
+        if (minValue == null && maxValue == null) {
             setConverter(null);
         }
     }

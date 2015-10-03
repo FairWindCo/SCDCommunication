@@ -11,71 +11,71 @@ import java.util.stream.Collectors;
 /**
  * Created by Сергей on 27.08.2015.
  */
-public class MessageSubSystemSimple implements MessageSubSystem{
-    protected final CopyOnWriteArrayList<ListenerHolder> eventDispatcher=new CopyOnWriteArrayList<>();
-    protected final CopyOnWriteArrayList<ValueChangeListener<?>> calueEventDispatcher=new CopyOnWriteArrayList<>();
+public class MessageSubSystemSimple implements MessageSubSystem {
+    protected final CopyOnWriteArrayList<ListenerHolder> eventDispatcher = new CopyOnWriteArrayList<>();
+    protected final CopyOnWriteArrayList<ValueChangeListener<?>> calueEventDispatcher = new CopyOnWriteArrayList<>();
 
     @Override
     public void fireEvent(ElementInterface element, EventType type, Object param, Event parent) {
-        fireEvent(new Event(element,type,param,parent));
+        fireEvent(element != null ? element.getUUID() : null, new Event(element, type, param, parent));
     }
 
     @Override
-    public void fireEvent(Event event) {
-        for(ListenerHolder listener:eventDispatcher){
+    public void fireEvent(UUID source, Event event) {
+        for (ListenerHolder listener : eventDispatcher) {
             listener.executeEvent(event);
         }
     }
 
     @Override
-    public void fireEvent(ElementInterface element,EventType type,Object param){
-        fireEvent(new Event(element,type,param));
+    public void fireEvent(ElementInterface element, EventType type, Object param) {
+        fireEvent(element != null ? element.getUUID() : null, new Event(element, type, param));
     }
 
 
-    protected void fireEventExecute(final ValueChangeEvent<?> event){
-        for(ValueChangeListener listener:calueEventDispatcher){
+    protected void fireEventExecute(UUID source, final ValueChangeEvent<?> event) {
+        for (ValueChangeListener listener : calueEventDispatcher) {
             listener.valueChange(event);
         }
     }
 
     @Override
-    public void fireEvent(final ValueChangeEvent<?> event){
-        fireEventExecute(event);
+    public void fireEvent(UUID source, final ValueChangeEvent<?> event) {
+        fireEventExecute(source, event);
     }
 
     @Override
     public void addEventListener(ElementEventListener listener) {
-        if(listener!=null){
-            eventDispatcher.add(new ListenerHolder(listener,null));
+        if (listener != null) {
+            eventDispatcher.add(new ListenerHolder(listener, null));
         }
     }
 
     @Override
     public void addEventListener(ElementEventListener listener, EventType... recivedEcentTypes) {
-        if(listener!=null){
-            eventDispatcher.add(new ListenerHolder(listener,null,recivedEcentTypes));
+        if (listener != null) {
+            eventDispatcher.add(new ListenerHolder(listener, null, recivedEcentTypes));
         }
     }
 
     @Override
     public void addEventListener(ElementEventListener listener, UUID ignore) {
-        if(listener!=null){
-            eventDispatcher.add(new ListenerHolder(listener,ignore));
+        if (listener != null) {
+            eventDispatcher.add(new ListenerHolder(listener, ignore));
         }
     }
 
     @Override
     public void addEventListener(ElementEventListener listener, UUID ignore, EventType... recivedEcentTypes) {
-        if(listener!=null){
-            eventDispatcher.add(new ListenerHolder(listener,ignore,recivedEcentTypes));
+        if (listener != null) {
+            eventDispatcher.add(new ListenerHolder(listener, ignore, recivedEcentTypes));
         }
     }
 
     @Override
     public void removeEventListener(ElementEventListener listener) {
-        List<ListenerHolder> removs=eventDispatcher.stream().filter(holder->holder.getListener().equals(listener)).collect(Collectors.toList());
-        if(listener!=null){
+        List<ListenerHolder> removs = eventDispatcher.stream().filter(holder -> holder.getListener().equals(listener)).collect(Collectors.toList());
+        if (listener != null) {
             eventDispatcher.removeAll(removs);
         }
     }
@@ -85,6 +85,7 @@ public class MessageSubSystemSimple implements MessageSubSystem{
         eventDispatcher.clear();
         calueEventDispatcher.clear();
     }
+
     @Override
     public void destroy() {
         eventDispatcher.clear();
@@ -92,15 +93,12 @@ public class MessageSubSystemSimple implements MessageSubSystem{
     }
 
 
-
-
-    public void addChangeEventListener(ValueChangeListener<?> listener){
+    public void addChangeEventListener(ValueChangeListener<?> listener) {
         calueEventDispatcher.add(listener);
     }
 
 
-
-    public void removeChangeEventListener(ValueChangeListener<?> listener){
+    public void removeChangeEventListener(ValueChangeListener<?> listener) {
         calueEventDispatcher.remove(listener);
     }
 

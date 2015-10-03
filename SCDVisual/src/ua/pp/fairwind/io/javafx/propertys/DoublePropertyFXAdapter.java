@@ -13,6 +13,6 @@ public class DoublePropertyFXAdapter extends NumberFXPropertyAdapter<Double> {
 
     @Override
     public void setValue(Number t) {
-        super.setValue(t==null?null:t.doubleValue());
+        super.setValue(t == null ? null : t.doubleValue());
     }
 }

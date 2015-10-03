@@ -12,13 +12,13 @@ public class StringValuedPropertyFXAdapter extends AbstractFXPropertyAdapter<Str
         super(property);
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return property.getDescription();
     }
 
-    public String getDiapason(){
-        if(property instanceof StringValuedPropertry){
-            return ((StringValuedPropertry)property).getDiapason();
+    public String getDiapason() {
+        if (property instanceof StringValuedPropertry) {
+            return ((StringValuedPropertry) property).getDiapason();
         } else {
             return "";
         }

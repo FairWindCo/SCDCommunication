@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 /**
  * Created by Wind on 28.07.2014.
  */
-public class StringsArrayValuedProperty extends StaticGroupProperty{
+public class StringsArrayValuedProperty extends StaticGroupProperty {
     private final String delimeter;
 
 
@@ -23,13 +23,13 @@ public class StringsArrayValuedProperty extends StaticGroupProperty{
 
     public void readValueFromString(String str, int radix) throws NumberFormatException {
         synchronized (this) {
-            String[] strs=str.split(delimeter);
-            if(strs.length == 0) throw new NumberFormatException("EMPTY STRING");
-            for(String onestr:strs){
-                String[] parts=onestr.split("=");
-                if(parts.length == 2){
-                    StringValuedPropertry propeertyForRead=(StringValuedPropertry)get(parts[0]);
-                    if(propeertyForRead!=null){
+            String[] strs = str.split(delimeter);
+            if (strs.length == 0) throw new NumberFormatException("EMPTY STRING");
+            for (String onestr : strs) {
+                String[] parts = onestr.split("=");
+                if (parts.length == 2) {
+                    StringValuedPropertry propeertyForRead = (StringValuedPropertry) get(parts[0]);
+                    if (propeertyForRead != null) {
                         propeertyForRead.restoreValueFromString(onestr, radix);
                     } else {
                         throw new NumberFormatException("Incorrect Property Name");
@@ -38,7 +38,7 @@ public class StringsArrayValuedProperty extends StaticGroupProperty{
                     throw new NumberFormatException("Incorrect Property Format");
                 }
             }
-            fireEvent(EventType.ELEMENT_CHANGE,null);
+            fireEvent(EventType.ELEMENT_CHANGE, null);
         }
     }
 
@@ -65,9 +65,9 @@ public class StringsArrayValuedProperty extends StaticGroupProperty{
     }
 
     public void readFile(String fileName) throws IOException {
-        File file=new File(fileName);
-        if(file.exists() && file.canRead()){
-            BufferedReader br=null;
+        File file = new File(fileName);
+        if (file.exists() && file.canRead()) {
+            BufferedReader br = null;
             try (FileReader fr = new FileReader(file)) {
                 br = new BufferedReader(fr);
                 String line = br.readLine();

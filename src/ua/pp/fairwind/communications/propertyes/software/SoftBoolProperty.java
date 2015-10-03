@@ -1,7 +1,5 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.BooleanPropertyInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.StringPropertyInterface;
@@ -10,7 +8,7 @@ import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 /**
  * Created by Сергей on 06.07.2015.
  */
-public class SoftBoolProperty extends ValueProperty<Boolean> implements BooleanPropertyInterface{
+public class SoftBoolProperty extends ValueProperty<Boolean> implements BooleanPropertyInterface {
     public SoftBoolProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }
@@ -93,9 +91,9 @@ public class SoftBoolProperty extends ValueProperty<Boolean> implements BooleanP
 
     }
 
-    public void invertValue(){
-        Boolean value=getValue();
-        if(value==null){
+    public void invertValue() {
+        Boolean value = getValue();
+        if (value == null) {
             setValue(true);
         } else {
             setValue(!value);

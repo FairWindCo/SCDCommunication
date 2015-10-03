@@ -14,6 +14,6 @@ public class LongPropertyFXAdapterSpec extends AbstractFXPropertyAdapter<Long> {
 
     @Override
     public void setValue(Long t) {
-        super.setValue(t!=null?t:null);
+        super.setValue(t != null ? t : null);
     }
 }

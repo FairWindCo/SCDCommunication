@@ -20,11 +20,11 @@ import ua.pp.fairwind.javafx.panels.administrative.ImmitatorWindow;
  */
 public class MainWindowTest extends Application {
     private AppWindow mainView;
-    private MenuExecutor mainmenuexec=new MenuExecutor();
-    private MenuHolder holderMenu=new MenuHolder(mainmenuexec, true);
-    private LogEventView evetView=new LogEventView();
-    private LogLineBufferView bufferView=new LogLineBufferView();
-    private boolean showInfoInBar=true;
+    private MenuExecutor mainmenuexec = new MenuExecutor();
+    private MenuHolder holderMenu = new MenuHolder(mainmenuexec, true);
+    private LogEventView evetView = new LogEventView();
+    private LogLineBufferView bufferView = new LogLineBufferView();
+    private boolean showInfoInBar = true;
     private SCADASystemFX scada;
 
     public static void main(String[] args) {
@@ -32,30 +32,28 @@ public class MainWindowTest extends Application {
     }
 
 
-
-
     @Override
     public void start(Stage windowStage) throws Exception {
-        MyResourceLoader resloader=new MyResourceLoader();
-        scada=SCADASystemFX.createScadaSystem("CENTRAL_SCADA",5000);
+        MyResourceLoader resloader = new MyResourceLoader();
+        scada = SCADASystemFX.createScadaSystem("CENTRAL_SCADA", 5000);
         //LineCommunicationLoggingWindow loggingWindow=new LineCommunicationLoggingWindow("Buffer Logging",1000);
         //scada.setMonitoringToAllLines(loggingWindow.getLoggingDevice());
 
-        mainView=new AppWindow(resloader);
+        mainView = new AppWindow(resloader);
         mainmenuexec.setResloader(resloader);
         mainView.setMainMenuExecutor(mainmenuexec);
         mainView.setTitle(I18N_FX.getLocalizedString("APP_TITLE_TEXT"));
         mainView.setIcon(new Image(resloader.getExternalResourceURILink("icon-48x48.png")));
-        MenuConfigElements testDev=new MenuConfigElements("Single_Devies", "");
-        MenuConfigElements akon=new MenuConfigElements("AKON", "");
-        MenuConfigElements favorit=new FavoritPlate("FavoritVentilV1",scada);
-        MenuConfigElements pandrive=new PanDriveWindow("Pan_Drive_Step_Motor",scada);
-        MenuConfigElements argMicro=new ArgMicroWindow("Arg_Micro",scada);
-        MenuConfigElements encoder=new BelimaWindow("Baumer_Incremental_Encoder",scada);
-        MenuConfigElements bdbg09=new BDBG09Window("BDBG09",scada);
-        MenuConfigElements akonbase=new AkonBaseWindow("AKON_Base",scada,"baseakon");
-        MenuConfigElements immitator_base=new MenuConfigElements("IMITATORS");
-        MenuConfigElements immitator=new ImmitatorWindow("SERIAL_IMITATOR",scada);
+        MenuConfigElements testDev = new MenuConfigElements("Single_Devies", "");
+        MenuConfigElements akon = new MenuConfigElements("AKON", "");
+        MenuConfigElements favorit = new FavoritPlate("FavoritVentilV1", scada);
+        MenuConfigElements pandrive = new PanDriveWindow("Pan_Drive_Step_Motor", scada);
+        MenuConfigElements argMicro = new ArgMicroWindow("Arg_Micro", scada);
+        MenuConfigElements encoder = new BelimaWindow("Baumer_Incremental_Encoder", scada);
+        MenuConfigElements bdbg09 = new BDBG09Window("BDBG09", scada);
+        MenuConfigElements akonbase = new AkonBaseWindow("AKON_Base", scada, "baseakon");
+        MenuConfigElements immitator_base = new MenuConfigElements("IMITATORS");
+        MenuConfigElements immitator = new ImmitatorWindow("SERIAL_IMITATOR", scada);
         testDev.setAddChild(akon);
         akon.setAddChild(akonbase);
         testDev.setAddChild(favorit);

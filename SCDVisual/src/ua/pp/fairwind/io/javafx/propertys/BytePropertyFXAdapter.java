@@ -14,6 +14,6 @@ public class BytePropertyFXAdapter extends NumberFXPropertyAdapter<Byte> {
 
     @Override
     public void setValue(Number t) {
-        super.setValue(t!=null?t.byteValue():null);
+        super.setValue(t != null ? t.byteValue() : null);
     }
 }

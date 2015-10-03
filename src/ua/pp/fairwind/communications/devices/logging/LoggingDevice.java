@@ -15,16 +15,16 @@ public class LoggingDevice extends AbstractDevice {
 
     public LoggingDevice(String name, String uuid, LineMonitorInterface monitorInterface) {
         super(name, uuid);
-        this.monitorInterface=monitorInterface;
+        this.monitorInterface = monitorInterface;
     }
 
     public LoggingDevice(String name, LineMonitorInterface monitorInterface) {
-        super(name,null);
-        this.monitorInterface=monitorInterface;
+        super(name, null);
+        this.monitorInterface = monitorInterface;
     }
 
     @Override
-    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property,final Event sourceEvent) {
+    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property, final Event sourceEvent) {
         return true;
     }
 
@@ -40,14 +40,14 @@ public class LoggingDevice extends AbstractDevice {
 
     @Override
     public void processRecivedMessage(CommunicationAnswer answer) {
-        if(answer!=null && monitorInterface!=null){
-            if(answer.getStatus()== CommunicationAnswer.CommunicationResult.READ_MONITOR){
-                CommunicationProtocolRequest request=answer.getRequest();
-                LineMonitoringEvent event=new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.READ,answer.getRecivedMessage(),answer.getCommunicateOverLine(),request!=null?request.getSenderDevice():null,request!=null?request.getProperty():null);
+        if (answer != null && monitorInterface != null) {
+            if (answer.getStatus() == CommunicationAnswer.CommunicationResult.READ_MONITOR) {
+                CommunicationProtocolRequest request = answer.getRequest();
+                LineMonitoringEvent event = new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.READ, answer.getRecivedMessage(), answer.getCommunicateOverLine(), request != null ? request.getSenderDevice() : null, request != null ? request.getProperty() : null);
                 monitorInterface.monitor(event);
-            } else if(answer.getStatus()== CommunicationAnswer.CommunicationResult.WRITE_MONITOR){
-                CommunicationProtocolRequest request=answer.getRequest();
-                LineMonitoringEvent event=new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.WRITE,request!=null?request.getBytesForSend():null,answer.getCommunicateOverLine(),request!=null?request.getSenderDevice():null,request!=null?request.getProperty():null);
+            } else if (answer.getStatus() == CommunicationAnswer.CommunicationResult.WRITE_MONITOR) {
+                CommunicationProtocolRequest request = answer.getRequest();
+                LineMonitoringEvent event = new LineMonitoringEvent(LineMonitoringEvent.ACTION_TYPE.WRITE, request != null ? request.getBytesForSend() : null, answer.getCommunicateOverLine(), request != null ? request.getSenderDevice() : null, request != null ? request.getProperty() : null);
                 monitorInterface.monitor(event);
             }
         }

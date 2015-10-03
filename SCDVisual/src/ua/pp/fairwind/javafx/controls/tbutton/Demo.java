@@ -9,7 +9,12 @@ import javafx.stage.Stage;
 public class Demo extends Application {
     private MyTButton control;
 
-    @Override public void init() {
+    public static void main(String[] args) {
+        Application.launch(args);
+    }
+
+    @Override
+    public void init() {
         control = new MyTButton();
         control.prefWidth(144);
         control.prefHeight(144);
@@ -18,7 +23,8 @@ public class Demo extends Application {
         control.setOnDeselect(selectEvent -> System.out.println("Button deselected"));
     }
 
-    @Override public void start(Stage stage) {
+    @Override
+    public void start(Stage stage) {
         StackPane pane = new StackPane();
         pane.setPadding(new Insets(10, 10, 10, 10));
         pane.getChildren().setAll(control);
@@ -28,9 +34,5 @@ public class Demo extends Application {
         stage.setTitle("JavaFX TButton");
         stage.setScene(scene);
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        Application.launch(args);
     }
 }

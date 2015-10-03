@@ -15,53 +15,53 @@ public class ListenerHolder {
     private final UUID ignore;
     private final Object processingParameter;
 
-    public ListenerHolder(ElementEventListener listener,UUID ignore,EventType... interestedEventTypes) {
-        if(interestedEventTypes==null||interestedEventTypes.length==0){
+    public ListenerHolder(ElementEventListener listener, UUID ignore, EventType... interestedEventTypes) {
+        if (interestedEventTypes == null || interestedEventTypes.length == 0) {
             this.filter = Collections.unmodifiableSet(EnumSet.allOf(EventType.class));
         } else {
-            if(interestedEventTypes.length==1) {
+            if (interestedEventTypes.length == 1) {
                 this.filter = Collections.unmodifiableSet(EnumSet.of(interestedEventTypes[0]));
             } else {
-                Collection<EventType> sets= Arrays.asList(interestedEventTypes);
+                Collection<EventType> sets = Arrays.asList(interestedEventTypes);
                 this.filter = Collections.unmodifiableSet(EnumSet.copyOf(sets));
             }
         }
-        if(listener==null)throw new IllegalArgumentException("LISTENER CAN`T BE NULL!");
+        if (listener == null) throw new IllegalArgumentException("LISTENER CAN`T BE NULL!");
         this.listener = listener;
-        this.ignore=ignore;
-        this.processingParameter=null;
+        this.ignore = ignore;
+        this.processingParameter = null;
     }
 
-    public ListenerHolder(ElementEventListener listener,UUID ignore,Object params,EventType... interestedEventTypes) {
-        if(interestedEventTypes==null||interestedEventTypes.length==0){
+    public ListenerHolder(ElementEventListener listener, UUID ignore, Object params, EventType... interestedEventTypes) {
+        if (interestedEventTypes == null || interestedEventTypes.length == 0) {
             this.filter = Collections.unmodifiableSet(EnumSet.allOf(EventType.class));
         } else {
-            if(interestedEventTypes.length==1) {
+            if (interestedEventTypes.length == 1) {
                 this.filter = Collections.unmodifiableSet(EnumSet.of(interestedEventTypes[0]));
             } else {
-                Collection<EventType> sets= Arrays.asList(interestedEventTypes);
+                Collection<EventType> sets = Arrays.asList(interestedEventTypes);
                 this.filter = Collections.unmodifiableSet(EnumSet.copyOf(sets));
             }
         }
-        if(listener==null)throw new IllegalArgumentException("LISTENER CAN`T BE NULL!");
+        if (listener == null) throw new IllegalArgumentException("LISTENER CAN`T BE NULL!");
         this.listener = listener;
-        this.ignore=ignore;
-        this.processingParameter=params;
+        this.ignore = ignore;
+        this.processingParameter = params;
     }
 
-    private boolean testUUID(Event event){
-        if(ignore==null)return true;
-        UUID testUuid=event.sourceElementUUID;
-        if(ignore.equals(testUuid))return false;
-        if(event.getParent()==null) return true;
+    private boolean testUUID(Event event) {
+        if (ignore == null) return true;
+        UUID testUuid = event.sourceElementUUID;
+        if (ignore.equals(testUuid)) return false;
+        if (event.getParent() == null) return true;
         return testUUID(event.getParent());
     }
 
-    public void executeEvent(Event event){
-        if(event!=null&&event.getTypeEvent()!=null){
-            if(filter.contains(event.getTypeEvent())){
-                if(testUUID(event)){
-                    listener.elementEvent(event,processingParameter);
+    public void executeEvent(Event event) {
+        if (event != null && event.getTypeEvent() != null) {
+            if (filter.contains(event.getTypeEvent())) {
+                if (testUUID(event)) {
+                    listener.elementEvent(event, processingParameter);
                 }
             }
         }

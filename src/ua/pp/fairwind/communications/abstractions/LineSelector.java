@@ -17,14 +17,14 @@ public class LineSelector {
     private final long pauseBeforeWrite;
     private final LineParameters lineParam;
 
-    public LineSelector(byte[] sendbuffer, byte[] comparebuffer,LineParameters lineParams,long readTimeOut,long pauseBeforeRead,long pauseBeforeWrite) {
+    public LineSelector(byte[] sendbuffer, byte[] comparebuffer, LineParameters lineParams, long readTimeOut, long pauseBeforeRead, long pauseBeforeWrite) {
         this.sendbuffer = sendbuffer;
         this.comparebuffer = comparebuffer;
-        this.alreadySelect =false;
-        this.lineParam=lineParams;
-        this.readTimeOut=readTimeOut;
-        this.pauseBeforeRead=pauseBeforeRead;
-        this.pauseBeforeWrite=pauseBeforeWrite;
+        this.alreadySelect = false;
+        this.lineParam = lineParams;
+        this.readTimeOut = readTimeOut;
+        this.pauseBeforeRead = pauseBeforeRead;
+        this.pauseBeforeWrite = pauseBeforeWrite;
     }
 
     public LineSelector(boolean alreadySelect) {
@@ -32,9 +32,9 @@ public class LineSelector {
         this.sendbuffer = null;
         this.comparebuffer = null;
         this.lineParam = null;
-        readTimeOut=0;
-        this.pauseBeforeRead=0;
-        this.pauseBeforeWrite=0;
+        readTimeOut = 0;
+        this.pauseBeforeRead = 0;
+        this.pauseBeforeWrite = 0;
     }
 
     public byte[] getSendbuffer() {
@@ -49,16 +49,16 @@ public class LineSelector {
         return alreadySelect;
     }
 
-    public int neededByteCount(){
-        if(comparebuffer!=null){
+    public int neededByteCount() {
+        if (comparebuffer != null) {
             return comparebuffer.length;
         } else {
             return 0;
         }
     }
 
-    public boolean compare(byte[] readedValue){
-        return Arrays.equals(comparebuffer,readedValue);
+    public boolean compare(byte[] readedValue) {
+        return Arrays.equals(comparebuffer, readedValue);
     }
 
     public LineParameters getLineParam() {
@@ -70,12 +70,12 @@ public class LineSelector {
     }
 
     public void getPauseBeforeRead() {
-        if(pauseBeforeRead>0)
+        if (pauseBeforeRead > 0)
             CommunicationUtils.RealThreadPause(pauseBeforeRead);
     }
 
     public void getPauseBeforeWrite() {
-        if(pauseBeforeWrite>0)
+        if (pauseBeforeWrite > 0)
             CommunicationUtils.RealThreadPause(pauseBeforeWrite);
     }
 }

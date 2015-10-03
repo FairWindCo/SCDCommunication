@@ -5,8 +5,6 @@ import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
 import ua.pp.fairwind.communications.lines.SerialLine;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
 
@@ -15,9 +13,9 @@ import ua.pp.fairwind.communications.utils.CommunicationUtils;
  */
 public class LineConsoleTestAKON_MODBUS {
     public static void main(String[] args) {
-        SerialLine line=new SerialLine("com9","RS232 Line#1",null,5000);
-        AkonBase akon=new AkonBase(0xAL,"Favirit Ventel",null);
-        LoggingDevice ldev=new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
+        SerialLine line = new SerialLine("com9", "RS232 Line#1", null, 5000);
+        AkonBase akon = new AkonBase(0xAL, "Favirit Ventel", null);
+        LoggingDevice ldev = new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
@@ -29,7 +27,7 @@ public class LineConsoleTestAKON_MODBUS {
         akon.getAkonProtocol().setValue(AkonBase.MODBUS_PROTOCOL);
         akon.setPrimerayLine(line);
         akon.getSerialNumber().addChangeEventListener((event) -> System.out.println(event.getNameFrom() + " = " + event.getNewValue()));
-        ((ValueProperty)(akon.getSystemObject().get("TIME"))).addChangeEventListener((event) -> System.out.println(event.getNameFrom() + " = " + event.getNewValue()));
+        ((ValueProperty) (akon.getSystemObject().get("TIME"))).addChangeEventListener((event) -> System.out.println(event.getNameFrom() + " = " + event.getNewValue()));
         //akon.getSerialNumber().readValueRequest();
         //SoftByteProperty bt=new SoftByteProperty("test");
         //bt.addChangeEventListener((event) -> System.out.println(event.getNameFrom() + " = " + event.getNewValue()));

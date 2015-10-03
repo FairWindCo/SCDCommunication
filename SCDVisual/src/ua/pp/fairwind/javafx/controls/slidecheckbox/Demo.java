@@ -3,6 +3,7 @@ package ua.pp.fairwind.javafx.controls.slidecheckbox;
 /**
  * Created by Сергей on 28.08.2015.
  */
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
@@ -17,6 +18,10 @@ import javafx.stage.Stage;
  */
 
 public class Demo extends Application {
+
+    public static void main(String[] args) {
+        Application.launch(args);
+    }
 
     @Override
     public void start(Stage stage) {
@@ -33,9 +38,5 @@ public class Demo extends Application {
         stage.setScene(scene);
         stage.setTitle("JavaFX FridayFun XVIII");
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        Application.launch(args);
     }
 }

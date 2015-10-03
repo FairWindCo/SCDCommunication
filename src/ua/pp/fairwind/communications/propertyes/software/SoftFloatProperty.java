@@ -1,7 +1,5 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 /**
@@ -40,13 +38,14 @@ public class SoftFloatProperty extends NumberProperty<Float> {
         super(name, value);
     }
 
-    protected Float convertFromNumber(Number value){
-        if(value!=null) return value.floatValue();return null;
+    protected Float convertFromNumber(Number value) {
+        if (value != null) return value.floatValue();
+        return null;
     }
 
     @Override
     protected Float convertFromString(String value, int radix) {
-        if(value!=null) return Float.parseFloat(value);
+        if (value != null) return Float.parseFloat(value);
         return null;
     }
 }

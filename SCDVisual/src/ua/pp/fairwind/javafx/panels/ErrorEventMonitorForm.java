@@ -18,40 +18,40 @@ import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
 
-public class ErrorEventMonitorForm extends SimpleView implements ElementEventListener{
-	private ObservableList<HardwareNodeEvent> events=FXCollections.observableArrayList();
-	private int maxSize=100;
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Node createView() {
-		BorderPane base=new BorderPane();
-		HBox title=new HBox(80d);
-		title.setAlignment(Pos.CENTER);
-		base.topProperty().set(title);
-		Label titleLabel=new Label("SYSTEM LOG");
-		title.getChildren().add(titleLabel);
-		titleLabel.getStyleClass().add("formLabel");
-		TableView<HardwareNodeEvent> logTable=new TableView<>(events);
-		BorderPane.setMargin(logTable, new Insets(1d));
-		base.setCenter(logTable);
-		TableColumn<HardwareNodeEvent, String> message=new TableColumn<>("MESSAGE");
-		message.setMinWidth(350);
-		TableColumn<HardwareNodeEvent, String> eventtype=new TableColumn<>("EVENT");
-		TableColumn<HardwareNodeEvent, String> object=new TableColumn<>("OBJECT");
-		TableColumn<HardwareNodeEvent, String> time=new TableColumn<>("Time");
-		message.setCellValueFactory(new PropertyValueFactory<>("message"));
-		eventtype.setCellValueFactory(new PropertyValueFactory<>("level"));
-		time.setCellValueFactory(new PropertyValueFactory<>("time"));
-		//object.setCellValueFactory(new PropertyValueFactory<ErrorEvent,String>("source"));
-		object.setCellValueFactory(arg0 -> {
-            if(arg0!=null && arg0.getValue()!=null && arg0.getValue().getElementName()!=null){
+public class ErrorEventMonitorForm extends SimpleView implements ElementEventListener {
+    private ObservableList<HardwareNodeEvent> events = FXCollections.observableArrayList();
+    private int maxSize = 100;
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Node createView() {
+        BorderPane base = new BorderPane();
+        HBox title = new HBox(80d);
+        title.setAlignment(Pos.CENTER);
+        base.topProperty().set(title);
+        Label titleLabel = new Label("SYSTEM LOG");
+        title.getChildren().add(titleLabel);
+        titleLabel.getStyleClass().add("formLabel");
+        TableView<HardwareNodeEvent> logTable = new TableView<>(events);
+        BorderPane.setMargin(logTable, new Insets(1d));
+        base.setCenter(logTable);
+        TableColumn<HardwareNodeEvent, String> message = new TableColumn<>("MESSAGE");
+        message.setMinWidth(350);
+        TableColumn<HardwareNodeEvent, String> eventtype = new TableColumn<>("EVENT");
+        TableColumn<HardwareNodeEvent, String> object = new TableColumn<>("OBJECT");
+        TableColumn<HardwareNodeEvent, String> time = new TableColumn<>("Time");
+        message.setCellValueFactory(new PropertyValueFactory<>("message"));
+        eventtype.setCellValueFactory(new PropertyValueFactory<>("level"));
+        time.setCellValueFactory(new PropertyValueFactory<>("time"));
+        //object.setCellValueFactory(new PropertyValueFactory<ErrorEvent,String>("source"));
+        object.setCellValueFactory(arg0 -> {
+            if (arg0 != null && arg0.getValue() != null && arg0.getValue().getElementName() != null) {
                 return new SimpleStringProperty(arg0.getValue().getElementName());
-            } else{
+            } else {
                 return new SimpleStringProperty("null");
             }
         });
-		
+
 		/*
 		message.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ErrorEvent,String>, ObservableValue<String>>() {
 			
@@ -100,55 +100,52 @@ public class ErrorEventMonitorForm extends SimpleView implements ElementEventLis
 				}
 			}
 		});		/**/
-		logTable.getColumns().addAll(eventtype,time,message,object);/**/
-		logTable.autosize();
-		return base;
+        logTable.getColumns().addAll(eventtype, time, message, object);/**/
+        logTable.autosize();
+        return base;
 
     }
 
 
+    synchronized public void println(String message) {
+        errorRecived(new HardwareNodeEvent(null, EventType.ERROR, message));
+    }
 
-	
-	synchronized public void println(String message){
-		errorRecived(new HardwareNodeEvent(null, EventType.ERROR,message));
-	}
-	
-	synchronized public void println(String message,EventType level){
-		errorRecived(new HardwareNodeEvent(null, level,message));
-	}
+    synchronized public void println(String message, EventType level) {
+        errorRecived(new HardwareNodeEvent(null, level, message));
+    }
 
 
-
-	synchronized public void errorRecived(final HardwareNodeEvent referense) {
-		if(referense!=null && events!=null){
-			//System.out.println(referense);
-			if(Platform.isFxApplicationThread()){
-				events.add(0, referense);
-				if(maxSize<events.size()){
-					events.remove(maxSize-1,events.size());
-				}
-        	} else {
-        		try{
-	        		Platform.runLater(() -> {
-                      events.add(0, referense);
-                      if(maxSize<events.size()){
-                          events.remove(maxSize-1,events.size());
-                      }
-                    });
-        		} catch (IllegalStateException ex){      			
-        			events.add(0, referense);
-        			if(maxSize<events.size()){
-        				events.remove(maxSize-1,events.size());
-        			}
+    synchronized public void errorRecived(final HardwareNodeEvent referense) {
+        if (referense != null && events != null) {
+            //System.out.println(referense);
+            if (Platform.isFxApplicationThread()) {
+                events.add(0, referense);
+                if (maxSize < events.size()) {
+                    events.remove(maxSize - 1, events.size());
                 }
-        	}				
-			
-		}
-	}
+            } else {
+                try {
+                    Platform.runLater(() -> {
+                        events.add(0, referense);
+                        if (maxSize < events.size()) {
+                            events.remove(maxSize - 1, events.size());
+                        }
+                    });
+                } catch (IllegalStateException ex) {
+                    events.add(0, referense);
+                    if (maxSize < events.size()) {
+                        events.remove(maxSize - 1, events.size());
+                    }
+                }
+            }
 
-	@Override
-	public void elementEvent(Event event,Object params) {
-		errorRecived(new HardwareNodeEvent(event.sourceElement!=null?event.sourceElement.getName():null,event.typeEvent,event.params));
-	}
+        }
+    }
+
+    @Override
+    public void elementEvent(Event event, Object params) {
+        errorRecived(new HardwareNodeEvent(event.sourceElement != null ? event.sourceElement.getName() : null, event.typeEvent, event.params));
+    }
 
 }

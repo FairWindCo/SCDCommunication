@@ -9,35 +9,35 @@ import ua.pp.fairwind.communications.propertyes.abstraction.propertyTrunsactions
  */
 public class AbstractTrunsactionExecutor {
 
-    static protected boolean isMultiRequestEnabled(AbstractProperty property,OPERATION_TYPE type){
+    static protected boolean isMultiRequestEnabled(AbstractProperty property, OPERATION_TYPE type) {
         return property.isMultiRequestEnabled(type);
     }
 
-    static protected void setMultiRequestEnabled(AbstractProperty property,OPERATION_TYPE type,boolean state){
+    static protected void setMultiRequestEnabled(AbstractProperty property, OPERATION_TYPE type, boolean state) {
         property.setMultiRequestEnabled(type, state);
     }
 
-    static protected boolean isRequestActive(AbstractProperty property,OPERATION_TYPE type){
+    static protected boolean isRequestActive(AbstractProperty property, OPERATION_TYPE type) {
         return property.isRequestActive(type);
     }
 
-    static protected boolean startRequest(AbstractProperty property,OPERATION_TYPE type){
+    static protected boolean startRequest(AbstractProperty property, OPERATION_TYPE type) {
         return property.startRequest(type);
     }
 
-    static protected void endRequest(AbstractProperty property,OPERATION_TYPE type){
+    static protected void endRequest(AbstractProperty property, OPERATION_TYPE type) {
         property.endRequest(type);
     }
 
-    static protected void setRequestTrunsaction(AbstractProperty property,OperationTrunsactions requestTrunsaction) {
-        property.setRequestTrunsaction( requestTrunsaction);
+    static protected void setRequestTrunsaction(AbstractProperty property, OperationTrunsactions requestTrunsaction) {
+        property.setRequestTrunsaction(requestTrunsaction);
     }
 
-    static protected void rollback(ValueProperty property,Event source){
+    static protected void rollback(ValueProperty property, Event source) {
         property.rollback(source);
     }
 
-    static protected void invalidate(ValueProperty property,Event source){
+    static protected void invalidate(ValueProperty property, Event source) {
         property.invalidate(source);
     }
 }

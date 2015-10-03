@@ -3,6 +3,7 @@ package ua.pp.fairwind.javafx.controls.slidecheckbox;
 /**
  * Created by Сергей on 28.08.2015.
  */
+
 import javafx.scene.control.CheckBox;
 
 
@@ -18,6 +19,7 @@ public class SlideCheckBox extends CheckBox {
     public SlideCheckBox() {
         this("");
     }
+
     public SlideCheckBox(final String TEXT) {
         super(TEXT);
         getStylesheets().add(getClass().getResource("slidecheckbox.css").toExternalForm());

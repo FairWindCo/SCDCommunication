@@ -22,13 +22,7 @@ public class FavoritComplexPanel extends BorderPane {
     private final FavoritPanel panel;
     private final LineInfoBar infoBarP;
     private final LineInfoBar infoBarS;
-
-
-    public FavoritComplexPanel(AbstractLine line,FavoritCoreDeviceV1 device) {
-        this(line, device, null);
-    }
-
-    SimpleDeviceConfigPanel.LineChange listner=new SimpleDeviceConfigPanel.LineChange() {
+    SimpleDeviceConfigPanel.LineChange listner = new SimpleDeviceConfigPanel.LineChange() {
         @Override
         public void primaryLineChange(LineInterface newline) {
             infoBarP.setupLine(newline);
@@ -41,25 +35,29 @@ public class FavoritComplexPanel extends BorderPane {
         }
     };
 
-    public FavoritComplexPanel(LineInterface line,FavoritCoreDeviceV1 device,List<LineInterface> lines) {
-        if(device==null)throw new RuntimeException("DEVICE CAN`T BE NULL!");
-        if(line!=null)device.setPrimerayLine(line);
-        this.line=line;
-        this.lines=lines;
-        this.device=device;
-        devpanel=new SimpleDeviceConfigPanel(device,line,lines,listner);
-        infoBarP=new LineInfoBar(35,device.getPrimaryLine());
-        infoBarS=new LineInfoBar(35,device.getSecondaryLine());
-        panel=new FavoritPanel(device);
+    public FavoritComplexPanel(AbstractLine line, FavoritCoreDeviceV1 device) {
+        this(line, device, null);
+    }
+
+    public FavoritComplexPanel(LineInterface line, FavoritCoreDeviceV1 device, List<LineInterface> lines) {
+        if (device == null) throw new RuntimeException("DEVICE CAN`T BE NULL!");
+        if (line != null) device.setPrimerayLine(line);
+        this.line = line;
+        this.lines = lines;
+        this.device = device;
+        devpanel = new SimpleDeviceConfigPanel(device, line, lines, listner);
+        infoBarP = new LineInfoBar(35, device.getPrimaryLine());
+        infoBarS = new LineInfoBar(35, device.getSecondaryLine());
+        panel = new FavoritPanel(device);
         initControl();
     }
 
-    private void initControl(){
+    private void initControl() {
 
         setTop(devpanel);
         setCenter(panel);
         setAlignment(panel, Pos.CENTER);
-        VBox down=new VBox();
+        VBox down = new VBox();
         down.getChildren().addAll(infoBarP, infoBarS);
 
         setBottom(down);

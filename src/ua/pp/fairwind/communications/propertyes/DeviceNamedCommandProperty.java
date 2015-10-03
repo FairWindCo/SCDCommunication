@@ -14,13 +14,12 @@ public class DeviceNamedCommandProperty extends AbsractCommandProperty {
         super(name, null);
     }
 
-    public DeviceNamedCommandProperty(String name, String uuid,String command) {
-        super(name, uuid,command);
+    public DeviceNamedCommandProperty(String name, String uuid, String command) {
+        super(name, uuid, command);
     }
 
 
-
-    public void activate(){
+    public void activate() {
         super.activate();
         //fireEvent(EventType.ELEMENT_CHANGE, getName());
     }

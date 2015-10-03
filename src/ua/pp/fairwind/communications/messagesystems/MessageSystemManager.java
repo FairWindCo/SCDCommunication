@@ -8,17 +8,17 @@ import java.util.UUID;
  * Created by Сергей on 24.09.2015.
  */
 public class MessageSystemManager {
-    private static final MessageSubSystem messagesystem=createMessageSubsystem();
+    private static final MessageSubSystem messagesystem = createMessageSubsystem();
 
-    private static MessageSubSystem createMessageSubsystem(){
-        String name=(String)I18N.getObjectErr("message.system.name");
-        if(name==null){
+    private static MessageSubSystem createMessageSubsystem() {
+        String name = (String) I18N.getObjectErr("message.system.name");
+        if (name == null) {
             return new MessageSubSystemMultiDipatch();
         } else {
-            MessageSubSystem sys=null;
+            MessageSubSystem sys = null;
             try {
-                Class messageSystemclass=Class.forName(name);
-                sys=(MessageSubSystem)messageSystemclass.newInstance();
+                Class messageSystemclass = Class.forName(name);
+                sys = (MessageSubSystem) messageSystemclass.newInstance();
             } catch (ClassNotFoundException e) {
                 System.err.println(e.getLocalizedMessage());
             } catch (InstantiationException e) {
@@ -26,8 +26,8 @@ public class MessageSystemManager {
             } catch (IllegalAccessException e) {
                 System.err.println(e.getLocalizedMessage());
             }
-            if(sys==null){
-                sys=new MessageSubSystemMultiDipatch();
+            if (sys == null) {
+                sys = new MessageSubSystemMultiDipatch();
             }
             return sys;
         }
@@ -41,7 +41,7 @@ public class MessageSystemManager {
         return messagesystem.getNewChild(requestedElement);
     }
 
-    static public void destroy(){
+    static public void destroy() {
         messagesystem.destroyService();
     }
 

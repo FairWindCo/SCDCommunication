@@ -25,7 +25,7 @@ public class StringFXPropertyAdapter extends StringFXObservableAdapter implement
         }
         if (!observable.equals(this)) {
             unbind();
-            this.observable =  (ObservableValue<String>) observableValue;
+            this.observable = (ObservableValue<String>) observableValue;
             if (listener == null) {
                 listener = new Listener();
             }
@@ -73,7 +73,7 @@ public class StringFXPropertyAdapter extends StringFXObservableAdapter implement
         property.setValue(val);
     }
 
-    public void markInvalid(){
+    public void markInvalid() {
         invalidated();
         //fireInvalidate();
         //fireValueChangedEvent();

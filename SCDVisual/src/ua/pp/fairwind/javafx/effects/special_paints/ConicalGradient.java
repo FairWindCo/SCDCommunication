@@ -17,18 +17,11 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Shape;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 
 public class ConicalGradient {
-    private Point2D    center;
+    private Point2D center;
     private List<Stop> sortedStops;
 
 
@@ -178,11 +171,11 @@ public class ConicalGradient {
     }
 
     public ImagePattern apply(final Shape SHAPE) {
-        double x      = SHAPE.getLayoutBounds().getMinX();
-        double y      = SHAPE.getLayoutBounds().getMinY();
-        double width  = SHAPE.getLayoutBounds().getWidth();
+        double x = SHAPE.getLayoutBounds().getMinX();
+        double y = SHAPE.getLayoutBounds().getMinY();
+        double width = SHAPE.getLayoutBounds().getWidth();
         double height = SHAPE.getLayoutBounds().getHeight();
-        center        = new Point2D(width / 2.0, width / 2.0);
+        center = new Point2D(width / 2.0, width / 2.0);
         return new ImagePattern(getImage(width, height), x, y, width, height, false);
     }
 }

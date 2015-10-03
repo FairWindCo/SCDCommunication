@@ -5,8 +5,6 @@ import ua.pp.fairwind.communications.devices.logging.LineMonitorInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
 import ua.pp.fairwind.communications.lines.SerialLine;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
 import ua.pp.fairwind.communications.propertyes.binding.ByteToLongConvertor;
 import ua.pp.fairwind.communications.propertyes.software.SoftByteProperty;
 
@@ -15,9 +13,9 @@ import ua.pp.fairwind.communications.propertyes.software.SoftByteProperty;
  */
 public class LineConsoleTestAKON_OBJ {
     public static void main(String[] args) {
-        SerialLine line=new SerialLine("com9","RS232 Line#1",null,5000);
-        AkonBase akon=new AkonBase(0xAL,"Favirit Ventel",null);
-        LoggingDevice ldev=new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
+        SerialLine line = new SerialLine("com9", "RS232 Line#1", null, 5000);
+        AkonBase akon = new AkonBase(0xAL, "Favirit Ventel", null);
+        LoggingDevice ldev = new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
@@ -29,7 +27,7 @@ public class LineConsoleTestAKON_OBJ {
         akon.setPrimerayLine(line);
         akon.getSerialNumber().addChangeEventListener((event) -> System.out.println(event.getNameFrom() + " = " + event.getNewValue()));
         //akon.getSerialNumber().readValueRequest();
-        SoftByteProperty bt=new SoftByteProperty("test");
+        SoftByteProperty bt = new SoftByteProperty("test");
         bt.addChangeEventListener((event) -> System.out.println(event.getNameFrom() + " = " + event.getNewValue()));
         akon.getSystemObject().get("SERIAL NUMBER").readValueRequest();
         akon.getSystemObject().get("TIME").readValueRequest();

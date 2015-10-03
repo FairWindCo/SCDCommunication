@@ -5,9 +5,11 @@ package ua.pp.fairwind.communications.abstractions;
  */
 public interface CentralElementInterface extends ElementInterface {
     ElementInterface getByUUID(String UUID);
+
     boolean isMessageBrookerExist();
 
     void addElement(ElementInterface element);
+
     void removeElement(ElementInterface element);
 
 

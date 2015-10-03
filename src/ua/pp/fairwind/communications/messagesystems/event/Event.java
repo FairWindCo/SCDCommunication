@@ -16,50 +16,50 @@ public class Event {
     public final Event parent;
 
 
-    public Event(UUID sourceElement,EventType typeEvent, Object params) {
+    public Event(UUID sourceElement, EventType typeEvent, Object params) {
         this.sourceElement = null;
-        sourceElementUUID=sourceElement;
+        sourceElementUUID = sourceElement;
         this.parentEcentElementUUID = null;
         this.typeEvent = typeEvent;
         this.params = params;
-        this.parent=null;
+        this.parent = null;
     }
 
-    public Event(UUID sourceElement,EventType typeEvent, Object params,Event parentevent) {
+    public Event(UUID sourceElement, EventType typeEvent, Object params, Event parentevent) {
         this.sourceElement = null;
-        sourceElementUUID=sourceElement;
+        sourceElementUUID = sourceElement;
         this.typeEvent = typeEvent;
         this.params = params;
-        this.parent=parentevent;
+        this.parent = parentevent;
         this.parentEcentElementUUID = parentevent.sourceElementUUID;
 
     }
 
 
-    public Event(ElementInterface sourceElement,EventType typeEvent, Object params) {
+    public Event(ElementInterface sourceElement, EventType typeEvent, Object params) {
         this.sourceElement = sourceElement;
-        sourceElementUUID=sourceElement.getUUID();
+        sourceElementUUID = sourceElement.getUUID();
         this.parentEcentElementUUID = null;
         this.typeEvent = typeEvent;
         this.params = params;
-        this.parent=null;
+        this.parent = null;
     }
 
-    public Event(ElementInterface sourceElement,EventType typeEvent, Object params,Event parentevent){
+    public Event(ElementInterface sourceElement, EventType typeEvent, Object params, Event parentevent) {
         this.sourceElement = sourceElement;
-        sourceElementUUID=sourceElement.getUUID();
+        sourceElementUUID = sourceElement.getUUID();
         this.typeEvent = typeEvent;
         this.params = params;
-        this.parent=parentevent;
-        this.parentEcentElementUUID = (parentevent!=null)?parentevent.sourceElementUUID:null;
+        this.parent = parentevent;
+        this.parentEcentElementUUID = (parentevent != null) ? parentevent.sourceElementUUID : null;
     }
 
-    public Event(ElementInterface sourceElement,EventType typeEvent, Object params,UUID parentEcentElementUUID){
+    public Event(ElementInterface sourceElement, EventType typeEvent, Object params, UUID parentEcentElementUUID) {
         this.sourceElement = sourceElement;
-        sourceElementUUID=sourceElement.getUUID();
+        sourceElementUUID = sourceElement.getUUID();
         this.typeEvent = typeEvent;
         this.params = params;
-        this.parent=null;
+        this.parent = null;
         this.parentEcentElementUUID = parentEcentElementUUID;
     }
 

@@ -11,29 +11,29 @@ import java.util.concurrent.Executors;
 /**
  * Created by Сергей on 27.08.2015.
  */
-public class MessageSubSystemMultiDipatch extends MessageSubSystemSimple{
-    static private final ExecutorService service= Executors.newCachedThreadPool();
+public class MessageSubSystemMultiDipatch extends MessageSubSystemSimple {
+    static private final ExecutorService service = Executors.newCachedThreadPool();
 
-
+    public static void destroyAllService() {
+        service.shutdownNow();
+    }
 
     @Override
-    public void fireEvent(Event event) {
-        for(ListenerHolder listener:eventDispatcher){
+    public void fireEvent(UUID source, Event event) {
+        for (ListenerHolder listener : eventDispatcher) {
             service.submit(() -> {
                 try {
                     //System.out.println("EVENT "+type+" FROM "+element +" PARAM: "+param);
                     listener.executeEvent(event);
-                }catch (Exception ex){
+                } catch (Exception ex) {
                     System.err.println(ex.toString());
                 }
             });
         }
     }
 
-
-
-    protected void fireEventExecute(final ValueChangeEvent<?> event){
-        for(ValueChangeListener listener:calueEventDispatcher){
+    protected void fireEventExecute(UUID source, final ValueChangeEvent<?> event) {
+        for (ValueChangeListener listener : calueEventDispatcher) {
             service.submit(() -> {
                 try {
                     //System.out.println("EVENT FROM" + event);
@@ -46,13 +46,8 @@ public class MessageSubSystemMultiDipatch extends MessageSubSystemSimple{
         }
     }
 
-
     @Override
     public void destroyService() {
-        service.shutdownNow();
-    }
-
-    public static void destroyAllService() {
         service.shutdownNow();
     }
 

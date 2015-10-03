@@ -14,7 +14,7 @@ public class LoopBackLine extends AbstractLine {
 
     public LoopBackLine(String codename, String uuid) {
         super(codename, uuid);
-        setServiceMode(SERVICE_MODE.CLIENT_SERVER,null);
+        setServiceMode(SERVICE_MODE.CLIENT_SERVER, null);
     }
 
     public LoopBackLine(String codename) {
@@ -27,27 +27,27 @@ public class LoopBackLine extends AbstractLine {
 
     @Override
     protected void sendMessageFromServerMode(byte[] data, LineParameters params) throws LineErrorException, LineTimeOutException {
-        if(data!=null) internalBuffer=data.clone();
+        if (data != null) internalBuffer = data.clone();
     }
 
     @Override
     protected void sendMessage(byte[] data, LineParameters params) throws LineErrorException, LineTimeOutException {
-        if(data!=null) internalBuffer=data.clone();
+        if (data != null) internalBuffer = data.clone();
         serviceRecivedFromLineDataInServerMode(internalBuffer);
     }
 
     @Override
     protected byte[] reciveMessage(long timeOut, long bytesForReadCount, LineParameters params) throws LineErrorException, LineTimeOutException {
-        if(bytesForReadCount==0) return null;
-        long StartTime=System.currentTimeMillis();
-        long needByte=Math.abs(bytesForReadCount);
-        if(internalBuffer!=null||internalBuffer.length<bytesForReadCount) {
+        if (bytesForReadCount == 0) return null;
+        long StartTime = System.currentTimeMillis();
+        long needByte = Math.abs(bytesForReadCount);
+        if (internalBuffer != null || internalBuffer.length < bytesForReadCount) {
             CommunicationUtils.RealThreadPause(timeOut);
         }
-        if(internalBuffer!=null&&internalBuffer.length>=needByte) {
+        if (internalBuffer != null && internalBuffer.length >= needByte) {
             return internalBuffer.clone();
         } else {
-            throw new LineTimeOutException(timeOut,StartTime);
+            throw new LineTimeOutException(timeOut, StartTime);
         }
     }
 
@@ -58,7 +58,7 @@ public class LoopBackLine extends AbstractLine {
 
     @Override
     protected boolean clearBuffers(LineParameters parameters) {
-        internalBuffer=null;
+        internalBuffer = null;
         return true;
     }
 

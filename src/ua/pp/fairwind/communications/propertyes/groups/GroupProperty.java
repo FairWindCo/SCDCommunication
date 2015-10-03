@@ -8,7 +8,7 @@ import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 public class GroupProperty extends StaticGroupProperty {
 
     public GroupProperty(String name, String uuid, AbstractProperty... propertyList) {
-        super(name, uuid,  propertyList);
+        super(name, uuid, propertyList);
     }
 
     @Override

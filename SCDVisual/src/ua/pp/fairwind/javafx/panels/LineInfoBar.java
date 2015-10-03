@@ -20,20 +20,20 @@ import java.time.format.DateTimeFormatter;
  * Created by Сергей on 24.09.2014.
  */
 public class LineInfoBar extends Pane {
-    private final Label time=new Label();
-    private final Label level=new Label();
-    private final Label object=new Label();
-    private final Label info=new Label();
-    private final Label message=new Label();
-    private final DateTimeFormatter formater=DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss.SSS");
-    private final Label readStatistic=new Label();
-    private final Label writeStatistic=new Label();
-    private final Label otherStatistic=new Label();
-    private final CheckBox enableStatistic=new CheckBox("Monitor");
+    private final Label time = new Label();
+    private final Label level = new Label();
+    private final Label object = new Label();
+    private final Label info = new Label();
+    private final Label message = new Label();
+    private final DateTimeFormatter formater = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss.SSS");
+    private final Label readStatistic = new Label();
+    private final Label writeStatistic = new Label();
+    private final Label otherStatistic = new Label();
+    private final CheckBox enableStatistic = new CheckBox("Monitor");
 
-    private final ElementEventListener listener=new ElementEventListener() {
+    private final ElementEventListener listener = new ElementEventListener() {
         @Override
-        public void elementEvent(Event event,Object params) {
+        public void elementEvent(Event event, Object params) {
             if (event.typeEvent == EventType.PERFORMANCE && event.params instanceof PerformanceMonitorEventData) {
                 Platform.runLater(() -> updateStatInfo((PerformanceMonitorEventData) event.params));
             } else if (event.typeEvent == EventType.ERROR || event.typeEvent == EventType.FATAL_ERROR || event.typeEvent == EventType.PARSE_ERROR) {
@@ -43,12 +43,10 @@ public class LineInfoBar extends Pane {
             }
         }
     };
-
+    private final GridPane pane = new GridPane();
     private volatile LineInterface line;
 
-    private final GridPane pane=new GridPane();
-
-    public LineInfoBar(double height,LineInterface line) {
+    public LineInfoBar(double height, LineInterface line) {
         setPrefHeight(height);
         setId("buttomPanel");
         setupLine(line);
@@ -75,7 +73,7 @@ public class LineInfoBar extends Pane {
         otherStatistic.setMaxWidth(80);
         enableStatistic.setMaxHeight(30);
         enableStatistic.setMaxWidth(200);
-        enableStatistic.setPrefSize(30,120);
+        enableStatistic.setPrefSize(30, 120);
         pane.add(readStatistic, 5, 0);
         pane.add(writeStatistic, 6, 0);
         pane.add(otherStatistic, 7, 0);
@@ -83,7 +81,7 @@ public class LineInfoBar extends Pane {
         pane.setGridLinesVisible(true);
     }
 
-    public LineInfoBar(double height, String id,AbstractLine line) {
+    public LineInfoBar(double height, String id, AbstractLine line) {
         setId(id);
         setPrefHeight(height);
         setupLine(line);
@@ -107,49 +105,54 @@ public class LineInfoBar extends Pane {
     }
 
 
-    private void updateInfo(ElementInterface element,EventType eventType,Object parameters){
-            time.setText(LocalDateTime.now().format(formater));
-            if(eventType!=null) {
-                level.setText(eventType.name());
-            }
-            if(parameters!=null){
-                info.setText(parameters.toString());
-            } else {
-                info.setText("");
-            }
-            if(element!=null){
-                String id=element.getHardwareName();
-                object.setText(id);
-            } else {
-                object.setText("");
-            }
-            message.setText("");
+    private void updateInfo(ElementInterface element, EventType eventType, Object parameters) {
+        time.setText(LocalDateTime.now().format(formater));
+        if (eventType != null) {
+            level.setText(eventType.name());
+        }
+        if (parameters != null) {
+            info.setText(parameters.toString());
+        } else {
+            info.setText("");
+        }
+        if (element != null) {
+            String id = element.getHardwareName();
+            object.setText(id);
+        } else {
+            object.setText("");
+        }
+        message.setText("");
     }
 
-    private void updateStatInfo(PerformanceMonitorEventData performanceMonitorEventData){
-        if(performanceMonitorEventData!=null) {
-            switch (performanceMonitorEventData.getExecutionType()){
-                case READ_OPERATION:readStatistic.setText("R:"+String.valueOf(performanceMonitorEventData.getExecutionTime()));break;
-                case WRITE_OPERATION:writeStatistic.setText("W:"+String.valueOf(performanceMonitorEventData.getExecutionTime()));break;
+    private void updateStatInfo(PerformanceMonitorEventData performanceMonitorEventData) {
+        if (performanceMonitorEventData != null) {
+            switch (performanceMonitorEventData.getExecutionType()) {
+                case READ_OPERATION:
+                    readStatistic.setText("R:" + String.valueOf(performanceMonitorEventData.getExecutionTime()));
+                    break;
+                case WRITE_OPERATION:
+                    writeStatistic.setText("W:" + String.valueOf(performanceMonitorEventData.getExecutionTime()));
+                    break;
                 default:
-                    otherStatistic.setText("O:"+String.valueOf(performanceMonitorEventData.getExecutionTime()));break;
+                    otherStatistic.setText("O:" + String.valueOf(performanceMonitorEventData.getExecutionTime()));
+                    break;
             }
         }
     }
 
-    public void setMessage(ElementInterface element,EventType eventType,Object parameters){
-        if(Platform.isFxApplicationThread()){
-            updateInfo(element,eventType,parameters);
+    public void setMessage(ElementInterface element, EventType eventType, Object parameters) {
+        if (Platform.isFxApplicationThread()) {
+            updateInfo(element, eventType, parameters);
         } else {
             try {
-                Platform.runLater(() -> updateInfo(element,eventType,parameters));
-            }catch (Exception ignore){
+                Platform.runLater(() -> updateInfo(element, eventType, parameters));
+            } catch (Exception ignore) {
                 ignore.printStackTrace();
             }
         }
     }
 
-    private void updateMessage(String msg){
+    private void updateMessage(String msg) {
         time.setText(LocalDateTime.now().format(formater));
         level.setText("Message:");
         info.setText("");
@@ -157,24 +160,24 @@ public class LineInfoBar extends Pane {
         message.setText(msg);
     }
 
-    public void setMessage(String msg){
-        if(Platform.isFxApplicationThread()){
+    public void setMessage(String msg) {
+        if (Platform.isFxApplicationThread()) {
             updateMessage(msg);
         } else {
             try {
                 Platform.runLater(() -> updateMessage(msg));
-            }catch (Exception ignore){
+            } catch (Exception ignore) {
                 ignore.printStackTrace();
             }
         }
     }
 
-    public void setupLine(LineInterface newline){
-        if(line!=null){
+    public void setupLine(LineInterface newline) {
+        if (line != null) {
             line.removeEventListener(listener);
         }
-        line=newline;
-        if(newline!=null) {
+        line = newline;
+        if (newline != null) {
             line.addEventListener(listener);
             if (newline instanceof AbstractLine) {
                 final boolean val = ((AbstractLine) line).isPerformanceMonitor();
@@ -187,7 +190,6 @@ public class LineInfoBar extends Pane {
             setVisible(false);
         }
     }
-
 
 
 }

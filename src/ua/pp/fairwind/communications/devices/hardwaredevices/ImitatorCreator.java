@@ -7,13 +7,14 @@ import ua.pp.fairwind.communications.devices.hardwaredevices.Baumer.EncoderImmit
  * Created by Сергей on 02.10.2015.
  */
 public class ImitatorCreator {
-    public String[] getAviableImitator(){
+    public String[] getAviableImitator() {
         return new String[]{"ENCODER"};
     }
 
-    public ImitatorDevice getImitatorDevice(String imitatorName,Long adress){
-        switch (imitatorName){
-            case "ENCODER":return new EncoderImmitator(adress,"ENCODER",null);
+    public ImitatorDevice getImitatorDevice(String imitatorName, Long adress) {
+        switch (imitatorName) {
+            case "ENCODER":
+                return new EncoderImmitator(adress, "ENCODER", null);
         }
         return null;
     }

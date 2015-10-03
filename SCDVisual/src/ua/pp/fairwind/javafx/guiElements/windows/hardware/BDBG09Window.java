@@ -16,18 +16,19 @@ import java.util.List;
 public class BDBG09Window extends SimpleHardWareViewMenu {
 
     public BDBG09Window(String menuItem, SCADASystem centralsystem, String deviceName) {
-        super(menuItem,"", centralsystem,AutoCreateDeviceFunction.BDBG09, deviceName);
+        super(menuItem, "", centralsystem, AutoCreateDeviceFunction.BDBG09, deviceName);
     }
 
     public BDBG09Window(String menuItem, SCADASystem centralsystem) {
-        super(menuItem,"", centralsystem,AutoCreateDeviceFunction.BDBG09,"BDBG09");
+        super(menuItem, "", centralsystem, AutoCreateDeviceFunction.BDBG09, "BDBG09");
     }
+
     @Override
     protected Node createView() {
-        BDBG09 device=(BDBG09)centralsystem.createDevice(deviceType, deviceName);
-        List<LineInterface> lines=centralsystem.getListLines();
-        LineInterface oneLine=lines.get(0);
-        BDBGComplexPanel panel=new BDBGComplexPanel(oneLine,device, lines);
+        BDBG09 device = (BDBG09) centralsystem.createDevice(deviceType, deviceName);
+        List<LineInterface> lines = centralsystem.getListLines();
+        LineInterface oneLine = lines.get(0);
+        BDBGComplexPanel panel = new BDBGComplexPanel(oneLine, device, lines);
         panel.setId("basePanel");
         return panel;
     }

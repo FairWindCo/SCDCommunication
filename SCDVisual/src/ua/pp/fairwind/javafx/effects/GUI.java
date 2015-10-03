@@ -4,42 +4,39 @@ package ua.pp.fairwind.javafx.effects;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-  import java.io.IOException;
-  import java.util.ArrayList;
-  import java.util.logging.Level;
-  import java.util.logging.Logger;
-  import javafx.animation.Animation;
-  import javafx.animation.KeyFrame;
-        import javafx.animation.KeyValue;
-        import javafx.animation.PathTransition;
-        import javafx.animation.Timeline;
-        import javafx.application.Application;
-        import javafx.beans.value.ChangeListener;
-        import javafx.beans.value.ObservableValue;
-        import javafx.concurrent.Task;
-        import javafx.scene.Group;
-        import javafx.scene.Node;
-        import javafx.scene.Scene;
-        import javafx.scene.effect.BoxBlur;
-        import javafx.scene.effect.DropShadow;
-        import javafx.scene.paint.Color;
-        import javafx.scene.shape.Circle;
-        import javafx.scene.shape.Rectangle;
-        import javafx.scene.shape.SVGPath;
-        import javafx.scene.shape.Shape;
-        import javafx.scene.text.Font;
-        import javafx.scene.text.FontWeight;
-        import javafx.scene.text.Text;
-        import javafx.stage.Stage;
-        import javafx.util.Duration;
-  import ua.pp.fairwind.javafx.effects.paths.PathLoader;
+
+import javafx.animation.*;
+import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.effect.BoxBlur;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import ua.pp.fairwind.javafx.effects.paths.PathLoader;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
- *
  * @author msi
  */
-public class GUI extends Application implements ChangeListener<Number>{
+public class GUI extends Application implements ChangeListener<Number> {
     Group paths;
     Text message;
     Scene scene;
@@ -51,26 +48,27 @@ public class GUI extends Application implements ChangeListener<Number>{
     String loadingMessage = "Loading... ";
 
 
-    SVGPath path,path2,path3,path4,path5;
-    Circle particle1,particle2,particle3,particle4,particle5,neonLoad;
+    SVGPath path, path2, path3, path4, path5;
+    Circle particle1, particle2, particle3, particle4, particle5, neonLoad;
 
     ArrayList<Animation> animations = new ArrayList<>();
 
-
-    public Double getRandom(){
-        double rand = Math.random()*15;
-        return rand>5?rand:getRandom();
+    public static void main(String[] args) {
+        launch(args);
     }
 
-
-
+    public Double getRandom() {
+        double rand = Math.random() * 15;
+        return rand > 5 ? rand : getRandom();
+    }
 
     /**
      * Animates the particles which moves on the paths
+     *
      * @param particle
      * @param path
      */
-    public void animateParticle(Node particle,Shape path){
+    public void animateParticle(Node particle, Shape path) {
 
 
         PathTransition transition = new PathTransition();
@@ -83,27 +81,25 @@ public class GUI extends Application implements ChangeListener<Number>{
         transition.play();
 
 
-
-
     }
 
     /**
      * All Animation is started by this function
      */
-    public void animate(){
+    public void animate() {
         Timeline mainAnimation = new Timeline();
         mainAnimation.getKeyFrames().addAll(
-                new KeyFrame(Duration.millis(0),new KeyValue(glow.radiusProperty(),1d)),
-                new KeyFrame(Duration.millis(5000),new KeyValue(glow.radiusProperty(),13d)),
-                new KeyFrame(Duration.millis(10000),new KeyValue(glow.radiusProperty(),0d)),
+                new KeyFrame(Duration.millis(0), new KeyValue(glow.radiusProperty(), 1d)),
+                new KeyFrame(Duration.millis(5000), new KeyValue(glow.radiusProperty(), 13d)),
+                new KeyFrame(Duration.millis(10000), new KeyValue(glow.radiusProperty(), 0d)),
 
 
-                new KeyFrame(Duration.millis(1000),new KeyValue(shadow.radiusProperty(),5d)),
-                new KeyFrame(Duration.millis(1000),new KeyValue(boxBlur.iterationsProperty(),10d)),
+                new KeyFrame(Duration.millis(1000), new KeyValue(shadow.radiusProperty(), 5d)),
+                new KeyFrame(Duration.millis(1000), new KeyValue(boxBlur.iterationsProperty(), 10d)),
 
-                new KeyFrame(Duration.millis(0),new KeyValue(paths.opacityProperty(),0.6d)),
-                new KeyFrame(Duration.millis(5000),new KeyValue(paths.opacityProperty(),1d)),
-                new KeyFrame(Duration.millis(10000),new KeyValue(paths.opacityProperty(),0.6d))
+                new KeyFrame(Duration.millis(0), new KeyValue(paths.opacityProperty(), 0.6d)),
+                new KeyFrame(Duration.millis(5000), new KeyValue(paths.opacityProperty(), 1d)),
+                new KeyFrame(Duration.millis(10000), new KeyValue(paths.opacityProperty(), 0.6d))
 
         );
 
@@ -120,14 +116,14 @@ public class GUI extends Application implements ChangeListener<Number>{
         animateParticle(particle5, path5);
 
 
-
     }
 
     /**
      * This function helps to make the path for animating particles
+     *
      * @throws IOException
      */
-    public void makePaths() throws IOException{
+    public void makePaths() throws IOException {
         PathLoader loader = new PathLoader();
         path = new SVGPath();
         path2 = new SVGPath();
@@ -140,7 +136,6 @@ public class GUI extends Application implements ChangeListener<Number>{
         path3.setContent(loader.getPath(3));
         path4.setContent(loader.getPath(4));
         path5.setContent(loader.getPath(5));
-
 
 
         path.setStroke(Color.YELLOW);
@@ -165,15 +160,13 @@ public class GUI extends Application implements ChangeListener<Number>{
     /**
      * Make the particles which moves with the path defined
      */
-    public void makeParticle(){
-        particle1 = new Circle(0,0,2,Color.YELLOW);
-        particle2 = new Circle(0,0,2,Color.RED);
-        particle3 = new Circle(0,0,2,Color.ORANGE);
-        particle4 = new Circle(0,0,2,Color.WHEAT);
-        particle5= new Circle(0,0,2,Color.AQUA);
-        neonLoad = new Circle(0,0,2,Color.AQUA);
-
-
+    public void makeParticle() {
+        particle1 = new Circle(0, 0, 2, Color.YELLOW);
+        particle2 = new Circle(0, 0, 2, Color.RED);
+        particle3 = new Circle(0, 0, 2, Color.ORANGE);
+        particle4 = new Circle(0, 0, 2, Color.WHEAT);
+        particle5 = new Circle(0, 0, 2, Color.AQUA);
+        neonLoad = new Circle(0, 0, 2, Color.AQUA);
 
 
         particle1.setEffect(glow);
@@ -188,18 +181,17 @@ public class GUI extends Application implements ChangeListener<Number>{
 
     }
 
-
     /**
      * Initialize the Effects which is to be used in the controls
      * and graphics
      */
-    public void initEffects(){
+    public void initEffects() {
         boxBlur = new BoxBlur();
         boxBlur.setWidth(10);
         boxBlur.setHeight(3);
         boxBlur.setIterations(1);
 
-        glow =new DropShadow();
+        glow = new DropShadow();
         glow.setColor(Color.YELLOW);
         glow.setOffsetX(0);
         glow.setOffsetY(0);
@@ -214,14 +206,15 @@ public class GUI extends Application implements ChangeListener<Number>{
 
     /**
      * Build all the main component of this animation
+     *
      * @throws IOException
      */
-    public void buildComponents() throws IOException{
+    public void buildComponents() throws IOException {
         initEffects();
         makePaths();
         makeParticle();
 
-        paths = new Group(path,path2,path3,path4,path5);
+        paths = new Group(path, path2, path3, path4, path5);
         paths.setOpacity(0.6);
 
         progress = new Rectangle();
@@ -237,36 +230,35 @@ public class GUI extends Application implements ChangeListener<Number>{
         message.setLayoutX(250);
         message.setLayoutY(300);
 
-        Group particles = new Group(particle1,particle2,particle3,particle4,particle5);
+        Group particles = new Group(particle1, particle2, particle3, particle4, particle5);
         explode = new Explode();
         Group explodes = new Group(neonLoad);
-        Group g = new Group(paths,particles,message,explodes,explode);
+        Group g = new Group(paths, particles, message, explodes, explode);
         explodes.setClip(progress);
-        scene = new Scene(g,685,500,Color.BLACK);
+        scene = new Scene(g, 685, 500, Color.BLACK);
     }
 
     /**
      * When the loading finishes then all animation are being stopped .
      */
-    public void dispose(){
+    public void dispose() {
         neonLoad.layoutXProperty().removeListener(this);
-        for(Animation ani: animations){
+        for (Animation ani : animations) {
             ani.stop();
         }
     }
 
-
     /**
      * When neon loading get's loaded then the explode of neon is done from this function
      */
-    public void explodeAnimate(){
+    public void explodeAnimate() {
         neonLoad.setLayoutY(360);
         neonLoad.layoutXProperty().addListener(this);
         neonLoad.setRadius(30);
         Timeline anim = new Timeline();
         anim.getKeyFrames().addAll(
-                new KeyFrame(Duration.millis(0),new KeyValue(neonLoad.layoutXProperty(),0)),
-                new KeyFrame(Duration.millis(800),new KeyValue(neonLoad.layoutXProperty(),scene.getWidth()))
+                new KeyFrame(Duration.millis(0), new KeyValue(neonLoad.layoutXProperty(), 0)),
+                new KeyFrame(Duration.millis(800), new KeyValue(neonLoad.layoutXProperty(), scene.getWidth()))
         );
 
         anim.setCycleCount(-1);
@@ -277,11 +269,11 @@ public class GUI extends Application implements ChangeListener<Number>{
 
     }
 
-
     /**
      * ====================
      * TESTING PURPOSE ONLY
      * ====================
+     *
      * @param stage
      * @throws Exception
      */
@@ -293,15 +285,15 @@ public class GUI extends Application implements ChangeListener<Number>{
         stage.show();
         animate();
         explodeAnimate();
-        Task t = new Task(){
+        Task t = new Task() {
 
             @Override
             protected Object call() throws Exception {
                 double i = 0.0;
-                while(i < 1){
+                while (i < 1) {
                     try {
-                        Thread.sleep((long)(Math.random()*5000));
-                        i+= 1;
+                        Thread.sleep((long) (Math.random() * 5000));
+                        i += 1;
                         update(i);
                         System.out.println(i);
                     } catch (InterruptedException ex) {
@@ -321,32 +313,34 @@ public class GUI extends Application implements ChangeListener<Number>{
 
     /**
      * Returns the instance of the scene
+     *
      * @return
      */
-    public Scene getScene(){
+    public Scene getScene() {
         return scene;
     }
 
     /**
      * This is the main update function which is triggered from preloader class
      * and this makes the gui to show some info the loading progress
+     *
      * @param percent
      */
-    public void update(double percent){
-        if(percent  > 1){
+    public void update(double percent) {
+        if (percent > 1) {
             dispose();
             return;
 
 
         }
-        message.setText(loadingMessage + Math.round(percent*100)+" %");
+        message.setText(loadingMessage + Math.round(percent * 100) + " %");
         Timeline anim = new Timeline();
         anim.getKeyFrames().addAll(
-                new KeyFrame(Duration.millis(600),new KeyValue(progress.widthProperty(),scene.getWidth()*percent))
+                new KeyFrame(Duration.millis(600), new KeyValue(progress.widthProperty(), scene.getWidth() * percent))
         );
 
-        Stage st=(Stage)scene.getWindow();
-        st.setTitle("Loading..." + Math.floor(percent*100));
+        Stage st = (Stage) scene.getWindow();
+        st.setTitle("Loading..." + Math.floor(percent * 100));
 
         anim.play();
 
@@ -356,6 +350,7 @@ public class GUI extends Application implements ChangeListener<Number>{
     /**
      * This function is the listener which helps to listen the position of the
      * neon light and explodes when the neon reaches in the percentaged X position
+     *
      * @param observable
      * @param oldValue
      * @param newValue
@@ -363,19 +358,15 @@ public class GUI extends Application implements ChangeListener<Number>{
     @Override
     public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         //System.out.println("Got it!"+Math.floor(newValue.doubleValue()));
-        int x = (int)(Math.floor(progress.getWidth()));
-        int curr = (int)(Math.floor(newValue.doubleValue()));
-        if( curr >= x-5 && curr <= x+5){
+        int x = (int) (Math.floor(progress.getWidth()));
+        int curr = (int) (Math.floor(newValue.doubleValue()));
+        if (curr >= x - 5 && curr <= x + 5) {
             System.out.println("Got it!");
-            explode.setLayoutY(progress.getLayoutY()-40);
+            explode.setLayoutY(progress.getLayoutY() - 40);
             explode.setLayoutX(newValue.doubleValue());
             explode.explode();
         }
 
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
 

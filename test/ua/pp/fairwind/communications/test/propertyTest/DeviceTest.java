@@ -1,7 +1,6 @@
 package ua.pp.fairwind.communications.test.propertyTest;
 
 import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 
 import java.util.Arrays;
 
@@ -10,10 +9,10 @@ import java.util.Arrays;
  */
 public class DeviceTest {
     public static void main(String[] args) {
-        FavoritCoreDeviceV1 dev=new FavoritCoreDeviceV1(1L,"Test Device",null);
-        String[] lst=dev.getPropertyesName();
+        FavoritCoreDeviceV1 dev = new FavoritCoreDeviceV1(1L, "Test Device", null);
+        String[] lst = dev.getPropertyesName();
         Arrays.stream(lst).forEach(System.out::println);
-        String[] lstcmd=dev.getCommandsName();
+        String[] lstcmd = dev.getCommandsName();
         Arrays.stream(lstcmd).forEach(System.out::println);
         System.out.println(dev.getProperty("LAST_COMMUNICATION_STATUS"));
         System.out.println(dev.getProperty("LAST_COMMUNICATION_STATUS2"));

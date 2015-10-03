@@ -15,30 +15,28 @@ import ua.pp.fairwind.javafx.panels.LogLineBufferView;
 /**
  * Created by Сергей on 17.08.2015.
  */
-public class MainWindow  extends Application {
+public class MainWindow extends Application {
     private AppWindow mainView;
-    private MenuExecutor mainmenuexec=new MenuExecutor();
-    private MenuHolder holderMenu=new MenuHolder(mainmenuexec, true);
-    private LogEventView evetView=new LogEventView();
-    private LogLineBufferView bufferView=new LogLineBufferView();
-    private boolean showInfoInBar=true;
+    private MenuExecutor mainmenuexec = new MenuExecutor();
+    private MenuHolder holderMenu = new MenuHolder(mainmenuexec, true);
+    private LogEventView evetView = new LogEventView();
+    private LogLineBufferView bufferView = new LogLineBufferView();
+    private boolean showInfoInBar = true;
 
     public static void main(String[] args) {
         launch(args);
     }
 
 
-
-
     @Override
     public void start(Stage windowStage) throws Exception {
-        MyResourceLoader resloader=new MyResourceLoader();
-        mainView=new AppWindow(resloader);
+        MyResourceLoader resloader = new MyResourceLoader();
+        mainView = new AppWindow(resloader);
         mainmenuexec.setResloader(resloader);
         mainView.setMainMenuExecutor(mainmenuexec);
         mainView.setTitle(I18N_FX.getLocalizedString("APP_TITLE_TEXT"));
         mainView.setIcon(new Image(resloader.getExternalResourceURILink("icon-48x48.png")));
-        MenuConfigElements modul_dp5=new MenuConfigElements("DP5 Module", "");
+        MenuConfigElements modul_dp5 = new MenuConfigElements("DP5 Module", "");
         /*
         MenuConfigElements modul_dp5netconf=new MenuConfigElements("DP5 Module Network Config", new NetworkSettingsWindow(ethernetSettingsDP5Chanel));
         MenuConfigElements modul_dp5netconn=new MenuConfigElements("Connect Settings", "modaldialog", new UDPNetworkConnectionForm("", null, null, line));
@@ -48,10 +46,10 @@ public class MainWindow  extends Application {
         MenuConfigElements modul_dp5pref=new MenuConfigElements("DP5 Module Prefference",new ParametersWindow("preference",null,null,conf,resloader));
         MenuConfigElements modul_dp5spetr=new MenuConfigElements("Spectr","dialog", new SpectrumOnlyWindow(spectrum,dp5,line,monitorP));
 */
-        MenuConfigElements testDev=new MenuConfigElements("Single Devies", "");
-        MenuConfigElements akon=new MenuConfigElements("AKON", "");
-        MenuConfigElements test=new MenuConfigElements("test", "");
-        StringIntegerValuedProperty chhh=new StringIntegerValuedProperty("test","","0", 0, 100,"val1","val2","val3","##.###");
+        MenuConfigElements testDev = new MenuConfigElements("Single Devies", "");
+        MenuConfigElements akon = new MenuConfigElements("AKON", "");
+        MenuConfigElements test = new MenuConfigElements("test", "");
+        StringIntegerValuedProperty chhh = new StringIntegerValuedProperty("test", "", "0", 0, 100, "val1", "val2", "val3", "##.###");
         /*
         MenuConfigElements view=new MenuConfigElements("view1",new SimpleView2("test",null,null,chhh));
         MenuConfigElements view2=new MenuConfigElements("view2",new ParametersWindow("test",null,null,new ConfigurationDP5Property(ConfigurationDP5Property.DEVICETYPE.DP5),resloader));
@@ -65,16 +63,17 @@ public class MainWindow  extends Application {
         MenuConfigElements dio=new MenuConfigElements("DIO4",new AKONDIOWindow("AKON AIK", resloader,4,4,monitor));*/
         //MenuConfigElements fpmonitor=new MenuConfigElements("Monitor",new FPMonitorWindow("Favorit Monitor", resloader));
         //MenuConfigElements fpshuv=new MenuConfigElements("SHUV Test",new SHYVWindow("AKON SHUV", resloader,6,2));
-        MenuConfigElements logmessage=new MenuConfigElementsForm("Message Log", evetView);
-        MenuConfigElements logline=new MenuConfigElementsForm("Buffer Line Log", bufferView);
+        MenuConfigElements logmessage = new MenuConfigElementsForm("Message Log", evetView);
+        MenuConfigElements logline = new MenuConfigElementsForm("Buffer Line Log", bufferView);
         /*
         MenuConfigElements testDialog=new MenuConfigElements("modal app dialog",(a,b)->{
             new Thread(() -> mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK)).start();
             mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK);});/**/
-        MenuConfigElements testDialog=new MenuConfigElementsAction("modal app dialog",(a,b)->{
+        MenuConfigElements testDialog = new MenuConfigElementsAction("modal app dialog", (a, b) -> {
             //new Thread(() -> mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK)).start();
-            mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK);});
-        MenuConfigElements log=new MenuConfigElements("Log", logmessage,logline,testDialog);
+            mainmenuexec.showInfoDialog("test", InfoDialog.dialogstyle.OK);
+        });
+        MenuConfigElements log = new MenuConfigElements("Log", logmessage, logline, testDialog);
         /*
         testDev.setAddChild(pandrive);
         testDev.setAddChild(arg);
@@ -87,7 +86,7 @@ public class MainWindow  extends Application {
         //test.setAddChild(fpmonitor);
         //test.setAddChild(fpshuv);
         //test.setAddChild(view);
-       // test.setAddChild(view2);
+        // test.setAddChild(view2);
         testDev.setAddChild(akon);
         /*
         modul_dp5.setAddChild(modul_dp5find);

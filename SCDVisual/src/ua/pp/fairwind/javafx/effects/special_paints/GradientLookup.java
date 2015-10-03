@@ -37,7 +37,7 @@ public class GradientLookup {
         if (minFraction > 0) {
             stops.put(0.0, new Stop(0.0, stops.get(minFraction).getColor()));
         }
-        if (maxFraction < 1){
+        if (maxFraction < 1) {
             stops.put(1.0, new Stop(1.0, stops.get(maxFraction).getColor()));
         }
     }
@@ -54,7 +54,7 @@ public class GradientLookup {
             Stop lowerBound = stops.get(0.0);
             Stop upperBound = stops.get(1.0);
             for (Double fraction : stops.keySet()) {
-                if (Double.compare(fraction,POSITION) < 0) {
+                if (Double.compare(fraction, POSITION) < 0) {
                     lowerBound = stops.get(fraction);
                 }
                 if (Double.compare(fraction, POSITION) > 0) {
@@ -68,21 +68,21 @@ public class GradientLookup {
     }
 
     private Color interpolateColor(final Stop LOWER_BOUND, final Stop UPPER_BOUND, final double POSITION) {
-        final double POS  = (POSITION - LOWER_BOUND.getOffset()) / (UPPER_BOUND.getOffset() - LOWER_BOUND.getOffset());
+        final double POS = (POSITION - LOWER_BOUND.getOffset()) / (UPPER_BOUND.getOffset() - LOWER_BOUND.getOffset());
 
-        final double DELTA_RED     = (UPPER_BOUND.getColor().getRed() - LOWER_BOUND.getColor().getRed()) * POS;
-        final double DELTA_GREEN   = (UPPER_BOUND.getColor().getGreen() - LOWER_BOUND.getColor().getGreen()) * POS;
-        final double DELTA_BLUE    = (UPPER_BOUND.getColor().getBlue() - LOWER_BOUND.getColor().getBlue()) * POS;
+        final double DELTA_RED = (UPPER_BOUND.getColor().getRed() - LOWER_BOUND.getColor().getRed()) * POS;
+        final double DELTA_GREEN = (UPPER_BOUND.getColor().getGreen() - LOWER_BOUND.getColor().getGreen()) * POS;
+        final double DELTA_BLUE = (UPPER_BOUND.getColor().getBlue() - LOWER_BOUND.getColor().getBlue()) * POS;
         final double DELTA_OPACITY = (UPPER_BOUND.getColor().getOpacity() - LOWER_BOUND.getColor().getOpacity()) * POS;
 
-        double red     = LOWER_BOUND.getColor().getRed() + DELTA_RED;
-        double green   = LOWER_BOUND.getColor().getGreen() + DELTA_GREEN;
-        double blue    = LOWER_BOUND.getColor().getBlue() + DELTA_BLUE;
+        double red = LOWER_BOUND.getColor().getRed() + DELTA_RED;
+        double green = LOWER_BOUND.getColor().getGreen() + DELTA_GREEN;
+        double blue = LOWER_BOUND.getColor().getBlue() + DELTA_BLUE;
         double opacity = LOWER_BOUND.getColor().getOpacity() + DELTA_OPACITY;
 
-        red     = red < 0 ? 0   : (red > 1 ? 1   : red);
-        green   = green < 0 ? 0 : (green > 1 ? 1 : green);
-        blue    = blue < 0 ? 0  : (blue > 1 ? 1  : blue);
+        red = red < 0 ? 0 : (red > 1 ? 1 : red);
+        green = green < 0 ? 0 : (green > 1 ? 1 : green);
+        blue = blue < 0 ? 0 : (blue > 1 ? 1 : blue);
         opacity = opacity < 0 ? 0 : (opacity > 1 ? 1 : opacity);
 
         return Color.color(red, green, blue, opacity);

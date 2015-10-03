@@ -37,33 +37,33 @@ import ua.pp.fairwind.javafx.controls.tbutton.MyTButton;
 
 
 public class MyTButtonSkin extends SkinBase<MyTButton> implements Skin<MyTButton> {
-    private static final double      MINIMUM_SIZE   = 25;
-    private static final double      MAXIMUM_SIZE   = 1024;
-    private static final double      PREFERRED_SIZE = 144;
-    private double                   height;
+    private static final double MINIMUM_SIZE = 25;
+    private static final double MAXIMUM_SIZE = 1024;
+    private static final double PREFERRED_SIZE = 144;
+    private double height;
     private EventHandler<InputEvent> inputHandler;
     private Pane pane;
 
     private Region frame;
-    private Region                   off;
+    private Region off;
     private InnerShadow offInnerShadow;
-    private InnerShadow              offInnerShadow1;
+    private InnerShadow offInnerShadow1;
     private DropShadow offDropShadow;
-    private Region                   ledOff;
-    private InnerShadow              ledOffInnerShadow;
-    private InnerShadow              ledOffInnerShadow1;
-    private Region                   on;
-    private InnerShadow              onInnerShadow;
-    private InnerShadow              onInnerShadow1;
-    private DropShadow               onDropShadow;
-    private Region                   ledOn;
-    private InnerShadow              ledOnInnerShadow;
-    private InnerShadow              ledOnInnerShadow1;
-    private DropShadow               ledOnGlow;
+    private Region ledOff;
+    private InnerShadow ledOffInnerShadow;
+    private InnerShadow ledOffInnerShadow1;
+    private Region on;
+    private InnerShadow onInnerShadow;
+    private InnerShadow onInnerShadow1;
+    private DropShadow onDropShadow;
+    private Region ledOn;
+    private InnerShadow ledOnInnerShadow;
+    private InnerShadow ledOnInnerShadow1;
+    private DropShadow ledOnGlow;
     private Text text;
     private Font font;
-    private InnerShadow              textInnerShadow;
-    private InnerShadow              textInnerShadow1;
+    private InnerShadow textInnerShadow;
+    private InnerShadow textInnerShadow1;
 
 
     // ******************** Constructors **************************************
@@ -75,6 +75,9 @@ public class MyTButtonSkin extends SkinBase<MyTButton> implements Skin<MyTButton
         registerListeners();
     }
 
+    public static String colorToCss(final Color COLOR) {
+        return null == COLOR ? "#000000" : COLOR.toString().replace("0x", "#");
+    }
 
     // ******************** Initialization ************************************
     private void init() {
@@ -97,7 +100,7 @@ public class MyTButtonSkin extends SkinBase<MyTButton> implements Skin<MyTButton
 
         inputHandler = EVENT -> {
             final EventType TYPE = EVENT.getEventType();
-            final Object    SRC  = EVENT.getSource();
+            final Object SRC = EVENT.getSource();
             if (MouseEvent.MOUSE_PRESSED == TYPE) {
                 if (SRC.equals(on)) {
                     getSkinnable().setSelected(false);
@@ -136,7 +139,6 @@ public class MyTButtonSkin extends SkinBase<MyTButton> implements Skin<MyTButton
         offDropShadow.setColor(Color.web("0x000000bf"));
         offDropShadow.setBlurType(BlurType.TWO_PASS_BOX);
         offDropShadow.setInput(offInnerShadow1);
-
 
 
         ledOff = new Region();
@@ -249,18 +251,17 @@ public class MyTButtonSkin extends SkinBase<MyTButton> implements Skin<MyTButton
     }
 
     private void registerListeners() {
-        getSkinnable().widthProperty().addListener(observable -> handleControlPropertyChanged("RESIZE") );
-        getSkinnable().heightProperty().addListener(observable -> handleControlPropertyChanged("RESIZE") );
-        getSkinnable().selectedProperty().addListener(observable -> handleControlPropertyChanged("SELECTED") );
-        getSkinnable().textProperty().addListener(observable -> handleControlPropertyChanged("TEXT") );
-        getSkinnable().ledColorProperty().addListener(observable -> handleControlPropertyChanged("LED_COLOR") );
+        getSkinnable().widthProperty().addListener(observable -> handleControlPropertyChanged("RESIZE"));
+        getSkinnable().heightProperty().addListener(observable -> handleControlPropertyChanged("RESIZE"));
+        getSkinnable().selectedProperty().addListener(observable -> handleControlPropertyChanged("SELECTED"));
+        getSkinnable().textProperty().addListener(observable -> handleControlPropertyChanged("TEXT"));
+        getSkinnable().ledColorProperty().addListener(observable -> handleControlPropertyChanged("LED_COLOR"));
 
         on.setOnMousePressed(inputHandler);
         on.setOnTouchPressed(inputHandler);
         off.setOnMousePressed(inputHandler);
         off.setOnTouchPressed(inputHandler);
     }
-
 
     // ******************** Methods *******************************************
     protected void handleControlPropertyChanged(final String PROPERTY) {
@@ -285,35 +286,43 @@ public class MyTButtonSkin extends SkinBase<MyTButton> implements Skin<MyTButton
         }
     }
 
-    @Override protected double computeMinWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+    @Override
+    protected double computeMinWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
         return super.computeMinWidth(Math.max(MINIMUM_SIZE, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
-    @Override protected double computeMinHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+
+    @Override
+    protected double computeMinHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
         return super.computeMinHeight(Math.max(MINIMUM_SIZE, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
-    @Override protected double computeMaxWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+    @Override
+    protected double computeMaxWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
         return super.computeMaxWidth(Math.min(MAXIMUM_SIZE, HEIGHT - TOP_INSET - BOTTOM_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
-    @Override protected double computeMaxHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+
+    @Override
+    protected double computeMaxHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
         return super.computeMaxHeight(Math.min(MAXIMUM_SIZE, WIDTH - LEFT_INSET - RIGHT_INSET), TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
 
-    @Override protected double computePrefWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+    @Override
+    protected double computePrefWidth(final double HEIGHT, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
         double prefHeight = PREFERRED_SIZE;
         if (HEIGHT != -1) {
             prefHeight = Math.max(0, HEIGHT - TOP_INSET - BOTTOM_INSET);
         }
         return super.computePrefWidth(prefHeight, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
-    @Override protected double computePrefHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
+
+    @Override
+    protected double computePrefHeight(final double WIDTH, double TOP_INSET, double RIGHT_INSET, double BOTTOM_INSET, double LEFT_INSET) {
         double prefWidth = PREFERRED_SIZE;
         if (WIDTH != -1) {
             prefWidth = Math.max(0, WIDTH - LEFT_INSET - RIGHT_INSET);
         }
         return super.computePrefHeight(prefWidth, TOP_INSET, RIGHT_INSET, BOTTOM_INSET, LEFT_INSET);
     }
-
 
     // ******************** Resizing ******************************************
     private void resize() {
@@ -368,9 +377,5 @@ public class MyTButtonSkin extends SkinBase<MyTButton> implements Skin<MyTButton
             textInnerShadow1.setOffsetY(1.0 / 144.0 * size);
             textInnerShadow1.setRadius(1.0 / 144.0 * size);
         }
-    }
-
-    public static String colorToCss(final Color COLOR) {
-        return null == COLOR ? "#000000" : COLOR.toString().replace("0x", "#");
     }
 }

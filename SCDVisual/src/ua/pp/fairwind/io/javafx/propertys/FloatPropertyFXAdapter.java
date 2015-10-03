@@ -13,6 +13,6 @@ public class FloatPropertyFXAdapter extends NumberFXPropertyAdapter<Float> {
 
     @Override
     public void setValue(Number t) {
-        super.setValue(t==null?null:t.floatValue());
+        super.setValue(t == null ? null : t.floatValue());
     }
 }

@@ -35,30 +35,31 @@ import java.util.Date;
  */
 public class VisualControls {
     static private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
-    public static ComboBox<Long> createAddressSelect(SoftLongProperty addressProperty){
-        ComboBox<Long> box=new ComboBox<>();
-        for(int i=0;i<256;i++)box.getItems().add((long)i);
+
+    public static ComboBox<Long> createAddressSelect(SoftLongProperty addressProperty) {
+        ComboBox<Long> box = new ComboBox<>();
+        for (int i = 0; i < 256; i++) box.getItems().add((long) i);
         box.valueProperty().bindBidirectional(new LongPropertyFXAdapterSpec(addressProperty));
         Tooltip.install(box, new Tooltip(addressProperty.getDescription()));
         return box;
     }
 
-    public static ComboBox<Short> createAddressSelect(SoftShortProperty addressProperty){
-        ComboBox<Short> box=new ComboBox<>();
-        for(int i=0;i<256;i++)box.getItems().add((short)i);
+    public static ComboBox<Short> createAddressSelect(SoftShortProperty addressProperty) {
+        ComboBox<Short> box = new ComboBox<>();
+        for (int i = 0; i < 256; i++) box.getItems().add((short) i);
         box.valueProperty().bindBidirectional(new ShortPropertyFXAdapterSpec(addressProperty));
         Tooltip.install(box, new Tooltip(addressProperty.getDescription()));
         return box;
     }
 
-    public static Led createLedIndicator(SoftBoolProperty property){
+    public static Led createLedIndicator(SoftBoolProperty property) {
         Led led = new Led();
         led.onProperty().bind(new BooleanPropertyFXAdapter(property));
         Tooltip.install(led, new Tooltip(property.getDescription()));
         return led;
     }
 
-    public static Button createPClosePortButton(AbstractDevice device){
+    public static Button createPClosePortButton(AbstractDevice device) {
         Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("close2.png"));
         Button button = new Button();
         button.setGraphic(new ImageView(imageDecline));
@@ -70,7 +71,7 @@ public class VisualControls {
         return button;
     }
 
-    public static Button createSClosePortButton(AbstractDevice device){
+    public static Button createSClosePortButton(AbstractDevice device) {
         Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("close2.png"));
         Button button = new Button();
         button.setGraphic(new ImageView(imageDecline));
@@ -82,8 +83,8 @@ public class VisualControls {
         return button;
     }
 
-    public static Button createConfigureButton(SerialDeviceInterface device){
-        Button button=new Button(I18N_FX.getLocalizedString("CONFIG_DEVICE_DIALOG"));
+    public static Button createConfigureButton(SerialDeviceInterface device) {
+        Button button = new Button(I18N_FX.getLocalizedString("CONFIG_DEVICE_DIALOG"));
         Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("setting_ico.png"));
         button.setGraphic(new ImageView(imageDecline));
         button.getStyleClass().add("rich-blue");
@@ -92,15 +93,15 @@ public class VisualControls {
         return button;
     }
 
-    public static Button createCommandExecuteButton(DeviceNamedCommandProperty command){
-        Button button=new Button(command.getName());
+    public static Button createCommandExecuteButton(DeviceNamedCommandProperty command) {
+        Button button = new Button(command.getName());
         button.getStyleClass().add("rich-blue");
         button.setOnAction(event -> command.activate());
         Tooltip.install(button, new Tooltip(command.getDescription()));
         return button;
     }
 
-    public static Button createCommandExecuteButton2(DeviceNamedCommandProperty command){
+    public static Button createCommandExecuteButton2(DeviceNamedCommandProperty command) {
         Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("ok-icon.png"));
         Button button = new Button();
         button.getStyleClass().add("rich-blue");
@@ -110,7 +111,7 @@ public class VisualControls {
         return button;
     }
 
-    public static Led createLedIndicator(SoftBoolProperty property,Color color){
+    public static Led createLedIndicator(SoftBoolProperty property, Color color) {
         Led led = new Led();
         led.setLedColor(color);
         led.onProperty().bind(new BooleanPropertyFXAdapter(property));
@@ -119,8 +120,8 @@ public class VisualControls {
     }
 
 
-    public static Label createTimeLabel(SoftLongProperty property){
-        Label lbl=new Label();
+    public static Label createTimeLabel(SoftLongProperty property) {
+        Label lbl = new Label();
         property.addChangeEventListener(event -> {
             Object newVal = event.getNewValue();
             String txt;
@@ -138,20 +139,20 @@ public class VisualControls {
         return lbl;
     }
 
-    static public void executeInJavaFXThread(Runnable acriton){
-        if(Platform.isFxApplicationThread()){
+    static public void executeInJavaFXThread(Runnable acriton) {
+        if (Platform.isFxApplicationThread()) {
             acriton.run();
         } else {
-            try{
+            try {
                 Platform.runLater(acriton);
-            } catch (IllegalStateException ex){
+            } catch (IllegalStateException ex) {
                 acriton.run();
             }
         }
     }
 
-    public static Button createReReadButton(AbstractProperty command){
-        Button button=new Button(I18N_FX.getLocalizedString("READ.name"));
+    public static Button createReReadButton(AbstractProperty command) {
+        Button button = new Button(I18N_FX.getLocalizedString("READ.name"));
         Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("download-ico.png"));
         button.setGraphic(new ImageView(imageDecline));
         button.getStyleClass().add("rich-green");
@@ -160,8 +161,8 @@ public class VisualControls {
         return button;
     }
 
-    public static Button createReWriteButton(AbstractProperty command){
-        Button button=new Button(I18N_FX.getLocalizedString("SAVE.name"));
+    public static Button createReWriteButton(AbstractProperty command) {
+        Button button = new Button(I18N_FX.getLocalizedString("SAVE.name"));
         Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("upload-ico.png"));
         button.getStyleClass().add("rich-red");
         button.setGraphic(new ImageView(imageDecline));
@@ -171,7 +172,7 @@ public class VisualControls {
     }
 
 
-    public static Lcd createLcdIndicator(SoftShortProperty property){
+    public static Lcd createLcdIndicator(SoftShortProperty property) {
         Lcd lcd = LcdBuilder.create()
                 .prefWidth(170)
                 .prefHeight(50)
@@ -190,7 +191,7 @@ public class VisualControls {
         return lcd;
     }
 
-    public static Lcd createLcdIndicator(SoftByteProperty property){
+    public static Lcd createLcdIndicator(SoftByteProperty property) {
         Lcd lcd = LcdBuilder.create()
                 .prefWidth(170)
                 .prefHeight(50)
@@ -209,7 +210,7 @@ public class VisualControls {
         return lcd;
     }
 
-    public static Lcd createLcdIndicator(SoftStringProperty property){
+    public static Lcd createLcdIndicator(SoftStringProperty property) {
         Lcd lcd = LcdBuilder.create()
                 .prefWidth(170)
                 .prefHeight(50)
@@ -227,7 +228,7 @@ public class VisualControls {
         return lcd;
     }
 
-    public static Lcd createLcdIndicator(SoftIntegerProperty property){
+    public static Lcd createLcdIndicator(SoftIntegerProperty property) {
         Lcd lcd = LcdBuilder.create()
                 .prefWidth(170)
                 .prefHeight(50)
@@ -246,7 +247,7 @@ public class VisualControls {
         return lcd;
     }
 
-    public static Lcd  createLcdIndicatorBLUE(SoftFloatProperty property){
+    public static Lcd createLcdIndicatorBLUE(SoftFloatProperty property) {
         Lcd lcd = LcdBuilder.create()
                 .prefWidth(170)
                 .prefHeight(50)
@@ -266,7 +267,7 @@ public class VisualControls {
     }
 
 
-    public static Lcd  createLcdIndicator(SoftFloatProperty property){
+    public static Lcd createLcdIndicator(SoftFloatProperty property) {
         Lcd lcd = LcdBuilder.create()
                 .prefWidth(170)
                 .prefHeight(50)
@@ -286,25 +287,31 @@ public class VisualControls {
     }
 
 
-    public static ComboBox<Short> createAKONProtoclSelect(SoftShortProperty addressProperty){
-        ComboBox<Short> box=new ComboBox<>();
-        for(int i=0;i<2;i++)box.getItems().add((short)i);
+    public static ComboBox<Short> createAKONProtoclSelect(SoftShortProperty addressProperty) {
+        ComboBox<Short> box = new ComboBox<>();
+        for (int i = 0; i < 2; i++) box.getItems().add((short) i);
         box.setConverter(new StringConverter<Short>() {
             @Override
             public String toString(Short value) {
-                switch (value){
-                    case 0x0:return"ObjectNet";
-                    case 0x1:return"MobBus RTU";
-                    default:return "ObjectNet";
+                switch (value) {
+                    case 0x0:
+                        return "ObjectNet";
+                    case 0x1:
+                        return "MobBus RTU";
+                    default:
+                        return "ObjectNet";
                 }
             }
 
             @Override
             public Short fromString(String value) {
-                switch (value){
-                    case "ObjectNet":return 0x0;
-                    case "MobBus RTU":return 0x1;
-                    default:return 0x0;
+                switch (value) {
+                    case "ObjectNet":
+                        return 0x0;
+                    case "MobBus RTU":
+                        return 0x1;
+                    default:
+                        return 0x0;
                 }
             }
         });
@@ -313,27 +320,35 @@ public class VisualControls {
         return box;
     }
 
-    public static ComboBox<Short> createBDBGProtoclSelect(SoftShortProperty addressProperty){
-        ComboBox<Short> box=new ComboBox<>();
-        for(int i=0x1;i<0x4;i++)box.getItems().add((short)i);
+    public static ComboBox<Short> createBDBGProtoclSelect(SoftShortProperty addressProperty) {
+        ComboBox<Short> box = new ComboBox<>();
+        for (int i = 0x1; i < 0x4; i++) box.getItems().add((short) i);
         box.setConverter(new StringConverter<Short>() {
             @Override
             public String toString(Short value) {
-                switch (value){
-                    case 0x1:return"Version 1";
-                    case 0x2:return"Version 2";
-                    case 0x3:return"Version 3";
-                    default:return "Version 3";
+                switch (value) {
+                    case 0x1:
+                        return "Version 1";
+                    case 0x2:
+                        return "Version 2";
+                    case 0x3:
+                        return "Version 3";
+                    default:
+                        return "Version 3";
                 }
             }
 
             @Override
             public Short fromString(String value) {
-                switch (value){
-                    case "Version 1":return 0x1;
-                    case "Version 2":return 0x2;
-                    case "Version 3":return 0x3;
-                    default:return 0x3;
+                switch (value) {
+                    case "Version 1":
+                        return 0x1;
+                    case "Version 2":
+                        return 0x2;
+                    case "Version 3":
+                        return 0x3;
+                    default:
+                        return 0x3;
                 }
             }
         });
@@ -342,14 +357,14 @@ public class VisualControls {
         return box;
     }
 
-    static public Button createBoolChangeCommandButton(SoftBoolProperty property){
-        Button button=new Button(I18N_FX.getLocalizedString("CHANGE.name"));
+    static public Button createBoolChangeCommandButton(SoftBoolProperty property) {
+        Button button = new Button(I18N_FX.getLocalizedString("CHANGE.name"));
         button.setOnAction(event -> property.invertValue());
         Tooltip.install(button, new Tooltip(I18N_FX.getLocalizedString("CHANGE.description")));
         return button;
     }
 
-    static public SlideCheckBox createSlideIndicator(SoftBoolProperty property){
+    static public SlideCheckBox createSlideIndicator(SoftBoolProperty property) {
         SlideCheckBox led = new SlideCheckBox();
         led.setScaleX(0.7);
         led.setScaleY(0.7);
@@ -359,7 +374,7 @@ public class VisualControls {
         return led;
     }
 
-    static public Slider createSliderControl(SoftFloatProperty property,float min,float max,float blockincrement,int majorTick,int minorTick){
+    static public Slider createSliderControl(SoftFloatProperty property, float min, float max, float blockincrement, int majorTick, int minorTick) {
         Slider slider = new Slider();
         slider.setMin(min);
         slider.setMax(max);
@@ -373,7 +388,7 @@ public class VisualControls {
         return slider;
     }
 
-    static public Lcd  createLineIndicator(SoftLongProperty property){
+    static public Lcd createLineIndicator(SoftLongProperty property) {
         Lcd lcd = LcdBuilder.create()
                 .prefWidth(130)
                 .prefHeight(40)
@@ -392,20 +407,20 @@ public class VisualControls {
         return lcd;
     }
 
-    static public Button createConfigureProppearty(AbstractProperty command){
+    static public Button createConfigureProppearty(AbstractProperty command) {
         return PropertyConfigDialog.crateConfigButton(command);
     }
 
 
-    static public Button createSetLinebutton(SoftLongProperty property,final long value){
-        Button button=new Button(String.valueOf(value));
+    static public Button createSetLinebutton(SoftLongProperty property, final long value) {
+        Button button = new Button(String.valueOf(value));
         button.setOnAction(event -> property.setValue(value));
-        Tooltip.install(button, new Tooltip(I18N_FX.getLocalizedString("FAVORIT_VENTIL.SELECT_LINE_"+value)));
+        Tooltip.install(button, new Tooltip(I18N_FX.getLocalizedString("FAVORIT_VENTIL.SELECT_LINE_" + value)));
         return button;
     }
 
-    static public Button createSetLinebuttonImidiatly(SoftLongProperty property,final long value){
-        Button button=new Button(String.valueOf(value));
+    static public Button createSetLinebuttonImidiatly(SoftLongProperty property, final long value) {
+        Button button = new Button(String.valueOf(value));
         button.setOnAction(event -> {
             property.setValue(value);
             Boolean imid = (Boolean) property.getAdditionalInfo(AbstractDevice.IMMEDIATELY_WRITE_FLAG);
@@ -417,9 +432,9 @@ public class VisualControls {
     }
 
 
-    public static ComboBox<Short> createPANDRIVESpeedSelect(SoftShortProperty addressProperty){
-        ComboBox<Short> box=new ComboBox<>();
-        for(int i=0;i<12;i++)box.getItems().add((short)i);
+    public static ComboBox<Short> createPANDRIVESpeedSelect(SoftShortProperty addressProperty) {
+        ComboBox<Short> box = new ComboBox<>();
+        for (int i = 0; i < 12; i++) box.getItems().add((short) i);
         box.setConverter(new StringConverter<Short>() {
             @Override
             public String toString(Short value) {
@@ -555,9 +570,9 @@ public class VisualControls {
         return editor;
     }
 
-    public static ComboBox<Short> createFavoritSpeedSelect(SoftShortProperty addressProperty){
-        ComboBox<Short> box=new ComboBox<>();
-        for(int i=1;i<5;i++)box.getItems().add((short)i);
+    public static ComboBox<Short> createFavoritSpeedSelect(SoftShortProperty addressProperty) {
+        ComboBox<Short> box = new ComboBox<>();
+        for (int i = 1; i < 5; i++) box.getItems().add((short) i);
         box.setConverter(new StringConverter<Short>() {
             @Override
             public String toString(Short value) {
@@ -596,24 +611,24 @@ public class VisualControls {
         return box;
     }
 
-    public static Control getPropertyControl(ValueProperty property){
+    public static Control getPropertyControl(ValueProperty property) {
         TextField editor;
-        if(property instanceof SoftStringProperty){
-            editor=new SoftStringInputText((SoftStringProperty)property);
-        } else if(property instanceof SoftByteProperty){
-            editor=new SoftByteInputText((SoftByteProperty)property);
-        } else if(property instanceof SoftShortProperty){
-            editor=new SoftShortInputText((SoftShortProperty)property);
-        } else if(property instanceof SoftIntegerProperty){
-            editor=new SoftIntInputText((SoftIntegerProperty)property);
-        } else if(property instanceof SoftLongProperty){
-            editor=new SoftLongInputText((SoftLongProperty)property);
-        } else if(property instanceof SoftFloatProperty){
-            editor=new SoftFloatInputText((SoftFloatProperty)property);
-        } else if(property instanceof SoftDoubleProperty){
-            editor=new SoftDoubleInputText((SoftDoubleProperty)property);
+        if (property instanceof SoftStringProperty) {
+            editor = new SoftStringInputText((SoftStringProperty) property);
+        } else if (property instanceof SoftByteProperty) {
+            editor = new SoftByteInputText((SoftByteProperty) property);
+        } else if (property instanceof SoftShortProperty) {
+            editor = new SoftShortInputText((SoftShortProperty) property);
+        } else if (property instanceof SoftIntegerProperty) {
+            editor = new SoftIntInputText((SoftIntegerProperty) property);
+        } else if (property instanceof SoftLongProperty) {
+            editor = new SoftLongInputText((SoftLongProperty) property);
+        } else if (property instanceof SoftFloatProperty) {
+            editor = new SoftFloatInputText((SoftFloatProperty) property);
+        } else if (property instanceof SoftDoubleProperty) {
+            editor = new SoftDoubleInputText((SoftDoubleProperty) property);
         } else {
-            editor=new TextField();
+            editor = new TextField();
         }
         editor.setEditable(property.isWriteAccepted());
         Tooltip.install(editor, new Tooltip(property.getDescription()));

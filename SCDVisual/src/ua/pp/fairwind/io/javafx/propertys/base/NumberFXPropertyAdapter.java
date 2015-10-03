@@ -25,7 +25,7 @@ public class NumberFXPropertyAdapter<T extends Number & Comparable<? super T>> e
         }
         if (!observable.equals(this)) {
             unbind();
-            this.observable =  (ObservableValue<T>) observableValue;
+            this.observable = (ObservableValue<T>) observableValue;
             if (listener == null) {
                 listener = new Listener();
             }
@@ -70,11 +70,11 @@ public class NumberFXPropertyAdapter<T extends Number & Comparable<? super T>> e
 
     @Override
     public void setValue(Number t) {
-        T val=(T)t;
+        T val = (T) t;
         property.setValue(val);
     }
 
-    public void markInvalid(){
+    public void markInvalid() {
         invalidated();
         //fireInvalidate();
         //fireValueChangedEvent();

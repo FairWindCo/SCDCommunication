@@ -7,7 +7,6 @@ import ua.pp.fairwind.communications.devices.hardwaredevices.akon.AkonBase;
 import ua.pp.fairwind.communications.lines.abstracts.AbstractLine;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.javafx.panels.LineInfoBar;
-import ua.pp.fairwind.javafx.panels.devices.SimpleDeviceConfigPanel;
 
 import java.util.List;
 
@@ -20,13 +19,7 @@ public class AkonBaseComplexPanel extends BorderPane {
     private final AkonBasePanel panel;
     private final LineInfoBar infoBarP;
     private final LineInfoBar infoBarS;
-
-
-    public AkonBaseComplexPanel(AbstractLine line, AkonBase device) {
-        this(line, device, null);
-    }
-
-    SimpleAkonDeviceConfigPanel.LineChange listner=new SimpleAkonDeviceConfigPanel.LineChange() {
+    SimpleAkonDeviceConfigPanel.LineChange listner = new SimpleAkonDeviceConfigPanel.LineChange() {
         @Override
         public void primaryLineChange(LineInterface newline) {
             infoBarP.setupLine(newline);
@@ -39,25 +32,29 @@ public class AkonBaseComplexPanel extends BorderPane {
         }
     };
 
+    public AkonBaseComplexPanel(AbstractLine line, AkonBase device) {
+        this(line, device, null);
+    }
+
     public AkonBaseComplexPanel(LineInterface line, AkonBase device, List<LineInterface> lines) {
-        if(device==null)throw new RuntimeException("DEVICE CAN`T BE NULL!");
-        if(line!=null)device.setPrimerayLine(line);
+        if (device == null) throw new RuntimeException("DEVICE CAN`T BE NULL!");
+        if (line != null) device.setPrimerayLine(line);
         LineInterface line1 = line;
         List<LineInterface> lines1 = lines;
         AkonBase device1 = device;
-        devpanel=new SimpleAkonDeviceConfigPanel(device,line,lines,listner);
-        infoBarP=new LineInfoBar(35,device.getPrimaryLine());
-        infoBarS=new LineInfoBar(35,device.getSecondaryLine());
-        panel=new AkonBasePanel(device);
+        devpanel = new SimpleAkonDeviceConfigPanel(device, line, lines, listner);
+        infoBarP = new LineInfoBar(35, device.getPrimaryLine());
+        infoBarS = new LineInfoBar(35, device.getSecondaryLine());
+        panel = new AkonBasePanel(device);
         initControl();
     }
 
-    private void initControl(){
+    private void initControl() {
 
         setTop(devpanel);
         setCenter(panel);
         setAlignment(panel, Pos.CENTER);
-        VBox down=new VBox();
+        VBox down = new VBox();
         down.getChildren().addAll(infoBarP, infoBarS);
 
         setBottom(down);

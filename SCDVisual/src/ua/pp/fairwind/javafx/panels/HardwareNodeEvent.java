@@ -9,7 +9,7 @@ public class HardwareNodeEvent {
     final private String elementName;
     final private EventType level;
     final private String info;
-    final private long time=System.currentTimeMillis();
+    final private long time = System.currentTimeMillis();
 
     public HardwareNodeEvent(String elementName, EventType level, String info) {
         this.elementName = elementName;
@@ -20,7 +20,7 @@ public class HardwareNodeEvent {
     public HardwareNodeEvent(String elementName, EventType level, Object info) {
         this.elementName = elementName;
         this.level = level;
-        this.info = info==null?"----":info.toString();
+        this.info = info == null ? "----" : info.toString();
     }
 
     public String getElementName() {

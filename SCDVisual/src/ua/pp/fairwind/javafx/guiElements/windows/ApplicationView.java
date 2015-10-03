@@ -8,17 +8,24 @@ import ua.pp.fairwind.javafx.guiElements.menu.PrefferedSize;
 
 
 public interface ApplicationView {
-	String getTitle();
-	Image getIcon();
-	PrefferedSize getPrefferedSize();
-	Scene getMainView();
-	boolean isResizable();
-	void setResourceLoader(MyBaseResourceLoader resloader);
-	MyBaseResourceLoader getResourceLoader();
-	
-	void onShow(MenuExecutor parentExecutor);
-	void onHide();
+    String getTitle();
+
+    Image getIcon();
+
+    PrefferedSize getPrefferedSize();
+
+    Scene getMainView();
+
+    boolean isResizable();
+
+    MyBaseResourceLoader getResourceLoader();
+
+    void setResourceLoader(MyBaseResourceLoader resloader);
+
+    void onShow(MenuExecutor parentExecutor);
+
+    void onHide();
 
     long getID();
-		
+
 }

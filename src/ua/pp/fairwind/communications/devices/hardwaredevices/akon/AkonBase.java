@@ -17,12 +17,12 @@ import ua.pp.fairwind.communications.propertyes.software.bytedpropertyes.SoftInt
  * Created by Сергей on 11.09.2015.
  */
 public class AkonBase extends RSLineDevice {
-    public static String OBJECT_NUM="OBJECT_NUM";
-    public static String PROPERTY_NUM="PROPERTY_NUM";
-    public static String PROPERTY_MODBUS="PROPERTY_MODBUS";
-    public static short OBJECTNET_PROTOCOL=0;
-    public static short MODBUS_PROTOCOL=1;
-    public static short TCPMODBUS_PROTOCOL=2;
+    public static String OBJECT_NUM = "OBJECT_NUM";
+    public static String PROPERTY_NUM = "PROPERTY_NUM";
+    public static String PROPERTY_MODBUS = "PROPERTY_MODBUS";
+    public static short OBJECTNET_PROTOCOL = 0;
+    public static short MODBUS_PROTOCOL = 1;
+    public static short TCPMODBUS_PROTOCOL = 2;
 
     protected final SoftByteProperty akonAddress;
     protected final SoftByteProperty akonBaudRate;
@@ -38,48 +38,46 @@ public class AkonBase extends RSLineDevice {
     protected final SoftLongProperty additionalInfo;
     protected final SoftLongProperty reserv;
     protected final SoftLongProperty systemTime;
-
+    protected final GroupProperty systemObject;
     private final DeviceNamedCommandProperty saveToFlash;
     private final DeviceNamedCommandProperty readFromFlash;
 
-    protected final GroupProperty systemObject;
-
     public AkonBase(long address, String codename, String uuid) {
         super(address, codename, uuid);
-        akonProtocol=formShortProperty(-30L,"baseakon.ENABLE_AKON_PROTOCOL", OBJECTNET_PROTOCOL);
-        akonProtocol.setAdditionalInfo(NO_RANDOM,true);
-        serialNumber=formLongConfigProperty(1L, "baseakon.SERIAL_NUMBER");
-        serialNumber.setAdditionalInfo(OBJECT_NUM,0);
+        akonProtocol = formShortProperty(-30L, "baseakon.ENABLE_AKON_PROTOCOL", OBJECTNET_PROTOCOL);
+        akonProtocol.setAdditionalInfo(NO_RANDOM, true);
+        serialNumber = formLongConfigProperty(1L, "baseakon.SERIAL_NUMBER");
+        serialNumber.setAdditionalInfo(OBJECT_NUM, 0);
         serialNumber.setAdditionalInfo(PROPERTY_NUM, 1);
         serialNumber.setAdditionalInfo(PROPERTY_MODBUS, 0x2);
-        deviceType=formLongConfigProperty(0L, "baseakon.TYPE");
-        deviceType.setAdditionalInfo(OBJECT_NUM,0);
+        deviceType = formLongConfigProperty(0L, "baseakon.TYPE");
+        deviceType.setAdditionalInfo(OBJECT_NUM, 0);
         deviceType.setAdditionalInfo(PROPERTY_NUM, 0);
         deviceType.setAdditionalInfo(PROPERTY_MODBUS, 0x0);
-        chanelMask=formLongConfigProperty(2L, "baseakon.chanelMask");
-        chanelMask.setAdditionalInfo(OBJECT_NUM,0);
-        chanelMask.setAdditionalInfo(PROPERTY_NUM,2);
+        chanelMask = formLongConfigProperty(2L, "baseakon.chanelMask");
+        chanelMask.setAdditionalInfo(OBJECT_NUM, 0);
+        chanelMask.setAdditionalInfo(PROPERTY_NUM, 2);
         chanelMask.setAdditionalInfo(PROPERTY_MODBUS, 0x4);
 
-        po=formAkonLongR(0, 0x64, 0x10, "baseakon.po");
-        additionalInfo=formAkonLongR(0, 0x2, 0x4, "baseakon.additional");
-        reserv=formAkonLongR(0, 0x65, 0x12, "baseakon.reserv");
-        akonAddress=formAkonByteRW(0x6, "baseakon.akonAddress");
-        akonSetupedProtocol=formAkonByteRW(0xE,"baseakon.akonSetupedProtocol");
-        akonBaudRate=formAkonByteRW(0L,"baseakon.akonBaudRate");
-        akonParity=formAkonByteRW(0L,"baseakon.akonParity");
-        deviceconfig = formAkonIntRWConfig("baseakon.deviceconfig", akonAddress,akonSetupedProtocol,akonBaudRate, akonParity);
+        po = formAkonLongR(0, 0x64, 0x10, "baseakon.po");
+        additionalInfo = formAkonLongR(0, 0x2, 0x4, "baseakon.additional");
+        reserv = formAkonLongR(0, 0x65, 0x12, "baseakon.reserv");
+        akonAddress = formAkonByteRW(0x6, "baseakon.akonAddress");
+        akonSetupedProtocol = formAkonByteRW(0xE, "baseakon.akonSetupedProtocol");
+        akonBaudRate = formAkonByteRW(0L, "baseakon.akonBaudRate");
+        akonParity = formAkonByteRW(0L, "baseakon.akonParity");
+        deviceconfig = formAkonIntRWConfig("baseakon.deviceconfig", akonAddress, akonSetupedProtocol, akonBaudRate, akonParity);
         systemTime = formAkontimeRW(0x24, 0x66, 0x14, "baseakon.systemTime");
-        systemObject=new GroupProperty("baseakon.systemObject",null,deviceType,serialNumber,chanelMask,deviceconfig,po,reserv,systemTime,akonAddress,akonProtocol,additionalInfo);
+        systemObject = new GroupProperty("baseakon.systemObject", null, deviceType, serialNumber, chanelMask, deviceconfig, po, reserv, systemTime, akonAddress, akonProtocol, additionalInfo);
 
-        saveToFlash=formCommandNameProperty("baseakon.saveToFlash");
-        readFromFlash=formCommandNameProperty("baseakon.readFromFlash");
-        saveToFlash.setAdditionalInfo(OBJECT_NUM,0);
-        saveToFlash.setAdditionalInfo(PROPERTY_NUM,6);
-        saveToFlash.setAdditionalInfo(PROPERTY_MODBUS,0x8);
-        readFromFlash.setAdditionalInfo(OBJECT_NUM,0);
-        readFromFlash.setAdditionalInfo(PROPERTY_NUM,5);
-        readFromFlash.setAdditionalInfo(PROPERTY_MODBUS,0xA);
+        saveToFlash = formCommandNameProperty("baseakon.saveToFlash");
+        readFromFlash = formCommandNameProperty("baseakon.readFromFlash");
+        saveToFlash.setAdditionalInfo(OBJECT_NUM, 0);
+        saveToFlash.setAdditionalInfo(PROPERTY_NUM, 6);
+        saveToFlash.setAdditionalInfo(PROPERTY_MODBUS, 0x8);
+        readFromFlash.setAdditionalInfo(OBJECT_NUM, 0);
+        readFromFlash.setAdditionalInfo(PROPERTY_NUM, 5);
+        readFromFlash.setAdditionalInfo(PROPERTY_MODBUS, 0xA);
 
         addPropertys(akonSetupedProtocol);
         addPropertys(akonAddress);
@@ -96,16 +94,8 @@ public class AkonBase extends RSLineDevice {
         addCommands(readFromFlash);
     }
 
-    protected SoftLongProperty formAkonLongR(int group,int property,long address,String name){
-        SoftLongProperty command=new SoftLongProperty(name,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
-        command.setAdditionalInfo(PROPERTY_ADDRESS, address);
-        command.setAdditionalInfo(PROPERTY_MODBUS, address);
-        command.setAdditionalInfo(PROPERTY_NUM, property);
-        command.setAdditionalInfo(OBJECT_NUM, group);
-        return command;
-    }
-    protected SoftLongProperty formAkontimeRW(int group,int property,long address,String name){
-        SoftLongProperty command=new SoftLongProperty(name,ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+    protected SoftLongProperty formAkonLongR(int group, int property, long address, String name) {
+        SoftLongProperty command = new SoftLongProperty(name, ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         command.setAdditionalInfo(PROPERTY_ADDRESS, address);
         command.setAdditionalInfo(PROPERTY_MODBUS, address);
         command.setAdditionalInfo(PROPERTY_NUM, property);
@@ -113,15 +103,24 @@ public class AkonBase extends RSLineDevice {
         return command;
     }
 
-    protected SoftByteProperty formAkonByteRW(long address,String name){
-        SoftByteProperty command=new SoftByteProperty(name,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
+    protected SoftLongProperty formAkontimeRW(int group, int property, long address, String name) {
+        SoftLongProperty command = new SoftLongProperty(name, ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+        command.setAdditionalInfo(PROPERTY_ADDRESS, address);
+        command.setAdditionalInfo(PROPERTY_MODBUS, address);
+        command.setAdditionalInfo(PROPERTY_NUM, property);
+        command.setAdditionalInfo(OBJECT_NUM, group);
+        return command;
+    }
+
+    protected SoftByteProperty formAkonByteRW(long address, String name) {
+        SoftByteProperty command = new SoftByteProperty(name, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE);
         command.setAdditionalInfo(PROPERTY_ADDRESS, address);
         command.setAdditionalInfo(PROPERTY_MODBUS, address);
         return command;
     }
 
-    protected SoftIntegerToByteProperty formAkonIntRWConfig(String name,SoftByteProperty byteAddress,SoftByteProperty byteprotocol,SoftByteProperty byteBitrate,SoftByteProperty byteParity){
-        SoftIntegerToByteProperty command=new SoftIntegerToByteProperty(name,null,ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE,byteAddress,byteBitrate,byteprotocol,byteParity);
+    protected SoftIntegerToByteProperty formAkonIntRWConfig(String name, SoftByteProperty byteAddress, SoftByteProperty byteprotocol, SoftByteProperty byteBitrate, SoftByteProperty byteParity) {
+        SoftIntegerToByteProperty command = new SoftIntegerToByteProperty(name, null, ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE, byteAddress, byteBitrate, byteprotocol, byteParity);
         command.setAdditionalInfo(PROPERTY_NUM, 0x3);
         command.setAdditionalInfo(OBJECT_NUM, 0x0);
         command.setAdditionalInfo(PROPERTY_MODBUS, 0x6);
@@ -130,19 +129,19 @@ public class AkonBase extends RSLineDevice {
 
 
     @Override
-    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property,final Event sourceEvent) {
-        short protocol=akonProtocol.getValue();
-        long deviceAddress=super.deviceAddress.getValue();
-        if(protocol==OBJECTNET_PROTOCOL){
+    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property, final Event sourceEvent) {
+        short protocol = akonProtocol.getValue();
+        long deviceAddress = super.deviceAddress.getValue();
+        if (protocol == OBJECTNET_PROTOCOL) {
             try {
-                return AkonProtocol.processResponse(recivedMessage,(ValueProperty)property,(int)deviceAddress,sourceEvent);
-            } catch (IllegalArgumentException e){
-                fireEvent(EventType.ERROR,e.getLocalizedMessage());
+                return AkonProtocol.processResponse(recivedMessage, (ValueProperty) property, (int) deviceAddress, sourceEvent);
+            } catch (IllegalArgumentException e) {
+                fireEvent(EventType.ERROR, e.getLocalizedMessage());
                 return false;
             }
-        } else if(protocol==MODBUS_PROTOCOL) {
+        } else if (protocol == MODBUS_PROTOCOL) {
             try {
-                return ModBusProtocol.processResponse(recivedMessage, (ValueProperty) property, (int) deviceAddress,sourceEvent);
+                return ModBusProtocol.processResponse(recivedMessage, (ValueProperty) property, (int) deviceAddress, sourceEvent);
             } catch (IllegalArgumentException e) {
                 fireEvent(EventType.ERROR, e.getLocalizedMessage());
                 return false;
@@ -153,27 +152,27 @@ public class AkonBase extends RSLineDevice {
 
     @Override
     protected RequestInformation formReadRequest(AbstractProperty property) {
-        short protocol=akonProtocol.getValue();
-        long deviceAddress=super.deviceAddress.getValue();
-        if(protocol==OBJECTNET_PROTOCOL){
-            if(property instanceof ValueProperty) {
+        short protocol = akonProtocol.getValue();
+        long deviceAddress = super.deviceAddress.getValue();
+        if (protocol == OBJECTNET_PROTOCOL) {
+            if (property instanceof ValueProperty) {
                 try {
-                    byte[] request=AkonProtocol.formReadRequestObjectNet((ValueProperty)property,(int)deviceAddress);
-                    return new RequestInformation(request,11,false);
-                } catch (Exception e){
-                    fireEvent(EventType.ERROR,e.getLocalizedMessage());
+                    byte[] request = AkonProtocol.formReadRequestObjectNet((ValueProperty) property, (int) deviceAddress);
+                    return new RequestInformation(request, 11, false);
+                } catch (Exception e) {
+                    fireEvent(EventType.ERROR, e.getLocalizedMessage());
                     return null;
                 }
             }
             return null;
         }
-        if(protocol==MODBUS_PROTOCOL){
-            if(property instanceof ValueProperty) {
+        if (protocol == MODBUS_PROTOCOL) {
+            if (property instanceof ValueProperty) {
                 try {
-                    byte[] request=ModBusProtocol.formReadRequestModBus((ValueProperty) property, (int) deviceAddress);
-                    return new RequestInformation(request,9,false);
-                } catch (Exception e){
-                    fireEvent(EventType.ERROR,e.getLocalizedMessage());
+                    byte[] request = ModBusProtocol.formReadRequestModBus((ValueProperty) property, (int) deviceAddress);
+                    return new RequestInformation(request, 9, false);
+                } catch (Exception e) {
+                    fireEvent(EventType.ERROR, e.getLocalizedMessage());
                     return null;
                 }
             }
@@ -184,27 +183,27 @@ public class AkonBase extends RSLineDevice {
 
     @Override
     protected RequestInformation formWriteRequest(AbstractProperty property) {
-        short protocol=akonProtocol.getValue();
-        long deviceAddress=super.deviceAddress.getValue();
-        if(protocol==OBJECTNET_PROTOCOL){
-            if(property instanceof ValueProperty) {
+        short protocol = akonProtocol.getValue();
+        long deviceAddress = super.deviceAddress.getValue();
+        if (protocol == OBJECTNET_PROTOCOL) {
+            if (property instanceof ValueProperty) {
                 try {
                     byte[] request = AkonProtocol.formWriteRequestObjectNet((ValueProperty) property, (int) deviceAddress);
-                    return new RequestInformation(request,11,false);
-                } catch (IllegalArgumentException e){
-                    fireEvent(EventType.ERROR,e.getLocalizedMessage());
+                    return new RequestInformation(request, 11, false);
+                } catch (IllegalArgumentException e) {
+                    fireEvent(EventType.ERROR, e.getLocalizedMessage());
                     return null;
                 }
             }
             return null;
         }
-        if(protocol==MODBUS_PROTOCOL){
-            if(property instanceof ValueProperty) {
+        if (protocol == MODBUS_PROTOCOL) {
+            if (property instanceof ValueProperty) {
                 try {
-                    byte[] request=ModBusProtocol.formWriteRequestModBus((ValueProperty) property, (int) deviceAddress);
-                    return new RequestInformation(request,9,false);
-                } catch (Exception e){
-                    fireEvent(EventType.ERROR,e.getLocalizedMessage());
+                    byte[] request = ModBusProtocol.formWriteRequestModBus((ValueProperty) property, (int) deviceAddress);
+                    return new RequestInformation(request, 9, false);
+                } catch (Exception e) {
+                    fireEvent(EventType.ERROR, e.getLocalizedMessage());
                     return null;
                 }
             }
@@ -216,11 +215,11 @@ public class AkonBase extends RSLineDevice {
     @Override
     protected RequestInformation processCommandRequest(String commandName) {
 
-        switch (commandName){
+        switch (commandName) {
             case "SAVE":
-                short protocol=akonProtocol.getValue();
-                long deviceAddress=super.deviceAddress.getValue();
-                if(protocol==OBJECTNET_PROTOCOL) {
+                short protocol = akonProtocol.getValue();
+                long deviceAddress = super.deviceAddress.getValue();
+                if (protocol == OBJECTNET_PROTOCOL) {
                     try {
                         byte[] request = AkonProtocol.formWriteRequestObjectNet(saveToFlash, (int) deviceAddress);
                         return new RequestInformation(request, 11, false);
@@ -228,20 +227,19 @@ public class AkonBase extends RSLineDevice {
                         fireEvent(EventType.ERROR, e.getLocalizedMessage());
                         return null;
                     }
-                } else
-                if(protocol==MODBUS_PROTOCOL){
-                        try {
-                            byte[] request=ModBusProtocol.formWriteRequestModBus(saveToFlash, (int) deviceAddress);
-                            return new RequestInformation(request,8,false);
-                        } catch (Exception e){
-                            fireEvent(EventType.ERROR,e.getLocalizedMessage());
-                            return null;
-                        }
+                } else if (protocol == MODBUS_PROTOCOL) {
+                    try {
+                        byte[] request = ModBusProtocol.formWriteRequestModBus(saveToFlash, (int) deviceAddress);
+                        return new RequestInformation(request, 8, false);
+                    } catch (Exception e) {
+                        fireEvent(EventType.ERROR, e.getLocalizedMessage());
+                        return null;
+                    }
                 }
             case "LOAD":
-                protocol=akonProtocol.getValue();
-                deviceAddress=super.deviceAddress.getValue();
-                if(protocol==OBJECTNET_PROTOCOL) {
+                protocol = akonProtocol.getValue();
+                deviceAddress = super.deviceAddress.getValue();
+                if (protocol == OBJECTNET_PROTOCOL) {
                     try {
                         byte[] request = AkonProtocol.formWriteRequestObjectNet(readFromFlash, (int) deviceAddress);
                         return new RequestInformation(request, 11, false);
@@ -249,21 +247,20 @@ public class AkonBase extends RSLineDevice {
                         fireEvent(EventType.ERROR, e.getLocalizedMessage());
                         return null;
                     }
-                } else
-                if(protocol==MODBUS_PROTOCOL){
-                       try {
-                            byte[] request=ModBusProtocol.formWriteRequestModBus(readFromFlash, (int) deviceAddress);
-                            return new RequestInformation(request,8,false);
-                        } catch (Exception e){
-                            fireEvent(EventType.ERROR,e.getLocalizedMessage());
-                            return null;
-                        }
+                } else if (protocol == MODBUS_PROTOCOL) {
+                    try {
+                        byte[] request = ModBusProtocol.formWriteRequestModBus(readFromFlash, (int) deviceAddress);
+                        return new RequestInformation(request, 8, false);
+                    } catch (Exception e) {
+                        fireEvent(EventType.ERROR, e.getLocalizedMessage());
+                        return null;
+                    }
                 }
         }
         return super.processCommandRequest(commandName);
     }
 
-    public SoftLongProperty getDeviceTypeProperty(){
+    public SoftLongProperty getDeviceTypeProperty() {
         return deviceType;
     }
 

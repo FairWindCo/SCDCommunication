@@ -25,48 +25,43 @@ public class SimpleAkonDeviceConfigPanel extends HBox {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
     private volatile LineInterface selectedLine;
 
-    public interface LineChange{
-        void primaryLineChange(LineInterface newline);
-        void secondaryLineChange(LineInterface newline);
-    }
-
     public SimpleAkonDeviceConfigPanel(AkonBase device) {
         super();
         this.device = device;
-        selectedLine= device.getPrimaryLine();
-        lines=null;
-        this.action=null;
+        selectedLine = device.getPrimaryLine();
+        lines = null;
+        this.action = null;
         initControl();
     }
 
     public SimpleAkonDeviceConfigPanel(AkonBase device, LineInterface line, List<LineInterface> lines) {
         super();
         this.device = device;
-        selectedLine= device.getPrimaryLine();
-        this.lines=lines;
-        this.action=null;
+        selectedLine = device.getPrimaryLine();
+        this.lines = lines;
+        this.action = null;
         initControl();
     }
 
     public SimpleAkonDeviceConfigPanel(AkonBase device, LineInterface line, List<LineInterface> lines, LineChange listener) {
         super();
         this.device = device;
-        selectedLine= device.getPrimaryLine();
-        this.lines=lines;
-        this.action=listener;
+        selectedLine = device.getPrimaryLine();
+        this.lines = lines;
+        this.action = listener;
         initControl();
     }
 
     public SimpleAkonDeviceConfigPanel(AkonBase device, LineInterface line) {
         super();
         this.device = device;
-        selectedLine= device.getPrimaryLine();
-        lines=null;
-        this.action=null;
+        selectedLine = device.getPrimaryLine();
+        lines = null;
+        this.action = null;
         initControl();
     }
 
-    private void initControl(){
+    private void initControl() {
         GridPane grid = new GridPane();
         setAlignment(Pos.TOP_CENTER);
         getChildren().add(grid);
@@ -74,17 +69,17 @@ public class SimpleAkonDeviceConfigPanel extends HBox {
         grid.setVgap(10);
         grid.setAlignment(Pos.CENTER);
         grid.setPadding(new Insets(10, 10, 10, 10));
-        int rowindex=0;
+        int rowindex = 0;
         grid.add(new Label(device.getDeviceType() + " : " + device.getName()), 0, rowindex++, 3, 1);
         grid.add(new Label(I18N_FX.getLocalizedString("DEVICE_ADDRES")), 0, rowindex);
         grid.add(VisualControls.createAddressSelect(device.getDeviceAddressProperty()), 1, rowindex);
-        if(lines!=null && !lines.isEmpty()){
+        if (lines != null && !lines.isEmpty()) {
             grid.add(new Label(I18N_FX.getLocalizedString("SELECT_LINE_PRIMARY")), 3, rowindex);
             grid.add(createLineComboBoxP(), 4, rowindex);
-            grid.add(VisualControls.createPClosePortButton(device),5,rowindex);
-            grid.add(new Label(I18N_FX.getLocalizedString("SELECT_LINE_SECONDARY")), 3, rowindex+1);
-            grid.add(createLineComboBoxS(), 4, rowindex+1);
-            grid.add(VisualControls.createSClosePortButton(device),5,rowindex+1);
+            grid.add(VisualControls.createPClosePortButton(device), 5, rowindex);
+            grid.add(new Label(I18N_FX.getLocalizedString("SELECT_LINE_SECONDARY")), 3, rowindex + 1);
+            grid.add(createLineComboBoxS(), 4, rowindex + 1);
+            grid.add(VisualControls.createSClosePortButton(device), 5, rowindex + 1);
         }
         grid.add(VisualControls.createConfigureButton(device), 2, rowindex++);
         grid.add(new Label(I18N_FX.getLocalizedString("DEVICE_PROTOCOL")), 0, rowindex);
@@ -99,11 +94,10 @@ public class SimpleAkonDeviceConfigPanel extends HBox {
         grid.add(VisualControls.createTimeLabel(device.getDeviceLastTryExchangeProperty()), 3, rowindex++);
     }
 
-
-    private ComboBox<LineInterface> createLineComboBoxP(){
-        ComboBox<LineInterface> combo=new ComboBox<>();
+    private ComboBox<LineInterface> createLineComboBoxP() {
+        ComboBox<LineInterface> combo = new ComboBox<>();
         combo.setPrefWidth(150);
-        if(lines!=null) combo.getItems().addAll(lines);
+        if (lines != null) combo.getItems().addAll(lines);
         combo.setOnAction(a -> {
             LineInterface selected = combo.getValue();
             device.setPrimerayLine(selected);
@@ -112,10 +106,11 @@ public class SimpleAkonDeviceConfigPanel extends HBox {
         combo.setValue(device.getPrimaryLine());
         return combo;
     }
-    private ComboBox<LineInterface> createLineComboBoxS(){
-        ComboBox<LineInterface> combo=new ComboBox<>();
+
+    private ComboBox<LineInterface> createLineComboBoxS() {
+        ComboBox<LineInterface> combo = new ComboBox<>();
         combo.setPrefWidth(150);
-        if(lines!=null) combo.getItems().addAll(lines);
+        if (lines != null) combo.getItems().addAll(lines);
         combo.setOnAction(a -> {
             LineInterface selected = combo.getValue();
             device.setSecondaryLine(selected);
@@ -125,8 +120,11 @@ public class SimpleAkonDeviceConfigPanel extends HBox {
         return combo;
     }
 
+    public interface LineChange {
+        void primaryLineChange(LineInterface newline);
 
-
+        void secondaryLineChange(LineInterface newline);
+    }
 
 
 }

@@ -14,6 +14,6 @@ public class BytePropertyFXAdapterSpec extends AbstractFXPropertyAdapter<Byte> {
 
     @Override
     public void setValue(Byte t) {
-        super.setValue(t!=null?t:null);
+        super.setValue(t != null ? t : null);
     }
 }

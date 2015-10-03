@@ -20,7 +20,7 @@ import ua.pp.fairwind.javafx.panels.TupicalPanels;
  */
 public class BDBGPanel extends HBox {
     final private BDBG09 device;
-    final private TabPane tabs=new TabPane();
+    final private TabPane tabs = new TabPane();
 
     public BDBGPanel(BDBG09 device) {
         super();
@@ -28,15 +28,27 @@ public class BDBGPanel extends HBox {
         initControl();
     }
 
-    private void  intiStatusPane(){
-        final Tab initTab=new Tab(I18N_FX.getLocalizedString("STASUS"));
+    public static int setChanelControlRO(GridPane grid, SoftFloatProperty chanel, String name, int rowindex, int col) {
+
+        return rowindex;
+    }
+
+    public static ComboBox<Short> createAddressSelect(SoftShortProperty addressProperty) {
+        ComboBox<Short> box = new ComboBox<>();
+        for (int i = 0; i < 256; i++) box.getItems().add((short) i);
+        box.valueProperty().bindBidirectional(new ShortPropertyFXAdapterSpec(addressProperty));
+        return box;
+    }
+
+    private void intiStatusPane() {
+        final Tab initTab = new Tab(I18N_FX.getLocalizedString("STASUS"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         initTab.setContent(TupicalPanels.createDeviceStatusPane(device));
     }
 
-    private void  intiCONFIGPane(){
-        final Tab initTab=new Tab(I18N_FX.getLocalizedString("KOEFICIENTS"));
+    private void intiCONFIGPane() {
+        final Tab initTab = new Tab(I18N_FX.getLocalizedString("KOEFICIENTS"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -48,16 +60,16 @@ public class BDBGPanel extends HBox {
             grid.setPadding(new Insets(10, 10, 10, 10));
 
             int rowIndex = 0;
-            rowIndex = TupicalPanels.setChanelControl(grid, device.getGROUP_KOIF(), rowIndex, 0,false);
-            ScrollPane scrol=new ScrollPane(grid);
+            rowIndex = TupicalPanels.setChanelControl(grid, device.getGROUP_KOIF(), rowIndex, 0, false);
+            ScrollPane scrol = new ScrollPane(grid);
             scrol.setFitToWidth(true);
             scrol.setFitToHeight(true);
             initTab.setContent(scrol);
         });
     }
 
-    private void intiDeviceControlPane(){
-        final Tab initTab=new Tab(I18N_FX.getLocalizedString("DEVICE_INFO"));
+    private void intiDeviceControlPane() {
+        final Tab initTab = new Tab(I18N_FX.getLocalizedString("DEVICE_INFO"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -78,27 +90,22 @@ public class BDBGPanel extends HBox {
             grid.add(VisualControls.createLcdIndicator(device.getMiss()), 1, rowIndex++);
             rowIndex = TupicalPanels.setChanelControlRO(grid, device.getTemp(), "TEMP", rowIndex, 0);
 
-            grid.add(VisualControls.createLedIndicator(device.getStatus(),Color.YELLOW), 0, rowIndex);
-            grid.add(VisualControls.createLedIndicator(device.getMULTI(),Color.GREEN), 1, rowIndex);
+            grid.add(VisualControls.createLedIndicator(device.getStatus(), Color.YELLOW), 0, rowIndex);
+            grid.add(VisualControls.createLedIndicator(device.getMULTI(), Color.GREEN), 1, rowIndex);
             grid.add(VisualControls.createLedIndicator(device.getHIGHT_ERROR(), Color.RED), 2, rowIndex);
             grid.add(VisualControls.createLedIndicator(device.getLOW_ERROR(), Color.RED), 3, rowIndex);
             grid.add(VisualControls.createLedIndicator(device.getTEMP_ERROR(), Color.RED), 4, rowIndex++);
 
             grid.add(new Label(I18N_FX.getLocalizedString("BDBG09.STAT")), 0, rowIndex);
             grid.add(new Label(I18N_FX.getLocalizedString("BDBG09.MULTI")), 1, rowIndex);
-            grid.add(new Label(I18N_FX.getLocalizedString("BDBG09.ERROR")), 2, rowIndex++,3,1);
+            grid.add(new Label(I18N_FX.getLocalizedString("BDBG09.ERROR")), 2, rowIndex++, 3, 1);
 
             initTab.setContent(grid);
         });
     }
 
-    public static int setChanelControlRO(GridPane grid,SoftFloatProperty chanel,String name,int rowindex,int col){
-
-        return rowindex;
-    }
-
-    private void intiDeviceConfigPane(){
-        final Tab initTab=new Tab(I18N_FX.getLocalizedString("SETUP"));
+    private void intiDeviceConfigPane() {
+        final Tab initTab = new Tab(I18N_FX.getLocalizedString("SETUP"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -118,11 +125,7 @@ public class BDBGPanel extends HBox {
         });
     }
 
-
-
-
-
-    private void initControl(){
+    private void initControl() {
         setAlignment(Pos.CENTER);
         intiDeviceControlPane();
         intiDeviceConfigPane();
@@ -130,14 +133,6 @@ public class BDBGPanel extends HBox {
         intiStatusPane();
         tabs.setPrefHeight(430);
         getChildren().add(tabs);
-    }
-
-
-    public static ComboBox<Short> createAddressSelect(SoftShortProperty addressProperty){
-        ComboBox<Short> box=new ComboBox<>();
-        for(int i=0;i<256;i++)box.getItems().add((short)i);
-        box.valueProperty().bindBidirectional(new ShortPropertyFXAdapterSpec(addressProperty));
-        return box;
     }
 
 }

@@ -14,6 +14,6 @@ public class ShortPropertyFXAdapter extends NumberFXPropertyAdapter<Short> {
 
     @Override
     public void setValue(Number t) {
-        super.setValue(t!=null?t.shortValue():null);
+        super.setValue(t != null ? t.shortValue() : null);
     }
 }

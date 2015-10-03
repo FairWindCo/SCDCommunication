@@ -14,6 +14,6 @@ public class LongPropertyFXAdapter extends NumberFXPropertyAdapter<Long> {
 
     @Override
     public void setValue(Number t) {
-        super.setValue(t!=null?t.longValue():null);
+        super.setValue(t != null ? t.longValue() : null);
     }
 }

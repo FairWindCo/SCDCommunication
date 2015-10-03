@@ -20,13 +20,7 @@ public class BelimaEncoderComplexPanel extends BorderPane {
     private final BelimaEncoderPanel panel;
     private final LineInfoBar infoBarP;
     private final LineInfoBar infoBarS;
-
-
-    public BelimaEncoderComplexPanel(AbstractLine line, Encoder device) {
-        this(line, device, null);
-    }
-
-    SimpleDeviceConfigPanel.LineChange listner=new SimpleDeviceConfigPanel.LineChange() {
+    SimpleDeviceConfigPanel.LineChange listner = new SimpleDeviceConfigPanel.LineChange() {
         @Override
         public void primaryLineChange(LineInterface newline) {
             infoBarP.setupLine(newline);
@@ -39,25 +33,29 @@ public class BelimaEncoderComplexPanel extends BorderPane {
         }
     };
 
+    public BelimaEncoderComplexPanel(AbstractLine line, Encoder device) {
+        this(line, device, null);
+    }
+
     public BelimaEncoderComplexPanel(LineInterface line, Encoder device, List<LineInterface> lines) {
-        if(device==null)throw new RuntimeException("DEVICE CAN`T BE NULL!");
-        if(line!=null)device.setPrimerayLine(line);
+        if (device == null) throw new RuntimeException("DEVICE CAN`T BE NULL!");
+        if (line != null) device.setPrimerayLine(line);
         LineInterface line1 = line;
         List<LineInterface> lines1 = lines;
         Encoder device1 = device;
-        devpanel=new SimpleDeviceConfigPanel(device,line,lines,listner);
-        infoBarP=new LineInfoBar(35,device.getPrimaryLine());
-        infoBarS=new LineInfoBar(35,device.getSecondaryLine());
-        panel=new BelimaEncoderPanel(device);
+        devpanel = new SimpleDeviceConfigPanel(device, line, lines, listner);
+        infoBarP = new LineInfoBar(35, device.getPrimaryLine());
+        infoBarS = new LineInfoBar(35, device.getSecondaryLine());
+        panel = new BelimaEncoderPanel(device);
         initControl();
     }
 
-    private void initControl(){
+    private void initControl() {
 
         setTop(devpanel);
         setCenter(panel);
         setAlignment(panel, Pos.CENTER);
-        VBox down=new VBox();
+        VBox down = new VBox();
         down.getChildren().addAll(infoBarP, infoBarS);
 
         setBottom(down);

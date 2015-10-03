@@ -3,6 +3,7 @@ package ua.pp.fairwind.javafx.controls.slidecheckbox;
 /**
  * Created by Сергей on 28.08.2015.
  */
+
 import com.sun.javafx.scene.control.behavior.BehaviorBase;
 import com.sun.javafx.scene.control.behavior.KeyBinding;
 import javafx.scene.control.ButtonBase;
@@ -23,27 +24,51 @@ import static javafx.scene.input.KeyEvent.KEY_RELEASED;
  * Time: 09:21
  * To change this template use File | Settings | File Templates.
  */
-public class SlideCheckBoxBehavior <C extends ButtonBase> extends BehaviorBase<C> {
+public class SlideCheckBoxBehavior<C extends ButtonBase> extends BehaviorBase<C> {
+
+    protected static final List<KeyBinding> BUTTON_BINDINGS = new ArrayList<KeyBinding>();
+    private static final String PRESS_ACTION = "Press";
+    private static final String RELEASE_ACTION = "Release";
 
     /***************************************************************************
      *                                                                         *
-     * Constructors                                                            *
+     * Key event handling                                                      *
      *                                                                         *
+     **************************************************************************/
+
+    static {
+        BUTTON_BINDINGS.add(new KeyBinding(SPACE, KEY_PRESSED, PRESS_ACTION));
+        BUTTON_BINDINGS.add(new KeyBinding(SPACE, KEY_RELEASED, RELEASE_ACTION));
+    }
+
+    /**
+     * Indicates that a keyboard key has been pressed which represents the
+     * event (this could be space bar for example). As long as keyDown is true,
+     * we are also armed, and will ignore mouse events related to arming.
+     * Note this is made package private solely for the sake of testing.
+     */
+    private boolean keyDown;
+    /***************************************************************************
+     * *
+     * Constructors                                                            *
+     * *
      **************************************************************************/
     public SlideCheckBoxBehavior(final C button) {
         super(button, BUTTON_BINDINGS);
     }
+
     public SlideCheckBoxBehavior(final C button, final List<KeyBinding> bindings) {
         super(button, bindings);
     }
 
     /***************************************************************************
-     *                                                                         *
+     * *
      * Focus change handling                                                   *
-     *                                                                         *
+     * *
      **************************************************************************/
 
-    @Override protected void focusChanged() {
+    @Override
+    protected void focusChanged() {
         // If we did have the key down, but are now not focused, then we must
         // disarm the button.
         final ButtonBase button = getControl();
@@ -53,31 +78,8 @@ public class SlideCheckBoxBehavior <C extends ButtonBase> extends BehaviorBase<C
         }
     }
 
-    /***************************************************************************
-     *                                                                         *
-     * Key event handling                                                      *
-     *                                                                         *
-     **************************************************************************/
-
-    /**
-     * Indicates that a keyboard key has been pressed which represents the
-     * event (this could be space bar for example). As long as keyDown is true,
-     * we are also armed, and will ignore mouse events related to arming.
-     * Note this is made package private solely for the sake of testing.
-     */
-    private boolean keyDown;
-
-    private static final String PRESS_ACTION   = "Press";
-    private static final String RELEASE_ACTION = "Release";
-
-    protected static final List<KeyBinding> BUTTON_BINDINGS = new ArrayList<KeyBinding>();
-
-    static {
-        BUTTON_BINDINGS.add(new KeyBinding(SPACE, KEY_PRESSED, PRESS_ACTION));
-        BUTTON_BINDINGS.add(new KeyBinding(SPACE, KEY_RELEASED, RELEASE_ACTION));
-    }
-
-    @Override protected void callAction(String name) {
+    @Override
+    protected void callAction(String name) {
         if (!getControl().isDisabled()) {
             if (PRESS_ACTION.equals(name)) {
                 keyPressed();
@@ -127,11 +129,12 @@ public class SlideCheckBoxBehavior <C extends ButtonBase> extends BehaviorBase<C
      * Invoked when a mouse press has occurred over the button. In addition to
      * potentially arming the Button, this will transfer focus to the button
      */
-    @Override public void mousePressed(MouseEvent e) {
+    @Override
+    public void mousePressed(MouseEvent e) {
         final ButtonBase button = getControl();
         super.mousePressed(e);
         // if the button is not already focused, then request the focus
-        if (! button.isFocused() && button.isFocusTraversable()) {
+        if (!button.isFocused() && button.isFocusTraversable()) {
             button.requestFocus();
         }
 
@@ -141,10 +144,10 @@ public class SlideCheckBoxBehavior <C extends ButtonBase> extends BehaviorBase<C
         // has a release clickCount of 1. So here I'll check clickCount <= 1,
         // though it should really be == 1 I think.
         boolean valid = (e.getButton() == MouseButton.PRIMARY &&
-                ! (e.isMiddleButtonDown() || e.isSecondaryButtonDown() ||
+                !(e.isMiddleButtonDown() || e.isSecondaryButtonDown() ||
                         e.isShiftDown() || e.isControlDown() || e.isAltDown() || e.isMetaDown()));
 
-        if (! button.isArmed() && valid) {
+        if (!button.isArmed() && valid) {
             button.arm();
         }
     }
@@ -154,10 +157,11 @@ public class SlideCheckBoxBehavior <C extends ButtonBase> extends BehaviorBase<C
      * was done in a manner that would fire the button's action. This happens
      * only if the button was armed by a corresponding mouse press.
      */
-    @Override public void mouseReleased(MouseEvent e) {
+    @Override
+    public void mouseReleased(MouseEvent e) {
         // if armed by a mouse press instead of key press, then fire!
         final ButtonBase button = getControl();
-        if (! keyDown && button.isArmed()) {
+        if (!keyDown && button.isArmed()) {
             button.fire();
             button.disarm();
         }
@@ -168,11 +172,12 @@ public class SlideCheckBoxBehavior <C extends ButtonBase> extends BehaviorBase<C
      * by a mouse press and the mouse is still pressed, then this will cause
      * the button to be rearmed.
      */
-    @Override public void mouseEntered(MouseEvent e) {
+    @Override
+    public void mouseEntered(MouseEvent e) {
         // rearm if necessary
         final ButtonBase button = getControl();
         super.mouseEntered(e);
-        if (! keyDown && button.isPressed()) {
+        if (!keyDown && button.isPressed()) {
             button.arm();
         }
     }
@@ -182,11 +187,12 @@ public class SlideCheckBoxBehavior <C extends ButtonBase> extends BehaviorBase<C
      * a mouse press, then this function will disarm the button upon the mouse
      * exiting it.
      */
-    @Override public void mouseExited(MouseEvent e) {
+    @Override
+    public void mouseExited(MouseEvent e) {
         // Disarm if necessary
         final ButtonBase button = getControl();
         super.mouseExited(e);
-        if (! keyDown && button.isArmed()) {
+        if (!keyDown && button.isArmed()) {
             button.disarm();
         }
     }

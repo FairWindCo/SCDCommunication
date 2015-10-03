@@ -12,45 +12,47 @@ import java.util.UUID;
 /**
  * Created by FairWindCo on 30.06.2015.
  */
-public abstract class SystemEllement implements ElementInterface{
+public abstract class SystemEllement implements ElementInterface {
+    final protected MessageSubSystem centralSystem;
     final private String name;
     final private UUID uuid;
-    final protected MessageSubSystem centralSystem;
     final private String description;
-    protected volatile boolean eventactive=true;
     final private String codename;
+    protected volatile boolean eventactive = true;
 
     protected SystemEllement(String codename) {
-        if(codename==null || codename.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
-        this.codename=codename;
+        if (codename == null || codename.length() == 0)
+            throw new IllegalArgumentException("Name cannot be NULL or empty!");
+        this.codename = codename;
         this.name = localizeName(codename);
         this.description = localizeDescription(codename);
-        this.uuid=I18N.getUUIDFromCodeNAme(codename);
-        this.centralSystem= MessageSystemManager.getElementMessageSystem(uuid);
+        this.uuid = I18N.getUUIDFromCodeNAme(codename);
+        this.centralSystem = MessageSystemManager.getElementMessageSystem(uuid);
     }
 
 
     protected SystemEllement(String codename, String uuid) {
-        this.codename=codename;
+        this.codename = codename;
         this.name = localizeName(codename);
         this.description = localizeDescription(codename);
-        if(codename==null || codename.length()==0) throw new IllegalArgumentException("Name cannot be NULL or empty!");
-        this.uuid=I18N.getUUIDFromCodeNAme(uuid,codename);
-        this.centralSystem= MessageSystemManager.getElementMessageSystem(this.uuid);
+        if (codename == null || codename.length() == 0)
+            throw new IllegalArgumentException("Name cannot be NULL or empty!");
+        this.uuid = I18N.getUUIDFromCodeNAme(uuid, codename);
+        this.centralSystem = MessageSystemManager.getElementMessageSystem(this.uuid);
     }
 
-    private String localizeName(String key){
-        String str=I18N.getLocalizedString(key+".name");
-        if(str==null || str.isEmpty()) return key;
+    public static String localizeError(String goupName, String key) {
+        return I18N.getLocalizedString(goupName + '.' + key + ".error");
+    }
+
+    private String localizeName(String key) {
+        String str = I18N.getLocalizedString(key + ".name");
+        if (str == null || str.isEmpty()) return key;
         return str;
     }
 
-    private String localizeDescription(String key){
-        return I18N.getLocalizedString(key+".description");
-    }
-
-    public static String localizeError(String goupName,String key){
-        return I18N.getLocalizedString(goupName+'.'+key+".error");
+    private String localizeDescription(String key) {
+        return I18N.getLocalizedString(key + ".description");
     }
 
     public String getName() {
@@ -69,12 +71,12 @@ public abstract class SystemEllement implements ElementInterface{
         return description;
     }
 
-    protected void fireEvent(EventType type,Object param){
-        if(eventactive)centralSystem.fireEvent(this,type,param);
+    protected void fireEvent(EventType type, Object param) {
+        if (eventactive) centralSystem.fireEvent(this, type, param);
     }
 
-    protected void fireEvent(EventType type,Object param,Event parent){
-        if(eventactive)centralSystem.fireEvent(this,type,param,parent);
+    protected void fireEvent(EventType type, Object param, Event parent) {
+        if (eventactive) centralSystem.fireEvent(this, type, param, parent);
     }
 
     @Override
@@ -84,27 +86,27 @@ public abstract class SystemEllement implements ElementInterface{
 
     @Override
     public void addEventListener(ElementEventListener listener, EventType... recivedEventsTypes) {
-        centralSystem.addEventListener(listener,recivedEventsTypes);
+        centralSystem.addEventListener(listener, recivedEventsTypes);
     }
 
     @Override
-    public void addEventListener(ElementEventListener listener,UUID ignore) {
-        centralSystem.addEventListener(listener,ignore);
+    public void addEventListener(ElementEventListener listener, UUID ignore) {
+        centralSystem.addEventListener(listener, ignore);
     }
 
     @Override
-    public void addEventListener(ElementEventListener listener,UUID ignore, EventType... recivedEventsTypes) {
-        centralSystem.addEventListener(listener,ignore,recivedEventsTypes);
+    public void addEventListener(ElementEventListener listener, UUID ignore, EventType... recivedEventsTypes) {
+        centralSystem.addEventListener(listener, ignore, recivedEventsTypes);
     }
 
     @Override
-    public void addEventListener(ElementEventListener listener,UUID ignore,Object processotParam) {
-        centralSystem.addEventListener(listener,ignore);
+    public void addEventListener(ElementEventListener listener, UUID ignore, Object processotParam) {
+        centralSystem.addEventListener(listener, ignore);
     }
 
     @Override
-    public void addEventListener(ElementEventListener listener,UUID ignore,Object processotParam, EventType... recivedEventsTypes) {
-        centralSystem.addEventListener(listener,ignore,recivedEventsTypes);
+    public void addEventListener(ElementEventListener listener, UUID ignore, Object processotParam, EventType... recivedEventsTypes) {
+        centralSystem.addEventListener(listener, ignore, recivedEventsTypes);
     }
 
 
@@ -136,17 +138,17 @@ public abstract class SystemEllement implements ElementInterface{
 
     @Override
     public String getHardwareName() {
-        return this.getClass().getSimpleName()+"("+name+","+uuid.toString()+")";
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        eventactive=enabled;
+        return this.getClass().getSimpleName() + "(" + name + "," + uuid.toString() + ")";
     }
 
     @Override
     public boolean isEnabled() {
         return eventactive;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        eventactive = enabled;
     }
 
     public String getCodename() {

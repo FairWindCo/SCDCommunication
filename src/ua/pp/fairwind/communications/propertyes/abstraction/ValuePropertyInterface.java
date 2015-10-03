@@ -32,11 +32,14 @@ public interface ValuePropertyInterface<T extends Comparable<? super T>> extends
     void destroy();
 
     void readValueRequest();
+
     void writeValueRequest();
 
     boolean isReadAccepted();
+
     boolean isWriteAccepted();
 
     boolean isActive();
+
     void setActive(boolean active);
 }

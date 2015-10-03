@@ -17,62 +17,56 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by FairWindCo on 07.07.2015
  */
-public abstract class AbstractProperty extends SystemEllement{
-    final public static String PROPERTY_READ_TIME_OUT_ADDON="PROPERTY_READ_TIME_OUT_ADDON";
-    final public static String PROPERTY_PAUSE_BEFORE_READ_ADDON="PROPERTY_PAUSE_BEFORE_READ_ADDON";
-    final public static String PROPERTY_PAUSE_BEFORE_WRITE_ADDON="PROPERTY_PAUSE_BEFORE_WRITE_ADDON";
-    final public static String PROPERTY_READ_TIME_OUT="PROPERTY_READ_TIME_OUT";
-    final public static String PROPERTY_BUBLE_EVENT="PROPERTY_BUBLE_EVENT";
-    final public static String PROPERTY_PAUSE_BEFORE_READ="PROPERTY_PAUSE_BEFORE_READ";
-    final public static String PROPERTY_PAUSE_BEFORE_WRITE="PROPERTY_PAUSE_BEFORE_WRITE";
-    final public static String TIMER="TIMER";
-    final public static String TIMERS="TIMERS";
-
-
-    volatile private OperationTrunsactions requestTrunsaction=new OperationTrunsactionsSingle();
-    protected volatile long dataLifeTime;
-    protected final Map<String,Object> additionalParameters=new ConcurrentHashMap<>();
-
+public abstract class AbstractProperty extends SystemEllement {
+    final public static String PROPERTY_READ_TIME_OUT_ADDON = "PROPERTY_READ_TIME_OUT_ADDON";
+    final public static String PROPERTY_PAUSE_BEFORE_READ_ADDON = "PROPERTY_PAUSE_BEFORE_READ_ADDON";
+    final public static String PROPERTY_PAUSE_BEFORE_WRITE_ADDON = "PROPERTY_PAUSE_BEFORE_WRITE_ADDON";
+    final public static String PROPERTY_READ_TIME_OUT = "PROPERTY_READ_TIME_OUT";
+    final public static String PROPERTY_BUBLE_EVENT = "PROPERTY_BUBLE_EVENT";
+    final public static String PROPERTY_PAUSE_BEFORE_READ = "PROPERTY_PAUSE_BEFORE_READ";
+    final public static String PROPERTY_PAUSE_BEFORE_WRITE = "PROPERTY_PAUSE_BEFORE_WRITE";
+    final public static String TIMER = "TIMER";
+    final public static String TIMERS = "TIMERS";
+    protected final Map<String, Object> additionalParameters = new ConcurrentHashMap<>();
     //Внутренний прослушиватель событий об изменении занчения другого свойства.
     //Используется для реализации функции связывания.
-    final private ElementEventListener elementevent=(event,processingParameter)->{
-        if(event.getTypeEvent()==EventType.ELEMENT_CHANGE && event.getParams()!=null){
-            ElementInterface element=event.getSourceElement();
-            if(element!=null && element instanceof AbstractProperty) {
-                reciveValueFromBindingRead((AbstractProperty)element, event.getParams(), processingParameter, event);
+    final private ElementEventListener elementevent = (event, processingParameter) -> {
+        if (event.getTypeEvent() == EventType.ELEMENT_CHANGE && event.getParams() != null) {
+            ElementInterface element = event.getSourceElement();
+            if (element != null && element instanceof AbstractProperty) {
+                reciveValueFromBindingRead((AbstractProperty) element, event.getParams(), processingParameter, event);
             } else {
                 reciveValueFromBindingRead(null, event.getParams(), processingParameter, event);
             }
         }
     };
+    protected volatile long dataLifeTime;
+    volatile private OperationTrunsactions requestTrunsaction = new OperationTrunsactionsSingle();
 
     protected AbstractProperty(String name, String uuid) {
         super(name, uuid);
     }
 
-    public void readValueRequest(){
+    public void readValueRequest() {
         fireEvent(EventType.NEED_READ_VALUE, null);
     }
 
-    public void writeValueRequest(){
+    public void writeValueRequest() {
         fireEvent(EventType.NEED_WRITE_VALUE, null);
     }
 
 
-
-
-
-
     //Внутренний метод для связывания по чтению с другим методом
-    protected void bindPropertyForRead(AbstractProperty property,Object bindingProcessor){
-        if(property!=null){
-                property.addEventListener(elementevent,getUUID(),bindingProcessor,EventType.ELEMENT_CHANGE);
+    protected void bindPropertyForRead(AbstractProperty property, Object bindingProcessor) {
+        if (property != null) {
+            property.addEventListener(elementevent, getUUID(), bindingProcessor, EventType.ELEMENT_CHANGE);
         }
     }
+
     //Внутренний метод для связывания по записи с другим методом
-    protected void bindPropertyForWrite(AbstractProperty property, Object bindingProcessor){
-        if(property!=null){
-            addEventListener(property.elementevent,getUUID(),bindingProcessor,EventType.ELEMENT_CHANGE);
+    protected void bindPropertyForWrite(AbstractProperty property, Object bindingProcessor) {
+        if (property != null) {
+            addEventListener(property.elementevent, getUUID(), bindingProcessor, EventType.ELEMENT_CHANGE);
         }
     }
 
@@ -83,17 +77,17 @@ public abstract class AbstractProperty extends SystemEllement{
     //Метод позволяющий непосредственно осуществить соединение по записи
     //Необходим в том случае если для связывания необходимо передать некоторые параметр
     //Например такой как формат значения длс строков параметров.
-    protected void reciveValueFromBindingRead(final AbstractProperty property,final Object valueForWtite, Object bindingProcessor,final Event parentEvent){
-        if(bindingProcessor!=null && bindingProcessor instanceof BindingPropertyProcessor){
-            try{
-                ((BindingPropertyProcessor) bindingProcessor).convert(property,this);
-            }catch (IllegalFormatConversionException e){
-                fireEvent(EventType.ERROR, String.format(I18N.getLocalizedString("binding.value.translate.error"),e.getLocalizedMessage()));
+    protected void reciveValueFromBindingRead(final AbstractProperty property, final Object valueForWtite, Object bindingProcessor, final Event parentEvent) {
+        if (bindingProcessor != null && bindingProcessor instanceof BindingPropertyProcessor) {
+            try {
+                ((BindingPropertyProcessor) bindingProcessor).convert(property, this);
+            } catch (IllegalFormatConversionException e) {
+                fireEvent(EventType.ERROR, String.format(I18N.getLocalizedString("binding.value.translate.error"), e.getLocalizedMessage()));
             }
         }
     }
 
-    public boolean isValidProperty(){
+    public boolean isValidProperty() {
         return true;
     }
 
@@ -107,100 +101,101 @@ public abstract class AbstractProperty extends SystemEllement{
     }
 
     //Разрыв связывания по чтению
-    protected void unbindPropertyForRead(AbstractProperty property){
-        if(property!=null)property.removeEventListener(elementevent);
-    }
-    //Разрыв связывания по записи
-    protected void unbindPropertyForWrite(AbstractProperty property){
-        if(property!=null)removeEventListener(property.elementevent);
+    protected void unbindPropertyForRead(AbstractProperty property) {
+        if (property != null) property.removeEventListener(elementevent);
     }
 
-    public void setAdditionalInfo(String paramsName,Object value){
-        if(paramsName==null)return;
-        if(value==null) {
+    //Разрыв связывания по записи
+    protected void unbindPropertyForWrite(AbstractProperty property) {
+        if (property != null) removeEventListener(property.elementevent);
+    }
+
+    public void setAdditionalInfo(String paramsName, Object value) {
+        if (paramsName == null) return;
+        if (value == null) {
             additionalParameters.remove(paramsName);
         } else {
             additionalParameters.put(paramsName, value);
         }
     }
 
-    public Object getAdditionalInfo(String paramsName){
+    public Object getAdditionalInfo(String paramsName) {
         return additionalParameters.get(paramsName);
     }
 
 
-    public long getPropertyPauseBeforeReadAddon(){
-        if(additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ_ADDON)==null) return 0;
-        return (long)additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ_ADDON);
-    }
-
-    public long getPropertyPauseBeforeRead(){
-        if(additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ)==null) return 0;
-        return (long)additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ);
-    }
-
-    public long getPropertyTimeOutReadAddon(){
-        if(additionalParameters.get(PROPERTY_READ_TIME_OUT_ADDON)==null) return 0;
-        return (long)additionalParameters.get(PROPERTY_READ_TIME_OUT_ADDON);
-    }
-
-    public long getPropertyTimeOutRead(){
-        if(additionalParameters.get(PROPERTY_READ_TIME_OUT)==null) return 0;
-        return (long)additionalParameters.get(PROPERTY_READ_TIME_OUT);
-    }
-
-    public long getPropertyPauseBeforeWriteAddon(){
-        if(additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE_ADDON)==null) return 0;
-        return (long)additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE_ADDON);
-    }
-
-    public long getPropertyPauseBeforeWrite(){
-        if(additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE)==null) return 0;
-        return (long)additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE);
+    public long getPropertyPauseBeforeReadAddon() {
+        if (additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ_ADDON) == null) return 0;
+        return (long) additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ_ADDON);
     }
 
     //
-    public void setPropertyPauseBeforeReadAddon(long value){
+    public void setPropertyPauseBeforeReadAddon(long value) {
         additionalParameters.put(PROPERTY_PAUSE_BEFORE_READ_ADDON, value);
     }
 
-    public void setPropertyPauseBeforeRead(long value){
+    public long getPropertyPauseBeforeRead() {
+        if (additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ) == null) return 0;
+        return (long) additionalParameters.get(PROPERTY_PAUSE_BEFORE_READ);
+    }
+
+    public void setPropertyPauseBeforeRead(long value) {
         additionalParameters.put(PROPERTY_PAUSE_BEFORE_READ, value);
     }
 
-    public void setPropertyTimeOutReadAddon(long value){
+    public long getPropertyTimeOutReadAddon() {
+        if (additionalParameters.get(PROPERTY_READ_TIME_OUT_ADDON) == null) return 0;
+        return (long) additionalParameters.get(PROPERTY_READ_TIME_OUT_ADDON);
+    }
+
+    public void setPropertyTimeOutReadAddon(long value) {
         additionalParameters.put(PROPERTY_READ_TIME_OUT_ADDON, value);
     }
 
-    public void setPropertyTimeOutRead(long value){
+    public long getPropertyTimeOutRead() {
+        if (additionalParameters.get(PROPERTY_READ_TIME_OUT) == null) return 0;
+        return (long) additionalParameters.get(PROPERTY_READ_TIME_OUT);
+    }
+
+    public void setPropertyTimeOutRead(long value) {
         additionalParameters.put(PROPERTY_READ_TIME_OUT, value);
     }
 
-    public void setPropertyPauseBeforeWriteAddon(long value){
+    public long getPropertyPauseBeforeWriteAddon() {
+        if (additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE_ADDON) == null) return 0;
+        return (long) additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE_ADDON);
+    }
+
+    public void setPropertyPauseBeforeWriteAddon(long value) {
         additionalParameters.put(PROPERTY_PAUSE_BEFORE_WRITE_ADDON, value);
     }
 
-    public void setPropertyPauseBeforeWrite(long value){
+    public long getPropertyPauseBeforeWrite() {
+        if (additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE) == null) return 0;
+        return (long) additionalParameters.get(PROPERTY_PAUSE_BEFORE_WRITE);
+    }
+
+    public void setPropertyPauseBeforeWrite(long value) {
         additionalParameters.put(PROPERTY_PAUSE_BEFORE_WRITE, value);
     }
 
-    protected boolean isMultiRequestEnabled(OPERATION_TYPE type){
+    protected boolean isMultiRequestEnabled(OPERATION_TYPE type) {
         return requestTrunsaction.isMultiRequestEnabled(type);
     }
 
-    protected void setMultiRequestEnabled(OPERATION_TYPE type,boolean state){
-        requestTrunsaction.setMultiRequestEnabled(type,state);
+    protected void setMultiRequestEnabled(OPERATION_TYPE type, boolean state) {
+        requestTrunsaction.setMultiRequestEnabled(type, state);
     }
 
-    protected boolean isRequestActive(OPERATION_TYPE type){
+    protected boolean isRequestActive(OPERATION_TYPE type) {
         return requestTrunsaction.isRequestActive(type);
     }
 
-    protected boolean startRequest(OPERATION_TYPE type){
+    protected boolean startRequest(OPERATION_TYPE type) {
         return requestTrunsaction.startRequest(type);
     }
 
-    protected void endRequest(OPERATION_TYPE type){
+    protected void endRequest(OPERATION_TYPE type) {
         requestTrunsaction.endRequest(type);
     }
 

@@ -11,37 +11,43 @@ import java.util.TimerTask;
 /**
  * Created by Сергей on 27.08.2015.
  */
-public class PropertyTimer extends TimerTask{
-    private final static Timer timerService=new Timer(true);
+public class PropertyTimer extends TimerTask {
+    private final static Timer timerService = new Timer(true);
     private final TIMER_ACTION timerAction;
     private final long period;
     private final AbstractProperty property;
-    private boolean isRead=false;
+    private boolean isRead = false;
 
-    synchronized public static PropertyTimer[] getTimersForProperty(AbstractProperty property){
-        if(property==null)return null;
-        PropertyTimer oneTimer=(PropertyTimer)property.getAdditionalInfo(AbstractProperty.TIMER);
-        if(oneTimer!=null)return new PropertyTimer[]{oneTimer};
+    public PropertyTimer(TIMER_ACTION timerAction, long period, AbstractProperty property) {
+        this.timerAction = timerAction;
+        this.period = period;
+        this.property = property;
+    }
+
+    synchronized public static PropertyTimer[] getTimersForProperty(AbstractProperty property) {
+        if (property == null) return null;
+        PropertyTimer oneTimer = (PropertyTimer) property.getAdditionalInfo(AbstractProperty.TIMER);
+        if (oneTimer != null) return new PropertyTimer[]{oneTimer};
         PropertyTimerHolder holder = (PropertyTimerHolder) property.getAdditionalInfo(AbstractProperty.TIMERS);
-        if(holder!=null)return holder.getTimers();
+        if (holder != null) return holder.getTimers();
         return null;
     }
 
-    public static PropertyTimer createPropertyTimer(AbstractProperty property, TIMER_ACTION action,long period){
-        if(property==null)return null;
-        if(action==TIMER_ACTION.VALIDATE &&!(property instanceof ValueProperty<?>))return null;
-        PropertyTimer propertyTimer=new PropertyTimer(action,period,property);
+    public static PropertyTimer createPropertyTimer(AbstractProperty property, TIMER_ACTION action, long period) {
+        if (property == null) return null;
+        if (action == TIMER_ACTION.VALIDATE && !(property instanceof ValueProperty<?>)) return null;
+        PropertyTimer propertyTimer = new PropertyTimer(action, period, property);
         timerService.scheduleAtFixedRate(propertyTimer, 0, period);
         synchronized (property) {
             PropertyTimerHolder holder = (PropertyTimerHolder) property.getAdditionalInfo(AbstractProperty.TIMERS);
             if (holder == null) {
-                PropertyTimer oldTimer=(PropertyTimer)property.getAdditionalInfo(AbstractProperty.TIMER);
-                if(oldTimer!=null){
-                   holder=new PropertyTimerHolder();
+                PropertyTimer oldTimer = (PropertyTimer) property.getAdditionalInfo(AbstractProperty.TIMER);
+                if (oldTimer != null) {
+                    holder = new PropertyTimerHolder();
                     holder.addPropertyTimer(oldTimer);
                     holder.addPropertyTimer(propertyTimer);
                     property.setAdditionalInfo(AbstractProperty.TIMER, null);
-                    property.setAdditionalInfo(AbstractProperty.TIMERS,holder);
+                    property.setAdditionalInfo(AbstractProperty.TIMERS, holder);
                 } else {
                     property.setAdditionalInfo(AbstractProperty.TIMER, propertyTimer);
                 }
@@ -54,34 +60,32 @@ public class PropertyTimer extends TimerTask{
         return propertyTimer;
     }
 
-    public PropertyTimer(TIMER_ACTION timerAction, long period, AbstractProperty property) {
-        this.timerAction = timerAction;
-        this.period = period;
-        this.property = property;
+    public static void stopWork() {
+        timerService.cancel();
     }
 
     @Override
     public void run() {
         switch (timerAction) {
-            case EXECUTE:{
-                ((AbsractCommandProperty)property).activate();
+            case EXECUTE: {
+                ((AbsractCommandProperty) property).activate();
             }
             case WRITE:
                 property.writeValueRequest();
             case READ: {
                 property.readValueRequest();
             }
-            case WRITE_READ:{
-                if(!isRead){
-                    isRead=true;
+            case WRITE_READ: {
+                if (!isRead) {
+                    isRead = true;
                     property.readValueRequest();
                 } else {
-                    isRead=false;
+                    isRead = false;
                     property.writeValueRequest();
                 }
             }
-            case VALIDATE:{
-                ((ValueProperty<?>)property).checkValide();
+            case VALIDATE: {
+                ((ValueProperty<?>) property).checkValide();
             }
         }
     }
@@ -92,12 +96,12 @@ public class PropertyTimer extends TimerTask{
         super.finalize();
     }
 
-    public void destroy(){
-        if(cancel()){
+    public void destroy() {
+        if (cancel()) {
             timerService.purge();
-            synchronized (property){
-                PropertyTimer oneTimer=(PropertyTimer)property.getAdditionalInfo(AbstractProperty.TIMER);
-                if(oneTimer==null){
+            synchronized (property) {
+                PropertyTimer oneTimer = (PropertyTimer) property.getAdditionalInfo(AbstractProperty.TIMER);
+                if (oneTimer == null) {
                     PropertyTimerHolder holder = (PropertyTimerHolder) property.getAdditionalInfo(AbstractProperty.TIMERS);
                     if (holder != null) {
                         holder.removePropertyTimer(this);
@@ -111,10 +115,6 @@ public class PropertyTimer extends TimerTask{
 
     @Override
     public String toString() {
-        return String.format(I18N.getLocalizedString("timer.description"),timerAction,period);
-    }
-
-    public static void stopWork(){
-        timerService.cancel();
+        return String.format(I18N.getLocalizedString("timer.description"), timerAction, period);
     }
 }

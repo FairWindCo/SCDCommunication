@@ -8,5 +8,5 @@ import java.util.Map;
  * Created by Сергей on 27.08.2015.
  */
 public interface ValueValidator<T> {
-    T validateNewValue(T oldValue,T newValue,Map<String,Object> additionalParameters,EventSender eventSender);
+    T validateNewValue(T oldValue, T newValue, Map<String, Object> additionalParameters, EventSender eventSender);
 }

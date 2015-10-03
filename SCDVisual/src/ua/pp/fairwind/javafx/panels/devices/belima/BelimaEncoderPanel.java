@@ -19,13 +19,12 @@ import ua.pp.fairwind.javafx.panels.TupicalPanels;
 import ua.pp.fairwind.javafx.panels.dialogs.PropertyConfigDialog;
 
 
-
 /**
  * Created by Сергей on 27.08.2015.
  */
 public class BelimaEncoderPanel extends HBox {
     final private Encoder device;
-    final private TabPane tabs=new TabPane();
+    final private TabPane tabs = new TabPane();
 
     public BelimaEncoderPanel(Encoder device) {
         super();
@@ -33,16 +32,16 @@ public class BelimaEncoderPanel extends HBox {
         initControl();
     }
 
-    private void  intiStatusPane(){
-        final Tab initTab=new Tab(I18N_FX.getLocalizedString("STASUS"));
+    private void intiStatusPane() {
+        final Tab initTab = new Tab(I18N_FX.getLocalizedString("STASUS"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         initTab.setContent(TupicalPanels.createDeviceStatusPane(device));
     }
 
 
-    private void intiDeviceControlPane(){
-        final Tab initTab=new Tab(I18N_FX.getLocalizedString("DEVICE_VALUE"));
+    private void intiDeviceControlPane() {
+        final Tab initTab = new Tab(I18N_FX.getLocalizedString("DEVICE_VALUE"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
@@ -65,7 +64,7 @@ public class BelimaEncoderPanel extends HBox {
         });
     }
 
-    private int setShortChanelControl(GridPane grid,SoftShortProperty chanel,String name,int rowindex,int col){
+    private int setShortChanelControl(GridPane grid, SoftShortProperty chanel, String name, int rowindex, int col) {
         grid.add(new Label(name), col++, rowindex);
         grid.add(VisualControls.createLcdIndicator(chanel), col++, rowindex);
         grid.add(VisualControls.createReReadButton(chanel), col++, rowindex);
@@ -74,7 +73,7 @@ public class BelimaEncoderPanel extends HBox {
         return rowindex;
     }
 
-    private int setShortChanelControlRO(GridPane grid,SoftShortProperty chanel,String name,int rowindex,int col){
+    private int setShortChanelControlRO(GridPane grid, SoftShortProperty chanel, String name, int rowindex, int col) {
         grid.add(new Label(name), col++, rowindex);
         grid.add(VisualControls.createLcdIndicator(chanel), col++, rowindex);
         grid.add(VisualControls.createReReadButton(chanel), col++, rowindex);
@@ -82,7 +81,7 @@ public class BelimaEncoderPanel extends HBox {
         return rowindex;
     }
 
-    private int setFloatChanelControl(GridPane grid,SoftFloatProperty chanel,String name,int rowindex,int col){
+    private int setFloatChanelControl(GridPane grid, SoftFloatProperty chanel, String name, int rowindex, int col) {
         grid.add(new Label(name), col++, rowindex);
         grid.add(VisualControls.createLcdIndicator(chanel), col++, rowindex);
         grid.add(VisualControls.createReReadButton(chanel), col++, rowindex);
@@ -92,25 +91,18 @@ public class BelimaEncoderPanel extends HBox {
     }
 
 
-    private Button createConfigureProppearty(AbstractProperty command){
+    private Button createConfigureProppearty(AbstractProperty command) {
         return PropertyConfigDialog.crateConfigButton(command);
     }
 
 
-    private void initControl(){
+    private void initControl() {
         setAlignment(Pos.CENTER);
         intiDeviceControlPane();
         intiStatusPane();
         tabs.setPrefHeight(430);
         getChildren().add(tabs);
     }
-
-
-
-
-
-
-
 
 
 }

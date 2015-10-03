@@ -1,13 +1,11 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 /**
  * Created by FairWindCo on 07.07.2015
  */
-public class SoftDoubleProperty extends NumberProperty<Double>{
+public class SoftDoubleProperty extends NumberProperty<Double> {
     public SoftDoubleProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }
@@ -42,13 +40,13 @@ public class SoftDoubleProperty extends NumberProperty<Double>{
 
     @Override
     protected Double convertFromNumber(Number value) {
-        if(value!=null) value.doubleValue();
+        if (value != null) value.doubleValue();
         return null;
     }
 
     @Override
     protected Double convertFromString(String value, int radix) {
-        if(value!=null) return Double.parseDouble(value);
+        if (value != null) return Double.parseDouble(value);
         return null;
     }
 }

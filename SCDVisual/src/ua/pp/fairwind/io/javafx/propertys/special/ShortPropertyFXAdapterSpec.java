@@ -14,6 +14,6 @@ public class ShortPropertyFXAdapterSpec extends AbstractFXPropertyAdapter<Short>
 
     @Override
     public void setValue(Short t) {
-        super.setValue(t!=null?t:null);
+        super.setValue(t != null ? t : null);
     }
 }

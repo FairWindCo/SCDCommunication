@@ -6,6 +6,7 @@ package ua.pp.fairwind.javafx.effects.special_paints;
  * Date: 20.08.12
  * Time: 10:37
  */
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
@@ -17,14 +18,13 @@ import javafx.scene.shape.Shape;
 import java.util.Random;
 
 
-
 public class BrushedMetalPaint {
-    private int     radius;
-    private double  amount;
-    private int     color;
-    private double  shine;
+    private int radius;
+    private double amount;
+    private int color;
+    private double shine;
     private boolean monochrome;
-    private Random  randomNumbers;
+    private Random randomNumbers;
 
 
     // ******************** Constructors **************************************
@@ -37,29 +37,29 @@ public class BrushedMetalPaint {
     }
 
     public BrushedMetalPaint(final Color COLOR, final int RADIUS, final double AMOUNT, final boolean MONOCHROME, final double SHINE) {
-        color      = getIntFromColor(COLOR);
-        radius     = RADIUS;
-        amount     = AMOUNT;
+        color = getIntFromColor(COLOR);
+        radius = RADIUS;
+        amount = AMOUNT;
         monochrome = MONOCHROME;
-        shine      = SHINE;
+        shine = SHINE;
     }
 
 
     // ******************** Methods *******************************************
     public Image getImage(final double W, final double H) {
-        final int WIDTH  = (int) W;
+        final int WIDTH = (int) W;
         final int HEIGHT = (int) H;
 
         WritableImage DESTINATION = new WritableImage(WIDTH, HEIGHT);
 
-        final int[] IN_PIXELS  = new int[WIDTH];
+        final int[] IN_PIXELS = new int[WIDTH];
         final int[] OUT_PIXELS = new int[WIDTH];
 
-        randomNumbers   = new Random(0);
+        randomNumbers = new Random(0);
         final int ALPHA = color & 0xff000000;
-        final int RED   = (color >> 16) & 0xff;
+        final int RED = (color >> 16) & 0xff;
         final int GREEN = (color >> 8) & 0xff;
-        final int BLUE  = color & 0xff;
+        final int BLUE = color & 0xff;
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 int tr = RED;
@@ -97,9 +97,9 @@ public class BrushedMetalPaint {
     }
 
     public ImagePattern apply(final Shape SHAPE) {
-        double x      = SHAPE.getLayoutBounds().getMinX();
-        double y      = SHAPE.getLayoutBounds().getMinY();
-        double width  = SHAPE.getLayoutBounds().getWidth();
+        double x = SHAPE.getLayoutBounds().getMinX();
+        double y = SHAPE.getLayoutBounds().getMinY();
+        double width = SHAPE.getLayoutBounds().getWidth();
         double height = SHAPE.getLayoutBounds().getHeight();
         return new ImagePattern(getImage(width, height), x, y, width, height, false);
     }
@@ -136,44 +136,44 @@ public class BrushedMetalPaint {
         }
     }
 
-    public void setRadius(final int RADIUS) {
-        radius = RADIUS;
-    }
-
     public int getRadius() {
         return radius;
     }
 
-    public void setAmount(final double AMOUNT) {
-        amount = AMOUNT;
+    public void setRadius(final int RADIUS) {
+        radius = RADIUS;
     }
 
     public double getAmount() {
         return amount;
     }
 
-    public void setColor(final int COLOR) {
-        color = COLOR;
+    public void setAmount(final double AMOUNT) {
+        amount = AMOUNT;
     }
 
     public int getColor() {
         return color;
     }
 
-    public void setMonochrome(final boolean MONOCHROME) {
-        monochrome = MONOCHROME;
+    public void setColor(final int COLOR) {
+        color = COLOR;
     }
 
     public boolean isMonochrome() {
         return monochrome;
     }
 
-    public void setShine(final double SHINE) {
-        shine = SHINE;
+    public void setMonochrome(final boolean MONOCHROME) {
+        monochrome = MONOCHROME;
     }
 
     public double getShine() {
         return shine;
+    }
+
+    public void setShine(final double SHINE) {
+        shine = SHINE;
     }
 
     private int random(int x) {
@@ -208,8 +208,8 @@ public class BrushedMetalPaint {
 
     private void setRGB(final WritableImage IMAGE, final int X, final int Y, final int[] PIXELS) {
         final PixelWriter RASTER = IMAGE.getPixelWriter();
-        for (int x = 0 ; x < PIXELS.length ; x++) {
-            RASTER.setColor(X + x, Y, Color.rgb((PIXELS[x] >> 16) & 0xFF, (PIXELS[x] >> 8) & 0xFF, (PIXELS[x] &0xFF)));
+        for (int x = 0; x < PIXELS.length; x++) {
+            RASTER.setColor(X + x, Y, Color.rgb((PIXELS[x] >> 16) & 0xFF, (PIXELS[x] >> 8) & 0xFF, (PIXELS[x] & 0xFF)));
         }
     }
 

@@ -27,7 +27,7 @@ public class AbstractFXPropertyAdapter<T extends Comparable<? super T>> extends 
         if (!observable.equals(this)) {
             unbind();
 
-            this.observable =  (ObservableValue<T>) observableValue;
+            this.observable = (ObservableValue<T>) observableValue;
             if (listener == null) {
                 listener = new Listener();
             }
@@ -75,7 +75,7 @@ public class AbstractFXPropertyAdapter<T extends Comparable<? super T>> extends 
         property.setValue(t);
     }
 
-    public void markInvalid(){
+    public void markInvalid() {
         invalidated();
         //fireInvalidate();
         //fireValueChangedEvent();

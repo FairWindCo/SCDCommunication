@@ -9,24 +9,22 @@ public abstract class RSLineDevice extends AbstractDevice implements SerialDevic
     protected final SoftLongProperty deviceAddress;
 
 
-
     public RSLineDevice(long address, String codename, String uuid) {
         super(codename, uuid);
-        deviceAddress=formLongProperty(-1, "device.address_property",address);
-        deviceAddress.setAdditionalInfo(NO_RANDOM,true);
+        deviceAddress = formLongProperty(-1, "device.address_property", address);
+        deviceAddress.setAdditionalInfo(NO_RANDOM, true);
         listOfPropertyes.add(deviceAddress);
     }
 
     protected RSLineDevice(long address, String codename) {
-        this(address, codename,null);
+        this(address, codename, null);
     }
-
 
 
     @Override
     public long getAddress() {
-        Long adr= (Long)getInternalValue(deviceAddress);
-        if(adr==null) return -1;
+        Long adr = (Long) getInternalValue(deviceAddress);
+        if (adr == null) return -1;
         return adr;
     }
 
@@ -36,8 +34,7 @@ public abstract class RSLineDevice extends AbstractDevice implements SerialDevic
     }
 
 
-
-    public SoftLongProperty getDeviceAddressProperty(){
+    public SoftLongProperty getDeviceAddressProperty() {
         return deviceAddress;
     }
 

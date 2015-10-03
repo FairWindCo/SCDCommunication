@@ -44,28 +44,28 @@ public class Encoder extends RSLineDevice {
 
     public Encoder(long address, String codename, String uuid) {
         super(address, codename, uuid);
-        revolution=new SoftShortProperty("BAUMER.REVOLUTION", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+        revolution = new SoftShortProperty("BAUMER.REVOLUTION", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         revolution.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 001L);
-        steps=new SoftShortProperty("BAUMER.STEPS",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
+        steps = new SoftShortProperty("BAUMER.STEPS", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY);
         steps.setAdditionalInfo(AbstractDevice.PROPERTY_ADDRESS, 002L);
         deviceTimeOut.setValue(350L);
-        setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.PARITY_NONE,SerialPort.STOPBITS_1,SerialPort.FLOWCONTROL_NONE));
+        setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.PARITY_NONE, SerialPort.STOPBITS_1, SerialPort.FLOWCONTROL_NONE));
         addPropertys(revolution);
         addPropertys(steps);
     }
 
     @Override
-    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property,final Event sourceEvent) {
-        long deviceaddress=deviceAddress.getValue();
-        if(recivedMessage!=null && recivedMessage.length>=8) {
-            for (int i = 0; i < recivedMessage.length-7; i++) {
+    protected boolean processRecivedMessage(byte[] recivedMessage, byte[] sendMessage, AbstractProperty property, final Event sourceEvent) {
+        long deviceaddress = deviceAddress.getValue();
+        if (recivedMessage != null && recivedMessage.length >= 8) {
+            for (int i = 0; i < recivedMessage.length - 7; i++) {
                 if (recivedMessage[i] == 0x1 && recivedMessage[i + 7] == 0x4 && (recivedMessage[i + 1] - 0x30) == (deviceaddress & 0x7)) {
                     byte ccrc = (byte) ((recivedMessage[i + 1] ^ recivedMessage[i + 2] ^ recivedMessage[i + 3] ^ recivedMessage[i + 4] ^ recivedMessage[i + 5]) & 0xFF);
                     if (ccrc == recivedMessage[i + 6]) {
-                        short revolve=(short)(((recivedMessage[i + 2]<<8)+recivedMessage[i + 3])&0xFF);
-                        short steps=(short)(((recivedMessage[i + 4]<<8)+recivedMessage[i + 5])&0xFF);
-                        setHardWareInternalValue(this.revolution,revolve,sourceEvent);
-                        setHardWareInternalValue(this.steps,steps,sourceEvent);
+                        short revolve = (short) (((recivedMessage[i + 2] << 8) + recivedMessage[i + 3]) & 0xFF);
+                        short steps = (short) (((recivedMessage[i + 4] << 8) + recivedMessage[i + 5]) & 0xFF);
+                        setHardWareInternalValue(this.revolution, revolve, sourceEvent);
+                        setHardWareInternalValue(this.steps, steps, sourceEvent);
                         return true;
                     }
                 }
@@ -76,14 +76,14 @@ public class Encoder extends RSLineDevice {
 
     @Override
     protected RequestInformation formReadRequest(AbstractProperty property) {
-        long deviceaddress=deviceAddress.getValue();
-        byte[] request=new byte[5];
-        request[0]=(byte)0x01;
-        request[1]=(byte)0x80;
-        request[2]=(byte)(deviceaddress&0x07);
-        request[3]=(byte)0x80;
-        request[4]=(byte)0x04;
-        RequestInformation req=new RequestInformation(request,8,true);
+        long deviceaddress = deviceAddress.getValue();
+        byte[] request = new byte[5];
+        request[0] = (byte) 0x01;
+        request[1] = (byte) 0x80;
+        request[2] = (byte) (deviceaddress & 0x07);
+        request[3] = (byte) 0x80;
+        request[4] = (byte) 0x04;
+        RequestInformation req = new RequestInformation(request, 8, true);
         return req;
     }
 

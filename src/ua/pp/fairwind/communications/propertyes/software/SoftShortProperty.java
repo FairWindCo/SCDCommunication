@@ -1,7 +1,5 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 /**
@@ -40,13 +38,14 @@ public class SoftShortProperty extends NumberProperty<Short> {
         super(name, value);
     }
 
-    protected Short convertFromNumber(Number value){
-        if(value!=null) return value.shortValue();return null;
+    protected Short convertFromNumber(Number value) {
+        if (value != null) return value.shortValue();
+        return null;
     }
 
     @Override
     protected Short convertFromString(String value, int radix) {
-        if(value!=null) return Short.parseShort(value,radix);
+        if (value != null) return Short.parseShort(value, radix);
         return null;
     }
 }

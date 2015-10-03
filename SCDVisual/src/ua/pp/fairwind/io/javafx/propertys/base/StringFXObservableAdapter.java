@@ -14,18 +14,18 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Created by Wind on 22.07.2014.
  */
-public class StringFXObservableAdapter implements ObservableValue<String>,ValueChangeListener<String> {
+public class StringFXObservableAdapter implements ObservableValue<String>, ValueChangeListener<String> {
     final protected ValueProperty<String> property;
-    private final CopyOnWriteArrayList<InvalidationListener> ivalidation=new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<InvalidationListener> ivalidation = new CopyOnWriteArrayList<>();
     private ExpressionHelper<String> helper = null;
 
     public StringFXObservableAdapter(ValueProperty<String> property) {
         this.property = property;
-        if(property==null) throw new IllegalArgumentException("property is null");
+        if (property == null) throw new IllegalArgumentException("property is null");
         property.addChangeEventListener(this);
     }
 
-    public void release(){
+    public void release() {
         property.removeChangeEventListener(this);
     }
 
@@ -37,11 +37,11 @@ public class StringFXObservableAdapter implements ObservableValue<String>,ValueC
 
     @Override
     public void valueChange(ValueChangeEvent event) {
-        try{
+        try {
             //System.out.println("!!!!!!!VALIDATE VALUE ADAPTER");
             fireInvalidate();
             fireValueChangedEvent();
-        } catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex);
             //ex.printStackTrace();
         }
@@ -73,33 +73,33 @@ public class StringFXObservableAdapter implements ObservableValue<String>,ValueC
     }
 
     protected void fireValueChangedEvent() {
-        if(helper!=null){
-            if(Platform.isFxApplicationThread()){
+        if (helper != null) {
+            if (Platform.isFxApplicationThread()) {
                 ExpressionHelper.fireValueChangedEvent(helper);
             } else {
-                try{
+                try {
                     Platform.runLater(() -> ExpressionHelper.fireValueChangedEvent(helper));
-                } catch (IllegalStateException ex){
+                } catch (IllegalStateException ex) {
                     ExpressionHelper.fireValueChangedEvent(helper);
                 }
             }
         }
     }
 
-    protected void fireInvalidate(){
-        if(Platform.isFxApplicationThread()){
-            for(InvalidationListener listener:ivalidation){
+    protected void fireInvalidate() {
+        if (Platform.isFxApplicationThread()) {
+            for (InvalidationListener listener : ivalidation) {
                 listener.invalidated(this);
             }
         } else {
-            try{
+            try {
                 Platform.runLater(() -> {
-                    for(InvalidationListener list:ivalidation){
+                    for (InvalidationListener list : ivalidation) {
                         list.invalidated(StringFXObservableAdapter.this);
                     }
                 });
-            } catch (IllegalStateException ex){
-                for(InvalidationListener list:ivalidation){
+            } catch (IllegalStateException ex) {
+                for (InvalidationListener list : ivalidation) {
                     list.invalidated(StringFXObservableAdapter.this);
                 }
             }

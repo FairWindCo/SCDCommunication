@@ -15,9 +15,9 @@ import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
  */
 public class LineConsoleTestBDBG {
     public static void main(String[] args) {
-        SerialLine line=new SerialLine("com6","RS232 Line#1",null,5000);
-        FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L);
-        LoggingDevice ldev=new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
+        SerialLine line = new SerialLine("com6", "RS232 Line#1", null, 5000);
+        FavoritCoreDeviceV1 favorit = new FavoritCoreDeviceV1(0x1L);
+        LoggingDevice ldev = new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
@@ -27,7 +27,7 @@ public class LineConsoleTestBDBG {
         line.addReadMonitoringDevice(ldev);
         //line.setLineSelector(favorit);
 
-        BDBG09 bdbg09=new BDBG09(1L);
+        BDBG09 bdbg09 = new BDBG09(1L);
         bdbg09.setPauseBeforeRead(100L);
         bdbg09.setReadTimeOut(500L);
         bdbg09.setPrimerayLine(line);

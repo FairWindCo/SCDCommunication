@@ -1,7 +1,5 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
-import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
-import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 
 /**
@@ -42,13 +40,13 @@ public class SoftByteProperty extends NumberProperty<Byte> {
 
     @Override
     protected Byte convertFromNumber(Number value) {
-        if(value!=null)return value.byteValue();
+        if (value != null) return value.byteValue();
         return null;
     }
 
     @Override
     protected Byte convertFromString(String value, int radix) {
-        if(value!=null) return Byte.parseByte(value,radix);
+        if (value != null) return Byte.parseByte(value, radix);
         return null;
     }
 }

@@ -27,9 +27,12 @@ import java.io.StringWriter;
  */
 public class FXGtoFXML extends Application {
 
-    public static void main(String[] args) { Application.launch(args); }
-    
-    @Override public void start(final Stage primaryStage) throws Exception {
+    public static void main(String[] args) {
+        Application.launch(args);
+    }
+
+    @Override
+    public void start(final Stage primaryStage) throws Exception {
         primaryStage.setTitle("FXG to FXML Converter");
         BorderPane root = new BorderPane();
         ToolBar toolbar = new ToolBar();
@@ -39,7 +42,7 @@ public class FXGtoFXML extends Application {
         Button zoomOutButton = new Button("Zoom Out");
         Button zoomFitButton = new Button("Zoom Fit");
         toolbar.getItems().addAll(loadButton, zoomInButton, zoomOutButton, zoomFitButton);
-        
+
         TabPane tabPane = new TabPane();
         root.setCenter(tabPane);
         Tab sourceTab = new Tab("FXML Source");
@@ -53,8 +56,8 @@ public class FXGtoFXML extends Application {
         final Group contentGroup = new Group();
         previewScrollPane.setContent(contentGroup);
         final Scale contentScale = new Scale();
-        tabPane.getTabs().addAll(previewTab,sourceTab);
-        
+        tabPane.getTabs().addAll(previewTab, sourceTab);
+
         loadButton.setOnAction(event -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("FXG", "*.fxg"));
@@ -72,7 +75,7 @@ public class FXGtoFXML extends Application {
                 transformer.transform(
                         new StreamSource(new FileInputStream(fxgFile)),
                         new StreamResult(stringOut));
-                File outFile =  new File(fxgFile.getParentFile(), fxgFile.getName().split("\\.")[0]+".fxml");
+                File outFile = new File(fxgFile.getParentFile(), fxgFile.getName().split("\\.")[0] + ".fxml");
                 System.out.println("outFile = " + outFile);
                 FileWriter writer = new FileWriter(outFile);
                 writer.write(stringOut.toString());
@@ -87,19 +90,19 @@ public class FXGtoFXML extends Application {
                 e.printStackTrace();
             }
         });
-        
+
         zoomInButton.setOnAction(t -> {
             double scale = contentScale.getX() * 1.1;
             contentScale.setX(scale);
             contentScale.setY(scale);
         });
-        
+
         zoomOutButton.setOnAction(t -> {
             double scale = contentScale.getX() * 0.9;
             contentScale.setX(scale);
             contentScale.setY(scale);
         });
-        
+
         zoomFitButton.setOnAction(t -> {
             Node content = previewScrollPane.getContent();
             contentScale.setX(1);
@@ -112,8 +115,8 @@ public class FXGtoFXML extends Application {
             previewScrollPane.setVvalue(0);
             previewScrollPane.setHvalue(0);
         });
-        
-        primaryStage.setScene(new Scene(root, 800,600));
+
+        primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();
     }
 }

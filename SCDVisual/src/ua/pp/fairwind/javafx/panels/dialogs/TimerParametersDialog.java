@@ -16,8 +16,8 @@ import java.util.Optional;
  * Created by Сергей on 28.08.2015.
  */
 public class TimerParametersDialog {
-    static private final TimerParametersDialog timerParametersDialog=new TimerParametersDialog();
-    private final Dialog<Pair<TIMER_ACTION,Long>> dialog=new Dialog();
+    static private final TimerParametersDialog timerParametersDialog = new TimerParametersDialog();
+    private final Dialog<Pair<TIMER_ACTION, Long>> dialog = new Dialog();
 
     public TimerParametersDialog() {
         dialog.setTitle("SELECT TIMER PARAMETER");
@@ -30,7 +30,7 @@ public class TimerParametersDialog {
         grid.setPadding(new Insets(20, 150, 10, 10));
 
         ComboBox<TIMER_ACTION> types = new ComboBox();
-        types.getItems().addAll(TIMER_ACTION.READ,TIMER_ACTION.WRITE,TIMER_ACTION.WRITE_READ,TIMER_ACTION.EXECUTE,TIMER_ACTION.VALIDATE);
+        types.getItems().addAll(TIMER_ACTION.READ, TIMER_ACTION.WRITE, TIMER_ACTION.WRITE_READ, TIMER_ACTION.EXECUTE, TIMER_ACTION.VALIDATE);
         TextField value = new TextField();
         types.selectionModelProperty().getValue().select(0);
         value.setText("5000");
@@ -45,10 +45,10 @@ public class TimerParametersDialog {
             if (dialogButton == ButtonType.OK) {
                 try {
                     Long val = Long.valueOf(value.getText());
-                    TIMER_ACTION act=types.getValue();
-                    if(act==null)return null;
+                    TIMER_ACTION act = types.getValue();
+                    if (act == null) return null;
                     return new Pair<>(act, val);
-                }catch (NumberFormatException form){
+                } catch (NumberFormatException form) {
                     return null;
                 }
 
@@ -57,16 +57,16 @@ public class TimerParametersDialog {
         });
     }
 
-    private void showDialog(AbstractProperty property,ObservableList<PropertyTimer> list){
-        Optional<Pair<TIMER_ACTION,Long>> result=dialog.showAndWait();
-        Pair<TIMER_ACTION,Long> value;
-        result.ifPresent(val-> {
-            PropertyTimer timer=PropertyTimer.createPropertyTimer(property,val.getKey(),val.getValue());
-            if(timer!=null && list!=null)list.add(timer);
-        });
+    public static void configureTimer(AbstractProperty property, ObservableList<PropertyTimer> list) {
+        if (property != null) timerParametersDialog.showDialog(property, list);
     }
 
-    public static void configureTimer(AbstractProperty property,ObservableList<PropertyTimer> list){
-        if(property!=null) timerParametersDialog.showDialog(property,list);
+    private void showDialog(AbstractProperty property, ObservableList<PropertyTimer> list) {
+        Optional<Pair<TIMER_ACTION, Long>> result = dialog.showAndWait();
+        Pair<TIMER_ACTION, Long> value;
+        result.ifPresent(val -> {
+            PropertyTimer timer = PropertyTimer.createPropertyTimer(property, val.getKey(), val.getValue());
+            if (timer != null && list != null) list.add(timer);
+        });
     }
 }

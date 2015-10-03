@@ -23,101 +23,101 @@ import java.util.Date;
 /**
  * Created by Сергей on 12.08.2014.
  */
-public class LineCommunicationLoggingWindow extends SimpleMenuView{
-    private final ObservableList<LineMonitoringEvent> list= FXCollections.observableArrayList();
+public class LineCommunicationLoggingWindow extends SimpleMenuView {
+    private final ObservableList<LineMonitoringEvent> list = FXCollections.observableArrayList();
     private final int maxEventinLog;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
     private final SCADASystem scadaSystem;
-    private final LoggingDevice dev=new LoggingDevice("lineMonitoringDevice", null,
-            (event)->list.add(event) );
+    private final LoggingDevice dev = new LoggingDevice("lineMonitoringDevice", null,
+            (event) -> list.add(event));
 
     public LineCommunicationLoggingWindow(String menuItem, String menuHint, int maxEventinLog) {
         super(menuItem, menuHint);
         this.maxEventinLog = maxEventinLog;
-        this.scadaSystem=null;
+        this.scadaSystem = null;
     }
 
     public LineCommunicationLoggingWindow(String menuItem, int maxEventinLog) {
         super(menuItem);
         this.maxEventinLog = maxEventinLog;
-        this.scadaSystem=null;
+        this.scadaSystem = null;
     }
 
-    public LineCommunicationLoggingWindow(String menuItem, String menuHint,SCADASystem scada, int maxEventinLog) {
+    public LineCommunicationLoggingWindow(String menuItem, String menuHint, SCADASystem scada, int maxEventinLog) {
         super(menuItem, menuHint);
         this.maxEventinLog = maxEventinLog;
-        this.scadaSystem=scada;
+        this.scadaSystem = scada;
     }
 
-    public LineCommunicationLoggingWindow(String menuItem,SCADASystem scada, int maxEventinLog) {
+    public LineCommunicationLoggingWindow(String menuItem, SCADASystem scada, int maxEventinLog) {
         super(menuItem);
         this.maxEventinLog = maxEventinLog;
-        this.scadaSystem=scada;
+        this.scadaSystem = scada;
     }
 
-    public LineCommunicationLoggingWindow(String menuItem, String menuHint,SCADASystem scada) {
+    public LineCommunicationLoggingWindow(String menuItem, String menuHint, SCADASystem scada) {
         super(menuItem, menuHint);
         this.maxEventinLog = 250;
-        this.scadaSystem=scada;
+        this.scadaSystem = scada;
     }
 
-    public LineCommunicationLoggingWindow(String menuItem,SCADASystem scada) {
+    public LineCommunicationLoggingWindow(String menuItem, SCADASystem scada) {
         super(menuItem);
         this.maxEventinLog = 250;
-        this.scadaSystem=scada;
+        this.scadaSystem = scada;
     }
 
 
     @Override
     protected Node createView() {
-        GridPane pane= new GridPane();
+        GridPane pane = new GridPane();
         pane.setId("formGrid");
         pane.setAlignment(Pos.CENTER);
         pane.setVgap(10);
         pane.setHgap(10);
         pane.setPadding(new Insets(5, 5, 5, 5));
-        TableView<LineMonitoringEvent> table=new TableView<>(list);
-        TableColumn<LineMonitoringEvent, String> col1= new TableColumn<>("Time");
+        TableView<LineMonitoringEvent> table = new TableView<>(list);
+        TableColumn<LineMonitoringEvent, String> col1 = new TableColumn<>("Time");
         col1.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            Date time=new Date(param.getValue().getDate());
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            Date time = new Date(param.getValue().getDate());
             return new SimpleStringProperty(dateFormat.format(time));
         });
-        TableColumn<LineMonitoringEvent, String> col2=new TableColumn<>("Source Line");
+        TableColumn<LineMonitoringEvent, String> col2 = new TableColumn<>("Source Line");
         col2.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            if(param.getValue().getLine()==null) return new SimpleStringProperty("----");
-            String node=param.getValue().getLine().getName();
-            if(node==null)return new SimpleStringProperty("нет");
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            if (param.getValue().getLine() == null) return new SimpleStringProperty("----");
+            String node = param.getValue().getLine().getName();
+            if (node == null) return new SimpleStringProperty("нет");
             return new SimpleStringProperty(node);
         });
-        TableColumn<LineMonitoringEvent, String> col3=new TableColumn<>("Source Device");
+        TableColumn<LineMonitoringEvent, String> col3 = new TableColumn<>("Source Device");
         col3.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            if(param.getValue().getDevice()==null) return new SimpleStringProperty("----");
-            String node=param.getValue().getDevice().getName();
-            if(node==null)return new SimpleStringProperty("нет");
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            if (param.getValue().getDevice() == null) return new SimpleStringProperty("----");
+            String node = param.getValue().getDevice().getName();
+            if (node == null) return new SimpleStringProperty("нет");
             return new SimpleStringProperty(node);
         });
-        TableColumn<LineMonitoringEvent, String> col4=new TableColumn<>("Action");
+        TableColumn<LineMonitoringEvent, String> col4 = new TableColumn<>("Action");
         col4.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            String node=param.getValue().getAction().name();
-            if(node==null)return new SimpleStringProperty("нет");
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            String node = param.getValue().getAction().name();
+            if (node == null) return new SimpleStringProperty("нет");
             return new SimpleStringProperty(node);
         });
-        TableColumn<LineMonitoringEvent, String> col5=new TableColumn<>("Message");
+        TableColumn<LineMonitoringEvent, String> col5 = new TableColumn<>("Message");
         col5.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            String node=param.getValue().getStringBuffer();
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            String node = param.getValue().getStringBuffer();
             return new SimpleStringProperty(node);
         });
-        TableColumn<LineMonitoringEvent, String> col6=new TableColumn<>("Target Property");
+        TableColumn<LineMonitoringEvent, String> col6 = new TableColumn<>("Target Property");
         col6.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            if(param.getValue().getProperty()==null) return new SimpleStringProperty("----");
-            String node=param.getValue().getProperty().getName();
-            if(node==null)return new SimpleStringProperty("нет");
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            if (param.getValue().getProperty() == null) return new SimpleStringProperty("----");
+            String node = param.getValue().getProperty().getName();
+            if (node == null) return new SimpleStringProperty("нет");
             return new SimpleStringProperty(node);
         });
 
@@ -140,8 +140,8 @@ public class LineCommunicationLoggingWindow extends SimpleMenuView{
         return pane;
     }
 
-    private void addEvent(LineMonitoringEvent event){
-        if(Platform.isFxApplicationThread()) {
+    private void addEvent(LineMonitoringEvent event) {
+        if (Platform.isFxApplicationThread()) {
             if (list.size() >= maxEventinLog) {
                 list.remove(0);
             }
@@ -162,7 +162,7 @@ public class LineCommunicationLoggingWindow extends SimpleMenuView{
 
     @Override
     public void onShow(MenuExecutor executor) {
-        if(scadaSystem!=null)scadaSystem.setMonitoringToAllLines(dev);
+        if (scadaSystem != null) scadaSystem.setMonitoringToAllLines(dev);
         super.onShow(executor);
     }
 }

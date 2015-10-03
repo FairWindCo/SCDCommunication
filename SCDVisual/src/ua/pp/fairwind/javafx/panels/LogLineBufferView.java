@@ -21,11 +21,11 @@ import java.util.Date;
 /**
  * Created by Сергей on 12.08.2014.
  */
-public class LogLineBufferView extends SimpleView{
-    private final ObservableList<LineMonitoringEvent> list= FXCollections.observableArrayList();
+public class LogLineBufferView extends SimpleView {
+    private final ObservableList<LineMonitoringEvent> list = FXCollections.observableArrayList();
     private final int maxEventinLog;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.S");
-    private final LoggingDevice dev=new LoggingDevice("lineMonitoringDevice", null,(event)->list.add(event) );
+    private final LoggingDevice dev = new LoggingDevice("lineMonitoringDevice", null, (event) -> list.add(event));
 
     public LogLineBufferView(int maxEventinLog) {
         this.maxEventinLog = maxEventinLog;
@@ -37,46 +37,46 @@ public class LogLineBufferView extends SimpleView{
 
     @Override
     protected Node createView() {
-        GridPane pane= new GridPane();
+        GridPane pane = new GridPane();
         pane.setId("formGrid");
         pane.setAlignment(Pos.CENTER);
         pane.setVgap(10);
         pane.setHgap(10);
         pane.setPadding(new Insets(5, 5, 5, 5));
-        TableView<LineMonitoringEvent> table=new TableView<>(list);
-        TableColumn<LineMonitoringEvent, String> col1= new TableColumn<>("Time");
+        TableView<LineMonitoringEvent> table = new TableView<>(list);
+        TableColumn<LineMonitoringEvent, String> col1 = new TableColumn<>("Time");
         col1.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            Date time=new Date(param.getValue().getDate());
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            Date time = new Date(param.getValue().getDate());
             return new SimpleStringProperty(dateFormat.format(time));
         });
-        TableColumn<LineMonitoringEvent, String> col2=new TableColumn<>("Source Line");
+        TableColumn<LineMonitoringEvent, String> col2 = new TableColumn<>("Source Line");
         col2.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            if(param.getValue().getLine()==null) return new SimpleStringProperty("----");
-            String node=param.getValue().getLine().getName();
-            if(node==null)return new SimpleStringProperty("нет");
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            if (param.getValue().getLine() == null) return new SimpleStringProperty("----");
+            String node = param.getValue().getLine().getName();
+            if (node == null) return new SimpleStringProperty("нет");
             return new SimpleStringProperty(node);
         });
-        TableColumn<LineMonitoringEvent, String> col3=new TableColumn<>("Source Device");
+        TableColumn<LineMonitoringEvent, String> col3 = new TableColumn<>("Source Device");
         col2.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            if(param.getValue().getDevice()==null) return new SimpleStringProperty("----");
-            String node=param.getValue().getDevice().getName();
-            if(node==null)return new SimpleStringProperty("нет");
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            if (param.getValue().getDevice() == null) return new SimpleStringProperty("----");
+            String node = param.getValue().getDevice().getName();
+            if (node == null) return new SimpleStringProperty("нет");
             return new SimpleStringProperty(node);
         });
-        TableColumn<LineMonitoringEvent, String> col4=new TableColumn<>("Action");
+        TableColumn<LineMonitoringEvent, String> col4 = new TableColumn<>("Action");
         col2.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            String node=param.getValue().getAction().name();
-            if(node==null)return new SimpleStringProperty("нет");
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            String node = param.getValue().getAction().name();
+            if (node == null) return new SimpleStringProperty("нет");
             return new SimpleStringProperty(node);
         });
-        TableColumn<LineMonitoringEvent, String> col5=new TableColumn<>("Message");
+        TableColumn<LineMonitoringEvent, String> col5 = new TableColumn<>("Message");
         col3.setCellValueFactory(param -> {
-            if(param.getValue()==null) return new SimpleStringProperty("----");
-            String node=param.getValue().getStringBuffer();
+            if (param.getValue() == null) return new SimpleStringProperty("----");
+            String node = param.getValue().getStringBuffer();
             return new SimpleStringProperty(node);
         });
 
@@ -96,8 +96,8 @@ public class LogLineBufferView extends SimpleView{
         return pane;
     }
 
-    private void addEvent(LineMonitoringEvent event){
-        if(Platform.isFxApplicationThread()) {
+    private void addEvent(LineMonitoringEvent event) {
+        if (Platform.isFxApplicationThread()) {
             if (list.size() >= maxEventinLog) {
                 list.remove(0);
             }

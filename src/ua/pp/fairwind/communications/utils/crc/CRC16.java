@@ -4,7 +4,7 @@ package ua.pp.fairwind.communications.utils.crc;
  * Created by Wind on 07.07.2014.
  */
 public class CRC16 {
-    private static final int[] TABLE= {
+    private static final int[] TABLE = {
             0x0000, 0xc0c1, 0xc181, 0x0140, 0xc301, 0x03c0, 0x0280, 0xc241,
             0xc601, 0x06c0, 0x0780, 0xc741, 0x0500, 0xc5c1, 0xc481, 0x0440,
             0xcc01, 0x0cc0, 0x0d80, 0xcd41, 0x0f00, 0xcfc1, 0xce81, 0x0e40,
@@ -42,39 +42,21 @@ public class CRC16 {
 
     private int sum = 0xFFFF;
 
-    public long getValue() {
-        return sum;
-    }
-
-    public void reset() {
-        sum = 0xFFFF;
-    }
-
-    public void update(byte[] b, int off, int len) {
-        for (int i = off; i < off+len; i++)
-            update((int)b[i]);
-    }
-
-    public void update(int b) {
-        sum = (sum >> 8) ^ TABLE[( (sum)^(b&0xff) ) & 0xff];
-    }
-
-
     public static int crc16table_IBM(byte[] buffer, int position, int length) {
         int sum = 0xFFFF;
-        for (int i = position; i < position+length; i++){
-            sum = (sum >> 8) ^ TABLE[( (sum)^(buffer[i]&0xff) ) & 0xff];
+        for (int i = position; i < position + length; i++) {
+            sum = (sum >> 8) ^ TABLE[((sum) ^ (buffer[i] & 0xff)) & 0xff];
         }
         return sum;
     }
 
-    static public int calculate_crc16_IBM(byte[] buffer,int pos,int len){
-        int result=0xFFFF;
-        if(len<=buffer.length){
-            for(int i=pos;i<len;i++){
-                result=(result ^ (buffer[i] & 0xFF));
-                for(int j=0;j<8;j++){
-                    result=((result & 0x001)==1 ? ((result & 0xFFFF)>>>1) ^ 0xA001 : (result & 0xFFFF)>>>1) & 0xFFFF;
+    static public int calculate_crc16_IBM(byte[] buffer, int pos, int len) {
+        int result = 0xFFFF;
+        if (len <= buffer.length) {
+            for (int i = pos; i < len; i++) {
+                result = (result ^ (buffer[i] & 0xFF));
+                for (int j = 0; j < 8; j++) {
+                    result = ((result & 0x001) == 1 ? ((result & 0xFFFF) >>> 1) ^ 0xA001 : (result & 0xFFFF) >>> 1) & 0xFFFF;
                 }
             }
         }
@@ -84,23 +66,23 @@ public class CRC16 {
 
     public static int crc16table_IBM_mirror(byte[] buffer, int position, int length) {
         int sum = 0xFFFF;
-        for (int i = position; i < position+length; i++){
-            sum = (sum >> 8) ^ TABLE[( (sum)^(buffer[i]&0xff) ) & 0xff];
+        for (int i = position; i < position + length; i++) {
+            sum = (sum >> 8) ^ TABLE[((sum) ^ (buffer[i] & 0xff)) & 0xff];
         }
-        return (((sum >>>8) & 0xFF) |((sum <<8)) & 0xFF00);
+        return (((sum >>> 8) & 0xFF) | ((sum << 8)) & 0xFF00);
     }
 
-    static public int calculate_crc16_IBM_mirror(byte[] buffer,int pos,int len){
-        int result=0xFFFF;
-        if(len<=buffer.length){
-            for(int i=pos;i<len;i++){
-                result=(result ^ (buffer[i] & 0xFF));
-                for(int j=0;j<8;j++){
-                    result=((result & 0x001)==1 ? ((result & 0xFFFF)>>>1) ^ 0xA001 : (result & 0xFFFF)>>>1) & 0xFFFF;
+    static public int calculate_crc16_IBM_mirror(byte[] buffer, int pos, int len) {
+        int result = 0xFFFF;
+        if (len <= buffer.length) {
+            for (int i = pos; i < len; i++) {
+                result = (result ^ (buffer[i] & 0xFF));
+                for (int j = 0; j < 8; j++) {
+                    result = ((result & 0x001) == 1 ? ((result & 0xFFFF) >>> 1) ^ 0xA001 : (result & 0xFFFF) >>> 1) & 0xFFFF;
                 }
             }
         }
-        return (((result >>>8) & 0xFF) |((result <<8)) & 0xFF00);
+        return (((result >>> 8) & 0xFF) | ((result << 8)) & 0xFF00);
 
     }
 
@@ -111,7 +93,7 @@ public class CRC16 {
         crc.update(0x56);
         crc.update(0x78);
         crc.update(0x90);
-        System.out.println(Integer.toHexString((int)crc.getValue()));
+        System.out.println(Integer.toHexString((int) crc.getValue()));
         crc.reset();
         crc.update(0x04);
         crc.update(0x00);
@@ -122,35 +104,52 @@ public class CRC16 {
         crc.update(0x00);
         crc.update(0x00);
         crc.update(0x00);
-        System.out.println(Integer.toHexString((int)crc.getValue()));
+        System.out.println(Integer.toHexString((int) crc.getValue()));
         //[01 03 04 00 00 00 03 BA 32 ]
-        System.out.println(String.format("C %04X = 3830", CRC16.calculate_crc16_IBM(new byte[]{0x01, 0x03, 0x04, 0x00, 0x00, 0x00, 0x03, (byte)0xBA, (byte)0x32}, 0,9 )));
-        System.out.println(String.format("C %04X = 3830", CRC16.calculate_crc16_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x00}, 0,9 )));
-        System.out.println(String.format("C %04X = B832", CRC16.calculate_crc16_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x06}, 0,9)));
-        System.out.println(String.format("C %04X = 05F0", CRC16.calculate_crc16_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, (byte)0x00}, 0,9)));
-        System.out.println(String.format("T %04X = ECD5", CRC16.crc16table_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x01, 0x08, 0x65, 0x5B, (byte)0x99}, 0,9)));
-        System.out.println(String.format("C %04X = ECD5", CRC16.calculate_crc16_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x01, 0x08, 0x65, 0x5B, (byte)0x99}, 0,9)));
-        System.out.println(String.format("C %04X = ECD5", CRC16.calculate_crc16_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x01, 0x08, 0x65, 0x5B, (byte)0x99}, 0,9)));
-        System.out.println(String.format("T %04X = 3830", CRC16.crc16table_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x00}, 0,9 )));
+        System.out.println(String.format("C %04X = 3830", CRC16.calculate_crc16_IBM(new byte[]{0x01, 0x03, 0x04, 0x00, 0x00, 0x00, 0x03, (byte) 0xBA, (byte) 0x32}, 0, 9)));
+        System.out.println(String.format("C %04X = 3830", CRC16.calculate_crc16_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0x00}, 0, 9)));
+        System.out.println(String.format("C %04X = B832", CRC16.calculate_crc16_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0x06}, 0, 9)));
+        System.out.println(String.format("C %04X = 05F0", CRC16.calculate_crc16_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, (byte) 0x00}, 0, 9)));
+        System.out.println(String.format("T %04X = ECD5", CRC16.crc16table_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x01, 0x08, 0x65, 0x5B, (byte) 0x99}, 0, 9)));
+        System.out.println(String.format("C %04X = ECD5", CRC16.calculate_crc16_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x01, 0x08, 0x65, 0x5B, (byte) 0x99}, 0, 9)));
+        System.out.println(String.format("C %04X = ECD5", CRC16.calculate_crc16_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x01, 0x08, 0x65, 0x5B, (byte) 0x99}, 0, 9)));
+        System.out.println(String.format("T %04X = 3830", CRC16.crc16table_IBM(new byte[]{0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0x00}, 0, 9)));
 
 
-        System.out.println(String.format("C %04X = 4F50", CRC16.calculate_crc16_IBM(new byte[]{0x12, 0x34, 0x56, 0x78, (byte)0x90}, 0,5)));
-        System.out.println(String.format("T %04X = 4F50", CRC16.crc16table_IBM(new byte[]{0x12, 0x34, 0x56, 0x78, (byte)0x90}, 0,5)));
-        System.out.println(String.format("C %04X = 4F50", CRC16.calculate_crc16_IBM(new byte[]{0x12, 0x34, 0x56, 0x78, (byte)0x90}, 0,5)));
+        System.out.println(String.format("C %04X = 4F50", CRC16.calculate_crc16_IBM(new byte[]{0x12, 0x34, 0x56, 0x78, (byte) 0x90}, 0, 5)));
+        System.out.println(String.format("T %04X = 4F50", CRC16.crc16table_IBM(new byte[]{0x12, 0x34, 0x56, 0x78, (byte) 0x90}, 0, 5)));
+        System.out.println(String.format("C %04X = 4F50", CRC16.calculate_crc16_IBM(new byte[]{0x12, 0x34, 0x56, 0x78, (byte) 0x90}, 0, 5)));
 
-        System.out.println(String.format("C %04X = A07E", CRC16.calculate_crc16_IBM(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, (byte)0x00}, 0,9 )));
-        System.out.println(String.format("C %04X = D773", CRC16.calculate_crc16_IBM(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x12, (byte)0x34}, 0,9)));
-        System.out.println(String.format("CM %04X = 7EA0", CRC16.calculate_crc16_IBM_mirror(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, (byte)0x00}, 0,9 )));
-        System.out.println(String.format("CM %04X = 73D7", CRC16.calculate_crc16_IBM_mirror(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x12, (byte)0x34}, 0,9)));
-        System.out.println(String.format("TM %04X = 7EA0", CRC16.crc16table_IBM_mirror(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, (byte)0x00}, 0,9 )));
-        System.out.println(String.format("TM %04X = 73D7", CRC16.crc16table_IBM_mirror(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x12, (byte)0x34}, 0,9)));
+        System.out.println(String.format("C %04X = A07E", CRC16.calculate_crc16_IBM(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, (byte) 0x00}, 0, 9)));
+        System.out.println(String.format("C %04X = D773", CRC16.calculate_crc16_IBM(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x12, (byte) 0x34}, 0, 9)));
+        System.out.println(String.format("CM %04X = 7EA0", CRC16.calculate_crc16_IBM_mirror(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, (byte) 0x00}, 0, 9)));
+        System.out.println(String.format("CM %04X = 73D7", CRC16.calculate_crc16_IBM_mirror(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x12, (byte) 0x34}, 0, 9)));
+        System.out.println(String.format("TM %04X = 7EA0", CRC16.crc16table_IBM_mirror(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, (byte) 0x00}, 0, 9)));
+        System.out.println(String.format("TM %04X = 73D7", CRC16.crc16table_IBM_mirror(new byte[]{0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x12, (byte) 0x34}, 0, 9)));
 
-        System.out.println(String.format("C %04X = A024", CRC16.calculate_crc16_IBM(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x00}, 0,9 )));
-        System.out.println(String.format("C %04X = 508A", CRC16.calculate_crc16_IBM(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x3F, (byte)0x9E, 0x04, (byte)0x19}, 0,9)));
-        System.out.println(String.format("CM %04X = 24A0", CRC16.calculate_crc16_IBM_mirror(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x00}, 0,9 )));
-        System.out.println(String.format("CM %04X = 8A50", CRC16.calculate_crc16_IBM_mirror(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x3F, (byte)0x9E, 0x04, (byte)0x19}, 0,9)));
-        System.out.println(String.format("TM %04X = 24A0", CRC16.crc16table_IBM_mirror(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, (byte)0x00}, 0,9 )));
-        System.out.println(String.format("TM %04X = 8A50", CRC16.crc16table_IBM_mirror(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x3F, (byte)0x9E, 0x04, (byte)0x19}, 0,9)));
+        System.out.println(String.format("C %04X = A024", CRC16.calculate_crc16_IBM(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0x00}, 0, 9)));
+        System.out.println(String.format("C %04X = 508A", CRC16.calculate_crc16_IBM(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x3F, (byte) 0x9E, 0x04, (byte) 0x19}, 0, 9)));
+        System.out.println(String.format("CM %04X = 24A0", CRC16.calculate_crc16_IBM_mirror(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0x00}, 0, 9)));
+        System.out.println(String.format("CM %04X = 8A50", CRC16.calculate_crc16_IBM_mirror(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x3F, (byte) 0x9E, 0x04, (byte) 0x19}, 0, 9)));
+        System.out.println(String.format("TM %04X = 24A0", CRC16.crc16table_IBM_mirror(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0x00}, 0, 9)));
+        System.out.println(String.format("TM %04X = 8A50", CRC16.crc16table_IBM_mirror(new byte[]{0x01, 0x00, 0x02, 0x00, 0x00, 0x3F, (byte) 0x9E, 0x04, (byte) 0x19}, 0, 9)));
+    }
+
+    public long getValue() {
+        return sum;
+    }
+
+    public void reset() {
+        sum = 0xFFFF;
+    }
+
+    public void update(byte[] b, int off, int len) {
+        for (int i = off; i < off + len; i++)
+            update((int) b[i]);
+    }
+
+    public void update(int b) {
+        sum = (sum >> 8) ^ TABLE[((sum) ^ (b & 0xff)) & 0xff];
     }
 
 }

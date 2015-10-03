@@ -12,23 +12,18 @@ import java.util.Date;
  * Created by Сергей on 13.08.2015.
  */
 public class LineMonitoringEvent {
-    public enum ACTION_TYPE{
-        READ,
-        WRITE
-    }
-    final private ACTION_TYPE action;
-    final private byte[] buffer;
     final LineInterface line;
     final DeviceInterface device;
     final AbstractProperty property;
-    final private long date=System.currentTimeMillis();
-
-    public LineMonitoringEvent(ACTION_TYPE action, byte[] buffer, LineInterface line, DeviceInterface device,AbstractProperty property) {
+    final private ACTION_TYPE action;
+    final private byte[] buffer;
+    final private long date = System.currentTimeMillis();
+    public LineMonitoringEvent(ACTION_TYPE action, byte[] buffer, LineInterface line, DeviceInterface device, AbstractProperty property) {
         this.action = action;
         this.buffer = buffer;
         this.line = line;
         this.device = device;
-        this.property=property;
+        this.property = property;
     }
 
     public ACTION_TYPE getAction() {
@@ -51,7 +46,7 @@ public class LineMonitoringEvent {
         return date;
     }
 
-    public String getStringBuffer(){
+    public String getStringBuffer() {
         return CommunicationUtils.bufferToString(buffer);
     }
 
@@ -69,5 +64,10 @@ public class LineMonitoringEvent {
                 ", P=" + property +
                 ", date=" + new Date(date) +
                 '}';
+    }
+
+    public enum ACTION_TYPE {
+        READ,
+        WRITE
     }
 }

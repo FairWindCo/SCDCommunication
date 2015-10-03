@@ -7,6 +7,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Shape;
+
 /**
  * Created by
  * User: hansolo
@@ -37,17 +38,17 @@ public class BiLinearGradient {
     }
 
     public Image getImage(final double WIDTH, final double HEIGHT) {
-        int   width  = (int) WIDTH  <= 0 ? 100 : (int) WIDTH;
-        int   height = (int) HEIGHT <= 0 ? 100 : (int) HEIGHT;
-        final WritableImage RASTER       = new WritableImage(width, height);
-        final PixelWriter   PIXEL_WRITER = RASTER.getPixelWriter();
-        final double FRACTION_STEP_X     = 1.0 / (WIDTH - 1);
-        final double FRACTION_STEP_Y     = 1.0 / (HEIGHT - 1);
+        int width = (int) WIDTH <= 0 ? 100 : (int) WIDTH;
+        int height = (int) HEIGHT <= 0 ? 100 : (int) HEIGHT;
+        final WritableImage RASTER = new WritableImage(width, height);
+        final PixelWriter PIXEL_WRITER = RASTER.getPixelWriter();
+        final double FRACTION_STEP_X = 1.0 / (WIDTH - 1);
+        final double FRACTION_STEP_Y = 1.0 / (HEIGHT - 1);
         double fractionX = 0;
         double fractionY = 0;
 
-        for (int y = 0; y < HEIGHT ; y++) {
-            for (int x = 0 ; x < WIDTH ; x++) {
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
                 PIXEL_WRITER.setColor(x, y, biLinearInterpolateColor(COLOR_00, COLOR_10, COLOR_01, COLOR_11, fractionX, fractionY));
                 fractionX += FRACTION_STEP_X;
                 fractionX = fractionX > 1 ? 1 : fractionX;
@@ -60,9 +61,9 @@ public class BiLinearGradient {
     }
 
     public ImagePattern apply(final Shape SHAPE) {
-        double x      = SHAPE.getLayoutBounds().getMinX();
-        double y      = SHAPE.getLayoutBounds().getMinY();
-        double width  = SHAPE.getLayoutBounds().getWidth();
+        double x = SHAPE.getLayoutBounds().getMinX();
+        double y = SHAPE.getLayoutBounds().getMinY();
+        double width = SHAPE.getLayoutBounds().getWidth();
         double height = SHAPE.getLayoutBounds().getHeight();
         return new ImagePattern(getImage(width, height), x, y, width, height, false);
     }

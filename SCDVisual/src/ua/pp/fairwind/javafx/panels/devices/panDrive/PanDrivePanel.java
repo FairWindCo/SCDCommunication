@@ -1,29 +1,21 @@
 package ua.pp.fairwind.javafx.panels.devices.panDrive;
 
-import eu.hansolo.enzo.lcd.Lcd;
-import eu.hansolo.enzo.lcd.LcdBuilder;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
-import ua.pp.fairwind.io.javafx.propertys.LongPropertyFXAdapter;
-import ua.pp.fairwind.io.javafx.propertys.ShortPropertyFXAdapter;
-import ua.pp.fairwind.io.javafx.propertys.special.LongPropertyFXAdapterSpec;
-import ua.pp.fairwind.io.javafx.propertys.special.ShortPropertyFXAdapterSpec;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.VisualControls;
-import ua.pp.fairwind.javafx.guiElements.editors.IntegerInputText;
 import ua.pp.fairwind.javafx.panels.TupicalPanels;
-import ua.pp.fairwind.javafx.panels.devices.DeviceConfigPanel;
 
 
 /**
@@ -180,9 +172,6 @@ public class PanDrivePanel extends HBox {
         tabs.setPrefHeight(430);
         getChildren().add(tabs);
     }
-
-
-
 
 
 }

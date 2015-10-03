@@ -14,14 +14,14 @@ import java.text.ParseException;
 public class propertyPrototypeExample {
 
     public static void main(String[] args) {
-        SoftIntegerProperty p1=new SoftIntegerProperty("test 1");
-        SoftIntegerProperty p2=new SoftIntegerProperty("bind test 1");
-        SoftIntegerProperty p3=new SoftIntegerProperty("bind test 2");
-        SoftFloatProperty f1=new SoftFloatProperty("bind float 1");
-        ValueChangeListener<Number> listener=new ValueChangeListener<Number>() {
+        SoftIntegerProperty p1 = new SoftIntegerProperty("test 1");
+        SoftIntegerProperty p2 = new SoftIntegerProperty("bind test 1");
+        SoftIntegerProperty p3 = new SoftIntegerProperty("bind test 2");
+        SoftFloatProperty f1 = new SoftFloatProperty("bind float 1");
+        ValueChangeListener<Number> listener = new ValueChangeListener<Number>() {
             @Override
             public void valueChange(ValueChangeEvent event) {
-                System.out.println("EVENT FROM: "+event.getNameFrom()+" OLD VALUE="+event.getOldValue()+" NEW VALUE="+event.getNewValue()+ " UUID="+event.getUuidFrom());
+                System.out.println("EVENT FROM: " + event.getNameFrom() + " OLD VALUE=" + event.getOldValue() + " NEW VALUE=" + event.getNewValue() + " UUID=" + event.getUuidFrom());
             }
         };
         p1.addChangeEventListener(listener);
@@ -36,8 +36,8 @@ public class propertyPrototypeExample {
         p1.setValue(10);
         p1.setValue(20);
         p1.setValue(30);
-        DecimalFormat fm=new DecimalFormat("delta ##.###");
-        String str=fm.format(53.45);
+        DecimalFormat fm = new DecimalFormat("delta ##.###");
+        String str = fm.format(53.45);
         System.out.println(str);
         try {
             System.out.println(fm.parse(str));

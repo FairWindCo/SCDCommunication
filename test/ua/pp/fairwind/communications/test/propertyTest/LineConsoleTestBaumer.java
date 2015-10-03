@@ -15,9 +15,9 @@ import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
  */
 public class LineConsoleTestBaumer {
     public static void main(String[] args) {
-        SerialLine line=new SerialLine("com9","RS232 Line#1",null,5000);
-        FavoritCoreDeviceV1 favorit=new FavoritCoreDeviceV1(0x1L);
-        LoggingDevice ldev=new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
+        SerialLine line = new SerialLine("com9", "RS232 Line#1", null, 5000);
+        FavoritCoreDeviceV1 favorit = new FavoritCoreDeviceV1(0x1L);
+        LoggingDevice ldev = new LoggingDevice("Logging Device", null, new LineMonitorInterface() {
             @Override
             public void monitor(LineMonitoringEvent event) {
                 System.out.println(event);
@@ -27,11 +27,11 @@ public class LineConsoleTestBaumer {
         line.addReadMonitoringDevice(ldev);
         line.setLineSelector(favorit);
 
-        Encoder fav=new Encoder(3L,"Encoder",null);
+        Encoder fav = new Encoder(3L, "Encoder", null);
         fav.setPauseBeforeRead(100L);
         fav.setReadTimeOut(3500L);
         fav.setPrimerayLine(line);
-        fav.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE, SerialPort.FLOWCONTROL_NONE,4));
+        fav.setLineParameters(new CommunicationLineParameters(SerialPort.BAUDRATE_38400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE, SerialPort.FLOWCONTROL_NONE, 4));
 
         fav.addEventListener(ElementEventListener.println);
         fav.getSteps().addEventListener(ElementEventListener.println);

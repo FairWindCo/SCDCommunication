@@ -7,7 +7,7 @@ import java.util.ListResourceBundle;
  */
 public class MyResources extends ListResourceBundle {
     protected Object[][] getContents() {
-        return new Object[][] {
+        return new Object[][]{
                 // LOCALIZE THIS
                 {"s1", "The disk \"{1}\" contains {0}."},  // MessageFormat pattern
                 {"s2", "1"},                               // location of {0} in pattern

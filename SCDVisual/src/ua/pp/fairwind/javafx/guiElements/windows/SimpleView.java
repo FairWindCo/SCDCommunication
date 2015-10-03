@@ -10,181 +10,182 @@ import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
 import ua.pp.fairwind.javafx.guiElements.menu.PrefferedSize;
 
 public class SimpleView implements ApplicationView {
-    static private long curentID=0;
-	final private long id=curentID++;
+    static private long curentID = 0;
+    final private long id = curentID++;
+    protected PrefferedSize prefferedSize;
+    protected Scene view;
     private String title;
-	private Image icon;
-	protected PrefferedSize prefferedSize;
-	protected Scene view;
-	private boolean resizable=true;
-	private MenuExecutor executr;
-	private MyBaseResourceLoader resloader;
-	@Override
-	public String getTitle() {
-		return title;
-	}
+    private Image icon;
+    private boolean resizable = true;
+    private MenuExecutor executr;
+    private MyBaseResourceLoader resloader;
 
-	@Override
-	public Image getIcon() {
-		return icon;
-	}
+    public SimpleView(String title, Image icon, PrefferedSize prefferedSize) {
+        super();
+        this.title = title;
+        this.icon = icon;
+        this.prefferedSize = prefferedSize;
+    }
+
+    public SimpleView(String title, Image icon, PrefferedSize prefferedSize,
+                      Scene view) {
+        super();
+        this.title = title;
+        this.icon = icon;
+        this.prefferedSize = prefferedSize;
+        this.view = view;
+    }
+
+    public SimpleView(String title, Image icon) {
+        super();
+        this.title = title;
+        this.icon = icon;
+    }
+
+    public SimpleView(String title) {
+        super();
+        this.title = title;
+    }
+
+    public SimpleView() {
+        super();
+    }
+
+    public SimpleView(String title, Image icon, PrefferedSize prefferedSize, MyBaseResourceLoader resloader) {
+        super();
+        this.title = title;
+        this.icon = icon;
+        this.prefferedSize = prefferedSize;
+        this.resloader = resloader;
+    }
+
+    public SimpleView(String title, Image icon, PrefferedSize prefferedSize,
+                      Scene view, MyBaseResourceLoader resloader) {
+        super();
+        this.title = title;
+        this.icon = icon;
+        this.prefferedSize = prefferedSize;
+        this.view = view;
+        this.resloader = resloader;
+    }
+
+    public SimpleView(String title, Image icon, MyBaseResourceLoader resloader) {
+        super();
+        this.title = title;
+        this.icon = icon;
+        this.resloader = resloader;
+    }
+
+    public SimpleView(String title, MyBaseResourceLoader resloader) {
+        super();
+        this.title = title;
+        this.resloader = resloader;
+    }
+
+    public SimpleView(MyBaseResourceLoader resloader) {
+        super();
+        this.resloader = resloader;
+    }
+
+    public SimpleView(String title, Image icon, PrefferedSize prefferedSize,
+                      boolean resizable) {
+        super();
+        this.title = title;
+        this.icon = icon;
+        this.prefferedSize = prefferedSize;
+        this.resizable = resizable;
+    }
+
+    public SimpleView(String title, Image icon, PrefferedSize prefferedSize,
+                      Scene view, boolean resizable) {
+        super();
+        this.title = title;
+        this.icon = icon;
+        this.prefferedSize = prefferedSize;
+        this.view = view;
+        this.resizable = resizable;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @Override
+    public Image getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Image icon) {
+        this.icon = icon;
+    }
 
     public long getID() {
         return id;
     }
 
     protected MenuExecutor getExecutr() {
-		return executr;
-	}
+        return executr;
+    }
 
-	public SimpleView(String title, Image icon, PrefferedSize prefferedSize) {
-		super();
-		this.title = title;
-		this.icon = icon;
-		this.prefferedSize = prefferedSize;
-	}
+    @Override
+    public PrefferedSize getPrefferedSize() {
+        return prefferedSize;
+    }
 
-	public SimpleView(String title, Image icon, PrefferedSize prefferedSize,
-			Scene view) {
-		super();
-		this.title = title;
-		this.icon = icon;
-		this.prefferedSize = prefferedSize;
-		this.view = view;
-	}
+    public void setPrefferedSize(PrefferedSize prefferedSize) {
+        this.prefferedSize = prefferedSize;
+    }
 
-	public SimpleView(String title, Image icon) {
-		super();
-		this.title = title;
-		this.icon = icon;
-	}
+    protected Node createView() {
+        return new Group();
+    }
 
-	public SimpleView(String title) {
-		super();
-		this.title = title;
-	}
+    @Override
+    public Scene getMainView() {
+        if (view == null) {
 
-	public SimpleView() {
-		super();
-	}
+            view = new Scene((Parent) createView());
+        }
+        return view;
+    }
 
-	public SimpleView(String title, Image icon, PrefferedSize prefferedSize,MyBaseResourceLoader resloader) {
-		super();
-		this.title = title;
-		this.icon = icon;
-		this.prefferedSize = prefferedSize;
-		this.resloader=resloader;
-	}
+    @Override
+    public boolean isResizable() {
+        return resizable;
+    }
 
-	public SimpleView(String title, Image icon, PrefferedSize prefferedSize,
-			Scene view,MyBaseResourceLoader resloader) {
-		super();
-		this.title = title;
-		this.icon = icon;
-		this.prefferedSize = prefferedSize;
-		this.view = view;
-		this.resloader=resloader;
-	}
+    public void setResizable(boolean resizable) {
+        this.resizable = resizable;
+    }
 
-	public SimpleView(String title, Image icon,MyBaseResourceLoader resloader) {
-		super();
-		this.title = title;
-		this.icon = icon;
-		this.resloader=resloader;
-	}
+    public void closeWindow() {
+        if (executr != null) executr.closeView(this);
+    }
 
-	public SimpleView(String title,MyBaseResourceLoader resloader) {
-		super();
-		this.title = title;
-		this.resloader=resloader;
-	}
+    @Override
+    public void onShow(MenuExecutor executor) {
+        this.executr = executor;
+    }
 
-	public SimpleView(MyBaseResourceLoader resloader) {
-		super();
-		this.resloader=resloader;
-	}
-	
-	@Override
-	public PrefferedSize getPrefferedSize() {
-		return prefferedSize;
-	}
+    @Override
+    public void onHide() {
+    }
 
-	protected Node createView(){
-		return new Group();
-	}
-	
-	@Override
-	public Scene getMainView() {
-		if(view==null){
+    @Override
+    public MyBaseResourceLoader getResourceLoader() {
+        return resloader;
+    }
 
-			view = new Scene((Parent) createView());
-		}
-		return view;
-	}
+    @Override
+    public void setResourceLoader(MyBaseResourceLoader resloader) {
+        this.resloader = resloader;
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    }
 
-	public void setIcon(Image icon) {
-		this.icon = icon;
-	}
 
-	public void setPrefferedSize(PrefferedSize prefferedSize) {
-		this.prefferedSize = prefferedSize;
-	}
-
-	public SimpleView(String title, Image icon, PrefferedSize prefferedSize,
-			boolean resizable) {
-		super();
-		this.title = title;
-		this.icon = icon;
-		this.prefferedSize = prefferedSize;
-		this.resizable = resizable;
-	}
-
-	public SimpleView(String title, Image icon, PrefferedSize prefferedSize,
-			Scene view, boolean resizable) {
-		super();
-		this.title = title;
-		this.icon = icon;
-		this.prefferedSize = prefferedSize;
-		this.view = view;
-		this.resizable = resizable;
-	}
-
-	public void setResizable(boolean resizable) {
-		this.resizable = resizable;
-	}
-
-	@Override
-	public boolean isResizable() {
-		return resizable;
-	}
-	
-	public void closeWindow(){
-		if(executr!=null)executr.closeView(this);
-	}
-
-	@Override
-	public void onShow(MenuExecutor executor) {	
-		this.executr=executor;
-	}
-
-	@Override
-	public void onHide() {	
-	}
-
-	@Override
-	public void setResourceLoader(MyBaseResourceLoader resloader) {
-		this.resloader=resloader;
-		
-	}
-
-	@Override
-	public MyBaseResourceLoader getResourceLoader() {
-		return resloader;
-	}
-
-	
 }

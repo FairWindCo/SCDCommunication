@@ -20,108 +20,108 @@ import java.util.Optional;
 public class LineParametersDialog {
 
 
-    public static void getSerialLineParameterDialog(SerialDeviceInterface serialDevice){
-        if(serialDevice==null)return;
+    public static void getSerialLineParameterDialog(SerialDeviceInterface serialDevice) {
+        if (serialDevice == null) return;
         Dialog<LineParameters> dialog = new Dialog<>();
         dialog.setTitle(I18N_FX.getLocalizedString("Line_Parameters_Dialog"));
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        LineParameters curent=serialDevice.getLineParameters();
+        LineParameters curent = serialDevice.getLineParameters();
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
-        int speed=SerialPort.BAUDRATE_9600;
-        int databit=SerialPort.DATABITS_8;
-        int stopbit=SerialPort.STOPBITS_2;
-        int parity=SerialPort.PARITY_NONE;
-        int floatcontrol=SerialPort.FLOWCONTROL_NONE;
-        boolean rts=false;
-        boolean dts=false;
-        boolean clearRX=false;
-        boolean clearTX=false;
+        int speed = SerialPort.BAUDRATE_9600;
+        int databit = SerialPort.DATABITS_8;
+        int stopbit = SerialPort.STOPBITS_2;
+        int parity = SerialPort.PARITY_NONE;
+        int floatcontrol = SerialPort.FLOWCONTROL_NONE;
+        boolean rts = false;
+        boolean dts = false;
+        boolean clearRX = false;
+        boolean clearTX = false;
 
-        boolean NEED_LINE_CHANGE=false;
-        boolean ALWAYS_SET_LINE_PARAM=false;
-        boolean ALWAYS_SET_LINE=false;
-        if(curent!=null && curent.getLineParameter(LineParameters.RS_SPEED)!=null){
-            speed=(int)curent.getLineParameter(LineParameters.RS_SPEED);
+        boolean NEED_LINE_CHANGE = false;
+        boolean ALWAYS_SET_LINE_PARAM = false;
+        boolean ALWAYS_SET_LINE = false;
+        if (curent != null && curent.getLineParameter(LineParameters.RS_SPEED) != null) {
+            speed = (int) curent.getLineParameter(LineParameters.RS_SPEED);
         }
-        if(curent!=null && curent.getLineParameter(LineParameters.RS_DATABIT)!=null){
-            databit=(int)curent.getLineParameter(LineParameters.RS_DATABIT);
+        if (curent != null && curent.getLineParameter(LineParameters.RS_DATABIT) != null) {
+            databit = (int) curent.getLineParameter(LineParameters.RS_DATABIT);
         }
-        if(curent!=null && curent.getLineParameter(LineParameters.RS_STOBIT)!=null){
-            stopbit=(int)curent.getLineParameter(LineParameters.RS_STOBIT);
+        if (curent != null && curent.getLineParameter(LineParameters.RS_STOBIT) != null) {
+            stopbit = (int) curent.getLineParameter(LineParameters.RS_STOBIT);
         }
-        if(curent!=null && curent.getLineParameter(LineParameters.RS_PARITY)!=null){
-            parity=(int)curent.getLineParameter(LineParameters.RS_PARITY);
+        if (curent != null && curent.getLineParameter(LineParameters.RS_PARITY) != null) {
+            parity = (int) curent.getLineParameter(LineParameters.RS_PARITY);
         }
-        if(curent!=null && curent.getLineParameter(LineParameters.RS_FLOWCONTROL)!=null){
-            floatcontrol=(int)curent.getLineParameter(LineParameters.RS_FLOWCONTROL);
-        }
-
-        if(curent!=null && curent.getLineParameter(LineParameters.RS_DTR)!=null){
-            dts=(boolean)curent.getLineParameter(LineParameters.RS_DTR);
-        }
-        if(curent!=null && curent.getLineParameter(LineParameters.RS_RTS)!=null){
-            rts=(boolean)curent.getLineParameter(LineParameters.RS_RTS);
-        }
-        if(curent!=null && curent.getLineParameter(LineParameters.RS_PURGE_RX)!=null){
-            clearRX=(boolean)curent.getLineParameter(LineParameters.RS_PURGE_RX);
-        }
-        if(curent!=null && curent.getLineParameter(LineParameters.RS_PURGE_TX)!=null){
-            clearTX=(boolean)curent.getLineParameter(LineParameters.RS_PURGE_TX);
+        if (curent != null && curent.getLineParameter(LineParameters.RS_FLOWCONTROL) != null) {
+            floatcontrol = (int) curent.getLineParameter(LineParameters.RS_FLOWCONTROL);
         }
 
-        if(curent!=null && curent.getLineParameter(LineParameters.NEED_LINE_CHANGE)!=null){
-            NEED_LINE_CHANGE=(boolean)curent.getLineParameter(LineParameters.NEED_LINE_CHANGE);
+        if (curent != null && curent.getLineParameter(LineParameters.RS_DTR) != null) {
+            dts = (boolean) curent.getLineParameter(LineParameters.RS_DTR);
+        }
+        if (curent != null && curent.getLineParameter(LineParameters.RS_RTS) != null) {
+            rts = (boolean) curent.getLineParameter(LineParameters.RS_RTS);
+        }
+        if (curent != null && curent.getLineParameter(LineParameters.RS_PURGE_RX) != null) {
+            clearRX = (boolean) curent.getLineParameter(LineParameters.RS_PURGE_RX);
+        }
+        if (curent != null && curent.getLineParameter(LineParameters.RS_PURGE_TX) != null) {
+            clearTX = (boolean) curent.getLineParameter(LineParameters.RS_PURGE_TX);
         }
 
-        if(curent!=null && curent.getLineParameter(LineParameters.ALWAYS_SET_LINE_PARAM)!=null){
-            ALWAYS_SET_LINE_PARAM=(boolean)curent.getLineParameter(LineParameters.ALWAYS_SET_LINE_PARAM);
+        if (curent != null && curent.getLineParameter(LineParameters.NEED_LINE_CHANGE) != null) {
+            NEED_LINE_CHANGE = (boolean) curent.getLineParameter(LineParameters.NEED_LINE_CHANGE);
         }
 
-        if(curent!=null && curent.getLineParameter(LineParameters.ALWAYS_SET_LINE)!=null){
-            ALWAYS_SET_LINE=(boolean)curent.getLineParameter(LineParameters.ALWAYS_SET_LINE);
+        if (curent != null && curent.getLineParameter(LineParameters.ALWAYS_SET_LINE_PARAM) != null) {
+            ALWAYS_SET_LINE_PARAM = (boolean) curent.getLineParameter(LineParameters.ALWAYS_SET_LINE_PARAM);
         }
 
-        ComboBox<Integer>rsspeed=createSpeedSelect(speed);
-        Tooltip.install(rsspeed,new Tooltip(I18N_FX.getLocalizedString("BAUD_RATE.description")));
-        ComboBox<Integer>rsdata=createDataBitSelect(databit);
-        Tooltip.install(rsdata,new Tooltip(I18N_FX.getLocalizedString("DATA_BIT.description")));
-        ComboBox<Integer>rsstop=createStopBitSelect(stopbit);
+        if (curent != null && curent.getLineParameter(LineParameters.ALWAYS_SET_LINE) != null) {
+            ALWAYS_SET_LINE = (boolean) curent.getLineParameter(LineParameters.ALWAYS_SET_LINE);
+        }
+
+        ComboBox<Integer> rsspeed = createSpeedSelect(speed);
+        Tooltip.install(rsspeed, new Tooltip(I18N_FX.getLocalizedString("BAUD_RATE.description")));
+        ComboBox<Integer> rsdata = createDataBitSelect(databit);
+        Tooltip.install(rsdata, new Tooltip(I18N_FX.getLocalizedString("DATA_BIT.description")));
+        ComboBox<Integer> rsstop = createStopBitSelect(stopbit);
         Tooltip.install(rsstop, new Tooltip(I18N_FX.getLocalizedString("STOP_BIT.description")));
-        ComboBox<Integer>rsparity=createParitySelect(parity);
-        Tooltip.install(rsparity,new Tooltip(I18N_FX.getLocalizedString("PARITY.description")));
-        ComboBox<Integer>rsflow=createFlowControlSelect(floatcontrol);
+        ComboBox<Integer> rsparity = createParitySelect(parity);
+        Tooltip.install(rsparity, new Tooltip(I18N_FX.getLocalizedString("PARITY.description")));
+        ComboBox<Integer> rsflow = createFlowControlSelect(floatcontrol);
         Tooltip.install(rsflow, new Tooltip(I18N_FX.getLocalizedString("FLOW_CONTROL.description")));
-        CheckBox rsdtr=new CheckBox();
-        Tooltip.install(rsdtr,new Tooltip(I18N_FX.getLocalizedString("SET_DTR.description")));
+        CheckBox rsdtr = new CheckBox();
+        Tooltip.install(rsdtr, new Tooltip(I18N_FX.getLocalizedString("SET_DTR.description")));
         rsdtr.setSelected(dts);
-        CheckBox rsrts=new CheckBox();
-        Tooltip.install(rsrts,new Tooltip(I18N_FX.getLocalizedString("SET_RTS.description")));
+        CheckBox rsrts = new CheckBox();
+        Tooltip.install(rsrts, new Tooltip(I18N_FX.getLocalizedString("SET_RTS.description")));
         rsrts.setSelected(rts);
-        CheckBox rsclearrx=new CheckBox();
-        Tooltip.install(rsclearrx,new Tooltip(I18N_FX.getLocalizedString("SET_CLEAR_RX.description")));
+        CheckBox rsclearrx = new CheckBox();
+        Tooltip.install(rsclearrx, new Tooltip(I18N_FX.getLocalizedString("SET_CLEAR_RX.description")));
         rsclearrx.setSelected(clearRX);
-        CheckBox rscleartx=new CheckBox();
+        CheckBox rscleartx = new CheckBox();
         Tooltip.install(rscleartx, new Tooltip(I18N_FX.getLocalizedString("SET_CLEAR_TX.description")));
         rscleartx.setSelected(clearTX);
 
 
-        Object curentLine=curent!=null?curent.getLineParameter(LineParameters.SUB_LINE_NUMBER):null;
+        Object curentLine = curent != null ? curent.getLineParameter(LineParameters.SUB_LINE_NUMBER) : null;
 
-        CheckBox NEED_LINE_CHANGEB=new CheckBox();
+        CheckBox NEED_LINE_CHANGEB = new CheckBox();
         NEED_LINE_CHANGEB.setSelected(NEED_LINE_CHANGE);
         Tooltip.install(NEED_LINE_CHANGEB, new Tooltip(I18N_FX.getLocalizedString("SET_NEED_LINE_CHANGE.description")));
-        CheckBox ALWAYS_SET_LINE_PARAMB=new CheckBox();
+        CheckBox ALWAYS_SET_LINE_PARAMB = new CheckBox();
         ALWAYS_SET_LINE_PARAMB.setSelected(ALWAYS_SET_LINE_PARAM);
         Tooltip.install(ALWAYS_SET_LINE_PARAMB, new Tooltip(I18N_FX.getLocalizedString("SET_ALWAYS_SET_LINE_PARAM.description")));
-        CheckBox ALWAYS_SET_LINEB=new CheckBox();
+        CheckBox ALWAYS_SET_LINEB = new CheckBox();
         ALWAYS_SET_LINEB.setSelected(ALWAYS_SET_LINE);
         Tooltip.install(ALWAYS_SET_LINEB, new Tooltip(I18N_FX.getLocalizedString("SET_ALWAYS_SET_LINE.description")));
 
-        IntegerInputNullText intEditor=curentLine!=null?new IntegerInputNullText((Integer)curentLine,10):new IntegerInputNullText(null,10);
+        IntegerInputNullText intEditor = curentLine != null ? new IntegerInputNullText((Integer) curentLine, 10) : new IntegerInputNullText(null, 10);
         Tooltip.install(intEditor, new Tooltip(I18N_FX.getLocalizedString("SET_LINE_NUMBER.description")));
 
         grid.add(new Label(I18N_FX.getLocalizedString("BAUD_RATE")), 0, 0);
@@ -143,29 +143,29 @@ public class LineParametersDialog {
         grid.add(new Label(I18N_FX.getLocalizedString("SET_CLEAR_TX")), 2, 3);
         grid.add(rscleartx, 3, 3);
 
-        grid.add(new Label(I18N_FX.getLocalizedString("SET_LINE_NUMBER")), 0,5);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_LINE_NUMBER")), 0, 5);
         grid.add(intEditor, 1, 5);
 
-        grid.add(new Label(I18N_FX.getLocalizedString("SET_NEED_LINE_CHANGE")), 2,6);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_NEED_LINE_CHANGE")), 2, 6);
         grid.add(NEED_LINE_CHANGEB, 3, 6);
-        grid.add(new Label(I18N_FX.getLocalizedString("SET_ALWAYS_SET_LINE_PARAM")), 2,7);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_ALWAYS_SET_LINE_PARAM")), 2, 7);
         grid.add(ALWAYS_SET_LINE_PARAMB, 3, 7);
-        grid.add(new Label(I18N_FX.getLocalizedString("SET_ALWAYS_SET_LINE")), 2,8);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_ALWAYS_SET_LINE")), 2, 8);
         grid.add(ALWAYS_SET_LINEB, 3, 8);
 
-        LongInputText editorRertyCount=new LongInputText(serialDevice.getMaxRetry(),5);
-        LongInputText editorDeviceTimeOut=new LongInputText(serialDevice.getReadTimeOut(),60000);
-        LongInputText editorBeforeReadPause=new LongInputText(serialDevice.getPauseBeforeRead(),1000);
-        LongInputText editorBeforeWritePause=new LongInputText(serialDevice.getPauseBeforeWrite(),1000);
+        LongInputText editorRertyCount = new LongInputText(serialDevice.getMaxRetry(), 5);
+        LongInputText editorDeviceTimeOut = new LongInputText(serialDevice.getReadTimeOut(), 60000);
+        LongInputText editorBeforeReadPause = new LongInputText(serialDevice.getPauseBeforeRead(), 1000);
+        LongInputText editorBeforeWritePause = new LongInputText(serialDevice.getPauseBeforeWrite(), 1000);
 
         Tooltip.install(editorRertyCount, new Tooltip(I18N_FX.getLocalizedString("SET_MAX_RETRY.description")));
         Tooltip.install(editorDeviceTimeOut, new Tooltip(I18N_FX.getLocalizedString("SET_READ_TIMEOUT.description")));
         Tooltip.install(editorBeforeReadPause, new Tooltip(I18N_FX.getLocalizedString("SET_PAUSE_BEFORE_READ.description")));
         Tooltip.install(editorBeforeWritePause, new Tooltip(I18N_FX.getLocalizedString("SET_PAUSE_BEFORE_WRITE.description")));
 
-        grid.add(new Label(I18N_FX.getLocalizedString("SET_MAX_RETRY")), 0,6);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_MAX_RETRY")), 0, 6);
         grid.add(editorRertyCount, 1, 6);
-        grid.add(new Label(I18N_FX.getLocalizedString("SET_READ_TIMEOUT")), 0,7);
+        grid.add(new Label(I18N_FX.getLocalizedString("SET_READ_TIMEOUT")), 0, 7);
         grid.add(editorDeviceTimeOut, 1, 7);
         grid.add(new Label(I18N_FX.getLocalizedString("SET_PAUSE_BEFORE_READ")), 0, 8);
         grid.add(editorBeforeReadPause, 1, 8);
@@ -175,7 +175,6 @@ public class LineParametersDialog {
         dialog.getDialogPane().setContent(grid);
 
 
-
         // Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
@@ -183,28 +182,28 @@ public class LineParametersDialog {
                 serialDevice.setPauseBeforeRead(editorBeforeReadPause.getValue());
                 serialDevice.setPauseBeforeWrite(editorBeforeWritePause.getValue());
                 serialDevice.setReadTimeOut(editorDeviceTimeOut.getValue());
-                int sspeed=rsspeed.getSelectionModel().getSelectedItem()==null?SerialPort.BAUDRATE_9600: rsspeed.getSelectionModel().getSelectedItem();
-                int sdatabit=rsdata.getSelectionModel().getSelectedItem()==null?SerialPort.DATABITS_8: rsdata.getSelectionModel().getSelectedItem();
-                int sstopbit=rsstop.getSelectionModel().getSelectedItem()==null?SerialPort.STOPBITS_2: rsstop.getSelectionModel().getSelectedItem();
-                int sparity=rsparity.getSelectionModel().getSelectedItem()==null?SerialPort.PARITY_NONE: rsparity.getSelectionModel().getSelectedItem();
-                int sfloatcontrol=rsflow.getSelectionModel().getSelectedItem()==null?SerialPort.FLOWCONTROL_NONE:rsflow.getSelectionModel().getSelectedItem();
-                Integer line=intEditor.getValue();
-                if(line!=null) {
+                int sspeed = rsspeed.getSelectionModel().getSelectedItem() == null ? SerialPort.BAUDRATE_9600 : rsspeed.getSelectionModel().getSelectedItem();
+                int sdatabit = rsdata.getSelectionModel().getSelectedItem() == null ? SerialPort.DATABITS_8 : rsdata.getSelectionModel().getSelectedItem();
+                int sstopbit = rsstop.getSelectionModel().getSelectedItem() == null ? SerialPort.STOPBITS_2 : rsstop.getSelectionModel().getSelectedItem();
+                int sparity = rsparity.getSelectionModel().getSelectedItem() == null ? SerialPort.PARITY_NONE : rsparity.getSelectionModel().getSelectedItem();
+                int sfloatcontrol = rsflow.getSelectionModel().getSelectedItem() == null ? SerialPort.FLOWCONTROL_NONE : rsflow.getSelectionModel().getSelectedItem();
+                Integer line = intEditor.getValue();
+                if (line != null) {
                     //(String ipadress, int port, long timeOut, int baoudrate, int databits, int paritytype, int stopbit,int flowcontrol, boolean dtr, boolean rts, int sublinenum,  boolean needLineChange, boolean purge_rx, boolean purge_tx, boolean always_set_line_param, boolean always_set_line) {
-                    return new CommunicationLineParameters(null,0,sspeed, sdatabit, sparity, sstopbit, sfloatcontrol, rsdtr.isSelected(), rsrts.isSelected(),line,NEED_LINE_CHANGEB.isSelected(),rsclearrx.isSelected(), rscleartx.isSelected(),ALWAYS_SET_LINEB.isSelected(),ALWAYS_SET_LINE_PARAMB.isSelected());
+                    return new CommunicationLineParameters(null, 0, sspeed, sdatabit, sparity, sstopbit, sfloatcontrol, rsdtr.isSelected(), rsrts.isSelected(), line, NEED_LINE_CHANGEB.isSelected(), rsclearrx.isSelected(), rscleartx.isSelected(), ALWAYS_SET_LINEB.isSelected(), ALWAYS_SET_LINE_PARAMB.isSelected());
                 } else {
-                    return new CommunicationLineParameters(null,0,sspeed, sdatabit, sparity, sstopbit, sfloatcontrol, rsdtr.isSelected(), rsrts.isSelected(),0,false,rsclearrx.isSelected(), rscleartx.isSelected(),false,ALWAYS_SET_LINE_PARAMB.isSelected());
+                    return new CommunicationLineParameters(null, 0, sspeed, sdatabit, sparity, sstopbit, sfloatcontrol, rsdtr.isSelected(), rsrts.isSelected(), 0, false, rsclearrx.isSelected(), rscleartx.isSelected(), false, ALWAYS_SET_LINE_PARAMB.isSelected());
                 }
             }
             return null;
         });
 
-        Optional<LineParameters> result=dialog.showAndWait();
-        result.ifPresent(lineparams->serialDevice.setLineParameters(lineparams));
+        Optional<LineParameters> result = dialog.showAndWait();
+        result.ifPresent(lineparams -> serialDevice.setLineParameters(lineparams));
     }
 
-    public static ComboBox<Integer> createSpeedSelect(int sinitialValue){
-        ComboBox<Integer> box=new ComboBox<>();
+    public static ComboBox<Integer> createSpeedSelect(int sinitialValue) {
+        ComboBox<Integer> box = new ComboBox<>();
         box.getItems().addAll(new Integer(SerialPort.BAUDRATE_110),
                 new Integer(SerialPort.BAUDRATE_300),
                 new Integer(SerialPort.BAUDRATE_600),
@@ -218,7 +217,7 @@ public class LineParametersDialog {
                 new Integer(SerialPort.BAUDRATE_115200),
                 new Integer(SerialPort.BAUDRATE_128000),
                 new Integer(SerialPort.BAUDRATE_256000)
-                );
+        );
         box.setConverter(new StringConverter<Integer>() {
             @Override
             public String toString(Integer value) {
@@ -288,12 +287,12 @@ public class LineParametersDialog {
                 }
             }
         });
-        box.getSelectionModel().select((Integer)sinitialValue);
+        box.getSelectionModel().select((Integer) sinitialValue);
         return box;
     }
 
-    public static ComboBox<Integer> createDataBitSelect(int sinitialValue){
-        ComboBox<Integer> box=new ComboBox<>();
+    public static ComboBox<Integer> createDataBitSelect(int sinitialValue) {
+        ComboBox<Integer> box = new ComboBox<>();
         box.getItems().addAll(new Integer(SerialPort.DATABITS_5),
                 new Integer(SerialPort.DATABITS_6),
                 new Integer(SerialPort.DATABITS_7),
@@ -332,12 +331,12 @@ public class LineParametersDialog {
                 }
             }
         });
-        box.getSelectionModel().select((Integer)sinitialValue);
+        box.getSelectionModel().select((Integer) sinitialValue);
         return box;
     }
 
-    public static ComboBox<Integer> createStopBitSelect(int sinitialValue){
-        ComboBox<Integer> box=new ComboBox<>();
+    public static ComboBox<Integer> createStopBitSelect(int sinitialValue) {
+        ComboBox<Integer> box = new ComboBox<>();
         box.getItems().addAll(new Integer(SerialPort.STOPBITS_1),
                 new Integer(SerialPort.STOPBITS_1_5),
                 new Integer(SerialPort.STOPBITS_2)
@@ -371,12 +370,12 @@ public class LineParametersDialog {
                 }
             }
         });
-        box.getSelectionModel().select((Integer)sinitialValue);
+        box.getSelectionModel().select((Integer) sinitialValue);
         return box;
     }
 
-    public static ComboBox<Integer> createParitySelect(int sinitialValue){
-        ComboBox<Integer> box=new ComboBox<>();
+    public static ComboBox<Integer> createParitySelect(int sinitialValue) {
+        ComboBox<Integer> box = new ComboBox<>();
         box.getItems().addAll(new Integer(SerialPort.PARITY_NONE),
                 new Integer(SerialPort.PARITY_EVEN),
                 new Integer(SerialPort.PARITY_ODD),
@@ -420,12 +419,12 @@ public class LineParametersDialog {
                 }
             }
         });
-        box.getSelectionModel().select((Integer)sinitialValue);
+        box.getSelectionModel().select((Integer) sinitialValue);
         return box;
     }
 
-    public static ComboBox<Integer> createFlowControlSelect(int sinitialValue){
-        ComboBox<Integer> box=new ComboBox<>();
+    public static ComboBox<Integer> createFlowControlSelect(int sinitialValue) {
+        ComboBox<Integer> box = new ComboBox<>();
         box.getItems().addAll(new Integer(SerialPort.FLOWCONTROL_NONE),
                 new Integer(SerialPort.FLOWCONTROL_RTSCTS_IN),
                 new Integer(SerialPort.FLOWCONTROL_RTSCTS_OUT),
@@ -469,7 +468,7 @@ public class LineParametersDialog {
                 }
             }
         });
-        box.getSelectionModel().select((Integer)sinitialValue);
+        box.getSelectionModel().select((Integer) sinitialValue);
         return box;
     }
 }

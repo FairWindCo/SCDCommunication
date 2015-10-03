@@ -17,6 +17,8 @@ public interface GroupPropertyInterface {
     AbstractProperty getPopertyByIndex(int index);
 
     boolean isBubleEvent();
+
     void setBubleEvent(boolean bubleEvent);
+
     int propertyCount();
 }

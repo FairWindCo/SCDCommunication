@@ -6,14 +6,23 @@ import javafx.stage.Stage;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
 
 public interface ApplicationWindow extends ApplicationView {
-	Scene getWindow();
-	void changeView(ApplicationView newView);
-	Node getTitlePanel();
-	Node getButtomPanel();
-	Node getViewPanel();
-	Scene getMainView();
-	void setMainMenuExecutor(MenuExecutor mainMenuExecutor);
-	Stage formStage(Stage stage);
-	void destroy();
-	void close();
+    Scene getWindow();
+
+    void changeView(ApplicationView newView);
+
+    Node getTitlePanel();
+
+    Node getButtomPanel();
+
+    Node getViewPanel();
+
+    Scene getMainView();
+
+    void setMainMenuExecutor(MenuExecutor mainMenuExecutor);
+
+    Stage formStage(Stage stage);
+
+    void destroy();
+
+    void close();
 }
