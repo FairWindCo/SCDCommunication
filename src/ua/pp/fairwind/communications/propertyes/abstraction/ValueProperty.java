@@ -34,6 +34,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     }
 
 
+
     protected ValueProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, T value) {
         super(name, uuid);
         this.softOperationType = softOperationType;
@@ -325,5 +326,9 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         READ_WRITE
     }
 
-
+    @Override
+    public ValueProperty<T> setAdditionalInfo(String paramsName, Object value) {
+        super.setAdditionalInfo(paramsName, value);
+        return this;
+    }
 }

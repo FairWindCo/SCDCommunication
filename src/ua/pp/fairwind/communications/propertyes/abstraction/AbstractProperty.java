@@ -110,13 +110,14 @@ public abstract class AbstractProperty extends SystemEllement {
         if (property != null) removeEventListener(property.elementevent);
     }
 
-    public void setAdditionalInfo(String paramsName, Object value) {
-        if (paramsName == null) return;
+    public AbstractProperty setAdditionalInfo(String paramsName, Object value) {
+        if (paramsName == null) return this;
         if (value == null) {
             additionalParameters.remove(paramsName);
         } else {
             additionalParameters.put(paramsName, value);
         }
+        return this;
     }
 
     public Object getAdditionalInfo(String paramsName) {
