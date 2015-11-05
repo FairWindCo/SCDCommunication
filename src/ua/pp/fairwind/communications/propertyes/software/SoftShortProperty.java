@@ -48,4 +48,10 @@ public class SoftShortProperty extends NumberProperty<Short> {
         if (value != null) return Short.parseShort(value, radix);
         return null;
     }
+
+    @Override
+    public SoftShortProperty setAdditionalInfo(String paramsName, Object value) {
+        super.setAdditionalInfo(paramsName, value);
+        return this;
+    }
 }

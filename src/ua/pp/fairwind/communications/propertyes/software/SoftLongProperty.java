@@ -49,5 +49,11 @@ public class SoftLongProperty extends NumberProperty<Long> {
         if (value != null) return Long.parseLong(value, radix);
         return null;
     }
+
+    @Override
+    public SoftLongProperty setAdditionalInfo(String paramsName, Object value) {
+        super.setAdditionalInfo(paramsName, value);
+        return this;
+    }
 }
 

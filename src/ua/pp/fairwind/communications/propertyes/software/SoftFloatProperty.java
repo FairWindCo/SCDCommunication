@@ -48,4 +48,10 @@ public class SoftFloatProperty extends NumberProperty<Float> {
         if (value != null) return Float.parseFloat(value);
         return null;
     }
+
+    @Override
+    public SoftFloatProperty setAdditionalInfo(String paramsName, Object value) {
+        super.setAdditionalInfo(paramsName, value);
+        return this;
+    }
 }

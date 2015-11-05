@@ -49,4 +49,10 @@ public class SoftByteProperty extends NumberProperty<Byte> {
         if (value != null) return Byte.parseByte(value, radix);
         return null;
     }
+
+    @Override
+    public SoftByteProperty setAdditionalInfo(String paramsName, Object value) {
+        super.setAdditionalInfo(paramsName, value);
+        return this;
+    }
 }
