@@ -113,7 +113,11 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
     static public long getValueForTransfer(ValueProperty property) {
         Object value = property.getValue();
         if (property == null || value == null) return 0;
-        if (value instanceof Number) {
+        if(value instanceof Float){
+            return (long)Float.floatToIntBits((float)value);
+        } else if(value instanceof Double){
+            return Double.doubleToLongBits((double)value);
+        } else if (value instanceof Number) {
             return ((Number) value).longValue();
         } else if (value instanceof Boolean) {
             return ((Boolean) value) ? 1 : 0;
@@ -148,9 +152,9 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
         } else if (property instanceof SoftCharProperty) {
             setInternalValue(property, (char) value, modificator);
         } else if (property instanceof SoftFloatProperty) {
-            setInternalValue(property, Float.intBitsToFloat((int) value), modificator);
+            setInternalValue(property,Float.intBitsToFloat((int)value), modificator);
         } else if (property instanceof SoftDoubleProperty) {
-            setInternalValue(property, Double.longBitsToDouble(value), modificator);
+            setInternalValue(property,Double.longBitsToDouble(value), modificator);
         } else if (property instanceof SoftDateTimeProperty) {
             setInternalValue(property, new Date(value), modificator);
         } else if (property instanceof SoftBigDecimalProperty) {

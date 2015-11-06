@@ -78,6 +78,7 @@ public class BDMG04 extends RSLineDevice {
 
 
         deviceInfo=new GroupProperty("bdmg04.deviceInfo", null, deviceType, systemBoardType, firmwarePO1, firmwarePO2, firmwarePO3, chanelCount);
+        //deviceInfo=new GroupProperty("bdmg04.deviceInfo", null, systemBoardType,deviceType, firmwarePO2, firmwarePO1,chanelCount, firmwarePO3);
         deviceInfo.setAdditionalInfo(MODBUS_ADDRESS,0xA000).setAdditionalInfo(MODBUS_READ_FUNCTION,0x3).setAdditionalInfo(MODBUS_BYTE_SIZE, 6);
 
         configuration=new GroupProperty("bdmg04.deviceInfo", null, chanel1_sensetive,chanel1_dedtime,chanel2_sensetive,chanel2_dedtime,hight_sun_zone,low_sun_zone,
@@ -85,7 +86,8 @@ public class BDMG04 extends RSLineDevice {
                 chanel2_minspeed_count,alarm_mode,descrite_time,chanel1_test_addon,chanel2_test_addon,filtation,hight_time,comparator_chanel1,comparator_chanel2,
                 chanel1_error_time,chanel2_error_time,hight_sigm_chanel1,low_sigm_chanel1,koif_chanel1,koif_chanel2,fon_chanel1,fon_chanel2,hight_sigm_chanel2,
                 low_sigm_chanel2,min_time_chanel1,min_time_chanel2);
-        configuration.setAdditionalInfo(MODBUS_ADDRESS,0x0000).setAdditionalInfo(MODBUS_READ_FUNCTION,0x3).setAdditionalInfo(MODBUS_BYTE_SIZE, 3);
+
+        configuration.setAdditionalInfo(MODBUS_ADDRESS,0x0000).setAdditionalInfo(MODBUS_READ_FUNCTION,0x3).setAdditionalInfo(MODBUS_BYTE_SIZE, (8*4+6*2+2+2*2+4+2*2+2+4*4+4));
 
 
         addPropertys(deviceInfo);
@@ -100,14 +102,14 @@ public class BDMG04 extends RSLineDevice {
         long deviceAddress = super.deviceAddress.getValue();
         if (protocol == PROTOCOL_VERSON_124) {
             try {
-                return ModBusProtocol.processResponse(recivedMessage, (ValueProperty) property, (int) deviceAddress, sourceEvent);
+                return ModBusProtocol.processResponse(recivedMessage, property, (int) deviceAddress, sourceEvent);
             } catch (IllegalArgumentException e) {
                 fireEvent(EventType.ERROR, e.getLocalizedMessage());
                 return false;
             }
         } else if (protocol == PROTOCOL_VERSON_125) {
             try {
-                return ModBusProtocol.processResponse(recivedMessage, (ValueProperty) property, (int) deviceAddress, sourceEvent);
+                return ModBusProtocol.processResponse(recivedMessage, property, (int) deviceAddress, sourceEvent);
             } catch (IllegalArgumentException e) {
                 fireEvent(EventType.ERROR, e.getLocalizedMessage());
                 return false;
@@ -127,7 +129,7 @@ public class BDMG04 extends RSLineDevice {
                 throw new IllegalArgumentException("NO PROPERTY_NUM IN PROPERTY");
             }
             int mobus_byte_size = ((Number) size).intValue();
-            ModBusProtocol.ModBusProtocolRequestInformation request=ModBusProtocol.formReadRequestModBus((ValueProperty) property,mobus_byte_size, (int) deviceAddress);
+            ModBusProtocol.ModBusProtocolRequestInformation request=ModBusProtocol.formReadRequestModBus(property,mobus_byte_size, (int) deviceAddress);
             return request==null?null:request.getRequest(false);
         }
         if (protocol == PROTOCOL_VERSON_125) {
@@ -136,7 +138,7 @@ public class BDMG04 extends RSLineDevice {
                 throw new IllegalArgumentException("NO PROPERTY_NUM IN PROPERTY");
             }
             int mobus_byte_size = ((Number) size).intValue();
-            ModBusProtocol.ModBusProtocolRequestInformation request=ModBusProtocol.formReadRequestModBus((ValueProperty) property,mobus_byte_size, (int) deviceAddress);
+            ModBusProtocol.ModBusProtocolRequestInformation request=ModBusProtocol.formReadRequestModBus(property,mobus_byte_size, (int) deviceAddress);
             return request==null?null:request.getRequest(false);
         }
         return null;
@@ -147,28 +149,22 @@ public class BDMG04 extends RSLineDevice {
         short protocol = bdmg04Protocol.getValue();
         long deviceAddress = super.deviceAddress.getValue();
         if (protocol == PROTOCOL_VERSON_124) {
-            if (property instanceof ValueProperty) {
-                try {
-                    byte[] request = ua.pp.fairwind.communications.devices.hardwaredevices.akon.ModBusProtocol.formWriteRequestModBus((ValueProperty) property, (int) deviceAddress);
-                    return new RequestInformation(request, 9, false);
-                } catch (IllegalArgumentException e) {
-                    fireEvent(EventType.ERROR, e.getLocalizedMessage());
-                    return null;
-                }
+            Object size = property.getAdditionalInfo(MODBUS_BYTE_SIZE);
+            if (size == null && !(size instanceof Number)) {
+                throw new IllegalArgumentException("NO PROPERTY_NUM IN PROPERTY");
             }
-            return null;
+            int mobus_byte_size = ((Number) size).intValue();
+            ModBusProtocol.ModBusProtocolRequestInformation request=ModBusProtocol.formWriteRequestModBus(property,mobus_byte_size, (int) deviceAddress);
+            return request==null?null:request.getRequest(false);
         }
         if (protocol == PROTOCOL_VERSON_124) {
-            if (property instanceof ValueProperty) {
-                try {
-                    byte[] request = ua.pp.fairwind.communications.devices.hardwaredevices.akon.ModBusProtocol.formWriteRequestModBus((ValueProperty) property, (int) deviceAddress);
-                    return new RequestInformation(request, 9, false);
-                } catch (Exception e) {
-                    fireEvent(EventType.ERROR, e.getLocalizedMessage());
-                    return null;
-                }
+            Object size = property.getAdditionalInfo(MODBUS_BYTE_SIZE_V125);
+            if (size == null && !(size instanceof Number)) {
+                throw new IllegalArgumentException("NO PROPERTY_NUM IN PROPERTY");
             }
-            return null;
+            int mobus_byte_size = ((Number) size).intValue();
+            ModBusProtocol.ModBusProtocolRequestInformation request=ModBusProtocol.formWriteRequestModBus(property,mobus_byte_size, (int) deviceAddress);
+            return request==null?null:request.getRequest(false);
         }
         return null;
     }
@@ -191,4 +187,6 @@ public class BDMG04 extends RSLineDevice {
     public GroupProperty getConfiguration() {
         return configuration;
     }
+
+
 }
