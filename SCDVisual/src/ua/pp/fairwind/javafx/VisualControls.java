@@ -320,6 +320,39 @@ public class VisualControls {
         return box;
     }
 
+    public static ComboBox<Short> createBDMGProtoclSelect(SoftShortProperty addressProperty) {
+        ComboBox<Short> box = new ComboBox<>();
+        for (int i = 0x1; i < 0x3; i++) box.getItems().add((short) i);
+        box.setConverter(new StringConverter<Short>() {
+            @Override
+            public String toString(Short value) {
+                switch (value) {
+                    case 0x1:
+                        return "Version <124";
+                    case 0x2:
+                        return "Version 125";
+                    default:
+                        return "Version <124";
+                }
+            }
+
+            @Override
+            public Short fromString(String value) {
+                switch (value) {
+                    case "Version <125":
+                        return 0x1;
+                    case "Version 125":
+                        return 0x2;
+                    default:
+                        return 0x3;
+                }
+            }
+        });
+        box.valueProperty().bindBidirectional(new ShortPropertyFXAdapterSpec(addressProperty));
+        Tooltip.install(box, new Tooltip(addressProperty.getDescription()));
+        return box;
+    }
+
     public static ComboBox<Short> createBDBGProtoclSelect(SoftShortProperty addressProperty) {
         ComboBox<Short> box = new ComboBox<>();
         for (int i = 0x1; i < 0x4; i++) box.getItems().add((short) i);
