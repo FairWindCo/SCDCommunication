@@ -3,9 +3,11 @@ package ua.pp.fairwind.javafx.panels.propertypanels;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.groups.GroupProperty;
 
@@ -54,6 +56,12 @@ public class PropertyEditorPanel extends HBox {
         );
         //editorcolumn.setCellFactory();
         //editorcolumn.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
+        editorcolumn.setCellFactory(new Callback<TreeTableColumn<AbstractProperty, Property>, TreeTableCell<AbstractProperty, Property>>() {
+            @Override
+            public TreeTableCell<AbstractProperty, Property> call(TreeTableColumn<AbstractProperty, Property> param) {
+                return new EditorTreeTableCell<Property>();
+            }
+        });
         editorcolumn.setEditable(true);
         treeTableView.getColumns().add(column);
         treeTableView.getColumns().add(editorcolumn);
