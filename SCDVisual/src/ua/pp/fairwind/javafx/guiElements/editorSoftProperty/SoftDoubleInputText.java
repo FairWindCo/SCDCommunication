@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
 import ua.pp.fairwind.communications.propertyes.software.SoftDoubleProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 
@@ -65,8 +66,12 @@ public class SoftDoubleInputText extends TextField implements EventHandler<KeyEv
             return 0d;
         }
         Double intVal = Double.parseDouble(str);
-        if (intVal < minValue || intVal > maxValue) {
-            return 0d;
+        if (intVal < minValue) {
+            return minValue;
+        }
+        if(intVal>maxValue){
+            setText(String.valueOf(maxValue));
+            return maxValue;
         }
         return intVal;
     }
@@ -109,7 +114,7 @@ public class SoftDoubleInputText extends TextField implements EventHandler<KeyEv
 
     @Override
     public void handle(KeyEvent keyevent) {
-        if (!"-0123456789".contains(keyevent.getCharacter())) {
+        if (!"-0123456789.".contains(keyevent.getCharacter())) {
             keyevent.consume();
         }
 		/*
@@ -140,6 +145,10 @@ public class SoftDoubleInputText extends TextField implements EventHandler<KeyEv
 
     @Override
     public void changed(ObservableValue<? extends String> value, String olds, String newValue) {
+        if(olds==newValue || olds!=null&&olds.equals(newValue))return;
+        if("".equals(newValue)&&"0".equals(olds)){
+            return;
+        }
         if (newValue == null || EMPTYSTRING.equals(newValue)) {
             setText("0");
             property.setValue((double) 0);
@@ -151,11 +160,16 @@ public class SoftDoubleInputText extends TextField implements EventHandler<KeyEv
             }
         } else {
             Double intVal = Double.parseDouble(newValue);
-            if (intVal < minValue || intVal > maxValue) {
-                setText(olds);
+            if (intVal < minValue) {
+                setText(String.valueOf(minValue));
                 return;
             }
-            property.setValue(intVal);
+            if(intVal>maxValue){
+                setText(String.valueOf(maxValue));
+                return;
+            }
+            //property.setValue(parseString(getText()));
+            ValuePropertyModificator.setSilentValue(property, parseString(newValue));
         }
     }
 

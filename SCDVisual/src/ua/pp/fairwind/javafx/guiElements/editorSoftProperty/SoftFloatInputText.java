@@ -6,12 +6,13 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
 import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftFloatInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String> {
-    final private static String DIGITPATERN = "[-]?[0123456789]*[.]?[0123456789]+";
+    final private static String DIGITPATERN = "[-]?[0123456789]*[.]?[0123456789]*";
     final private static String EMPTYSTRING = "";
     final private SoftFloatProperty property;
     private float maxValue = Float.MAX_VALUE;
@@ -65,15 +66,26 @@ public class SoftFloatInputText extends TextField implements EventHandler<KeyEve
             return 0f;
         }
         Float intVal = Float.parseFloat(str);
-        if (intVal < minValue || intVal > maxValue) {
-            return 0f;
+        if (intVal < minValue) {
+            return minValue;
+        }
+        if(intVal>maxValue){
+            setText(String.valueOf(maxValue));
+            return maxValue;
         }
         return intVal;
     }
 
     private void setIntVal(Float val) {
         if (val >= minValue && val <= maxValue) {
-            setText(Float.toString(val));
+            String str=Float.toString(val);
+            if(str!=null){
+                String curent=getText();
+                if(!str.equals(curent)){
+                    setText(str);
+                }
+            }
+
         } else {
             property.setValue(parseString(getText()));
         }
@@ -109,7 +121,7 @@ public class SoftFloatInputText extends TextField implements EventHandler<KeyEve
 
     @Override
     public void handle(KeyEvent keyevent) {
-        if (!"-0123456789".contains(keyevent.getCharacter())) {
+        if (!"-0123456789.".contains(keyevent.getCharacter())) {
             keyevent.consume();
         }
 		/*
@@ -140,6 +152,10 @@ public class SoftFloatInputText extends TextField implements EventHandler<KeyEve
 
     @Override
     public void changed(ObservableValue<? extends String> value, String olds, String newValue) {
+        if(olds==newValue || olds!=null&&olds.equals(newValue))return;
+        if("".equals(newValue)&&"0".equals(olds)){
+            return;
+        }
         if (newValue == null || EMPTYSTRING.equals(newValue)) {
             setText("0");
             property.setValue((float) 0);
@@ -151,11 +167,16 @@ public class SoftFloatInputText extends TextField implements EventHandler<KeyEve
             }
         } else {
             Float intVal = Float.parseFloat(newValue);
-            if (intVal < minValue || intVal > maxValue) {
-                setText(olds);
+            if (intVal < minValue) {
+                setText(String.valueOf(minValue));
                 return;
             }
-            property.setValue(intVal);
+            if(intVal>maxValue){
+                setText(String.valueOf(maxValue));
+                return;
+            }
+            //property.setValue(parseString(getText()));
+            ValuePropertyModificator.setSilentValue(property,parseString(newValue));
         }
     }
 

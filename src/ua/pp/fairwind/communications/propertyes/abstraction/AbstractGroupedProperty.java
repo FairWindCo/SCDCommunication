@@ -6,9 +6,11 @@ import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.propertyes.groups.GroupPropertyInterface;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
 /**
@@ -17,6 +19,7 @@ import java.util.stream.Stream;
 public abstract class AbstractGroupedProperty<BigValue extends Comparable<? super BigValue>, SmallValue extends Comparable<? super SmallValue>> extends ValueProperty<BigValue> implements GroupPropertyInterface {
     final private Map<String, ValueProperty<SmallValue>> properties = new ConcurrentHashMap<>();
     final private Map<UUID, ValueProperty<SmallValue>> propertiesUUID = new ConcurrentHashMap<>();
+    final private List<AbstractProperty> listproperty=new CopyOnWriteArrayList<>();;
 
     final private ElementEventListener listener = (event, param) -> {
         if (event.getTypeEvent() == EventType.ELEMENT_CHANGE) {
@@ -93,6 +96,7 @@ public abstract class AbstractGroupedProperty<BigValue extends Comparable<? supe
             property.addEventListener(listener);
             properties.put(property.getName(), property);
             propertiesUUID.put(property.getUUID(), property);
+            listproperty.add(property);
         }
     }
 
@@ -114,13 +118,7 @@ public abstract class AbstractGroupedProperty<BigValue extends Comparable<? supe
 
     @Override
     public AbstractProperty getPopertyByIndex(int index) {
-        Collection<ValueProperty<SmallValue>> list = properties.values();
-        int in = 0;
-        for (AbstractProperty prp : list) {
-            if (in == index) return prp;
-            in++;
-        }
-        return null;
+        return listproperty.get(index);
     }
 
     public boolean isBubleEvent() {
@@ -131,5 +129,23 @@ public abstract class AbstractGroupedProperty<BigValue extends Comparable<? supe
     public void setBubleEvent(boolean bubleEvent) {
         setAdditionalInfo(PROPERTY_BUBLE_EVENT, bubleEvent);
     }
+
+    @Override
+    public int propertyCount() {
+        return listproperty.size();
+    }
+
+    public GroupPropertyInterface setChildAdditional(String name,Object value){
+        if(name!=null&&!name.isEmpty()) {
+            for (AbstractProperty property : listproperty) {
+                property.setAdditionalInfo(name, value);
+                if(property instanceof GroupPropertyInterface){
+                    ((GroupPropertyInterface) property).setChildAdditional(name,value);
+                }
+            }
+        }
+        return this;
+    }
+
 
 }

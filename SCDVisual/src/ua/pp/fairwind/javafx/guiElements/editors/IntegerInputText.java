@@ -13,7 +13,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
     final private static String EMPTYSTRING = "";
     private int maxValue = Integer.MAX_VALUE;
     private int minValue = Integer.MIN_VALUE;
-    private SimpleIntegerProperty integerValueProperty = new SimpleIntegerProperty(0);
+    private SimpleIntegerProperty internalValueProperty = new SimpleIntegerProperty(0);
 
     public IntegerInputText() {
         super();
@@ -29,6 +29,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
     public IntegerInputText(Integer arg0, int maxVal) {
         super(arg0 == null ? null : arg0.toString());
         this.maxValue = maxVal;
+        if(arg0!=null)internalValueProperty.setValue(arg0);
         onInitialisation();
     }
 
@@ -70,7 +71,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
         if (val >= minValue && val <= maxValue) {
             setText(Integer.toString(val));
         } else {
-            integerValueProperty.setValue(parseString(getText()));
+            internalValueProperty.setValue(parseString(getText()));
         }
     }
 
@@ -78,7 +79,7 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
         checkConstraints();
         this.addEventFilter(KeyEvent.KEY_TYPED, this);
         this.textProperty().addListener(this);
-        integerValueProperty.addListener((arg0, arg1, newval) -> {
+        internalValueProperty.addListener((arg0, arg1, newval) -> {
             if (newval != null)
                 setIntVal(newval.intValue());
         });
@@ -139,9 +140,13 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
 
     @Override
     public void changed(ObservableValue<? extends String> value, String olds, String newValue) {
+        if(olds==newValue || olds!=null&&olds.equals(newValue))return;
+        if("".equals(newValue)&&"0".equals(olds)){
+            return;
+        }
         if (newValue == null || EMPTYSTRING.equals(newValue)) {
             setText("0");
-            integerValueProperty.set(0);
+            internalValueProperty.set(0);
             return;
         }
         if ("-".equals(newValue)) {
@@ -150,17 +155,27 @@ public class IntegerInputText extends TextField implements EventHandler<KeyEvent
             }
         } else {
             int intVal = Integer.parseInt(newValue);
-            if (intVal < minValue || intVal > maxValue) {
-                setText(olds);
+            if (intVal < minValue) {
+                setText(String.valueOf(minValue));
                 return;
             }
-            integerValueProperty.set(intVal);
+            if(intVal>maxValue){
+                setText(String.valueOf(maxValue));
+                return;
+            }
+            internalValueProperty.set(intVal);
         }
     }
 
-    public SimpleIntegerProperty getIntegerValueProperty() {
-        return integerValueProperty;
+    public SimpleIntegerProperty getInternalValueProperty() {
+        return internalValueProperty;
     }
 
-
+    public void setValue(Integer value){
+        if(value!=null) {
+            internalValueProperty.setValue(value);
+        } else {
+            setText("0");
+        }
+    }
 }

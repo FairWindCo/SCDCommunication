@@ -6,11 +6,12 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
 import ua.pp.fairwind.communications.propertyes.software.SoftIntegerProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 
 
-public class SoftIntInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String> {
+public class SoftIntInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String>{
     final private static String DIGITPATERN = "[-]?[0123456789]{1,11}";
     final private static String EMPTYSTRING = "";
     final private SoftIntegerProperty property;
@@ -65,8 +66,12 @@ public class SoftIntInputText extends TextField implements EventHandler<KeyEvent
             return 0;
         }
         int intVal = Integer.parseInt(str);
-        if (intVal < minValue || intVal > maxValue) {
-            return 0;
+        if (intVal < minValue) {
+            return minValue;
+        }
+        if(intVal>maxValue){
+            setText(String.valueOf(maxValue));
+            return maxValue;
         }
         return intVal;
     }
@@ -75,7 +80,8 @@ public class SoftIntInputText extends TextField implements EventHandler<KeyEvent
         if (val >= minValue && val <= maxValue) {
             setText(Long.toString(val));
         } else {
-            property.setValue(parseString(getText()));
+            //property.setValue(parseString(getText()));
+            ValuePropertyModificator.setInternalValue(property,parseString(getText()),null);
         }
     }
 
@@ -140,6 +146,10 @@ public class SoftIntInputText extends TextField implements EventHandler<KeyEvent
 
     @Override
     public void changed(ObservableValue<? extends String> value, String olds, String newValue) {
+        if(olds==newValue || olds!=null&&olds.equals(newValue))return;
+        if("".equals(newValue)&&"0".equals(olds)){
+            return;
+        }
         if (newValue == null || EMPTYSTRING.equals(newValue)) {
             setText("0");
             property.setValue(0);
@@ -151,11 +161,15 @@ public class SoftIntInputText extends TextField implements EventHandler<KeyEvent
             }
         } else {
             int intVal = Integer.parseInt(newValue);
-            if (intVal < minValue || intVal > maxValue) {
-                setText(olds);
+            if (intVal < minValue) {
+                setText(String.valueOf(minValue));
                 return;
             }
-            property.setValue(intVal);
+            if(intVal>maxValue){
+                setText(String.valueOf(maxValue));
+                return;
+            }
+            ValuePropertyModificator.setSilentValue(property, parseString(newValue));
         }
     }
 

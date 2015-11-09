@@ -14,7 +14,7 @@ public class LongInputText extends TextField implements EventHandler<KeyEvent>, 
     final private static String EMPTYSTRING = "";
     private long maxValue = Long.MAX_VALUE;
     private long minValue = Long.MIN_VALUE;
-    private SimpleLongProperty integerValueProperty = new SimpleLongProperty(0);
+    private SimpleLongProperty internalValueProperty = new SimpleLongProperty(0);
 
     public LongInputText() {
         super();
@@ -23,17 +23,20 @@ public class LongInputText extends TextField implements EventHandler<KeyEvent>, 
 
     public LongInputText(Property property) {
         super(property.getValue() != null ? property.getValue().toString() : "");
-        this.integerValueProperty.bindBidirectional(property);
+        this.internalValueProperty.bindBidirectional(property);
         onInitialisation();
     }
 
     public LongInputText(Long arg0) {
-        super(arg0.toString());
+        super(arg0 == null ? null : arg0.toString());
+        if(arg0!=null)internalValueProperty.setValue(arg0);
         onInitialisation();
     }
 
     public LongInputText(Long arg0, long maxVal) {
         super(arg0 == null ? null : arg0.toString());
+        if(arg0!=null)internalValueProperty.setValue(arg0);
+
         this.maxValue = maxVal;
         onInitialisation();
     }
@@ -76,7 +79,7 @@ public class LongInputText extends TextField implements EventHandler<KeyEvent>, 
         if (val >= minValue && val <= maxValue) {
             setText(Integer.toString(val));
         } else {
-            integerValueProperty.setValue(parseString(getText()));
+            internalValueProperty.setValue(parseString(getText()));
         }
     }
 
@@ -84,7 +87,7 @@ public class LongInputText extends TextField implements EventHandler<KeyEvent>, 
         checkConstraints();
         this.addEventFilter(KeyEvent.KEY_TYPED, this);
         this.textProperty().addListener(this);
-        integerValueProperty.addListener((arg0, arg1, newval) -> {
+        internalValueProperty.addListener((arg0, arg1, newval) -> {
             if (newval != null)
                 setIntVal(newval.intValue());
         });
@@ -145,9 +148,13 @@ public class LongInputText extends TextField implements EventHandler<KeyEvent>, 
 
     @Override
     public void changed(ObservableValue<? extends String> value, String olds, String newValue) {
+        if(olds==newValue || olds!=null&&olds.equals(newValue))return;
+        if("".equals(newValue)&&"0".equals(olds)){
+            return;
+        }
         if (newValue == null || EMPTYSTRING.equals(newValue)) {
             setText("0");
-            integerValueProperty.set(0);
+            internalValueProperty.set(0);
             return;
         }
         if ("-".equals(newValue)) {
@@ -156,20 +163,32 @@ public class LongInputText extends TextField implements EventHandler<KeyEvent>, 
             }
         } else {
             long intVal = Long.parseLong(newValue);
-            if (intVal < minValue || intVal > maxValue) {
-                setText(olds);
+            if (intVal < minValue) {
+                setText(String.valueOf(minValue));
                 return;
             }
-            integerValueProperty.set(intVal);
+            if(intVal>maxValue){
+                setText(String.valueOf(maxValue));
+                return;
+            }
+            internalValueProperty.set(intVal);
         }
     }
 
-    public SimpleLongProperty getIntegerValueProperty() {
-        return integerValueProperty;
+    public SimpleLongProperty getInternalValueProperty() {
+        return internalValueProperty;
     }
 
     public long getValue() {
-        return integerValueProperty.getValue() == null ? 0 : integerValueProperty.get();
+        return internalValueProperty.getValue() == null ? 0 : internalValueProperty.get();
+    }
+
+    public void setValue(Long value){
+        if(value!=null) {
+            internalValueProperty.setValue(value);
+        } else {
+            setText("0");
+        }
     }
 
 

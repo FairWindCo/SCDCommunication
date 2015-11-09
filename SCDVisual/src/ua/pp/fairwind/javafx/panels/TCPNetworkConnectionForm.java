@@ -84,7 +84,7 @@ public class TCPNetworkConnectionForm extends SimpleView {
             lbl_Port.setId("formLabel");
             pane.add(lbl_Port, 0, 1);
             IntegerInputText prt = new IntegerInputText();
-            prt.getIntegerValueProperty().bindBidirectional(port);
+            prt.getInternalValueProperty().bindBidirectional(port);
             pane.add(prt, 1, 1);
             Button ok = new Button("SAVE");
             ok.onActionProperty().setValue(arg0 -> {

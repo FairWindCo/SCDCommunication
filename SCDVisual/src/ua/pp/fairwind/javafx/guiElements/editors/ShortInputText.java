@@ -14,7 +14,7 @@ public class ShortInputText extends TextField implements EventHandler<KeyEvent>,
     final private static String EMPTYSTRING = "";
     private long maxValue = Long.MAX_VALUE;
     private long minValue = Long.MIN_VALUE;
-    private SimpleIntegerProperty integerValueProperty = new SimpleIntegerProperty(0);
+    private SimpleIntegerProperty internalValueProperty = new SimpleIntegerProperty(0);
 
     public ShortInputText() {
         super();
@@ -23,18 +23,21 @@ public class ShortInputText extends TextField implements EventHandler<KeyEvent>,
 
     public ShortInputText(Property property) {
         super(property.getValue() != null ? property.getValue().toString() : "");
-        this.integerValueProperty.bindBidirectional(property);
+        this.internalValueProperty.unbind();
+        this.internalValueProperty.bindBidirectional(property);
         onInitialisation();
     }
 
-    public ShortInputText(Long arg0) {
-        super(arg0.toString());
+    public ShortInputText(Short arg0) {
+        super(arg0 == null ? null : arg0.toString());
+        if(arg0!=null)internalValueProperty.setValue(arg0);
         onInitialisation();
     }
 
     public ShortInputText(Short arg0, short maxVal) {
         super(arg0 == null ? null : arg0.toString());
         this.maxValue = maxVal;
+        if(arg0!=null)internalValueProperty.setValue(arg0);
         onInitialisation();
     }
 
@@ -76,7 +79,7 @@ public class ShortInputText extends TextField implements EventHandler<KeyEvent>,
         if (val >= minValue && val <= maxValue) {
             setText(Integer.toString(val));
         } else {
-            integerValueProperty.setValue(parseString(getText()));
+            internalValueProperty.setValue(parseString(getText()));
         }
     }
 
@@ -84,7 +87,7 @@ public class ShortInputText extends TextField implements EventHandler<KeyEvent>,
         checkConstraints();
         this.addEventFilter(KeyEvent.KEY_TYPED, this);
         this.textProperty().addListener(this);
-        integerValueProperty.addListener((arg0, arg1, newval) -> {
+        internalValueProperty.addListener((arg0, arg1, newval) -> {
             if (newval != null)
                 setIntVal(newval.shortValue());
         });
@@ -145,9 +148,13 @@ public class ShortInputText extends TextField implements EventHandler<KeyEvent>,
 
     @Override
     public void changed(ObservableValue<? extends String> value, String olds, String newValue) {
+        if(olds==newValue || olds!=null&&olds.equals(newValue))return;
+        if("".equals(newValue)&&"0".equals(olds)){
+            return;
+        }
         if (newValue == null || EMPTYSTRING.equals(newValue)) {
             setText("0");
-            integerValueProperty.set(0);
+            internalValueProperty.set(0);
             return;
         }
         if ("-".equals(newValue)) {
@@ -156,21 +163,31 @@ public class ShortInputText extends TextField implements EventHandler<KeyEvent>,
             }
         } else {
             short intVal = Short.parseShort(newValue);
-            if (intVal < minValue || intVal > maxValue) {
-                setText(olds);
+            if (intVal < minValue) {
+                setText(String.valueOf(minValue));
                 return;
             }
-            integerValueProperty.set(intVal);
+            if(intVal>maxValue){
+                setText(String.valueOf(maxValue));
+                return;
+            }
+            internalValueProperty.set(intVal);
         }
     }
 
-    public SimpleIntegerProperty getIntegerValueProperty() {
-        return integerValueProperty;
+    public SimpleIntegerProperty getInternalValueProperty() {
+        return internalValueProperty;
     }
 
     public long getValue() {
-        return integerValueProperty.getValue() == null ? 0 : integerValueProperty.get();
+        return internalValueProperty.getValue() == null ? 0 : internalValueProperty.get();
     }
 
-
+    public void setValue(Short value){
+        if(value!=null) {
+            internalValueProperty.setValue(value);
+        } else {
+            setText("0");
+        }
+    }
 }

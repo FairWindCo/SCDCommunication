@@ -589,7 +589,7 @@ public class VisualControls {
         IntegerInputText editor = new IntegerInputText();
         editor.setMinValue(min);
         editor.setMaxValue(max);
-        editor.getIntegerValueProperty().bindBidirectional(new ShortPropertyFXAdapter(property));
+        editor.getInternalValueProperty().bindBidirectional(new ShortPropertyFXAdapter(property));
         Tooltip.install(editor, new Tooltip(property.getDescription()));
         return editor;
     }
@@ -598,7 +598,7 @@ public class VisualControls {
         IntegerInputText editor = new IntegerInputText();
         editor.setMinValue(min);
         editor.setMaxValue(max);
-        editor.getIntegerValueProperty().bindBidirectional(new LongPropertyFXAdapter(property));
+        editor.getInternalValueProperty().bindBidirectional(new LongPropertyFXAdapter(property));
         Tooltip.install(editor, new Tooltip(property.getDescription()));
         return editor;
     }

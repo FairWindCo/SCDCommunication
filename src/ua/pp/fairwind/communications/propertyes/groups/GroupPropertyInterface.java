@@ -21,4 +21,6 @@ public interface GroupPropertyInterface {
     void setBubleEvent(boolean bubleEvent);
 
     int propertyCount();
+
+    GroupPropertyInterface setChildAdditional(String name,Object value);
 }

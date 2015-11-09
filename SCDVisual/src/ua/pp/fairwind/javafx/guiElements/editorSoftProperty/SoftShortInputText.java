@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 
@@ -65,8 +66,12 @@ public class SoftShortInputText extends TextField implements EventHandler<KeyEve
             return 0;
         }
         short intVal = Short.parseShort(str);
-        if (intVal < minValue || intVal > maxValue) {
-            return 0;
+        if (intVal < minValue) {
+            return minValue;
+        }
+        if(intVal>maxValue){
+            setText(String.valueOf(maxValue));
+            return maxValue;
         }
         return intVal;
     }
@@ -140,6 +145,10 @@ public class SoftShortInputText extends TextField implements EventHandler<KeyEve
 
     @Override
     public void changed(ObservableValue<? extends String> value, String olds, String newValue) {
+        if(olds==newValue || olds!=null&&olds.equals(newValue))return;
+        if("".equals(newValue)&&"0".equals(olds)){
+            return;
+        }
         if (newValue == null || EMPTYSTRING.equals(newValue)) {
             setText("0");
             property.setValue((short) 0);
@@ -151,11 +160,16 @@ public class SoftShortInputText extends TextField implements EventHandler<KeyEve
             }
         } else {
             short intVal = Short.parseShort(newValue);
-            if (intVal < minValue || intVal > maxValue) {
-                setText(olds);
+            if (intVal < minValue) {
+                setText(String.valueOf(minValue));
                 return;
             }
-            property.setValue(intVal);
+            if(intVal>maxValue){
+                setText(String.valueOf(maxValue));
+                return;
+            }
+            //property.setValue(parseString(getText()));
+            ValuePropertyModificator.setSilentValue(property, parseString(newValue));
         }
     }
 

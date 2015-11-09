@@ -539,7 +539,7 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
     }
 
     private static Long getTemporryValue(byte[] value,int pos,int size,boolean absolutle){
-        if(size<1 || value==null || value.length==0 || size<=0 || pos+size>=value.length){
+        if(size<1 || value==null || value.length==0 || size<=0 || (pos+size>value.length)){
             return null;
         } else {
             if(size==1){

@@ -3,7 +3,10 @@ package ua.pp.fairwind.javafx.panels.devices.bdmg;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import ua.pp.fairwind.communications.devices.hardwaredevices.positron.BDMG04;
@@ -57,9 +60,6 @@ public class BDMGPanel extends HBox {
             grid.setHgap(10);
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
-
-            int rowIndex = 0;
-            //rowIndex = TupicalPanels.setChanelControl(grid, device.getGROUP_KOIF(), rowIndex, 0, false);
             PropertyEditorPanel ep=new PropertyEditorPanel(device.getConfiguration());
             ScrollPane scrol = new ScrollPane(ep);
             scrol.setFitToWidth(true);
@@ -80,28 +80,11 @@ public class BDMGPanel extends HBox {
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
 
-            int rowIndex = 0;
-            /*
-            rowIndex = TupicalPanels.setChanelControlRO(grid, device.getSerial_number(), "SERIAL_NUM", rowIndex, 0);
-            grid.add(new Label(I18N_FX.getLocalizedString("MED")), 0, rowIndex);
-            grid.add(VisualControls.createLcdIndicator(device.getMed()), 1, rowIndex);
-            grid.add(VisualControls.createReReadButton(device.getGROUP_MED()), 2, rowIndex);
-            grid.add(VisualControls.createConfigureProppearty(device.getGROUP_MED()), 3, rowIndex++);
-            grid.add(new Label(I18N_FX.getLocalizedString("MISS")), 0, rowIndex);
-            grid.add(VisualControls.createLcdIndicator(device.getMiss()), 1, rowIndex++);
-            rowIndex = TupicalPanels.setChanelControlRO(grid, device.getTemp(), "TEMP", rowIndex, 0);
-
-            grid.add(VisualControls.createLedIndicator(device.getStatus(), Color.YELLOW), 0, rowIndex);
-            grid.add(VisualControls.createLedIndicator(device.getMULTI(), Color.GREEN), 1, rowIndex);
-            grid.add(VisualControls.createLedIndicator(device.getHIGHT_ERROR(), Color.RED), 2, rowIndex);
-            grid.add(VisualControls.createLedIndicator(device.getLOW_ERROR(), Color.RED), 3, rowIndex);
-            grid.add(VisualControls.createLedIndicator(device.getTEMP_ERROR(), Color.RED), 4, rowIndex++);
-
-            grid.add(new Label(I18N_FX.getLocalizedString("BDBG09.STAT")), 0, rowIndex);
-            grid.add(new Label(I18N_FX.getLocalizedString("BDBG09.MULTI")), 1, rowIndex);
-            grid.add(new Label(I18N_FX.getLocalizedString("BDBG09.ERROR")), 2, rowIndex++, 3, 1);
-/**/
-            initTab.setContent(grid);
+            PropertyEditorPanel ep=new PropertyEditorPanel(device.getState(),device.getDeviceInfo());
+            ScrollPane scrol = new ScrollPane(ep);
+            scrol.setFitToWidth(true);
+            scrol.setFitToHeight(true);
+            initTab.setContent(scrol);
         });
     }
 
@@ -116,14 +99,11 @@ public class BDMGPanel extends HBox {
             grid.setHgap(10);
             grid.setVgap(10);
             grid.setPadding(new Insets(10, 10, 10, 10));
-            int rowindex = 0;
-            grid.add(new Label(I18N_FX.getLocalizedString("DEVICE_ADDRESS")), 0, rowindex);
-/*
-            grid.add(createAddressSelect(device.getConfigured_device_address()), 1, rowindex);
-            grid.add(VisualControls.createReReadButton(device.getConfigured_device_address()), 2, rowindex);
-            grid.add(VisualControls.createReWriteButton(device.getConfigured_device_address()), 3, rowindex++);
-            /**/
-            initTab.setContent(grid);
+            PropertyEditorPanel ep=new PropertyEditorPanel(device.getBootparam());
+            ScrollPane scrol = new ScrollPane(ep);
+            scrol.setFitToWidth(true);
+            scrol.setFitToHeight(true);
+            initTab.setContent(scrol);
         });
     }
 

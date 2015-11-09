@@ -15,6 +15,8 @@ import java.util.stream.Stream;
  * Created by ������ on 26.06.2015.
  */
 public abstract class StaticGroupProperty extends AbstractProperty implements GroupPropertyInterface {
+    final public static String READ_AVAIBLE = "READ_AVAIBLE";
+    final public static String WRITE_AVAIBLE = "WRITE_AVAIBLE";
     final private Map<String, AbstractProperty> properties;
     final private Map<UUID, AbstractProperty> propertiesUUID;
     final private List<AbstractProperty> listproperty;
@@ -101,6 +103,38 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
 
     public void setBubleEvent(boolean bubleEvent) {
         setAdditionalInfo(PROPERTY_BUBLE_EVENT, bubleEvent);
+    }
+
+    public boolean isWriteAccepted(){
+        Object val=super.getAdditionalInfo(WRITE_AVAIBLE);
+        if(val!=null&&val instanceof Boolean&&((Boolean)val))return true;
+        return false;
+    }
+
+
+
+    public void setWriteAccepted(boolean value){
+        super.setAdditionalInfo(WRITE_AVAIBLE, value);
+    }
+    public boolean isReadAccepted(){
+        Object val=super.getAdditionalInfo(READ_AVAIBLE);
+        if(val!=null&&val instanceof Boolean&&((Boolean)val))return true;
+        return false;
+    }
+    public void setReadAccepted(boolean value){
+        super.setAdditionalInfo(READ_AVAIBLE, value);
+    }
+
+    public GroupPropertyInterface setChildAdditional(String name,Object value){
+        if(name!=null&&!name.isEmpty()) {
+            for (AbstractProperty property : listproperty) {
+                property.setAdditionalInfo(name, value);
+                if(property instanceof GroupPropertyInterface){
+                    ((GroupPropertyInterface) property).setChildAdditional(name,value);
+                }
+            }
+        }
+        return this;
     }
 
 }

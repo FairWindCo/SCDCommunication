@@ -11,13 +11,15 @@ public class ValueChangeEvent<T> {
     final private SystemEllement sourceEvent;
     final private T oldValue;
     final private T newValue;
+    final private Event parent;
 
-    public ValueChangeEvent(String uuidFrom, String nameFrom, SystemEllement sourceEvent, T oldValue, T newValue) {
+    public ValueChangeEvent(String uuidFrom, String nameFrom, SystemEllement sourceEvent, T oldValue, T newValue,Event parent) {
         this.uuidFrom = uuidFrom;
         this.nameFrom = nameFrom;
         this.sourceEvent = sourceEvent;
         this.oldValue = oldValue;
         this.newValue = newValue;
+        this.parent=parent;
     }
 
     public String getUuidFrom() {
@@ -38,5 +40,9 @@ public class ValueChangeEvent<T> {
 
     public T getNewValue() {
         return newValue;
+    }
+
+    public Event getParent() {
+        return parent;
     }
 }

@@ -19,6 +19,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     final public static String MIN_VALUE = "PROPERTY_MIN_VALUE";
     final public static String MAX_VALUE = "PROPERTY_MAX_VALUE";
     final public static String VALUE_VALIDATOR = "PROPERTY_VALUE_VALIDATOR";
+    final public static String NO_CONTROL_PROPERTY = "NO_CONTROL_PROPERTY";
     //private volatile T value;
     //private volatile long lastChangeTime;
     protected final SOFT_OPERATION_TYPE softOperationType;
@@ -192,6 +193,22 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
         }
     }
 
+    protected void setSilentValue(final T value) {
+        if (value == null) return;
+        this.valide.set(true);
+        if (this.value.get() == null) {
+            this.value.set(value);
+            //lastChangeTime = System.currentTimeMillis();
+            lastChangeTime.set(System.currentTimeMillis());
+        } else if (value.compareTo(this.value.get()) != 0) {
+            T old = this.value.get();
+            this.value.set(value);
+            this.oldvalue.set(old);
+            //lastChangeTime = System.currentTimeMillis();
+            lastChangeTime.set(System.currentTimeMillis());
+        }
+    }
+
     protected void setValueForBinding(final T value, Event event) {
         if (softOperationType == SOFT_OPERATION_TYPE.READ_ONLY) {
             fireEvent(EventType.ERROR, I18N.getLocalizedString("property.readonly.error"));
@@ -230,7 +247,7 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
 
     private void fireChangeEvent(T oldValue, T newValue, Event parentEvent) {
         if (eventactive) {
-            final ValueChangeEvent<T> event = new ValueChangeEvent<>(this.getUUIDString(), this.getName(), this, oldValue, newValue);
+            final ValueChangeEvent<T> event = new ValueChangeEvent<>(this.getUUIDString(), this.getName(), this, oldValue, newValue,parentEvent);
             centralSystem.fireEvent(this.getUUID(), event);
             fireEvent(EventType.ELEMENT_CHANGE, newValue, parentEvent);
         }
@@ -330,5 +347,14 @@ public abstract class ValueProperty<T extends Comparable<? super T>> extends Abs
     public ValueProperty<T> setAdditionalInfo(String paramsName, Object value) {
         super.setAdditionalInfo(paramsName, value);
         return this;
+    }
+
+    public boolean isNoControlProperty(){
+        Object val=super.getAdditionalInfo(NO_CONTROL_PROPERTY);
+        if(val!=null&&val instanceof Boolean&&((Boolean)val))return true;
+        return false;
+    }
+    public void setNoControlProperty(boolean value){
+        super.setAdditionalInfo(NO_CONTROL_PROPERTY, value);
     }
 }

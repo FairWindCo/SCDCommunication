@@ -1,45 +1,47 @@
-package ua.pp.fairwind.javafx.guiElements.editorSoftProperty;
+package ua.pp.fairwind.javafx.guiElements.editors;
 
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
-import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
-import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
-import ua.pp.fairwind.javafx.VisualControls;
 
 
-public class SoftLongInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String> {
-    final private static String DIGITPATERN = "[-]?[0123456789]+";
+public class FloatInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String> {
+    final private static String DIGITPATERN = "[-]?[0123456789]*[.]?[0123456789]+";
     final private static String EMPTYSTRING = "";
-    final private SoftLongProperty property;
-    private long maxValue = Long.MAX_VALUE;
-    private long minValue = Long.MIN_VALUE;
-    ValueChangeListener<Long> eventListener = event -> {
-        if (event.getNewValue() != null)
-            VisualControls.executeInJavaFXThread(() ->
-                    setIntVal((Long) event.getNewValue()));
-    };
+    private float maxValue = Float.MAX_VALUE;
+    private float minValue = -Float.MAX_VALUE;
+    private SimpleFloatProperty internalValueProperty = new SimpleFloatProperty(0);
 
-    public SoftLongInputText(SoftLongProperty property) {
-        super(property.getValue() == null ? null : property.getValue().toString());
-        this.property = property;
+    public FloatInputText() {
+        super();
         onInitialisation();
     }
 
-    public SoftLongInputText(SoftLongProperty property, long minVal, long maxVal) {
-        super(property.getValue() == null ? null : property.getValue().toString());
-        this.property = property;
+    public FloatInputText(Property property) {
+        super(property.getValue() != null ? property.getValue().toString() : "");
+        this.internalValueProperty.bindBidirectional(property);
+        onInitialisation();
+    }
+
+    public FloatInputText(Float arg0) {
+        super(arg0 == null ? null : arg0.toString());
+        if(arg0!=null)internalValueProperty.setValue(arg0);
+        onInitialisation();
+    }
+
+    public FloatInputText(Float arg0, float maxVal) {
+        super(arg0 == null ? null : arg0.toString());
+        if(arg0!=null)internalValueProperty.setValue(arg0);
         this.maxValue = maxVal;
-        this.minValue = minVal;
         onInitialisation();
     }
 
-    public SoftLongInputText(SoftLongProperty property, int maxVal) {
-        super(property.getValue() == null ? null : property.getValue().toString());
-        this.property = property;
+    public FloatInputText(float maxVal) {
+        super();
         this.maxValue = maxVal;
         onInitialisation();
     }
@@ -54,33 +56,29 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
 
     private void checkConstraints() {
         if (minValue > maxValue) {
-            long v = maxValue;
+            float v = maxValue;
             maxValue = minValue;
             minValue = v;
         }
     }
 
-    private long parseString(String str) {
+    private float parseString(String str) {
         if (str == null || EMPTYSTRING.equals(str)) {
             setText("0");
             return 0;
         }
-        long intVal = Long.parseLong(str);
-        if (intVal < minValue) {
-            return minValue;
-        }
-        if(intVal>maxValue){
-            setText(String.valueOf(maxValue));
-            return maxValue;
+        float intVal = Float.parseFloat(str);
+        if (intVal < minValue || intVal > maxValue) {
+            return 0;
         }
         return intVal;
     }
 
-    private void setIntVal(Long val) {
+    private void setIntVal(Float val) {
         if (val >= minValue && val <= maxValue) {
-            setText(Long.toString(val));
+            setText(Float.toString(val));
         } else {
-            property.setValue(parseString(getText()));
+            internalValueProperty.setValue(parseString(getText()));
         }
     }
 
@@ -88,7 +86,11 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
         checkConstraints();
         this.addEventFilter(KeyEvent.KEY_TYPED, this);
         this.textProperty().addListener(this);
-        property.addChangeEventListener(eventListener);
+        internalValueProperty.addListener((arg0, arg1, newval) -> {
+            if (newval != null)
+                setIntVal(newval.floatValue());
+        });
+
     }
 /*
     @Override
@@ -114,7 +116,7 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
 
     @Override
     public void handle(KeyEvent keyevent) {
-        if (!"-0123456789".contains(keyevent.getCharacter())) {
+        if (!"-0123456789.".contains(keyevent.getCharacter())) {
             keyevent.consume();
         }
 		/*
@@ -125,20 +127,20 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
 
     }
 
-    public long getMaxValue() {
+    public float getMaxValue() {
         return maxValue;
     }
 
-    public void setMaxValue(int maxValue) {
+    public void setMaxValue(float maxValue) {
         this.maxValue = maxValue;
         checkConstraints();
     }
 
-    public long getMinValue() {
+    public float getMinValue() {
         return minValue;
     }
 
-    public void setMinValue(int minValue) {
+    public void setMinValue(float minValue) {
         this.minValue = minValue;
         checkConstraints();
     }
@@ -149,9 +151,10 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
         if("".equals(newValue)&&"0".equals(olds)){
             return;
         }
+
         if (newValue == null || EMPTYSTRING.equals(newValue)) {
             setText("0");
-            property.setValue(0L);
+            internalValueProperty.set(0);
             return;
         }
         if ("-".equals(newValue)) {
@@ -159,7 +162,7 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
                 setText(EMPTYSTRING);
             }
         } else {
-            long intVal = Long.parseLong(newValue);
+            float intVal = Float.parseFloat(newValue);
             if (intVal < minValue) {
                 setText(String.valueOf(minValue));
                 return;
@@ -168,22 +171,25 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
                 setText(String.valueOf(maxValue));
                 return;
             }
-            //property.setValue(parseString(getText()));
-            ValuePropertyModificator.setSilentValue(property, parseString(newValue));
+            internalValueProperty.set(intVal);
         }
     }
 
-    public SoftLongProperty getIntegerValueProperty() {
-        return property;
+    public SimpleFloatProperty getInternalValueProperty() {
+        return internalValueProperty;
     }
 
-    public void destroy() {
-        if (property != null) property.removeChangeEventListener(eventListener);
+    public float getValue() {
+        return internalValueProperty.getValue() == null ? 0 : internalValueProperty.get();
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        destroy();
-        super.finalize();
+    public void setValue(Float value){
+        if(value!=null) {
+            internalValueProperty.setValue(value);
+        } else {
+            setText("0");
+        }
     }
+
+
 }

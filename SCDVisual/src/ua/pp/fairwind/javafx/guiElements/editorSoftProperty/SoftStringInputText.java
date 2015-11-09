@@ -31,6 +31,7 @@ public class SoftStringInputText extends TextField implements ChangeListener<Str
 
     @Override
     public void changed(ObservableValue<? extends String> value, String olds, String newValue) {
+        if(olds==newValue || olds!=null&&olds.equals(newValue))return;
         if (newValue == null || newValue.isEmpty()) {
             setText("");
             property.setValue("");

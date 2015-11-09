@@ -9,6 +9,7 @@ import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
  * Created by Сергей on 06.07.2015.
  */
 public class SoftBoolProperty extends ValueProperty<Boolean> implements BooleanPropertyInterface {
+    public static final String BIT_NUMBER="BIT_NUMBER";
     public SoftBoolProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }
