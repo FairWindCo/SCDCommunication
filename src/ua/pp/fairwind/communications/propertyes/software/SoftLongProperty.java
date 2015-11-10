@@ -1,11 +1,12 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.LongValueInterface;
 
 /**
  * Created by FairWindCo on 07.07.2015
  */
-public class SoftLongProperty extends NumberProperty<Long> {
+public class SoftLongProperty extends NumberProperty<Long> implements LongValueInterface{
     public SoftLongProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }

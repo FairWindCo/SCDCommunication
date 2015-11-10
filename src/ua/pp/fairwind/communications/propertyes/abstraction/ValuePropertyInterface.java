@@ -2,13 +2,14 @@ package ua.pp.fairwind.communications.propertyes.abstraction;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.ValueInterfaceMarker;
 
 import java.util.Date;
 
 /**
  * Created by ������ on 04.07.2015.
  */
-public interface ValuePropertyInterface<T extends Comparable<? super T>> extends ElementInterface, ReadWriteProperty<T> {
+public interface ValuePropertyInterface<T extends Comparable<? super T>> extends ElementInterface, ReadWriteProperty<T>,ValueInterfaceMarker<T> {
     @Override
     T getValue();
 

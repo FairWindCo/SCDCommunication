@@ -11,6 +11,9 @@ import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.groups.GroupProperty;
 import ua.pp.fairwind.communications.propertyes.software.*;
 import ua.pp.fairwind.communications.propertyes.software.bittedproperty.SoftBitToIntegerProperty;
+import ua.pp.fairwind.communications.utils.ModBusProtocol;
+
+import java.io.*;
 
 /**
  * Created by Сергей on 11.09.2015.
@@ -103,8 +106,9 @@ public class BDMG04 extends RSLineDevice {
                 new SoftBoolProperty("bdmg04.state_status.ok",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,0),
                 new SoftBoolProperty("bdmg04.state_status.vrg",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,1),
                 new SoftBoolProperty("bdmg04.state_status.vag",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,2),
-                new SoftBoolProperty("bdmg04.state_status.hi_chanel1",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,3),
-                new SoftBoolProperty("bdmg04.state_status.hi_chanel2",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,4),
+                new SoftBoolProperty("bdmg04.state_status.chanel_hi",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,3),
+                new SoftBoolProperty("bdmg04.state_status.hi_chanel1",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,4),
+                new SoftBoolProperty("bdmg04.state_status.hi_chanel2",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,5),
                 new SoftBoolProperty("bdmg04.state_status.error_chanel1",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,6),
                 new SoftBoolProperty("bdmg04.state_status.error_chanel2",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,7),
                 new SoftBoolProperty("bdmg04.state_status.test",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,8),
@@ -115,7 +119,7 @@ public class BDMG04 extends RSLineDevice {
                 new SoftBoolProperty("bdmg04.state_status.filtration_error",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,13),
                 new SoftBoolProperty("bdmg04.state_status.table_chanel1",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,14),
                 new SoftBoolProperty("bdmg04.state_status.table_chanel2",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,15)
-            );
+            ).setAdditionalInfo(MODBUS_BYTE_SIZE,2);
     protected final SoftFloatProperty state_voltage_chanel1=new SoftFloatProperty("bdmg04.state_voltage_chanel1", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(MODBUS_BYTE_SIZE,4);
     protected final SoftFloatProperty state_voltage_chanel2=new SoftFloatProperty("bdmg04.state_voltage_chanel2", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(MODBUS_BYTE_SIZE,4);
     protected final SoftFloatProperty state_speed_count_chanel1=new SoftFloatProperty("bdmg04.state_speed_count_chanel1", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(MODBUS_BYTE_SIZE,4);
@@ -141,49 +145,55 @@ public class BDMG04 extends RSLineDevice {
         deviceInfo=new GroupProperty("bdmg04.deviceInfo", null, deviceType, systemBoardType, firmwarePO1, firmwarePO2, firmwarePO3, chanelCount);
         //deviceInfo=new GroupProperty("bdmg04.deviceInfo", null, systemBoardType,deviceType, firmwarePO2, firmwarePO1,chanelCount, firmwarePO3);
         deviceInfo.setAdditionalInfo(MODBUS_ADDRESS,0xA000).setAdditionalInfo(MODBUS_READ_FUNCTION,0x3).setAdditionalInfo(MODBUS_BYTE_SIZE, 6);
+        deviceInfo.setChildAdditional(ValueProperty.NO_CONTROL_PROPERTY, true);
         deviceInfo.setReadAccepted(true);
 
-        configuration=new GroupProperty("bdmg04.deviceInfo", null, chanel1_sensetive,chanel1_dedtime,chanel2_sensetive,chanel2_dedtime,hight_sun_zone,low_sun_zone,
+        configuration=new GroupProperty("bdmg04.config", null, chanel1_sensetive,chanel1_dedtime,chanel2_sensetive,chanel2_dedtime,hight_sun_zone,low_sun_zone,
                 hight_warning,hight_alarm,chanel1_avarage_count,chanel2_avarage_count,chanel1_downmode_count,chanel2_downmode_count,chanel1_minspeed_count,
                 chanel2_minspeed_count,alarm_mode,descrite_time,chanel1_test_addon,chanel2_test_addon,filtation,hight_time,comparator_chanel1,comparator_chanel2,
                 chanel1_error_time,chanel2_error_time,hight_sigm_chanel1,low_sigm_chanel1,koif_chanel1,koif_chanel2,fon_chanel1,fon_chanel2,hight_sigm_chanel2,
                 low_sigm_chanel2,min_time_chanel1,min_time_chanel2);
-        configuration.setAdditionalInfo(MODBUS_ADDRESS, 0x0000).setAdditionalInfo(MODBUS_READ_FUNCTION,0x3).setAdditionalInfo(MODBUS_BYTE_SIZE, (8 * 4 + 6 * 2 + 2 + 2 * 2 + 4 + 2 * 2 + 2 + 4 * 4 + 4));
+        configuration.setAdditionalInfo(MODBUS_ADDRESS, 0x0000).setAdditionalInfo(MODBUS_READ_FUNCTION,0x3)
+                .setAdditionalInfo(MODBUS_WRITE_FUNCTION, 0x10)
+                .setAdditionalInfo(MODBUS_BYTE_SIZE, (8 * 4 + 6 * 2 + 2 + 2 * 2 + 4 + 2 * 2 + 2 + 4 * 4 + 4));
         configuration.setChildAdditional(ValueProperty.NO_CONTROL_PROPERTY, true);
         configuration.setReadAccepted(true);
         configuration.setWriteAccepted(true);
+        //configuration.setPropertyTimeOutReadAddon(4000L);
 
         bootparam=new GroupProperty("bdmg04.bootparam",null,boot_param_deviceType,boot_param_systemBoardType,boot_param_mode,boot_param_networkaddress,boot_processor_voltage,
                 boot_devision_chanel1,boot_devision_chanel2,boot_multage_chanel1,boot_multage_chanel2,boot_move_chanel1,boot_move_chanel2,boot_resistor,
                 boot_out_curent_hight,boot_out_curent_low,boot_curent_detector_fail,boot_curent_iverflow,boot_curent_correction,
                 boot_hi_volatege_max_chanel1,boot_hi_volatege_min_chanel1,boot_hi_volatege_max_chanel2,boot_hi_volatege_min_chanel2);
-        bootparam.setAdditionalInfo(MODBUS_ADDRESS, 0x100).setAdditionalInfo(MODBUS_READ_FUNCTION, 0x3)
+        bootparam.setAdditionalInfo(MODBUS_ADDRESS, 0x100).setAdditionalInfo(MODBUS_READ_FUNCTION, 0x3).setAdditionalInfo(MODBUS_WRITE_FUNCTION,0x10)
                 .setAdditionalInfo(MODBUS_BYTE_SIZE, 4)
                 .setAdditionalInfo(MODBUS_BYTE_SIZE_V125, 4 + (17 * 4));
         bootparam.setChildAdditional(ValueProperty.NO_CONTROL_PROPERTY, true);
         bootparam.setReadAccepted(true);
         bootparam.setWriteAccepted(true);
+        //bootparam.setPropertyTimeOutReadAddon(4000L);
 
 
         command=new GroupProperty("bdmg04.command",null,command_mode,command_execute);
-        command.setAdditionalInfo(MODBUS_ADDRESS, 0x200).setAdditionalInfo(MODBUS_READ_FUNCTION,0x4)
+        command.setAdditionalInfo(MODBUS_ADDRESS, 0x200).setAdditionalInfo(MODBUS_READ_FUNCTION,0x4).setAdditionalInfo(MODBUS_WRITE_FUNCTION,0x10)
                 .setAdditionalInfo(MODBUS_BYTE_SIZE, 1)
                 .setAdditionalInfo(MODBUS_BYTE_SIZE_V125, 2);
         command.setChildAdditional(ValueProperty.NO_CONTROL_PROPERTY, true);
         command.setReadAccepted(true);
         command.setWriteAccepted(true);
+        //command.setPropertyTimeOutReadAddon(4000L);
 
 
         state=new GroupProperty("bdmg04.state",null,state_med,state_status,state_voltage_chanel1,state_voltage_chanel2,
                 state_speed_count_chanel1,state_impouls_count_chanel1,state_time_chanel1,
                 state_speed_count_chanel2,state_impouls_count_chanel2,state_time_chanel2,
                 state_last_sec_chanel1,state_last_sec_chanel2,state_sheem_chanel1,state_sheem_chanel2);
-        state.setAdditionalInfo(MODBUS_ADDRESS, 0x000).setAdditionalInfo(MODBUS_READ_FUNCTION,0x4)
+        state.setAdditionalInfo(MODBUS_ADDRESS, 0x000).setAdditionalInfo(MODBUS_READ_FUNCTION,0x4).setAdditionalInfo(MODBUS_WRITE_FUNCTION,0x10)
                 .setAdditionalInfo(MODBUS_BYTE_SIZE, 4+2+2*4+4+2+2+4+2+2)
                 .setAdditionalInfo(MODBUS_BYTE_SIZE_V125, 4+2+2*4+4+2+2+4+2+2+2*2+2);
         state.setChildAdditional(ValueProperty.NO_CONTROL_PROPERTY, true);
         state.setReadAccepted(true);
-        state.setWriteAccepted(true);
+        state.setWriteAccepted(false);
 
         addPropertys(deviceInfo);
         addPropertys(configuration);
@@ -260,7 +270,7 @@ public class BDMG04 extends RSLineDevice {
             ModBusProtocol.ModBusProtocolRequestInformation request=ModBusProtocol.formWriteRequestModBus(property, mobus_byte_size, (int) deviceAddress);
             return request==null?null:request.getRequest(false);
         }
-        if (protocol == PROTOCOL_VERSON_124) {
+        if (protocol == PROTOCOL_VERSON_125) {
             Object size = property.getAdditionalInfo(MODBUS_BYTE_SIZE_V125);
             if (size == null && !(size instanceof Number)) {
                 size = property.getAdditionalInfo(MODBUS_BYTE_SIZE);
@@ -304,5 +314,48 @@ public class BDMG04 extends RSLineDevice {
 
     public GroupProperty getState() {
         return state;
+    }
+
+
+    public void saveBinaryParameters(File file){
+        if(file!=null) {
+            if(!file.exists()){
+                try {
+                    if (!file.createNewFile()) {
+                        fireEvent(EventType.ERROR, "FILE CREATION ERROR"+file.getAbsolutePath());
+                    }
+                }catch (IOException e){
+                    fireEvent(EventType.ERROR, e.getLocalizedMessage());
+                }
+            }
+
+            if (file.canWrite()) {
+                byte[] conf = ModBusProtocol.getValueForTransfer(configuration);
+                byte[] boot = ModBusProtocol.getValueForTransfer(bootparam,4 + (17 * 4));
+                try (OutputStream out = new FileOutputStream(file)) {
+                    out.write(conf);
+                    out.write(boot);
+                } catch (IOException e) {
+                    fireEvent(EventType.ERROR, e.getLocalizedMessage());
+                }
+            }
+        }
+    }
+
+    public void loadBinaryParameters(File file){
+        if(file!=null && file.canRead()){
+            byte[] conf=new byte[ModBusProtocol.calcultaeBufferSize(configuration)];
+            byte[] boot=new byte[4 + (17 * 4)];
+            if(conf!=null && boot!=null && conf.length>0 && boot.length>0) {
+                try (InputStream out = new FileInputStream(file)) {
+                    out.read(conf);
+                    out.read(boot);
+                } catch (IOException e) {
+                    fireEvent(EventType.ERROR, e.getLocalizedMessage());
+                }
+                ModBusProtocol.setValueFromTransfer(configuration, conf, 0, conf.length, null);
+                ModBusProtocol.setValueFromTransfer(bootparam, boot, 0, boot.length, null);
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package ua.pp.fairwind.communications.devices.hardwaredevices.positron;
+package ua.pp.fairwind.communications.utils;
 
 
 import ua.pp.fairwind.communications.devices.RequestInformation;
@@ -6,9 +6,10 @@ import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractValuePropertyExecutor;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.*;
 import ua.pp.fairwind.communications.propertyes.groups.GroupProperty;
-import ua.pp.fairwind.communications.propertyes.software.*;
-import ua.pp.fairwind.communications.utils.CommunicationUtils;
+import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
+import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -121,6 +122,15 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
         return processResponse(recivedBuffer, property, device_addess, subsize, modificator);
     }
 
+    public static int calcultaeBufferSize(AbstractProperty property) {
+        Object sze = property.getAdditionalInfo(MODBUS_BYTE_SIZE);
+        if (sze == null || !(sze instanceof Number)) {
+            return 0;
+        }
+        int subsize=((Number)sze).intValue();
+        return subsize;
+    }
+
 
     public static boolean processResponse(byte[] recivedBuffer, AbstractProperty property, int device_addess,int size, Event modificator) {
         if (recivedBuffer == null || recivedBuffer.length < 8) return false;
@@ -173,7 +183,7 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
                     case WRITE_MULTI_COIL:
                     case WRITE_MULTI_REGISTER:
                         int ccrc = (CommunicationUtils.calculate_crc16_IBM(recivedBuffer, i, 6) & 0xFFFF);
-                        int crc = ((recivedBuffer[i + 6] & 0xFF) << 9) | (recivedBuffer[i + 7] & 0xFF);
+                        int crc = ((recivedBuffer[i + 6] & 0xFF) << 8) | (recivedBuffer[i + 7] & 0xFF);
                         if (crc == ccrc) {
                             Object modbusproperty_address = property.getAdditionalInfo(MODBUS_ADDRESS);
                             if (modbusproperty_address == null && !(modbusproperty_address instanceof Number)) {
@@ -207,11 +217,11 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
         if(function!=WRITE_MULTI_COIL && function!=WRITE_MULTI_REGISTER && function!=WRITE_SINGLE_COIL && function!=WRITE_SINGLE_REGISTER || value==null || value.length==0){
             throw new IllegalArgumentException();
         }
-        int response=3+4+2;
+        int response=2+4+2;
         if(function==WRITE_SINGLE_COIL || function==WRITE_SINGLE_REGISTER){
             byte[] buffer = new byte[8];
             buffer[0] = (byte) (device_addess & 0xFF);
-            buffer[1] = (byte) (function&0xF);
+            buffer[1] = (byte) (function&0xFF);
             buffer[2] = (byte) ((register_address >> 8) & 0xFF);
             buffer[3] = (byte) ((register_address) & 0xFF);
             buffer[4] = value.length>1?value[value.length-2]:0;
@@ -222,18 +232,21 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
             return new ModBusProtocolRequestInformation(buffer,response);
         } else {
             int size=value.length;
-            byte[] buffer = new byte[7+size];
+            byte[] buffer = new byte[9+size];
             buffer[0] = (byte) (device_addess & 0xFF);
-            buffer[1] = (byte) (function&0xF);
+            buffer[1] = (byte) (function&0xFF);
             buffer[2] = (byte) ((register_address >> 8) & 0xFF);
             buffer[3] = (byte) ((register_address) & 0xFF);
-            buffer[4] = (byte) (size & 0xFF);
+            int register_count=size/2+(size%2==0?0:1);
+            buffer[4] = (byte) ((register_count>>8) & 0xFF);
+            buffer[5] = (byte) ((register_count) & 0xFF);
+            buffer[6] = (byte) (size & 0xFF);
             for(int i=0;i<size;i++){
-                buffer[5+i]=value[size-i-1];
+                buffer[7+i]=value[i];
             }
-            int crc = (CommunicationUtils.calculate_crc16_IBM(buffer, 0, 5+size) & 0xFFFF);
-            buffer[5+size] = (byte) ((crc >> 8) & 0xFF);
-            buffer[6+size] = (byte) ((crc) & 0xFF);
+            int crc = (CommunicationUtils.calculate_crc16_IBM(buffer, 0, 7+size) & 0xFFFF);
+            buffer[7+size] = (byte) ((crc >> 8) & 0xFF);
+            buffer[8+size] = (byte) ((crc) & 0xFF);
             return new ModBusProtocolRequestInformation(buffer,response);
         }
     }
@@ -378,7 +391,7 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
 
     public static ModBusProtocolRequestInformation formWriteRequestModBus(AbstractProperty property, int device_addess) throws IllegalArgumentException {
         Object modbus_address = property.getAdditionalInfo(MODBUS_ADDRESS);
-        Object modbusfunction = property.getAdditionalInfo(MODBUS_READ_FUNCTION);
+        Object modbusfunction = property.getAdditionalInfo(MODBUS_WRITE_FUNCTION);
         if (modbus_address == null && !(modbus_address instanceof Number)) {
             throw new IllegalArgumentException("NO PROPERTY_NUM IN PROPERTY");
         }
@@ -401,7 +414,7 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
 
     public static ModBusProtocolRequestInformation formWriteRequestModBus(AbstractProperty property,int size, int device_addess) throws IllegalArgumentException {
         Object modbus_address = property.getAdditionalInfo(MODBUS_ADDRESS);
-        Object modbusfunction = property.getAdditionalInfo(MODBUS_READ_FUNCTION);
+        Object modbusfunction = property.getAdditionalInfo(MODBUS_WRITE_FUNCTION);
         if (modbus_address == null && !(modbus_address instanceof Number)) {
             throw new IllegalArgumentException("NO PROPERTY_NUM IN PROPERTY");
         }
@@ -415,10 +428,11 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
         }
         byte[] buffer_value;
         if(mobus_func == WRITE_MULTI_COIL){
-            buffer_value=formCoislWrite(property);
+            buffer_value=formCoislWrite(property,size);
         } else {
-            buffer_value=getValueForTransfer(property);
+            buffer_value=getValueForTransfer(property,size);
         }
+
         return formWriteRequestModBus(mobus_func, mobus_addr, device_addess, buffer_value);
     }
 
@@ -469,25 +483,31 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
                     byte[] result=new byte[size];
                     int pos=0;
                     for(int i=0;i<count;i++) {
-                        Object sze = property.getAdditionalInfo(MODBUS_BYTE_SIZE);
+                        AbstractProperty subpropperty=group.getPopertyByIndex(i);
+                        Object sze = subpropperty.getAdditionalInfo(MODBUS_BYTE_SIZE);
                         if (sze == null && !(sze instanceof Number)) {
                             continue;
                         }
                         int subsize=((Number)sze).intValue();
                         boolean absolutle=false;
-                        if(size==1 && (property.getAdditionalInfo(BYTE_ABSOLUTLE_POS)!=null)){
+                        if(subsize==1 && (property.getAdditionalInfo(BYTE_ABSOLUTLE_POS)!=null)){
                             absolutle=true;
                         }
-                        if(subsize>0&&pos+subsize<size) {
-                            byte[] tmp=getValueForTransfer(group.getPopertyByIndex(i),subsize);
+                        if(subsize>0&&pos+subsize<=size) {
+                            byte[] tmp=getValueForTransfer(subpropperty,subsize);
                             if(tmp!=null){
-                                if(absolutle){
-                                    if(pos%2==0) {
-                                        System.arraycopy(tmp, 0, result, pos+1, subsize);
-                                        pos += subsize+1;
+                                if(subsize==1){
+                                    if(!absolutle){
+                                        if(pos%2==0) {
+                                            System.arraycopy(tmp, 0, result, pos+1, subsize);
+                                            pos += subsize;
+                                        } else {
+                                            System.arraycopy(tmp, 0, result, pos-1, subsize);
+                                            pos += subsize;
+                                        }
                                     } else {
-                                        System.arraycopy(tmp, 0, result, pos-1, subsize);
-                                        pos += subsize-1;
+                                        System.arraycopy(tmp, 0, result, pos, subsize);
+                                        pos += subsize;
                                     }
                                 } else {
                                     System.arraycopy(tmp, 0, result, pos, subsize);
@@ -600,25 +620,25 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
             absolutle=true;
         }
         if (property == null||value==null||value.length==0) return pos;
-        if (property instanceof SoftBoolProperty) {
+        if (property instanceof BooleanValueInterface) {
             if (value[pos] == 0) {
                 setInternalValue(property, false, modificator);
             } else {
                 setInternalValue(property, true, modificator);
             }
-        } else if (property instanceof SoftLongProperty) {
+        } else if (property instanceof LongValueInterface) {
             Long val=getTemporryValue(value,pos,size,absolutle);
             if(val==null)return pos;
             setInternalValue(property, val, modificator);
-        } else if (property instanceof SoftShortProperty) {
+        } else if (property instanceof ShortValueInterface) {
             Long val=getTemporryValue(value,pos,size,absolutle);
             if(val==null)return pos;
             setInternalValue(property, val.shortValue(), modificator);
-        } else if (property instanceof SoftIntegerProperty) {
+        } else if (property instanceof IntegerValueInterface) {
             Long val=getTemporryValue(value,pos,size,absolutle);
             if(val==null)return pos;
             setInternalValue(property, val.intValue(), modificator);
-        } else if (property instanceof SoftByteProperty) {
+        } else if (property instanceof ByteValueInterface) {
             if(absolutle) {
                 setInternalValue(property, value[pos], modificator);
             } else {
@@ -628,31 +648,31 @@ public class ModBusProtocol extends AbstractValuePropertyExecutor {
                     setInternalValue(property, value[pos+1], modificator);
                 }
             }
-        } else if (property instanceof SoftCharProperty) {
+        } else if (property instanceof CharValueInterface) {
             setInternalValue(property, (char) value[pos], modificator);
         } else if (property instanceof SoftFloatProperty) {
             Long val=getTemporryValue(value,pos,size,absolutle);
             if(val==null)return pos;
             setInternalValue(property,Float.intBitsToFloat(val.intValue()), modificator);
-        } else if (property instanceof SoftDoubleProperty) {
+        } else if (property instanceof DoubleValueInterface) {
             Long val=getTemporryValue(value,pos,size,absolutle);
             if(val==null)return pos;
             setInternalValue(property,Double.longBitsToDouble(val.longValue()), modificator);
-        } else if (property instanceof SoftDateTimeProperty) {
+        } else if (property instanceof DateValueInterface) {
             Long val=getTemporryValue(value,pos,size,absolutle);
             if(val==null)return pos;
             setInternalValue(property, new Date(val.longValue()), modificator);
-        } else if (property instanceof SoftBigDecimalProperty) {
+        } else if (property instanceof BigDoubleValueInterface) {
             if(value==null || value.length==0 || size<=0 || pos+size>=value.length){
                 return pos;
             }
             setInternalValue(property, new BigDecimal(new BigInteger(Arrays.copyOfRange(value,pos,pos+size))), modificator);
-        } else if (property instanceof SoftBigIntegerProperty) {
+        } else if (property instanceof BigIntValueInterface) {
             if(value==null || value.length==0 || size<=0 || pos+size>=value.length){
                 return pos;
             }
             setInternalValue(property, new BigInteger(Arrays.copyOfRange(value,pos,pos+size)), modificator);
-        } else if(property instanceof SoftStringProperty){
+        } else if(property instanceof StringValueInterface){
             if(value==null || value.length==0 || size<=0 || pos+size>=value.length){
                 return pos;
             }

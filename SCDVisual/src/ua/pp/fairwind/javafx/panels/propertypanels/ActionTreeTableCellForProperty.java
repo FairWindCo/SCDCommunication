@@ -52,6 +52,9 @@ public class ActionTreeTableCellForProperty<T> extends TreeTableCell<AbstractPro
                 super.setText(null);
                 super.setGraphic(null);
             }
+        } else {
+            super.setText(null);
+            super.setGraphic(null);
         }
     }
 }

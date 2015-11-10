@@ -3,6 +3,7 @@ package ua.pp.fairwind.communications.propertyes.software;
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.StringPropertyInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.StringValueInterface;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -14,7 +15,7 @@ import java.util.Date;
 /**
  * Created by ������ on 04.07.2015.
  */
-public class SoftStringProperty extends ValueProperty<String> implements StringPropertyInterface {
+public class SoftStringProperty extends ValueProperty<String> implements StringPropertyInterface,StringValueInterface {
     volatile private int readradix = 10;
     volatile private String readformat;
     volatile private boolean readbinarybool = false;

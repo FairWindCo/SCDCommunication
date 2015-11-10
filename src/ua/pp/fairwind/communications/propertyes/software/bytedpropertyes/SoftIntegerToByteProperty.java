@@ -2,12 +2,13 @@ package ua.pp.fairwind.communications.propertyes.software.bytedpropertyes;
 
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractGroupedProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.IntegerValueInterface;
 import ua.pp.fairwind.communications.propertyes.software.SoftByteProperty;
 
 /**
  * Created by Сергей on 21.09.2015.
  */
-public class SoftIntegerToByteProperty extends AbstractGroupedProperty<Integer, Byte> {
+public class SoftIntegerToByteProperty extends AbstractGroupedProperty<Integer, Byte> implements IntegerValueInterface {
     final private SoftByteProperty byte1;
     final private SoftByteProperty byte2;
     final private SoftByteProperty byte3;

@@ -1,13 +1,14 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.BigIntValueInterface;
 
 import java.math.BigInteger;
 
 /**
  * Created by Сергей on 07.07.2015.
  */
-public class SoftBigIntegerProperty extends NumberProperty<BigInteger> {
+public class SoftBigIntegerProperty extends NumberProperty<BigInteger> implements BigIntValueInterface{
     public SoftBigIntegerProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }

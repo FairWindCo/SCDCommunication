@@ -6,15 +6,15 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
-import ua.pp.fairwind.communications.propertyes.software.SoftByteProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftByteInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String> {
     final private static String DIGITPATERN = "[-]?[012]?[0123456789]{1,2}";
     final private static String EMPTYSTRING = "";
-    final private SoftByteProperty property;
+    final private ValueProperty<Byte> property;
     private byte maxValue = Byte.MAX_VALUE;
     private byte minValue = Byte.MIN_VALUE;
     ValueChangeListener<Byte> eventListener = event -> {
@@ -23,13 +23,13 @@ public class SoftByteInputText extends TextField implements EventHandler<KeyEven
                     setIntVal((Byte) event.getNewValue()));
     };
 
-    public SoftByteInputText(SoftByteProperty property) {
+    public SoftByteInputText(ValueProperty<Byte> property) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         onInitialisation();
     }
 
-    public SoftByteInputText(SoftByteProperty property, byte minVal, byte maxVal) {
+    public SoftByteInputText(ValueProperty<Byte> property, byte minVal, byte maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -37,7 +37,7 @@ public class SoftByteInputText extends TextField implements EventHandler<KeyEven
         onInitialisation();
     }
 
-    public SoftByteInputText(SoftByteProperty property, byte maxVal) {
+    public SoftByteInputText(ValueProperty<Byte> property, byte maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -173,7 +173,7 @@ public class SoftByteInputText extends TextField implements EventHandler<KeyEven
         }
     }
 
-    public SoftByteProperty getByteValueProperty() {
+    public ValueProperty<Byte> getByteValueProperty() {
         return property;
     }
 

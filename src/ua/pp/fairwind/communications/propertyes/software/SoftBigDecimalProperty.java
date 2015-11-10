@@ -1,13 +1,14 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.BigDoubleValueInterface;
 
 import java.math.BigDecimal;
 
 /**
  * Created by Сергей on 07.07.2015.
  */
-public class SoftBigDecimalProperty extends NumberProperty<BigDecimal> {
+public class SoftBigDecimalProperty extends NumberProperty<BigDecimal> implements BigDoubleValueInterface{
     public SoftBigDecimalProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }

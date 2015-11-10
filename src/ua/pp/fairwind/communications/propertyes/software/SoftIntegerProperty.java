@@ -1,11 +1,12 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.IntegerValueInterface;
 
 /**
  * Created by FairWindCo on 07.07.2015
  */
-public class SoftIntegerProperty extends NumberProperty<Integer> {
+public class SoftIntegerProperty extends NumberProperty<Integer> implements IntegerValueInterface {
     public SoftIntegerProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }

@@ -1,11 +1,13 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.DateValueInterface;
+
 import java.util.Date;
 
 /**
  * Created by Сергей on 07.07.2015.
  */
-public interface DatePropertyInterface extends ValuePropertyInterface<Date> {
+public interface DatePropertyInterface extends ValuePropertyInterface<Date>,DateValueInterface {
     void bindReadNumberProperty(NumberProperty<?> property);
 
     void bindWriteNumberProperty(NumberProperty<?> property);

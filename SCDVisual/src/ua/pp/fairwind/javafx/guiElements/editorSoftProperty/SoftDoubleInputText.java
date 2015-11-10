@@ -6,15 +6,15 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
-import ua.pp.fairwind.communications.propertyes.software.SoftDoubleProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftDoubleInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String> {
     final private static String DIGITPATERN = "[-]?[0123456789]*[.]?[0123456789]+";
     final private static String EMPTYSTRING = "";
-    final private SoftDoubleProperty property;
+    final private ValueProperty<Double> property;
     private Double maxValue = Double.MAX_VALUE;
     private Double minValue = Double.MIN_VALUE;
     ValueChangeListener<Double> eventListener = event -> {
@@ -23,13 +23,13 @@ public class SoftDoubleInputText extends TextField implements EventHandler<KeyEv
                     setIntVal((Double) event.getNewValue()));
     };
 
-    public SoftDoubleInputText(SoftDoubleProperty property) {
+    public SoftDoubleInputText(ValueProperty<Double> property) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         onInitialisation();
     }
 
-    public SoftDoubleInputText(SoftDoubleProperty property, Double minVal, Double maxVal) {
+    public SoftDoubleInputText(ValueProperty<Double> property, Double minVal, Double maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -37,7 +37,7 @@ public class SoftDoubleInputText extends TextField implements EventHandler<KeyEv
         onInitialisation();
     }
 
-    public SoftDoubleInputText(SoftDoubleProperty property, Double maxVal) {
+    public SoftDoubleInputText(ValueProperty<Double> property, Double maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -173,7 +173,7 @@ public class SoftDoubleInputText extends TextField implements EventHandler<KeyEv
         }
     }
 
-    public SoftDoubleProperty getDoubleValueProperty() {
+    public ValueProperty<Double> getDoubleValueProperty() {
         return property;
     }
 

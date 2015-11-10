@@ -1,9 +1,11 @@
 package ua.pp.fairwind.communications.propertyes.abstraction;
 
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.StringValueInterface;
+
 /**
  * Created by ������ on 04.07.2015.
  */
-public interface StringPropertyInterface extends ValuePropertyInterface<String> {
+public interface StringPropertyInterface extends ValuePropertyInterface<String>,StringValueInterface {
     void bindReadNumberProperty(NumberProperty<?> property, int radix);
 
     void bindWriteNumberProperty(NumberProperty<?> property, int radix);

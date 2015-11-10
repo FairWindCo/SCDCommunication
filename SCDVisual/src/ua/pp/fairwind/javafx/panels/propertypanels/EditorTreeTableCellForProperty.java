@@ -3,16 +3,27 @@ package ua.pp.fairwind.javafx.panels.propertypanels;
 import javafx.scene.control.TreeTableCell;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.*;
 import ua.pp.fairwind.communications.propertyes.groups.GroupProperty;
-import ua.pp.fairwind.communications.propertyes.software.*;
+import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 import ua.pp.fairwind.javafx.guiElements.editorSoftProperty.*;
+
+import java.util.HashMap;
 
 /**
  * Created by Сергей on 08.11.2015.
  */
 public class EditorTreeTableCellForProperty<T> extends TreeTableCell<AbstractProperty,T> {
+    private final HashMap<String,CellControl> customControls;
 
+    public EditorTreeTableCellForProperty(HashMap<String, CellControl> customControls) {
+        this.customControls = customControls;
+    }
+
+    public EditorTreeTableCellForProperty() {
+        this.customControls = null;
+    }
 
     @Override
     protected void updateItem(T item, boolean empty) {
@@ -24,26 +35,33 @@ public class EditorTreeTableCellForProperty<T> extends TreeTableCell<AbstractPro
                     super.setText("GROUP PROPERTY");
                     super.setGraphic(null);
                 } else if (editedValue instanceof ValueProperty) {
-
+                    if(customControls!=null){
+                        String code=editedValue.getCodename();
+                        CellControl control=customControls.get(code);
+                        if(control!=null){
+                            super.setText(null);
+                            super.setGraphic(control.getControl(editedValue));
+                        }
+                    }
                     if (((ValueProperty) editedValue).isWriteAccepted()) {
-                        if (editedValue instanceof SoftByteProperty) {
+                        if (editedValue instanceof ByteValueInterface) {
                             super.setText(null);
-                            super.setGraphic(new SoftByteInputText((SoftByteProperty) editedValue));
-                        } else if (editedValue instanceof SoftShortProperty) {
+                            super.setGraphic(new SoftByteInputText((ValueProperty<Byte>) editedValue));
+                        } else if (editedValue instanceof ShortValueInterface) {
                             super.setText(null);
-                            super.setGraphic(new SoftShortInputText((SoftShortProperty) editedValue));
-                        } else if (editedValue instanceof SoftIntegerProperty) {
+                            super.setGraphic(new SoftShortInputText((ValueProperty<Short>) editedValue));
+                        } else if (editedValue instanceof IntegerValueInterface) {
                             super.setText(null);
-                            super.setGraphic(new SoftIntInputText((SoftIntegerProperty) editedValue));
-                        } else if (editedValue instanceof SoftLongProperty) {
+                            super.setGraphic(new SoftIntInputText((ValueProperty<Integer>) editedValue));
+                        } else if (editedValue instanceof LongValueInterface) {
                             super.setText(null);
-                            super.setGraphic(new SoftLongInputText((SoftLongProperty) editedValue));
-                        } else if (editedValue instanceof SoftFloatProperty) {
+                            super.setGraphic(new SoftLongInputText((ValueProperty<Long>) editedValue));
+                        } else if (editedValue instanceof FloatValueInterface) {
                             super.setText(null);
-                            super.setGraphic(new SoftFloatInputText((SoftFloatProperty) editedValue));
-                        } else if (editedValue instanceof SoftDoubleProperty) {
+                            super.setGraphic(new SoftFloatInputText((ValueProperty<Float>) editedValue));
+                        } else if (editedValue instanceof DoubleValueInterface) {
                             super.setText(null);
-                            super.setGraphic(new SoftDoubleInputText((SoftDoubleProperty) editedValue));
+                            super.setGraphic(new SoftDoubleInputText((ValueProperty<Double>) editedValue));
                         } else if (editedValue instanceof SoftBoolProperty) {
                             super.setText(null);
                             super.setGraphic(VisualControls.createLedIndicator((SoftBoolProperty) editedValue));
@@ -64,6 +82,9 @@ public class EditorTreeTableCellForProperty<T> extends TreeTableCell<AbstractPro
                 super.setText(null);
                 super.setGraphic(null);
             }
+        }else{
+            super.setText(null);
+            super.setGraphic(null);
         }
     }
 }

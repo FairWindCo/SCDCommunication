@@ -3,6 +3,7 @@ package ua.pp.fairwind.communications.propertyes.software.bittedproperty;
 import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractGroupedProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.IntegerValueInterface;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
 
 import java.util.BitSet;
@@ -10,7 +11,7 @@ import java.util.BitSet;
 /**
  * Created by Сергей on 09.11.2015.
  */
-public class SoftBitToIntegerProperty extends AbstractGroupedProperty<Integer, Boolean> {
+public class SoftBitToIntegerProperty extends AbstractGroupedProperty<Integer, Boolean> implements IntegerValueInterface {
     private final short bitCount;
     private final short propertyCount;
     final private  BitSet setBits;
@@ -101,5 +102,9 @@ public class SoftBitToIntegerProperty extends AbstractGroupedProperty<Integer, B
         return (int)(value&0xFFFFFFFF);
     }
 
-
+    @Override
+    public SoftBitToIntegerProperty setAdditionalInfo(String paramsName, Object value) {
+        super.setAdditionalInfo(paramsName, value);
+        return this;
+    }
 }

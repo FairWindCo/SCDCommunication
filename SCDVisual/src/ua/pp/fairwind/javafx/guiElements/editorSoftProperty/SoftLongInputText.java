@@ -6,15 +6,15 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
-import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftLongInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String> {
     final private static String DIGITPATERN = "[-]?[0123456789]+";
     final private static String EMPTYSTRING = "";
-    final private SoftLongProperty property;
+    final private ValueProperty<Long> property;
     private long maxValue = Long.MAX_VALUE;
     private long minValue = Long.MIN_VALUE;
     ValueChangeListener<Long> eventListener = event -> {
@@ -23,13 +23,13 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
                     setIntVal((Long) event.getNewValue()));
     };
 
-    public SoftLongInputText(SoftLongProperty property) {
+    public SoftLongInputText(ValueProperty<Long> property) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         onInitialisation();
     }
 
-    public SoftLongInputText(SoftLongProperty property, long minVal, long maxVal) {
+    public SoftLongInputText(ValueProperty<Long> property, long minVal, long maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -37,7 +37,7 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
         onInitialisation();
     }
 
-    public SoftLongInputText(SoftLongProperty property, int maxVal) {
+    public SoftLongInputText(ValueProperty<Long> property, int maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -173,7 +173,7 @@ public class SoftLongInputText extends TextField implements EventHandler<KeyEven
         }
     }
 
-    public SoftLongProperty getIntegerValueProperty() {
+    public ValueProperty<Long> getIntegerValueProperty() {
         return property;
     }
 

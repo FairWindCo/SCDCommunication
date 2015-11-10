@@ -6,15 +6,15 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
-import ua.pp.fairwind.communications.propertyes.software.SoftIntegerProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftIntInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String>{
     final private static String DIGITPATERN = "[-]?[0123456789]{1,11}";
     final private static String EMPTYSTRING = "";
-    final private SoftIntegerProperty property;
+    final private ValueProperty<Integer> property;
     private int maxValue = Integer.MAX_VALUE;
     private int minValue = Integer.MIN_VALUE;
     ValueChangeListener<Integer> eventListener = event -> {
@@ -23,13 +23,13 @@ public class SoftIntInputText extends TextField implements EventHandler<KeyEvent
                     setIntVal((Integer) event.getNewValue()));
     };
 
-    public SoftIntInputText(SoftIntegerProperty property) {
+    public SoftIntInputText(ValueProperty<Integer> property) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         onInitialisation();
     }
 
-    public SoftIntInputText(SoftIntegerProperty property, int minVal, int maxVal) {
+    public SoftIntInputText(ValueProperty<Integer> property, int minVal, int maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -37,7 +37,7 @@ public class SoftIntInputText extends TextField implements EventHandler<KeyEvent
         onInitialisation();
     }
 
-    public SoftIntInputText(SoftIntegerProperty property, int maxVal) {
+    public SoftIntInputText(ValueProperty<Integer> property, int maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -173,7 +173,7 @@ public class SoftIntInputText extends TextField implements EventHandler<KeyEvent
         }
     }
 
-    public SoftIntegerProperty getIntegerValueProperty() {
+    public ValueProperty<Integer> getIntegerValueProperty() {
         return property;
     }
 

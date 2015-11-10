@@ -1,14 +1,13 @@
 package ua.pp.fairwind.javafx.panels.devices.bdmg;
 
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import ua.pp.fairwind.communications.devices.hardwaredevices.positron.BDMG04;
 import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
@@ -17,10 +16,12 @@ import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.panels.TupicalPanels;
 import ua.pp.fairwind.javafx.panels.propertypanels.PropertyEditorPanel;
 
+import java.io.File;
+
 /**
  * Created by Сергей on 27.08.2015.
  */
-public class BDMGPanel extends HBox {
+public class BDMGPanel extends VBox {
     final private BDMG04 device;
     final private TabPane tabs = new TabPane();
 
@@ -54,13 +55,8 @@ public class BDMGPanel extends HBox {
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
-            final GridPane grid = new GridPane();
-            grid.setAlignment(Pos.CENTER);
-            grid.setId("formGrid");
-            grid.setHgap(10);
-            grid.setVgap(10);
-            grid.setPadding(new Insets(10, 10, 10, 10));
-            PropertyEditorPanel ep=new PropertyEditorPanel(device.getConfiguration());
+            PropertyEditorPanel ep = new PropertyEditorPanel(device.getConfiguration());
+
             ScrollPane scrol = new ScrollPane(ep);
             scrol.setFitToWidth(true);
             scrol.setFitToHeight(true);
@@ -73,13 +69,6 @@ public class BDMGPanel extends HBox {
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
-            final GridPane grid = new GridPane();
-            grid.setAlignment(Pos.CENTER);
-            grid.setId("formGrid");
-            grid.setHgap(10);
-            grid.setVgap(10);
-            grid.setPadding(new Insets(10, 10, 10, 10));
-
             PropertyEditorPanel ep=new PropertyEditorPanel(device.getState(),device.getDeviceInfo());
             ScrollPane scrol = new ScrollPane(ep);
             scrol.setFitToWidth(true);
@@ -93,18 +82,33 @@ public class BDMGPanel extends HBox {
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
         Platform.runLater(() -> {
-            final GridPane grid = new GridPane();
-            grid.setAlignment(Pos.CENTER);
-            grid.setId("formGrid");
-            grid.setHgap(10);
-            grid.setVgap(10);
-            grid.setPadding(new Insets(10, 10, 10, 10));
-            PropertyEditorPanel ep=new PropertyEditorPanel(device.getBootparam());
+            PropertyEditorPanel ep = new PropertyEditorPanel(device.getBootparam());
             ScrollPane scrol = new ScrollPane(ep);
             scrol.setFitToWidth(true);
             scrol.setFitToHeight(true);
             initTab.setContent(scrol);
         });
+    }
+
+    private Node intiCommandPanel() {
+        HBox box=new HBox();
+        Button loadBtn=new Button("LOAD");
+        Button saveBtn=new Button("SAVE");
+        loadBtn.setOnAction(a->{
+            FileChooser fileChooser=new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BINARY DATA","*.bhex"));
+            File file=fileChooser.showOpenDialog(null);
+            device.loadBinaryParameters(file);
+        });
+        saveBtn.setOnAction(a->{
+            FileChooser fileChooser=new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BINARY DATA","*.bhex"));
+            File file=fileChooser.showSaveDialog(null);
+            device.saveBinaryParameters(file);
+        });
+        box.getChildren().addAll(loadBtn,saveBtn);
+        box.setAlignment(Pos.CENTER);
+        return box;
     }
 
     private void initControl() {
@@ -113,8 +117,9 @@ public class BDMGPanel extends HBox {
         intiDeviceConfigPane();
         intiCONFIGPane();
         intiStatusPane();
-        tabs.setPrefHeight(430);
+        tabs.setPrefHeight(600);
         getChildren().add(tabs);
+        getChildren().add(intiCommandPanel());
     }
 
 }

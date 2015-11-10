@@ -5,6 +5,7 @@ import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.messagesystems.event.EventType;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.ValueInterfaceMarker;
 
 import java.util.Date;
 import java.util.IllegalFormatConversionException;
@@ -15,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Created by Сергей on 30.06.2015.
  */
-public abstract class ValueProperty<T extends Comparable<? super T>> extends AbstractProperty implements ValuePropertyInterface<T> {
+public abstract class ValueProperty<T extends Comparable<? super T>> extends AbstractProperty implements ValuePropertyInterface<T>,ValueInterfaceMarker<T> {
     final public static String MIN_VALUE = "PROPERTY_MIN_VALUE";
     final public static String MAX_VALUE = "PROPERTY_MAX_VALUE";
     final public static String VALUE_VALIDATOR = "PROPERTY_VALUE_VALIDATOR";

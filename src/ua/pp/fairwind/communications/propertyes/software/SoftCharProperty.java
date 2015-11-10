@@ -1,11 +1,12 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.CharValueInterface;
 
 /**
  * Created by ������ on 04.07.2015.
  */
-public class SoftCharProperty extends ValueProperty<Character> {
+public class SoftCharProperty extends ValueProperty<Character> implements CharValueInterface {
 
     public SoftCharProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);

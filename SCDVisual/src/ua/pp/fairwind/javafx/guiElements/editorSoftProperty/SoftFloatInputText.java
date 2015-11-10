@@ -6,15 +6,15 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
-import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftFloatInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String> {
     final private static String DIGITPATERN = "[-]?[0123456789]*[.]?[0123456789]*";
     final private static String EMPTYSTRING = "";
-    final private SoftFloatProperty property;
+    final private ValueProperty<Float> property;
     private float maxValue = Float.MAX_VALUE;
     private float minValue = Float.MIN_VALUE;
     ValueChangeListener<Float> eventListener = event -> {
@@ -23,13 +23,13 @@ public class SoftFloatInputText extends TextField implements EventHandler<KeyEve
                     setIntVal((Float) event.getNewValue()));
     };
 
-    public SoftFloatInputText(SoftFloatProperty property) {
+    public SoftFloatInputText(ValueProperty<Float> property) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         onInitialisation();
     }
 
-    public SoftFloatInputText(SoftFloatProperty property, float minVal, float maxVal) {
+    public SoftFloatInputText(ValueProperty<Float> property, float minVal, float maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -37,7 +37,7 @@ public class SoftFloatInputText extends TextField implements EventHandler<KeyEve
         onInitialisation();
     }
 
-    public SoftFloatInputText(SoftFloatProperty property, float maxVal) {
+    public SoftFloatInputText(ValueProperty<Float> property, float maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -180,7 +180,7 @@ public class SoftFloatInputText extends TextField implements EventHandler<KeyEve
         }
     }
 
-    public SoftFloatProperty getFloatValueProperty() {
+    public ValueProperty<Float> getFloatValueProperty() {
         return property;
     }
 

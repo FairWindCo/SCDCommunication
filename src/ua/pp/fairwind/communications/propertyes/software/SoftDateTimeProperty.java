@@ -4,13 +4,14 @@ import ua.pp.fairwind.communications.propertyes.abstraction.DatePropertyInterfac
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.StringPropertyInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.DateValueInterface;
 
 import java.util.Date;
 
 /**
  * Created by ������ on 06.07.2015.
  */
-public class SoftDateTimeProperty extends ValueProperty<Date> implements DatePropertyInterface {
+public class SoftDateTimeProperty extends ValueProperty<Date> implements DatePropertyInterface,DateValueInterface {
     public SoftDateTimeProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }

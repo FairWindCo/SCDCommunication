@@ -1,11 +1,12 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.ByteValueInterface;
 
 /**
  * Created by FairWindCo on 07.07.2015
  */
-public class SoftByteProperty extends NumberProperty<Byte> {
+public class SoftByteProperty extends NumberProperty<Byte> implements ByteValueInterface{
     public SoftByteProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }

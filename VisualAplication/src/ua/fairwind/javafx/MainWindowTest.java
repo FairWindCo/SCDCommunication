@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.guiElements.SCADASystemFX;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuConfigElements;
+import ua.pp.fairwind.javafx.guiElements.menu.MenuConfigElementsAction;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuHolder;
 import ua.pp.fairwind.javafx.guiElements.windows.AppWindow;
@@ -14,6 +15,7 @@ import ua.pp.fairwind.javafx.guiElements.windows.hardware.*;
 import ua.pp.fairwind.javafx.panels.LogEventView;
 import ua.pp.fairwind.javafx.panels.LogLineBufferView;
 import ua.pp.fairwind.javafx.panels.administrative.ImmitatorWindow;
+import ua.pp.fairwind.javafx.panels.dialogs.ImageViewDialog;
 
 /**
  * Created by Сергей on 17.08.2015.
@@ -55,6 +57,11 @@ public class MainWindowTest extends Application {
         MenuConfigElements akonbase = new AkonBaseWindow("AKON_Base", scada, "baseakon");
         MenuConfigElements immitator_base = new MenuConfigElements("IMITATORS");
         MenuConfigElements immitator = new ImmitatorWindow("SERIAL_IMITATOR", scada);
+        MenuConfigElementsAction showBDMGConnect=new MenuConfigElementsAction("connect_view.dbmg04.connect",(executor, elementsForexecute)->{
+            ImageViewDialog.showImageDialog("BDMG04.connect");
+        });
+        MenuConfigElements connects=new MenuConfigElements("connect_view","",showBDMGConnect);
+
         testDev.setAddChild(akon);
         akon.setAddChild(akonbase);
         testDev.setAddChild(favorit);
@@ -67,6 +74,7 @@ public class MainWindowTest extends Application {
         holderMenu.setMenuPoint(testDev);
         holderMenu.setMenuPoint(immitator_base);
         holderMenu.setMenuPoint(scada.getAdministrativeMenu());
+        holderMenu.setMenuPoint(connects);
         mainView.setMenuHold(holderMenu);
         mainView.formStage(windowStage);
         windowStage.show();

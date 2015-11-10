@@ -6,15 +6,15 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import ua.pp.fairwind.communications.messagesystems.event.ValueChangeListener;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValuePropertyModificator;
-import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
 import ua.pp.fairwind.javafx.VisualControls;
 
 
 public class SoftShortInputText extends TextField implements EventHandler<KeyEvent>, ChangeListener<String> {
     final private static String DIGITPATERN = "[-]?[0123456789]{1,5}";
     final private static String EMPTYSTRING = "";
-    final private SoftShortProperty property;
+    final private ValueProperty<Short> property;
     private short maxValue = Short.MAX_VALUE;
     private short minValue = Short.MIN_VALUE;
     ValueChangeListener<Short> eventListener = event -> {
@@ -23,13 +23,13 @@ public class SoftShortInputText extends TextField implements EventHandler<KeyEve
                     setIntVal((Short) event.getNewValue()));
     };
 
-    public SoftShortInputText(SoftShortProperty property) {
+    public SoftShortInputText(ValueProperty<Short> property) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         onInitialisation();
     }
 
-    public SoftShortInputText(SoftShortProperty property, short minVal, short maxVal) {
+    public SoftShortInputText(ValueProperty<Short> property, short minVal, short maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -37,7 +37,7 @@ public class SoftShortInputText extends TextField implements EventHandler<KeyEve
         onInitialisation();
     }
 
-    public SoftShortInputText(SoftShortProperty property, short maxVal) {
+    public SoftShortInputText(ValueProperty<Short> property, short maxVal) {
         super(property.getValue() == null ? null : property.getValue().toString());
         this.property = property;
         this.maxValue = maxVal;
@@ -173,7 +173,7 @@ public class SoftShortInputText extends TextField implements EventHandler<KeyEve
         }
     }
 
-    public SoftShortProperty getShortValueProperty() {
+    public ValueProperty<Short> getShortValueProperty() {
         return property;
     }
 

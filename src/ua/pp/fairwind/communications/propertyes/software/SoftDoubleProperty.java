@@ -1,11 +1,12 @@
 package ua.pp.fairwind.communications.propertyes.software;
 
 import ua.pp.fairwind.communications.propertyes.abstraction.NumberProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.DoubleValueInterface;
 
 /**
  * Created by FairWindCo on 07.07.2015
  */
-public class SoftDoubleProperty extends NumberProperty<Double> {
+public class SoftDoubleProperty extends NumberProperty<Double> implements DoubleValueInterface{
     public SoftDoubleProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType) {
         super(name, uuid, softOperationType);
     }

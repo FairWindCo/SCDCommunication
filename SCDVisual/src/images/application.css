@@ -81,6 +81,25 @@
     -fx-border-width: 0px;
 }
 
+.tree-table-view .column-header {
+    -fx-background-color: rgb(23, 55, 80);
+}
+
+.tree-table-cell:odd {
+    -fx-background-color: #5782D0;
+}
+
+.tree-table-cell:empty {
+    -fx-background-color: lightyellow;
+}
+
+.tree-table-cell:empty .table-cell {
+    -fx-border-width: 0px;
+}
+.tree-view-label{
+    -fx-text-fill: #000000;
+}
+
 #formGrid {
     -fx-background-color: rgb(35, 49, 80);
 }
