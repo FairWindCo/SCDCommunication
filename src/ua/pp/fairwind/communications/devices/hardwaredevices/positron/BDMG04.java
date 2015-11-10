@@ -289,7 +289,7 @@ public class BDMG04 extends RSLineDevice {
 
     @Override
     public String getDeviceType() {
-        return "AKON BASE DEVICE";
+        return "POSITRON BDMG04 DEVICE";
     }
 
     public SoftShortProperty getBdmg04Protocol() {

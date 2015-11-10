@@ -7,6 +7,7 @@ import ua.pp.fairwind.communications.devices.hardwaredevices.akon.WAD_A06_BUS;
 import ua.pp.fairwind.communications.devices.hardwaredevices.arg.micro.ArgMicroDevice;
 import ua.pp.fairwind.communications.devices.hardwaredevices.ecotest.BDBG09;
 import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
+import ua.pp.fairwind.communications.devices.hardwaredevices.modbus.ModBusDevice;
 import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver;
 import ua.pp.fairwind.communications.devices.hardwaredevices.positron.BDMG04;
 
@@ -24,6 +25,7 @@ public interface AutoCreateDeviceFunction {
     String AKON_WAD_A06_BUS = "WAD_A06_BUS";
     String BDBG09 = "BDBG_09";
     String BDMG04="BDMG_04";
+    String MODBUS="MODBUS";
 
     static String getUiidFromMap(String name, HashMap<String, String> uuids) {
         if (name == null || uuids == null) return null;
@@ -65,6 +67,10 @@ public interface AutoCreateDeviceFunction {
             }
             case BDMG04: {
                 newdevice = new BDMG04(address == null ? 1 : address, name != null ? name : "BDMG04", null);
+                break;
+            }
+            case MODBUS:{
+                newdevice=new ModBusDevice(address == null ? 1 : address, name != null ? name : "MODBUS", null);
                 break;
             }
         }

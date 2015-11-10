@@ -54,6 +54,7 @@ public class MainWindowTest extends Application {
         MenuConfigElements encoder = new BelimaWindow("Baumer_Incremental_Encoder", scada);
         MenuConfigElements bdbg09 = new BDBG09Window("BDBG09", scada);
         MenuConfigElements bdmg04 = new BDMG04Window("BDMG04", scada);
+        MenuConfigElements modbus=new ModBusWindow("MODBUS",scada);
         MenuConfigElements akonbase = new AkonBaseWindow("AKON_Base", scada, "baseakon");
         MenuConfigElements immitator_base = new MenuConfigElements("IMITATORS");
         MenuConfigElements immitator = new ImmitatorWindow("SERIAL_IMITATOR", scada);
@@ -70,6 +71,7 @@ public class MainWindowTest extends Application {
         testDev.setAddChild(encoder);
         testDev.setAddChild(bdbg09);
         testDev.setAddChild(bdmg04);
+        testDev.setAddChild(modbus);
         immitator_base.setAddChild(immitator);
         holderMenu.setMenuPoint(testDev);
         holderMenu.setMenuPoint(immitator_base);
