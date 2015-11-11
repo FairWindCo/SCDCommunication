@@ -2,13 +2,13 @@ package ua.pp.fairwind.javafx.guiElements;
 
 import ua.pp.fairwind.communications.SCADASystem;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
-import ua.pp.fairwind.communications.elementsdirecotry.AutoCreateDeviceFunction;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.lines.LoopBackLine;
 import ua.pp.fairwind.communications.lines.SerialLine;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystem;
 import ua.pp.fairwind.communications.messagesystems.MessageSubSystemMultiDipatch;
+import ua.pp.fairwind.communications.utils.EllementsCreator;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuConfigElements;
 import ua.pp.fairwind.javafx.panels.administrative.AllEventMonitorWindow;
@@ -33,15 +33,15 @@ public class SCADASystemFX extends SCADASystem {
     final private AtomicBoolean menuCreated = new AtomicBoolean(false);
     final private AtomicReference<MenuConfigElements> menu = new AtomicReference<>();
 
-    protected SCADASystemFX(String name, AutoCreateDeviceFunction createDeviceFunction, int maxLogSize) {
-        super(name, createDeviceFunction);
+    public SCADASystemFX(String codename, EllementsCreator elementsCreator, int maxLogSize) {
+        super(codename, elementsCreator);
         logingWindow = new LineCommunicationLoggingWindow("Lines_Communications_Logs", maxLogSize);
         eventLogingWindow = new AllEventMonitorWindow("Event_Logs", maxLogSize);
         eventErrorWindow = new ErrorEventMonitorWindow("Error_Logs", maxLogSize);
     }
 
     static public SCADASystemFX createScadaSystem(String name, int maxTrunsactionTime) {
-        SCADASystemFX scada = new SCADASystemFX(name, null, 300);
+        SCADASystemFX scada = new SCADASystemFX(name, new EllementsCreator(), 300);
         List<LineInterface> serialLines = SerialLine.getSerialLines(maxTrunsactionTime);
         scada.addLines(serialLines);
         scada.addElemnt(new LoopBackLine());
@@ -50,7 +50,7 @@ public class SCADASystemFX extends SCADASystem {
 
     static public SCADASystemFX createScadaSystem(String name, String description, HashMap<String, String> uuids, int maxTrunsactionTime, int maxLogSize) {
         MessageSubSystem topLevel = new MessageSubSystemMultiDipatch();
-        SCADASystemFX scada = new SCADASystemFX(name, null, maxLogSize);
+        SCADASystemFX scada = new SCADASystemFX(name, new EllementsCreator(), maxLogSize);
         List<LineInterface> serialLines = SerialLine.getSerialLines(maxTrunsactionTime);
         scada.addLines(serialLines);
         return scada;
@@ -80,13 +80,13 @@ public class SCADASystemFX extends SCADASystem {
             addListenerDeepElements(element, eventErrorWindow);
         } else {
             if (canLogLineDeviceError) {
-                if (element instanceof LineInterface || element instanceof DeviceInterface) {
+                if (element instanceof LineInterface || element instanceof LinedDeviceInterface) {
                     element.addEventListener(eventErrorWindow);
                 }
             }
         }
         if (element instanceof LineInterface) {
-            DeviceInterface logdevice = logingWindow.getLoggingDevice();
+            LinedDeviceInterface logdevice = logingWindow.getLoggingDevice();
             ((LineInterface) element).addWriteMonitoringDevice(logdevice);
             ((LineInterface) element).addReadMonitoringDevice(logdevice);
         }
@@ -103,13 +103,13 @@ public class SCADASystemFX extends SCADASystem {
             removeListenerDeepElements(element, eventErrorWindow);
         } else {
             if (canLogLineDeviceError) {
-                if (element instanceof LineInterface || element instanceof DeviceInterface) {
+                if (element instanceof LineInterface || element instanceof LinedDeviceInterface) {
                     element.removeEventListener(eventErrorWindow);
                 }
             }
         }
         if (element instanceof LineInterface) {
-            DeviceInterface logdevice = logingWindow.getLoggingDevice();
+            LinedDeviceInterface logdevice = logingWindow.getLoggingDevice();
             ((LineInterface) element).removeWriteMonitoringDevice(logdevice);
             ((LineInterface) element).removeReadMonitoringDevice(logdevice);
         }

@@ -2,9 +2,9 @@ package ua.pp.fairwind.communications.lines.abstracts;
 
 import ua.pp.fairwind.communications.abstractions.LineSelector;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.devices.abstracts.ImitatorDevice;
 import ua.pp.fairwind.communications.devices.abstracts.LineSelectDevice;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
@@ -40,8 +40,8 @@ abstract public class AbstractLine extends SystemEllement implements LineInterfa
     private final AtomicBoolean performanceMonitor = new AtomicBoolean(false);
     private final AtomicBoolean threadTrunsactionPaused = new AtomicBoolean(false);
     private final long maxTransactionTime;
-    private final Set<DeviceInterface> readmonitoring = new HashSet<>();
-    private final Set<DeviceInterface> writemonitoring = new HashSet<>();
+    private final Set<LinedDeviceInterface> readmonitoring = new HashSet<>();
+    private final Set<LinedDeviceInterface> writemonitoring = new HashSet<>();
     private final Set<ImitatorDevice> deviceForService = new HashSet<>();
     private final ReentrantLock lock = new ReentrantLock();
     private final ExecutorService service = Executors.newCachedThreadPool();
@@ -446,7 +446,7 @@ abstract public class AbstractLine extends SystemEllement implements LineInterfa
                         CommunicationProtocolRequest newRequest = CommunicationProtocolRequest.createReuest(request);
                         if (newRequest != null) requests.add(newRequest);
                     } else {
-                        DeviceInterface dev = request.getSenderDevice();
+                        LinedDeviceInterface dev = request.getSenderDevice();
                         if (dev != null && threadRunned.get()) {
                             service.submit(new Runnable() {
                                 @Override
@@ -526,25 +526,25 @@ abstract public class AbstractLine extends SystemEllement implements LineInterfa
 
     //Метод добавляет к линии устройство мониторинга за данными принимаемыми линией
     @Override
-    public void addReadMonitoringDevice(DeviceInterface device) {
+    public void addReadMonitoringDevice(LinedDeviceInterface device) {
         readmonitoring.add(device);
     }
 
     //Метод добавляет к линии устройство мониторинга за данными отправляемым линией
     @Override
-    public void addWriteMonitoringDevice(DeviceInterface device) {
+    public void addWriteMonitoringDevice(LinedDeviceInterface device) {
         writemonitoring.add(device);
     }
 
     //Метод удаляет из линии устройство мониторинга за данными принимаемыми линией
     @Override
-    public void removeReadMonitoringDevice(DeviceInterface device) {
+    public void removeReadMonitoringDevice(LinedDeviceInterface device) {
         readmonitoring.remove(device);
     }
 
     //Метод удаляет из линии устройство мониторинга за данными отправляемым линией
     @Override
-    public void removeWriteMonitoringDevice(DeviceInterface device) {
+    public void removeWriteMonitoringDevice(LinedDeviceInterface device) {
         writemonitoring.remove(device);
     }
 

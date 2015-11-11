@@ -9,7 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
 import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
@@ -17,7 +17,7 @@ import ua.pp.fairwind.javafx.guiElements.menu.PrefferedSize;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
 
 public class RSConnectionForm extends SimpleView {
-    final DeviceInterface dev;
+    final LinedDeviceInterface dev;
     final private ComboBox<String> ports = new ComboBox<>();
     final private ComboBox<ValueHolder> portBaud = new ComboBox<>();
     final private ComboBox<ValueHolder> portdataBits = new ComboBox<>();
@@ -26,14 +26,14 @@ public class RSConnectionForm extends SimpleView {
     LineParameters safeparams;
 
     public RSConnectionForm(String title, Image icon,
-                            PrefferedSize prefferedSize, DeviceInterface comuunicateDevice) {
+                            PrefferedSize prefferedSize, LinedDeviceInterface comuunicateDevice) {
         super(title, icon, prefferedSize);
         this.dev = comuunicateDevice;
         formControlElements();
     }
 
 
-    public RSConnectionForm(String title, DeviceInterface comuunicateDevice) {
+    public RSConnectionForm(String title, LinedDeviceInterface comuunicateDevice) {
         super(title, null, (PrefferedSize) null);
         this.dev = comuunicateDevice;
         formControlElements();

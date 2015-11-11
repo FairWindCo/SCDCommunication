@@ -11,7 +11,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
 import ua.pp.fairwind.communications.SCADASystem;
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
@@ -156,7 +156,7 @@ public class LineCommunicationLoggingWindow extends SimpleMenuView {
         }
     }
 
-    public DeviceInterface getLoggingDevice() {
+    public LinedDeviceInterface getLoggingDevice() {
         return dev;
     }
 

@@ -2,8 +2,8 @@ package ua.pp.fairwind.communications.elementsdirecotry;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.devices.abstracts.ImitatorDevice;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.messagesystems.event.ElementEventListener;
 import ua.pp.fairwind.communications.propertyes.AbsractCommandProperty;
@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SystemElementDirectory extends SystemEllement {
     final private ConcurrentHashMap<UUID, ElementInterface> elements = new ConcurrentHashMap<>();
     final private ConcurrentHashMap<UUID, AbstractProperty> propertyes = new ConcurrentHashMap<>();
-    final private ConcurrentHashMap<UUID, DeviceInterface> devices = new ConcurrentHashMap<>();
+    final private ConcurrentHashMap<UUID, LinedDeviceInterface> devices = new ConcurrentHashMap<>();
     final private ConcurrentHashMap<UUID, LineInterface> lines = new ConcurrentHashMap<>();
     final private ConcurrentHashMap<UUID, SystemElementDirectory> subsystems = new ConcurrentHashMap<>();
 
@@ -38,8 +38,8 @@ public class SystemElementDirectory extends SystemEllement {
         elements.put(element.getUUID(), element);
         if (element instanceof AbstractProperty) {
             propertyes.put(element.getUUID(), (AbstractProperty) element);
-        } else if (element instanceof DeviceInterface) {
-            devices.put(element.getUUID(), (DeviceInterface) element);
+        } else if (element instanceof LinedDeviceInterface) {
+            devices.put(element.getUUID(), (LinedDeviceInterface) element);
         } else if (element instanceof LineInterface) {
             lines.put(element.getUUID(), (LineInterface) element);
         } else if (element instanceof SystemElementDirectory) {
@@ -72,7 +72,7 @@ public class SystemElementDirectory extends SystemEllement {
         }
     }
 
-    public void addElemntWithProperty(DeviceInterface element) {
+    public void addElemntWithProperty(LinedDeviceInterface element) {
         if (element != null) {
             addElemnt(element);
             AbstractProperty[] propertyes = element.getPropertys();
@@ -91,7 +91,7 @@ public class SystemElementDirectory extends SystemEllement {
         elements.remove(element.getUUID());
         if (element instanceof AbstractProperty) {
             propertyes.remove(element.getUUID());
-        } else if (element instanceof DeviceInterface) {
+        } else if (element instanceof LinedDeviceInterface) {
             devices.remove(element.getUUID());
         } else if (element instanceof LineInterface) {
             lines.remove(element.getUUID());
@@ -110,7 +110,7 @@ public class SystemElementDirectory extends SystemEllement {
         }
     }
 
-    public DeviceInterface getDevice(String uuid) {
+    public LinedDeviceInterface getDevice(String uuid) {
         UUID ui = UUID.fromString(uuid);
         if (ui != null) {
             return devices.get(ui);
@@ -163,7 +163,7 @@ public class SystemElementDirectory extends SystemEllement {
         return new ArrayList<>(lines.values());
     }
 
-    public Collection<DeviceInterface> getAllDevices() {
+    public Collection<LinedDeviceInterface> getAllDevices() {
         return devices.values();
     }
 
@@ -174,14 +174,14 @@ public class SystemElementDirectory extends SystemEllement {
     protected void addListenerDeepElements(ElementInterface element, ElementEventListener listener) {
         element.addEventListener(listener);
 
-        if (element instanceof DeviceInterface) {
-            AbstractProperty[] properties = ((DeviceInterface) element).getPropertys();
+        if (element instanceof LinedDeviceInterface) {
+            AbstractProperty[] properties = ((LinedDeviceInterface) element).getPropertys();
             if (properties != null && properties.length > 0) {
                 for (AbstractProperty property : properties) {
                     property.addEventListener(listener);
                 }
             }
-            AbsractCommandProperty[] commands = ((DeviceInterface) element).getCommands();
+            AbsractCommandProperty[] commands = ((LinedDeviceInterface) element).getCommands();
             if (commands != null && commands.length > 0) {
                 for (AbsractCommandProperty command : commands) {
                     command.addEventListener(listener);
@@ -191,7 +191,7 @@ public class SystemElementDirectory extends SystemEllement {
         if (element instanceof LineInterface) {
             ImitatorDevice[] devices = ((LineInterface) element).getDeivicesForService();
             if (devices != null && devices.length > 0) {
-                for (DeviceInterface device : devices) {
+                for (LinedDeviceInterface device : devices) {
                     addListenerDeepElements(device, listener);
                 }
             }
@@ -204,14 +204,14 @@ public class SystemElementDirectory extends SystemEllement {
     protected void removeListenerDeepElements(ElementInterface element, ElementEventListener listener) {
         element.removeEventListener(listener);
 
-        if (element instanceof DeviceInterface) {
-            AbstractProperty[] properties = ((DeviceInterface) element).getPropertys();
+        if (element instanceof LinedDeviceInterface) {
+            AbstractProperty[] properties = ((LinedDeviceInterface) element).getPropertys();
             if (properties != null && properties.length > 0) {
                 for (AbstractProperty property : properties) {
                     property.removeEventListener(listener);
                 }
             }
-            AbsractCommandProperty[] commands = ((DeviceInterface) element).getCommands();
+            AbsractCommandProperty[] commands = ((LinedDeviceInterface) element).getCommands();
             if (commands != null && commands.length > 0) {
                 for (AbsractCommandProperty command : commands) {
                     command.removeEventListener(listener);
@@ -221,7 +221,7 @@ public class SystemElementDirectory extends SystemEllement {
         if (element instanceof LineInterface) {
             ImitatorDevice[] devices = ((LineInterface) element).getDeivicesForService();
             if (devices != null && devices.length > 0) {
-                for (DeviceInterface device : devices) {
+                for (LinedDeviceInterface device : devices) {
                     removeListenerDeepElements(device, listener);
                 }
             }
@@ -271,20 +271,20 @@ public class SystemElementDirectory extends SystemEllement {
         propertyes.values().forEach(element -> element.removeEventListener(listener));
     }
 
-    public void setMonitoringToAllLines(DeviceInterface monitoringDevice) {
+    public void setMonitoringToAllLines(LinedDeviceInterface monitoringDevice) {
         lines.values().forEach(element -> {
             element.addReadMonitoringDevice(monitoringDevice);
             element.addWriteMonitoringDevice(monitoringDevice);
         });
     }
 
-    public void setReadMonitoringToAllLines(DeviceInterface monitoringDevice) {
+    public void setReadMonitoringToAllLines(LinedDeviceInterface monitoringDevice) {
         lines.values().forEach(element -> {
             element.addReadMonitoringDevice(monitoringDevice);
         });
     }
 
-    public void setWriteMonitoringToAllLines(DeviceInterface monitoringDevice) {
+    public void setWriteMonitoringToAllLines(LinedDeviceInterface monitoringDevice) {
         lines.values().forEach(element -> {
             element.addWriteMonitoringDevice(monitoringDevice);
         });

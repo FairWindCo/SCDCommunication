@@ -5,7 +5,7 @@ import ua.pp.fairwind.communications.propertyes.software.SoftLongProperty;
 /**
  * Created by Сергей on 09.07.2015.
  */
-public abstract class RSLineDevice extends AbstractDevice implements SerialDeviceInterface {
+public abstract class RSLineDevice extends AbstractLinedDevice implements SerialDeviceInterface {
     protected final SoftLongProperty deviceAddress;
 
 

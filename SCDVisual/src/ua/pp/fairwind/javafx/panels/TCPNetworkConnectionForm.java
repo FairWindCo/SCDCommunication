@@ -12,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
 import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.javafx.guiElements.editors.IntegerInputText;
@@ -24,17 +24,17 @@ import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
 public class TCPNetworkConnectionForm extends SimpleView {
     StringProperty address = new SimpleStringProperty();
     IntegerProperty port = new SimpleIntegerProperty();
-    DeviceInterface dev = null;
+    LinedDeviceInterface dev = null;
     LineParameters safeparams;
 
     public TCPNetworkConnectionForm(String title, Image icon,
-                                    PrefferedSize prefferedSize, DeviceInterface comuunicateDevice) {
+                                    PrefferedSize prefferedSize, LinedDeviceInterface comuunicateDevice) {
         super(title, icon, prefferedSize);
         this.dev = comuunicateDevice;
     }
 
 
-    public TCPNetworkConnectionForm(String title, DeviceInterface comuunicateDevice) {
+    public TCPNetworkConnectionForm(String title, LinedDeviceInterface comuunicateDevice) {
         super(title, null, (PrefferedSize) null);
         this.dev = comuunicateDevice;
     }

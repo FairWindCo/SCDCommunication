@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.arg.micro;
 
 import jssc.SerialPort;
+import ua.pp.fairwind.communications.abstractions.annottations.Device;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
@@ -15,6 +16,7 @@ import ua.pp.fairwind.communications.utils.CommunicationUtils;
 /**
  * Created by Сергей on 07.09.2015.
  */
+@Device("ArgMicro")
 public class ArgMicroDevice extends RSLineDevice {
     private final SoftFloatProperty rate;
     private final SoftShortProperty numberMeasurementm;

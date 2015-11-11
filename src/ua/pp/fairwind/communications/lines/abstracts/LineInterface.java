@@ -1,8 +1,8 @@
 package ua.pp.fairwind.communications.lines.abstracts;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.devices.abstracts.ImitatorDevice;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.lines.exceptions.LineErrorException;
 import ua.pp.fairwind.communications.lines.exceptions.LineTimeOutException;
 import ua.pp.fairwind.communications.lines.exceptions.TrunsactionError;
@@ -25,13 +25,13 @@ public interface LineInterface extends ElementInterface {
 
     void async_communicate(CommunicationProtocolRequest request);
 
-    void addReadMonitoringDevice(DeviceInterface device);
+    void addReadMonitoringDevice(LinedDeviceInterface device);
 
-    void addWriteMonitoringDevice(DeviceInterface device);
+    void addWriteMonitoringDevice(LinedDeviceInterface device);
 
-    void removeReadMonitoringDevice(DeviceInterface device);
+    void removeReadMonitoringDevice(LinedDeviceInterface device);
 
-    void removeWriteMonitoringDevice(DeviceInterface device);
+    void removeWriteMonitoringDevice(LinedDeviceInterface device);
 
     boolean isPaused();
 

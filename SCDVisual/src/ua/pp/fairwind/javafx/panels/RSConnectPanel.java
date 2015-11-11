@@ -7,7 +7,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import jssc.SerialPortList;
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
 
@@ -22,11 +22,11 @@ public class RSConnectPanel extends StackPane {
     private ComboBox<ValueHolder> portstopBits = new ComboBox<>();
     private Label parityLabel = new Label(I18N_FX.getLocalizedString("parity"));
     private ComboBox<ValueHolder> portparity = new ComboBox<>();
-    private DeviceInterface dev;
+    private LinedDeviceInterface dev;
     private int pauseBeforeCommand = 0;
 
 
-    public RSConnectPanel(DeviceInterface deviceInterface) {
+    public RSConnectPanel(LinedDeviceInterface deviceInterface) {
         super();
         this.dev = deviceInterface;
         if (dev == null) throw new IllegalArgumentException("NULL Line not allowed!");

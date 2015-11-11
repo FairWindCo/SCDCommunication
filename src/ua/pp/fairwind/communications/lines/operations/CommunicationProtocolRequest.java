@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.lines.operations;
 
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.communications.messagesystems.event.Event;
@@ -25,7 +25,7 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor {
     private final long pauseBeforeRead;
     private final long pauseBeforeWrite;
     private final long bytesForReadCount;
-    final private DeviceInterface senderDevice;
+    final private LinedDeviceInterface senderDevice;
     private final LineParameters parameters;
     private final AbstractProperty property;
     private final LineInterface nextLine;
@@ -37,7 +37,7 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor {
     private final REQUEST_TYPE requestType;
     private final CommunicationProtocolRequest subrequest;
     private final Event sourceEvent;
-    private CommunicationProtocolRequest(REQUEST_TYPE requestType, byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite, LineParameters parameters, AbstractProperty property, LineInterface nextLine, boolean needRollBack, long maxTryCount, CommunicationProtocolRequest surequest, Event sourceEvent) {
+    private CommunicationProtocolRequest(REQUEST_TYPE requestType, byte[] bytesForSend, long bytesForReadCount, LinedDeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite, LineParameters parameters, AbstractProperty property, LineInterface nextLine, boolean needRollBack, long maxTryCount, CommunicationProtocolRequest surequest, Event sourceEvent) {
         this.bytesForSend = bytesForSend;
         this.senderDevice = senderDevice;
         this.timeOut = timeOut;
@@ -74,7 +74,7 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor {
         this.sourceEvent = notSuccessRequest.sourceEvent;
     }
 
-    public static CommunicationProtocolRequest createReuest(REQUEST_TYPE requestType, byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite, LineParameters parameters, AbstractProperty property, LineInterface nextLine, boolean needRollBack, long maxTryCount, CommunicationProtocolRequest subrequest, Event sourceEvent) {
+    public static CommunicationProtocolRequest createReuest(REQUEST_TYPE requestType, byte[] bytesForSend, long bytesForReadCount, LinedDeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite, LineParameters parameters, AbstractProperty property, LineInterface nextLine, boolean needRollBack, long maxTryCount, CommunicationProtocolRequest subrequest, Event sourceEvent) {
         if (senderDevice == null) return null;
         if (property != null && !startRequest(property, requestType.getPropertyOperationType())) {
             return null;
@@ -82,7 +82,7 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor {
         return new CommunicationProtocolRequest(requestType, bytesForSend, bytesForReadCount, senderDevice, timeOut, pauseBeforeRead, pauseBeforeWrite, parameters, property, nextLine, needRollBack, maxTryCount, subrequest, sourceEvent);
     }
 
-    public static CommunicationProtocolRequest createReuestNextLine(REQUEST_TYPE requestType, byte[] bytesForSend, long bytesForReadCount, DeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite, LineParameters parameters, AbstractProperty property, LineInterface nextLine, boolean needRollBack, long maxTryCount, Event sourceEvent) {
+    public static CommunicationProtocolRequest createReuestNextLine(REQUEST_TYPE requestType, byte[] bytesForSend, long bytesForReadCount, LinedDeviceInterface senderDevice, long timeOut, long pauseBeforeRead, long pauseBeforeWrite, LineParameters parameters, AbstractProperty property, LineInterface nextLine, boolean needRollBack, long maxTryCount, Event sourceEvent) {
         if (senderDevice == null) return null;
         return new CommunicationProtocolRequest(requestType, bytesForSend, bytesForReadCount, senderDevice, timeOut, pauseBeforeRead, pauseBeforeWrite, parameters, property, nextLine, needRollBack, maxTryCount, null, sourceEvent);
     }
@@ -104,7 +104,7 @@ public class CommunicationProtocolRequest extends AbstractTrunsactionExecutor {
         return bytesForSend;
     }
 
-    public DeviceInterface getSenderDevice() {
+    public LinedDeviceInterface getSenderDevice() {
         return senderDevice;
     }
 

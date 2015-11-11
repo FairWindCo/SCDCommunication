@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.ecotest;
 
 import jssc.SerialPort;
+import ua.pp.fairwind.communications.abstractions.annottations.Device;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
@@ -15,6 +16,7 @@ import ua.pp.fairwind.communications.propertyes.software.*;
 /**
  * Created by Сергей on 28.09.2015.
  */
+@Device("BDBG_09")
 public class BDBG09 extends RSLineDevice {
     final public static short PROTOCOL_V1 = 1;
     final public static short PROTOCOL_V2 = 2;

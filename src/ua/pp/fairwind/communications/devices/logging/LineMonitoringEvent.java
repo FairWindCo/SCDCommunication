@@ -1,6 +1,6 @@
 package ua.pp.fairwind.communications.devices.logging;
 
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.utils.CommunicationUtils;
@@ -13,12 +13,12 @@ import java.util.Date;
  */
 public class LineMonitoringEvent {
     final LineInterface line;
-    final DeviceInterface device;
+    final LinedDeviceInterface device;
     final AbstractProperty property;
     final private ACTION_TYPE action;
     final private byte[] buffer;
     final private long date = System.currentTimeMillis();
-    public LineMonitoringEvent(ACTION_TYPE action, byte[] buffer, LineInterface line, DeviceInterface device, AbstractProperty property) {
+    public LineMonitoringEvent(ACTION_TYPE action, byte[] buffer, LineInterface line, LinedDeviceInterface device, AbstractProperty property) {
         this.action = action;
         this.buffer = buffer;
         this.line = line;
@@ -38,7 +38,7 @@ public class LineMonitoringEvent {
         return line;
     }
 
-    public DeviceInterface getDevice() {
+    public LinedDeviceInterface getDevice() {
         return device;
     }
 

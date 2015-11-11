@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
+import ua.pp.fairwind.communications.devices.abstracts.AbstractLinedDevice;
 import ua.pp.fairwind.communications.devices.abstracts.SerialDeviceInterface;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
@@ -59,7 +60,7 @@ public class VisualControls {
         return led;
     }
 
-    public static Button createPClosePortButton(AbstractDevice device) {
+    public static Button createPClosePortButton(AbstractLinedDevice device) {
         Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("close2.png"));
         Button button = new Button();
         button.setGraphic(new ImageView(imageDecline));
@@ -71,7 +72,7 @@ public class VisualControls {
         return button;
     }
 
-    public static Button createSClosePortButton(AbstractDevice device) {
+    public static Button createSClosePortButton(AbstractLinedDevice device) {
         Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("close2.png"));
         Button button = new Button();
         button.setGraphic(new ImageView(imageDecline));

@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.Baumer;
 
 import jssc.SerialPort;
+import ua.pp.fairwind.communications.abstractions.annottations.Device;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
@@ -38,6 +39,7 @@ ST_H High byte steps
 ST_L Low byte steps
 LRC EAD XOR MT_H XOR M_T_L XOR ST_H XOR ST_L
  */
+@Device("BelimaEncoder")
 public class Encoder extends RSLineDevice {
     private final SoftShortProperty revolution;
     private final SoftShortProperty steps;

@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.panDrive;
 
 import jssc.SerialPort;
+import ua.pp.fairwind.communications.abstractions.annottations.Device;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
@@ -16,6 +17,7 @@ import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
 /**
  * Created by Сергей on 07.09.2015.
  */
+@Device("PanDriveMotor")
 public class StepDriver extends RSLineDevice {
     private final SoftShortProperty speed;
     private final SoftShortProperty statusCode;

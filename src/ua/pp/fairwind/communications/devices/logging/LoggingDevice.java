@@ -1,7 +1,7 @@
 package ua.pp.fairwind.communications.devices.logging;
 
 import ua.pp.fairwind.communications.devices.RequestInformation;
-import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
+import ua.pp.fairwind.communications.devices.abstracts.AbstractLinedDevice;
 import ua.pp.fairwind.communications.lines.operations.CommunicationAnswer;
 import ua.pp.fairwind.communications.lines.operations.CommunicationProtocolRequest;
 import ua.pp.fairwind.communications.messagesystems.event.Event;
@@ -10,7 +10,7 @@ import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 /**
  * Created by Сергей on 13.08.2015.
  */
-public class LoggingDevice extends AbstractDevice {
+public class LoggingDevice extends AbstractLinedDevice {
     final LineMonitorInterface monitorInterface;
 
     public LoggingDevice(String name, String uuid, LineMonitorInterface monitorInterface) {

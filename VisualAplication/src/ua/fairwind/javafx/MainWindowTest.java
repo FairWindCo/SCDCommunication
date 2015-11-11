@@ -37,7 +37,8 @@ public class MainWindowTest extends Application {
     @Override
     public void start(Stage windowStage) throws Exception {
         MyResourceLoader resloader = new MyResourceLoader();
-        scada = SCADASystemFX.createScadaSystem("CENTRAL_SCADA", 5000);
+        scada =
+                SCADASystemFX.createScadaSystem("CENTRAL_SCADA", 5000);
         //LineCommunicationLoggingWindow loggingWindow=new LineCommunicationLoggingWindow("Buffer Logging",1000);
         //scada.setMonitoringToAllLines(loggingWindow.getLoggingDevice());
 
@@ -55,6 +56,7 @@ public class MainWindowTest extends Application {
         MenuConfigElements bdbg09 = new BDBG09Window("BDBG09", scada);
         MenuConfigElements bdmg04 = new BDMG04Window("BDMG04", scada);
         MenuConfigElements akonbase = new AkonBaseWindow("AKON_Base", scada, "baseakon");
+        MenuConfigElements modbus=new ModBusWindow("MODBUS",scada);
         MenuConfigElements immitator_base = new MenuConfigElements("IMITATORS");
         MenuConfigElements immitator = new ImmitatorWindow("SERIAL_IMITATOR", scada);
         MenuConfigElementsAction showBDMGConnect=new MenuConfigElementsAction("connect_view.dbmg04.connect",(executor, elementsForexecute)->{
@@ -70,6 +72,7 @@ public class MainWindowTest extends Application {
         testDev.setAddChild(encoder);
         testDev.setAddChild(bdbg09);
         testDev.setAddChild(bdmg04);
+        testDev.setAddChild(modbus);
         immitator_base.setAddChild(immitator);
         holderMenu.setMenuPoint(testDev);
         holderMenu.setMenuPoint(immitator_base);

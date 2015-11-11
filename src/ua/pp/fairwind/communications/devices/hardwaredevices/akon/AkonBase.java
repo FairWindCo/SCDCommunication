@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.akon;
 
+import ua.pp.fairwind.communications.abstractions.annottations.Device;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.messagesystems.event.Event;
@@ -16,6 +17,7 @@ import ua.pp.fairwind.communications.propertyes.software.bytedpropertyes.SoftInt
 /**
  * Created by Сергей on 11.09.2015.
  */
+@Device(value = "AkonBase")
 public class AkonBase extends RSLineDevice {
     public static String OBJECT_NUM = "OBJECT_NUM";
     public static String PROPERTY_NUM = "PROPERTY_NUM";

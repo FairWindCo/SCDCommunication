@@ -5,13 +5,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
 import ua.pp.fairwind.communications.lines.lineparams.LineParameters;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
 
 public class TCPConnectPanel extends StackPane {
-    DeviceInterface dev = null;
+    LinedDeviceInterface dev = null;
     LineParameters safeparams;
     private Label portLabel = new Label(I18N_FX.getLocalizedString("IPLabel"));
     private TextField ipaddress = new TextField("127.0.0.1");
@@ -19,7 +19,7 @@ public class TCPConnectPanel extends StackPane {
     private TextField ipport = new TextField("9000");
     private int pauseBeforeCommand = 0;
 
-    public TCPConnectPanel(DeviceInterface comuunicateDevice) {
+    public TCPConnectPanel(LinedDeviceInterface comuunicateDevice) {
         super();
         this.dev = comuunicateDevice;
         if (dev == null) throw new IllegalArgumentException("NULL Device not allowed!");

@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.akon;
 
+import ua.pp.fairwind.communications.abstractions.annottations.Device;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
 import ua.pp.fairwind.communications.propertyes.groups.GroupProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
@@ -10,6 +11,7 @@ import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
 /**
  * Created by Сергей on 23.09.2015.
  */
+@Device("WAD_A06_BUS")
 public class WAD_A06_BUS extends AkonBase {
     protected final GroupProperty chanel1;
     protected final GroupProperty chanel2;

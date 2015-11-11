@@ -1,6 +1,7 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.positron;
 
 import jssc.SerialPort;
+import ua.pp.fairwind.communications.abstractions.annottations.Device;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
@@ -18,6 +19,7 @@ import java.io.*;
 /**
  * Created by Сергей on 11.09.2015.
  */
+@Device("BDMG_04")
 public class BDMG04 extends RSLineDevice {
     public static final String MODBUS_ADDRESS="MODBUS_ADDRESS";
     public static final String MODBUS_READ_FUNCTION="MODBUS_READ_FUNCTION";
@@ -103,23 +105,23 @@ public class BDMG04 extends RSLineDevice {
 
     protected final SoftFloatProperty state_med=new SoftFloatProperty("bdmg04.state_med", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(MODBUS_BYTE_SIZE,4);
     protected final SoftBitToIntegerProperty state_status=new SoftBitToIntegerProperty("bdmg04.state_status",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY,(byte)16,
-                new SoftBoolProperty("bdmg04.state_status.ok",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,0),
-                new SoftBoolProperty("bdmg04.state_status.vrg",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,1),
-                new SoftBoolProperty("bdmg04.state_status.vag",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,2),
-                new SoftBoolProperty("bdmg04.state_status.chanel_hi",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,3),
-                new SoftBoolProperty("bdmg04.state_status.hi_chanel1",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,4),
-                new SoftBoolProperty("bdmg04.state_status.hi_chanel2",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,5),
-                new SoftBoolProperty("bdmg04.state_status.error_chanel1",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,6),
-                new SoftBoolProperty("bdmg04.state_status.error_chanel2",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,7),
-                new SoftBoolProperty("bdmg04.state_status.test",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,8),
-                new SoftBoolProperty("bdmg04.state_status.alarm",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,9),
-                new SoftBoolProperty("bdmg04.state_status.paramsok",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,10),
-                new SoftBoolProperty("bdmg04.state_status.hi_chanel1_error",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,11),
-                new SoftBoolProperty("bdmg04.state_status.filtration",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,12),
-                new SoftBoolProperty("bdmg04.state_status.filtration_error",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,13),
-                new SoftBoolProperty("bdmg04.state_status.table_chanel1",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,14),
-                new SoftBoolProperty("bdmg04.state_status.table_chanel2",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,15)
-            ).setAdditionalInfo(MODBUS_BYTE_SIZE,2);
+            new SoftBoolProperty("bdmg04.state_status.ok",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,0),
+            new SoftBoolProperty("bdmg04.state_status.vrg",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,1),
+            new SoftBoolProperty("bdmg04.state_status.vag",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,2),
+            new SoftBoolProperty("bdmg04.state_status.chanel_hi",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,3),
+            new SoftBoolProperty("bdmg04.state_status.hi_chanel1",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,4),
+            new SoftBoolProperty("bdmg04.state_status.hi_chanel2",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,5),
+            new SoftBoolProperty("bdmg04.state_status.error_chanel1",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,6),
+            new SoftBoolProperty("bdmg04.state_status.error_chanel2",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,7),
+            new SoftBoolProperty("bdmg04.state_status.test",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,8),
+            new SoftBoolProperty("bdmg04.state_status.alarm",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,9),
+            new SoftBoolProperty("bdmg04.state_status.paramsok",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,10),
+            new SoftBoolProperty("bdmg04.state_status.hi_chanel1_error",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,11),
+            new SoftBoolProperty("bdmg04.state_status.filtration",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,12),
+            new SoftBoolProperty("bdmg04.state_status.filtration_error",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,13),
+            new SoftBoolProperty("bdmg04.state_status.table_chanel1",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,14),
+            new SoftBoolProperty("bdmg04.state_status.table_chanel2",ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(SoftBoolProperty.BIT_NUMBER,15)
+    ).setAdditionalInfo(MODBUS_BYTE_SIZE,2);
     protected final SoftFloatProperty state_voltage_chanel1=new SoftFloatProperty("bdmg04.state_voltage_chanel1", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(MODBUS_BYTE_SIZE,4);
     protected final SoftFloatProperty state_voltage_chanel2=new SoftFloatProperty("bdmg04.state_voltage_chanel2", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(MODBUS_BYTE_SIZE,4);
     protected final SoftFloatProperty state_speed_count_chanel1=new SoftFloatProperty("bdmg04.state_speed_count_chanel1", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY).setAdditionalInfo(MODBUS_BYTE_SIZE,4);
@@ -289,7 +291,7 @@ public class BDMG04 extends RSLineDevice {
 
     @Override
     public String getDeviceType() {
-        return "AKON BASE DEVICE";
+        return "POSITRON BDMG04 DEVICE";
     }
 
     public SoftShortProperty getBdmg04Protocol() {

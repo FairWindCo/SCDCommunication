@@ -1,12 +1,14 @@
 package ua.pp.fairwind.communications.elementsdirecotry;
 
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.devices.hardwaredevices.Baumer.Encoder;
 import ua.pp.fairwind.communications.devices.hardwaredevices.akon.AkonBase;
 import ua.pp.fairwind.communications.devices.hardwaredevices.akon.WAD_A06_BUS;
 import ua.pp.fairwind.communications.devices.hardwaredevices.arg.micro.ArgMicroDevice;
 import ua.pp.fairwind.communications.devices.hardwaredevices.ecotest.BDBG09;
 import ua.pp.fairwind.communications.devices.hardwaredevices.favorit.FavoritCoreDeviceV1;
+import ua.pp.fairwind.communications.devices.hardwaredevices.modbus.ModBusDevice;
 import ua.pp.fairwind.communications.devices.hardwaredevices.panDrive.StepDriver;
 import ua.pp.fairwind.communications.devices.hardwaredevices.positron.BDMG04;
 
@@ -24,16 +26,17 @@ public interface AutoCreateDeviceFunction {
     String AKON_WAD_A06_BUS = "WAD_A06_BUS";
     String BDBG09 = "BDBG_09";
     String BDMG04="BDMG_04";
+    String MODBUS="MODBUS";
 
     static String getUiidFromMap(String name, HashMap<String, String> uuids) {
         if (name == null || uuids == null) return null;
         return uuids.get(name);
     }
 
-    DeviceInterface createDevice(Long address, String typeOfDevice, String name);
+    AbstractDevice createDevice(String name,String typeOfDevice,Object... params);
 
-    default DeviceInterface createAutoDevice(Long address, String typeOfDevice, String name) {
-        DeviceInterface newdevice = null;
+    default LinedDeviceInterface createAutoDevice(Long address, String typeOfDevice, String name) {
+        LinedDeviceInterface newdevice = null;
         switch (typeOfDevice) {
             case FAVORIT_VENTIL_V1: {
                 newdevice = new FavoritCoreDeviceV1(address == null ? 1 : address, name != null ? name : "FAVORIT_VENTIL", null);
@@ -65,6 +68,10 @@ public interface AutoCreateDeviceFunction {
             }
             case BDMG04: {
                 newdevice = new BDMG04(address == null ? 1 : address, name != null ? name : "BDMG04", null);
+                break;
+            }
+            case MODBUS:{
+                newdevice=new ModBusDevice(address == null ? 1 : address, name != null ? name : "MODBUS", null);
                 break;
             }
         }

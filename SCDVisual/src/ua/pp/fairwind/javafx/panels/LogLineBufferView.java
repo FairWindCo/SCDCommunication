@@ -10,7 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.GridPane;
-import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.devices.logging.LineMonitoringEvent;
 import ua.pp.fairwind.communications.devices.logging.LoggingDevice;
 import ua.pp.fairwind.javafx.guiElements.windows.SimpleView;
@@ -112,7 +112,7 @@ public class LogLineBufferView extends SimpleView {
         }
     }
 
-    public DeviceInterface getDev() {
+    public LinedDeviceInterface getDev() {
         return dev;
     }
 }

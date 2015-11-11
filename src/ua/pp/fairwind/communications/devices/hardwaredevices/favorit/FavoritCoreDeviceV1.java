@@ -2,6 +2,7 @@ package ua.pp.fairwind.communications.devices.hardwaredevices.favorit;
 
 import jssc.SerialPort;
 import ua.pp.fairwind.communications.abstractions.LineSelector;
+import ua.pp.fairwind.communications.abstractions.annottations.Device;
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.LineSelectDevice;
@@ -21,6 +22,7 @@ import ua.pp.fairwind.communications.utils.CommunicationUtils;
 /**
  * Created by Сергей on 09.07.2015.
  */
+@Device("FavoritVentilV1")
 public class FavoritCoreDeviceV1 extends RSLineDevice implements LineSelectDevice {
     private final SoftBoolProperty digitalInChanelN1;
     private final SoftBoolProperty digitalInChanelN2;
