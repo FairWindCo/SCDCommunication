@@ -1,7 +1,10 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.modbus;
 
 import jssc.SerialPort;
+<<<<<<< HEAD
 import ua.pp.fairwind.communications.abstractions.annottations.Device;
+=======
+>>>>>>> origin/master
 import ua.pp.fairwind.communications.devices.RequestInformation;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.lines.lineparams.CommunicationLineParameters;
@@ -16,7 +19,10 @@ import java.io.*;
 /**
  * Created by Сергей on 11.09.2015.
  */
+<<<<<<< HEAD
 @Device("MODBUS")
+=======
+>>>>>>> origin/master
 public class ModBusDevice extends RSLineDevice {
     public static final String MODBUS_ADDRESS="MODBUS_ADDRESS";
     public static final String MODBUS_READ_FUNCTION="MODBUS_READ_FUNCTION";
@@ -126,4 +132,8 @@ public class ModBusDevice extends RSLineDevice {
             }
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/master

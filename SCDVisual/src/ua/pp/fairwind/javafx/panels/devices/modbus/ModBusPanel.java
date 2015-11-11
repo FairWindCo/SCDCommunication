@@ -89,4 +89,8 @@ public class ModBusPanel extends VBox {
         getChildren().add(intiCommandPanel());
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/master

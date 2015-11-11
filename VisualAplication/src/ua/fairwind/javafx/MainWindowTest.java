@@ -55,6 +55,7 @@ public class MainWindowTest extends Application {
         MenuConfigElements encoder = new BelimaWindow("Baumer_Incremental_Encoder", scada);
         MenuConfigElements bdbg09 = new BDBG09Window("BDBG09", scada);
         MenuConfigElements bdmg04 = new BDMG04Window("BDMG04", scada);
+        MenuConfigElements modbus=new ModBusWindow("MODBUS",scada);
         MenuConfigElements akonbase = new AkonBaseWindow("AKON_Base", scada, "baseakon");
         MenuConfigElements modbus=new ModBusWindow("MODBUS",scada);
         MenuConfigElements immitator_base = new MenuConfigElements("IMITATORS");
