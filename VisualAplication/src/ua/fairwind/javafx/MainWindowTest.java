@@ -57,7 +57,6 @@ public class MainWindowTest extends Application {
         MenuConfigElements bdmg04 = new BDMG04Window("BDMG04", scada);
         MenuConfigElements modbus=new ModBusWindow("MODBUS",scada);
         MenuConfigElements akonbase = new AkonBaseWindow("AKON_Base", scada, "baseakon");
-        MenuConfigElements modbus=new ModBusWindow("MODBUS",scada);
         MenuConfigElements immitator_base = new MenuConfigElements("IMITATORS");
         MenuConfigElements immitator = new ImmitatorWindow("SERIAL_IMITATOR", scada);
         MenuConfigElementsAction showBDMGConnect=new MenuConfigElementsAction("connect_view.dbmg04.connect",(executor, elementsForexecute)->{

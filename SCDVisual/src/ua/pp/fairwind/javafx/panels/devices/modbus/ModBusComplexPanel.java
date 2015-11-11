@@ -64,8 +64,7 @@ public class ModBusComplexPanel extends BorderPane {
         setBottom(down);
     }
 
-<<<<<<< HEAD
+
+
 }
-=======
-}
->>>>>>> origin/master
+
