@@ -14,6 +14,7 @@ SUPPORTED DEVICE:
 TODO:
 1. CREATE DEVICES DP5\DP5G, BVI, AKONS DEVICES
 2. Create "FIND" device subsystem
+3. Autimation for find new devices, properties
 3. CREATE VISUAL SELECTOR OF ELEMENTS
 4. CREATE CHART, DIAGRAM
 5. HISTORY OF ELEMENTS CHANGE (create representation and persistents)
