@@ -1,7 +1,8 @@
 # SCDCommunication
-Library for creation apllication that use communication width devices
+Library for creation apllication that need communication with IO devices
 
 SUPPORTED DEVICE:
+Serial Interface (RS232/RS485):
 - Base AKON (common akons propertyes)
 - Baumer Encoder with RS485
 - PanDrive Step Driver Motor
@@ -10,6 +11,7 @@ SUPPORTED DEVICE:
 - EcoTest BDMG-09
 - Favorit Communication&Mesurment Device
 
+Some JavaFX graphical user interface elements for visualisation state of IO devices
 
 TODO:
 1. CREATE DEVICES DP5\DP5G, BVI, AKONS DEVICES

@@ -3,7 +3,7 @@ package ua.pp.fairwind.communications.propertyes.software.bittedproperty;
 import ua.pp.fairwind.communications.messagesystems.event.Event;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractGroupedProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
-import ua.pp.fairwind.communications.propertyes.abstraction.markers.IntegerValueInterface;
+import ua.pp.fairwind.communications.propertyes.abstraction.markers.ByteValueInterface;
 import ua.pp.fairwind.communications.propertyes.software.SoftBoolProperty;
 
 import java.util.BitSet;
@@ -11,15 +11,15 @@ import java.util.BitSet;
 /**
  * Created by Сергей on 09.11.2015.
  */
-public class SoftBitToIntegerProperty extends AbstractGroupedProperty<Integer, Boolean> implements IntegerValueInterface {
+public class SoftBitToByteProperty extends AbstractGroupedProperty<Byte, Boolean> implements ByteValueInterface {
     private final short bitCount;
     private final short propertyCount;
     final private  BitSet setBits;
 
 
-    public SoftBitToIntegerProperty(String name, SOFT_OPERATION_TYPE softOperationType,byte bits,ValueProperty<Boolean>... properties) {
+    public SoftBitToByteProperty(String name, SOFT_OPERATION_TYPE softOperationType, byte bits, ValueProperty<Boolean>... properties) {
         super(name, null, softOperationType);
-        if(bits>32)bits=32;
+        if(bits>8)bits=8;
         bitCount=bits;
         setBits=new BitSet(bits);
         if(properties==null)throw new IllegalArgumentException();
@@ -27,22 +27,22 @@ public class SoftBitToIntegerProperty extends AbstractGroupedProperty<Integer, B
         addPropertyies(properties);
     }
 
-    public SoftBitToIntegerProperty(String name, SOFT_OPERATION_TYPE softOperationType) {
+    public SoftBitToByteProperty(String name, SOFT_OPERATION_TYPE softOperationType) {
         super(name, null, softOperationType);
-        setBits=new BitSet(32);
-        bitCount=32;
+        setBits=new BitSet(8);
+        bitCount=8;
         ValueProperty<Boolean>[] properties=new ValueProperty[32];
-        for(int i=0;i<32;i++){
+        for(int i=0;i<8;i++){
             properties[i]=new SoftBoolProperty("bit_"+i,softOperationType);
         }
         propertyCount=(short)properties.length;
         addPropertyies(properties);
     }
 
-    public SoftBitToIntegerProperty(String name, SOFT_OPERATION_TYPE softOperationType,ValueProperty<Boolean>... properties) {
+    public SoftBitToByteProperty(String name, SOFT_OPERATION_TYPE softOperationType, ValueProperty<Boolean>... properties) {
         super(name, null, softOperationType);
         int bits=properties.length;
-        if(bits>32)bits=32;
+        if(bits>8)bits=8;
         bitCount=(short)bits;
         setBits=new BitSet(bitCount);
         if(properties==null)throw new IllegalArgumentException();
@@ -51,7 +51,7 @@ public class SoftBitToIntegerProperty extends AbstractGroupedProperty<Integer, B
     }
 
     @Override
-    protected Boolean formInternalValue(Integer integer, ValueProperty<Boolean> internalProperty) {
+    protected Boolean formInternalValue(Byte integer, ValueProperty<Boolean> internalProperty) {
         int index=getBitIndex(internalProperty);
         if(index>=0){
             Boolean bol=internalProperty.getValue();
@@ -61,13 +61,10 @@ public class SoftBitToIntegerProperty extends AbstractGroupedProperty<Integer, B
         }
     }
 
-    private void formBitSet(Integer integer){
+    private void formBitSet(Byte integer){
         if(integer!=null) {
-            byte[] arr=new byte[4];
+            byte[] arr=new byte[1];
             arr[0]=(byte)((integer)&0xFF);
-            arr[1]=(byte)((integer>>8)&0xFF);
-            arr[2]=(byte)((integer>>16)&0xFF);
-            arr[3]=(byte)((integer>>24)&0xFF);
             setBits.clear();
             setBits.or(BitSet.valueOf(arr));
         }
@@ -85,19 +82,19 @@ public class SoftBitToIntegerProperty extends AbstractGroupedProperty<Integer, B
     }
 
     @Override
-    protected void setSilentValue(Integer value) {
+    protected void setSilentValue(Byte value) {
         formBitSet(value);
         super.setSilentValue(value);
     }
 
     @Override
-    protected void setInternalValue(Integer integer, Event parent) {
+    protected void setInternalValue(Byte integer, Event parent) {
         formBitSet(integer);
         super.setInternalValue(integer, parent);
     }
 
     @Override
-    protected Integer formExternalValue(Boolean aBoolean, Integer bigvalue, ValueProperty<Boolean> internalProperty) {
+    protected Byte formExternalValue(Boolean aBoolean, Byte bigvalue, ValueProperty<Boolean> internalProperty) {
         int index=getBitIndex(internalProperty);
         if(index>=0){
             Boolean bol=internalProperty.getValue();
@@ -105,17 +102,12 @@ public class SoftBitToIntegerProperty extends AbstractGroupedProperty<Integer, B
         }
         byte[] bytes=setBits.toByteArray();
         if(bytes==null||bytes.length<1)return null;
-        int mask=0;
-        long value=0;
-        for(int i=0;i<4&i<bytes.length;i++){
-            value|=bytes[i]<<mask;
-            mask+=8;
-        }
-        return (int)(value&0xFFFFFFFF);
+        long value=bytes[0];
+        return (byte)(value&0xFF);
     }
 
     @Override
-    public SoftBitToIntegerProperty setAdditionalInfo(String paramsName, Object value) {
+    public SoftBitToByteProperty setAdditionalInfo(String paramsName, Object value) {
         super.setAdditionalInfo(paramsName, value);
         return this;
     }

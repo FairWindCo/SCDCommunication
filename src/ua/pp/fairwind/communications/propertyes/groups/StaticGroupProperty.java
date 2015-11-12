@@ -33,7 +33,7 @@ public abstract class StaticGroupProperty extends AbstractProperty implements Gr
         properties = new ConcurrentHashMap<>();
         propertiesUUID = new ConcurrentHashMap<>();
         listproperty = new CopyOnWriteArrayList<>();
-        addPropertyies(propertyList);
+        if(propertyList!=null)addPropertyies(propertyList);
     }
 
     @Override

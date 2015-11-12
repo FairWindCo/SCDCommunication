@@ -59,6 +59,16 @@ public class SoftIntegerToByteProperty extends AbstractGroupedProperty<Integer, 
         addPropertyies(byte1, byte2, byte3, byte4);
     }
 
+
+    public SoftIntegerToByteProperty(String name, SOFT_OPERATION_TYPE softOperationType) {
+        super(name, null, softOperationType);
+        byte1 = new SoftByteProperty("byte1");
+        byte2 = new SoftByteProperty("byte2");
+        byte3 = new SoftByteProperty("byte3");
+        byte4 = new SoftByteProperty("byte4");
+        addPropertyies(byte1, byte2, byte3, byte4);
+    }
+
     public SoftIntegerToByteProperty(String name, String uuid, SOFT_OPERATION_TYPE softOperationType, Integer integer) {
         super(name, uuid, softOperationType, integer);
         byte1 = new SoftByteProperty("byte1");

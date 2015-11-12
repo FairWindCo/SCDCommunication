@@ -6,20 +6,22 @@ import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.RSLineDevice;
 import ua.pp.fairwind.communications.elementsdirecotry.DeviceCreatorInterface;
 import ua.pp.fairwind.communications.internatianalisation.I18N;
+import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
+import ua.pp.fairwind.communications.propertyes.groups.GroupProperty;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Сергей on 11.11.2015.
  */
 public class EllementsCreator implements DeviceCreatorInterface{
     final Map<String,Class<? extends AbstractDevice>> deviceSet;
+    final Map<String,Class<? extends AbstractProperty>> propertySet;
     final Map<String,String> deviceDecriptionSet;
 
     private final Map<String,AbstractDevice> createdDeviceSet=new HashMap<>();
@@ -55,12 +57,42 @@ public class EllementsCreator implements DeviceCreatorInterface{
                     }
             }
         }
+        Set<Class<? extends AbstractProperty>> property_class=reflections.getSubTypesOf(AbstractProperty.class);
+        Map<String,Class<? extends AbstractProperty>> propertyes=new HashMap<>();
+        for(Class<?  extends AbstractProperty> cls:property_class){
+            if(!Modifier.isAbstract(cls.getModifiers())){
+                propertyes.put(cls.getCanonicalName(),cls);
+            }
+        }
+
         this.deviceSet= Collections.unmodifiableMap(deviceSet);
         this.deviceDecriptionSet=Collections.unmodifiableMap(deviceDecriptionSet);
+        this.propertySet=Collections.unmodifiableMap(propertyes);
     }
 
     public AbstractDevice getDevice(String codeName,Object... param){
         return getDevice(codeName,codeName,param);
+    }
+
+    public AbstractProperty createProperty(String propertyName,String propertyType,ValueProperty.SOFT_OPERATION_TYPE softOperationType){
+        Class<? extends AbstractProperty> createdClass=propertySet.get(propertyType);
+        if(createdClass!=null){
+                try {
+                    if(ValueProperty.class.isAssignableFrom(createdClass)) {
+                        Constructor<? extends AbstractProperty> constructor = createdClass.getConstructor(String.class, ValueProperty.SOFT_OPERATION_TYPE.class);
+                        AbstractProperty newdev = constructor.newInstance(propertyName, softOperationType);
+                        return newdev;
+                    } else if(GroupProperty.class.isAssignableFrom(createdClass)){
+                        Constructor<? extends AbstractProperty> constructor = createdClass.getConstructor(String.class);
+                        AbstractProperty newdev = constructor.newInstance(propertyName);
+                        return newdev;
+                    }
+                } catch (NoSuchMethodException|InvocationTargetException|InstantiationException|IllegalAccessException e) {
+                    System.err.println(e.getLocalizedMessage());
+                    return null;
+                }
+        }
+        return null;
     }
 
 
@@ -105,5 +137,13 @@ public class EllementsCreator implements DeviceCreatorInterface{
     @Override
     public AbstractDevice createDevice(String name, String typeOfDevice, Object... params) {
         return getDevice(name,typeOfDevice,params);
+    }
+
+    public List<String> getDeviceTypes(){
+        return deviceSet.values().parallelStream().map(a->a.getCanonicalName()).collect(Collectors.toList());
+    }
+
+    public List<String> getPropertyTypes(){
+        return propertySet.values().parallelStream().map(a->a.getCanonicalName()).collect(Collectors.toList());
     }
 }
