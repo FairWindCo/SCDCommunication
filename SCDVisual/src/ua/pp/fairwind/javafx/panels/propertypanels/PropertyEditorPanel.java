@@ -36,6 +36,49 @@ public class PropertyEditorPanel extends VBox {
         return root;
     }
 
+    private void checkIn(TreeItem<AbstractProperty> item,AbstractProperty propertyes){
+        if(propertyes!=null && item!=null) {
+            if(propertyes instanceof GroupProperty){
+                int count=((GroupProperty) propertyes).propertyCount();
+                if(count>0) {
+                    for(int i=0;i<count;i++) {
+                        AbstractProperty subproperty = ((GroupProperty) propertyes).getPopertyByIndex(i);
+                        if(checkItem(item,subproperty)){
+                            return;
+                        }
+                    }
+                } else {
+                    checkItem(item,propertyes);
+                }
+            } else {
+                checkItem(item,propertyes);
+            }
+        }
+    }
+
+    private boolean checkItem(TreeItem<AbstractProperty> item,AbstractProperty propertyes){
+        if(propertyes!=null && item!=null) {
+            if(propertyes==item.getValue())return false;
+            if(item.getChildren().size()>0){
+                boolean result=false;
+                for(TreeItem<AbstractProperty> subitem:item.getChildren()){
+                    if(propertyes==subitem.getValue()){
+                        result=true;
+                        break;
+                    }
+                }
+                if(!result){
+                    item.getChildren().add(getItem(propertyes));
+                    return true;
+                }
+            } else {
+                item.getChildren().add(getItem(propertyes));
+                return true;
+            }
+        }
+        return false;
+    }
+
     private TreeItem<AbstractProperty> getItem(AbstractProperty... propertyes){
         TreeItem<AbstractProperty> root=new TreeItem<>();
         if(propertyes!=null && propertyes.length>0) {
@@ -99,8 +142,27 @@ public class PropertyEditorPanel extends VBox {
         treeTableView.getColumns().add(editorcolumn);
         treeTableView.getColumns().add(actionColumn);
         treeTableView.setPrefWidth(550);
-
     }
 
+    public TreeTableView<AbstractProperty> getTreeTableView() {
+        return treeTableView;
+    }
 
+    public AbstractProperty getSelectedValue(){
+        if(treeTableView.getSelectionModel().getSelectedItem()!=null){
+            return treeTableView.getSelectionModel().getSelectedItem().getValue();
+        } else {
+            return null;
+        }
+    }
+
+    public void checkSelectedValue(){
+        TreeItem<AbstractProperty> item=treeTableView.getSelectionModel().getSelectedItem();
+        if(item!=null){
+            AbstractProperty property=treeTableView.getSelectionModel().getSelectedItem().getValue();
+            if (property != null){
+                checkIn(item,property);
+            }
+        }
+    }
 }

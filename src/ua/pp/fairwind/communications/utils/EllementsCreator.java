@@ -61,7 +61,7 @@ public class EllementsCreator implements DeviceCreatorInterface{
         Map<String,Class<? extends AbstractProperty>> propertyes=new HashMap<>();
         for(Class<?  extends AbstractProperty> cls:property_class){
             if(!Modifier.isAbstract(cls.getModifiers())){
-                propertyes.put(cls.getCanonicalName(),cls);
+                propertyes.put(cls.getSimpleName(),cls);
             }
         }
 
@@ -140,10 +140,10 @@ public class EllementsCreator implements DeviceCreatorInterface{
     }
 
     public List<String> getDeviceTypes(){
-        return deviceSet.values().parallelStream().map(a->a.getCanonicalName()).collect(Collectors.toList());
+        return deviceSet.keySet().stream().sorted().collect(Collectors.toList());
     }
 
     public List<String> getPropertyTypes(){
-        return propertySet.values().parallelStream().map(a->a.getCanonicalName()).collect(Collectors.toList());
+        return propertySet.keySet().stream().sorted().collect(Collectors.toList());
     }
 }

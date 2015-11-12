@@ -6,6 +6,7 @@ import javafx.scene.layout.VBox;
 import ua.pp.fairwind.communications.devices.hardwaredevices.modbus.ModBusDevice;
 import ua.pp.fairwind.communications.lines.abstracts.AbstractLine;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
+import ua.pp.fairwind.communications.utils.EllementsCreator;
 import ua.pp.fairwind.javafx.panels.LineInfoBar;
 import ua.pp.fairwind.javafx.panels.devices.SimpleDeviceConfigPanel;
 
@@ -36,11 +37,12 @@ public class ModBusComplexPanel extends BorderPane {
         }
     };
 
-    public ModBusComplexPanel(AbstractLine line, ModBusDevice device) {
-        this(line, device, null);
+    public ModBusComplexPanel(AbstractLine line, ModBusDevice device,EllementsCreator creator) {
+        this(line, device,creator, null);
     }
 
-    public ModBusComplexPanel(LineInterface line, ModBusDevice device, List<LineInterface> lines) {
+    public ModBusComplexPanel(LineInterface line, ModBusDevice device, EllementsCreator creator,List<LineInterface> lines) {
+        if (creator== null) throw new RuntimeException("CREATOR CAN`T BE NULL!");
         if (device == null) throw new RuntimeException("DEVICE CAN`T BE NULL!");
         if (line != null) device.setPrimerayLine(line);
         this.line = line;
@@ -49,7 +51,7 @@ public class ModBusComplexPanel extends BorderPane {
         devpanel = new SimpleDeviceConfigPanel(device, line, lines, listner);
         infoBarP = new LineInfoBar(35, device.getPrimaryLine());
         infoBarS = new LineInfoBar(35, device.getSecondaryLine());
-        panel = new ModBusPanel(device);
+        panel = new ModBusPanel(device,creator);
         initControl();
     }
 

@@ -1,6 +1,5 @@
 package ua.pp.fairwind.javafx.panels.devices.modbus;
 
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -8,11 +7,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import ua.pp.fairwind.communications.devices.hardwaredevices.modbus.ModBusDevice;
-import ua.pp.fairwind.communications.propertyes.software.SoftFloatProperty;
+import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.software.SoftShortProperty;
+import ua.pp.fairwind.communications.utils.EllementsCreator;
 import ua.pp.fairwind.io.javafx.propertys.special.ShortPropertyFXAdapterSpec;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.panels.TupicalPanels;
+import ua.pp.fairwind.javafx.panels.dialogs.AddPropertyDialog;
 import ua.pp.fairwind.javafx.panels.propertypanels.PropertyEditorPanel;
 
 import java.io.File;
@@ -23,9 +24,12 @@ import java.io.File;
 public class ModBusPanel extends VBox {
     final private ModBusDevice device;
     final private TabPane tabs = new TabPane();
+    final private EllementsCreator creator;
+    PropertyEditorPanel ep;
 
-    public ModBusPanel(ModBusDevice device) {
+    public ModBusPanel(ModBusDevice device,EllementsCreator creator) {
         super();
+        this.creator=creator;
         this.device = device;
         initControl();
     }
@@ -49,20 +53,29 @@ public class ModBusPanel extends VBox {
         final Tab initTab = new Tab(I18N_FX.getLocalizedString("SETUP"));
         tabs.getTabs().add(initTab);
         initTab.setClosable(false);
-        Platform.runLater(() -> {
-            device.getDeviceProperties().addProperty(new SoftFloatProperty("test"));
-            PropertyEditorPanel ep = new PropertyEditorPanel(device.getDeviceProperties());
-            ScrollPane scrol = new ScrollPane(ep);
-            scrol.setFitToWidth(true);
-            scrol.setFitToHeight(true);
-            initTab.setContent(scrol);
-        });
+        ep = new PropertyEditorPanel(device.getDeviceProperties());
+        ScrollPane scrol = new ScrollPane(ep);
+        scrol.setFitToWidth(true);
+        scrol.setFitToHeight(true);
+        initTab.setContent(scrol);
     }
 
     private Node intiCommandPanel() {
         HBox box=new HBox();
+        Button addBtn=new Button("ADD");
+        Button removeBtn=new Button("REMOVE");
         Button loadBtn=new Button("LOAD");
         Button saveBtn=new Button("SAVE");
+        addBtn.setOnAction(a->{
+            if(ep!=null){
+
+                AbstractProperty prp=ep.getSelectedValue();
+                if(ep!=null){
+                    AddPropertyDialog.addNewProperty(prp,creator);
+                    ep.checkSelectedValue();
+                }
+            }
+        });
         loadBtn.setOnAction(a->{
             FileChooser fileChooser=new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("BINARY DATA","*.bhex"));
@@ -75,7 +88,7 @@ public class ModBusPanel extends VBox {
             File file = fileChooser.showSaveDialog(null);
             device.saveBinaryParameters(file);
         });
-        box.getChildren().addAll(loadBtn, saveBtn);
+        box.getChildren().addAll(addBtn,removeBtn,loadBtn, saveBtn);
         box.setAlignment(Pos.CENTER);
         return box;
     }

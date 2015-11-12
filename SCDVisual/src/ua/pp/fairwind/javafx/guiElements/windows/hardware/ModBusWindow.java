@@ -28,7 +28,7 @@ public class ModBusWindow extends SimpleHardWareViewMenu {
         ModBusDevice device = (ModBusDevice) centralsystem.createDevice(deviceType, deviceName);
         List<LineInterface> lines = centralsystem.getListLines();
         LineInterface oneLine = lines.get(0);
-        ModBusComplexPanel panel = new ModBusComplexPanel(oneLine, device, lines);
+        ModBusComplexPanel panel = new ModBusComplexPanel(oneLine, device,centralsystem.getElementsCreator(), lines);
         panel.setId("basePanel");
         return panel;
     }

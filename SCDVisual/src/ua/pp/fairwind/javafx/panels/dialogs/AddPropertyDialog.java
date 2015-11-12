@@ -9,6 +9,7 @@ import ua.pp.fairwind.communications.propertyes.groups.GroupProperty;
 import ua.pp.fairwind.communications.utils.EllementsCreator;
 import ua.pp.fairwind.communications.utils.ModBusProtocol;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
+import ua.pp.fairwind.javafx.guiElements.editors.HexIntegerInputNullText;
 
 import java.util.Optional;
 
@@ -16,8 +17,6 @@ import java.util.Optional;
  * Created by Сергей on 10.09.2015.
  */
 public class AddPropertyDialog {
-
-
     public static void addNewProperty(AbstractProperty property,EllementsCreator creator) {
         if (property == null) return;
         if(property instanceof GroupProperty) {
@@ -31,6 +30,7 @@ public class AddPropertyDialog {
             grid.setPadding(new Insets(20, 150, 10, 10));
 
             TextField name = new TextField();
+            HexIntegerInputNullText addres=new HexIntegerInputNullText();
             ComboBox<String> types = new ComboBox<>();
             types.getItems().addAll(creator.getPropertyTypes());
             Tooltip.install(types, new Tooltip(I18N_FX.getLocalizedString("PROPERTY_TYPE.description")));
@@ -51,6 +51,8 @@ public class AddPropertyDialog {
             grid.add(rfunc, 1, 3);
             grid.add(new Label(I18N_FX.getLocalizedString("MODBUS_WRITE_FUNCTION")), 0, 4);
             grid.add(wfunc, 1, 4);
+            grid.add(new Label(I18N_FX.getLocalizedString("MODBUS_ADDRESS")), 0, 5);
+            grid.add(addres, 1, 5);
             dialog.getDialogPane().setContent(grid);
 
 
@@ -61,7 +63,7 @@ public class AddPropertyDialog {
                     if(nameProperty==null||nameProperty.isEmpty())return null;
                     String type = types.getSelectionModel().getSelectedItem() == null ? "" : types.getSelectionModel().getSelectedItem();
                     if(type==null||type.isEmpty())return null;
-                    String mode = types.getSelectionModel().getSelectedItem() == null ? "" : types.getSelectionModel().getSelectedItem();
+                    String mode = modes.getSelectionModel().getSelectedItem() == null ? "" : types.getSelectionModel().getSelectedItem();
                     ValueProperty.SOFT_OPERATION_TYPE modeProperty;
                     switch (mode){
                         case "READ_WRITE":
@@ -77,8 +79,13 @@ public class AddPropertyDialog {
                             modeProperty= ValueProperty.SOFT_OPERATION_TYPE.READ_WRITE;
                     }
                     AbstractProperty result=creator.createProperty(nameProperty,type, modeProperty);
-                    result.setAdditionalInfo(ModBusProtocol.MODBUS_READ_FUNCTION,rfunc.getValue());
-                    result.setAdditionalInfo(ModBusProtocol.MODBUS_WRITE_FUNCTION,wfunc.getValue());
+                    if(result!=null) {
+                        result.setAdditionalInfo(ModBusProtocol.MODBUS_READ_FUNCTION, rfunc.getValue());
+                        result.setAdditionalInfo(ModBusProtocol.MODBUS_WRITE_FUNCTION, wfunc.getValue());
+                        result.setAdditionalInfo(ModBusProtocol.MODBUS_ADDRESS, addres.getValue());
+                    } else {
+                        System.err.println("type");
+                    }
                     return result;
                 }
                 return null;
