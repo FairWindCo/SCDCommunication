@@ -1,5 +1,6 @@
 package ua.pp.fairwind.communications;
 
+import ua.pp.fairwind.communications.devices.SystemInfoDevice;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.elementsdirecotry.AutoCreateDeviceFunction;
 import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
@@ -18,11 +19,13 @@ import java.util.List;
  */
 public class SCADASystem extends SystemElementDirectory implements AutoCreateDeviceFunction {
     private final EllementsCreator elementsCreator;
+    private final SystemInfoDevice systemInfoDevice=new SystemInfoDevice();
 
 
     public SCADASystem(String codename, EllementsCreator elementsCreator) {
         super(codename, null);
         this.elementsCreator = elementsCreator;
+        addElemnt(systemInfoDevice);
     }
 
     static public SCADASystem createScadaSystem(String name, int maxTrunsactionTime) {

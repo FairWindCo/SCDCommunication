@@ -2,6 +2,7 @@ package ua.pp.fairwind.communications.elementsdirecotry;
 
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.abstractions.SystemEllement;
+import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
 import ua.pp.fairwind.communications.devices.abstracts.ImitatorDevice;
 import ua.pp.fairwind.communications.devices.abstracts.LinedDeviceInterface;
 import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
@@ -21,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SystemElementDirectory extends SystemEllement {
     final private ConcurrentHashMap<UUID, ElementInterface> elements = new ConcurrentHashMap<>();
     final private ConcurrentHashMap<UUID, AbstractProperty> propertyes = new ConcurrentHashMap<>();
-    final private ConcurrentHashMap<UUID, LinedDeviceInterface> devices = new ConcurrentHashMap<>();
+    final private ConcurrentHashMap<UUID, DeviceInterface> devices = new ConcurrentHashMap<>();
     final private ConcurrentHashMap<UUID, LineInterface> lines = new ConcurrentHashMap<>();
     final private ConcurrentHashMap<UUID, SystemElementDirectory> subsystems = new ConcurrentHashMap<>();
 
@@ -38,8 +39,8 @@ public class SystemElementDirectory extends SystemEllement {
         elements.put(element.getUUID(), element);
         if (element instanceof AbstractProperty) {
             propertyes.put(element.getUUID(), (AbstractProperty) element);
-        } else if (element instanceof LinedDeviceInterface) {
-            devices.put(element.getUUID(), (LinedDeviceInterface) element);
+        } else if (element instanceof DeviceInterface) {
+            devices.put(element.getUUID(), (DeviceInterface) element);
         } else if (element instanceof LineInterface) {
             lines.put(element.getUUID(), (LineInterface) element);
         } else if (element instanceof SystemElementDirectory) {
@@ -110,7 +111,7 @@ public class SystemElementDirectory extends SystemEllement {
         }
     }
 
-    public LinedDeviceInterface getDevice(String uuid) {
+    public DeviceInterface getDevice(String uuid) {
         UUID ui = UUID.fromString(uuid);
         if (ui != null) {
             return devices.get(ui);
@@ -163,7 +164,7 @@ public class SystemElementDirectory extends SystemEllement {
         return new ArrayList<>(lines.values());
     }
 
-    public Collection<LinedDeviceInterface> getAllDevices() {
+    public Collection<DeviceInterface> getAllDevices() {
         return devices.values();
     }
 

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 /**
  * Created by Сергей on 09.07.2015.
  */
-public abstract class AbstractLinedDevice extends AbstractDevice {
+public abstract class AbstractLinedDevice extends AbstractDevice implements LinedDeviceInterface {
     public static final String COMMAND_VALIDATE_LINE1 = "VALIDATE_LINE1";
     public static final String COMMAND_VALIDATE_LINE2 = "VALIDATE_LINE2";
     public static final String COMMAND_VALIDATE_ALL = "VALIDATE";
@@ -196,7 +196,7 @@ public abstract class AbstractLinedDevice extends AbstractDevice {
         setInternalValue(deviceLastSuccessCommunicateTime, System.currentTimeMillis());
     }
 
-    @Override
+
     public void processRecivedMessage(CommunicationAnswer answer) {
         try {
             if (answer != null) {

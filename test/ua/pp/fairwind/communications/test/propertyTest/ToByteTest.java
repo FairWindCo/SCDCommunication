@@ -8,7 +8,7 @@ import ua.pp.fairwind.communications.propertyes.software.bytedpropertyes.SoftInt
  */
 public class ToByteTest {
     public static void main(String[] args) {
-        SoftIntegerToByteProperty itb = new SoftIntegerToByteProperty("test", null);
+        SoftIntegerToByteProperty itb = new SoftIntegerToByteProperty("test", (String)null);
         itb.addEventListener(ElementEventListener.println);
         itb.getByte1().addEventListener(ElementEventListener.println);
         itb.getByte2().addEventListener(ElementEventListener.println);

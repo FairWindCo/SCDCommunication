@@ -24,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by Сергей on 09.07.2015.
  */
 @Device(value = "abstract_device")
-public abstract class AbstractDevice extends PropertyExecutor implements LinedDeviceInterface {
+public abstract class AbstractDevice extends PropertyExecutor implements DeviceInterface {
     public static final String IMMEDIATELY_WRITE_FLAG = "immediatelyWrite";
     public static final String PROPERTY_ADDRESS = "propertyAddress";
     public static final String COMMAND_REFRESH = "REFRESH";
@@ -175,9 +175,9 @@ public abstract class AbstractDevice extends PropertyExecutor implements LinedDe
 
 
 
-    abstract void readProperty(AbstractProperty property, Event sourceEvent);
+    protected abstract void readProperty(AbstractProperty property, Event sourceEvent);
 
-    abstract void writeProperty(AbstractProperty property, Event sourceEvent);
+    protected abstract void writeProperty(AbstractProperty property, Event sourceEvent);
 
     protected void executeCommandName(DeviceNamedCommandProperty property, Event sourceEvent) {
         RequestInformation req = processCommandRequest(property.getCommand());
@@ -186,14 +186,6 @@ public abstract class AbstractDevice extends PropertyExecutor implements LinedDe
         }
     }
 
-
-
-
-    protected abstract boolean processRecivedMessage(final byte[] recivedMessage, final byte[] sendMessage, final AbstractProperty property, final Event sourceEvent);
-
-    protected abstract RequestInformation formReadRequest(AbstractProperty property);
-
-    protected abstract RequestInformation formWriteRequest(AbstractProperty property);
 
     public abstract String getDeviceType();
 

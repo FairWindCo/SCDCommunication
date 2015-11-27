@@ -12,6 +12,7 @@ import ua.pp.fairwind.communications.utils.EllementsCreator;
 import ua.pp.fairwind.javafx.I18N.I18N_FX;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuConfigElements;
 import ua.pp.fairwind.javafx.panels.administrative.AllEventMonitorWindow;
+import ua.pp.fairwind.javafx.panels.administrative.ComponentsViewer;
 import ua.pp.fairwind.javafx.panels.administrative.ErrorEventMonitorWindow;
 import ua.pp.fairwind.javafx.panels.administrative.LineCommunicationLoggingWindow;
 
@@ -63,6 +64,8 @@ public class SCADASystemFX extends SCADASystem {
     public MenuConfigElements getAdministrativeMenu() {
         if (menuCreated.compareAndSet(false, true)) {
             MenuConfigElements administrativeMenu = new MenuConfigElements("Administrative");
+            MenuConfigElements component_view=new ComponentsViewer("Component View",this);
+            administrativeMenu.setAddChild(component_view);
             administrativeMenu.setAddChild(logingWindow);
             if (canLogAllError || canLogLineDeviceError) administrativeMenu.setAddChild(eventErrorWindow);
             if (canLogAllEvent) administrativeMenu.setAddChild(eventLogingWindow);
