@@ -12,6 +12,8 @@ import ua.pp.fairwind.communications.propertyes.software.SoftStringProperty;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -45,6 +47,7 @@ public class SystemInfoDevice extends AbstractDevice {
     private final SoftLongProperty memoryMax;
 
     private final SoftLongProperty upTime;
+    private final SoftLongProperty refreshPeriod;
 
 
     private final int mb = 1024*1024;
@@ -74,7 +77,8 @@ public class SystemInfoDevice extends AbstractDevice {
         memoryMax=new SoftLongProperty("max_memory", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY,(runtime.maxMemory()) / mb);
 
         upTime=new SoftLongProperty("up_time", ValueProperty.SOFT_OPERATION_TYPE.READ_ONLY,runtimeMXBean.getUptime());
-
+        refreshPeriod=new SoftLongProperty("refresh_period",0L);
+        addPropertys(refreshPeriod);
         addPropertys(processCpuLoad);
         addPropertys(systemLoadAverage);
         addPropertys(systemCpuLoad);
@@ -95,6 +99,42 @@ public class SystemInfoDevice extends AbstractDevice {
         addPropertys(memoryMax);
 
         addPropertys(upTime);
+
+    }
+
+    @Override
+    protected RequestInformation processCommandRequest(String commandName) {
+        if(COMMAND_REFRESH.equals(commandName)){
+            refreshAllValues();
+            return null;
+        } else {
+            return super.processCommandRequest(commandName);
+        }
+    }
+
+    private Timer timerRefresh=null;
+
+    private synchronized void setRefresh(Long refreshTime){
+        if(timerRefresh!=null)
+            timerRefresh.cancel();
+
+
+        if(refreshTime!=null && refreshTime>0) {
+            timerRefresh=new Timer();
+            timerRefresh.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    refreshAllValues();
+                }
+            }, 0, refreshTime);
+        }
+    }
+
+
+    @Override
+    public void destroy() {
+        if(timerRefresh!=null)timerRefresh.cancel();
+        super.destroy();
     }
 
     @Override
@@ -141,6 +181,21 @@ public class SystemInfoDevice extends AbstractDevice {
             res=true;
             Runtime runtime = Runtime.getRuntime();
             setInternalValue(memoryMax, (runtime.maxMemory()) / mb);
+        } else if(property == totalPhisicalMemory){
+            res=true;
+        } else if(property == totalSwapSize){
+            res=true;
+        } else if(property == availableProcessors){
+            res=true;
+        } else if(property == arhitecture){
+            res=true;
+        } else if(property == refreshPeriod){
+            setRefresh(refreshPeriod.getValue());
+            res=true;
+        } else if(property == os){
+            res=true;
+        } else if(property == osversion){
+        res = true;
         }
         if(res) {
             setInternalValue(lastCommunicationStatus, true);
@@ -155,24 +210,38 @@ public class SystemInfoDevice extends AbstractDevice {
         setInternalValue(lastCommunicationStatus, true);
         setInternalValue(deviceLastTryCommunicateTime, System.currentTimeMillis());
         setInternalValue(deviceLastSuccessCommunicateTime, System.currentTimeMillis());
-        processCpuLoad.setValue(osBean.getProcessCpuLoad());
-        systemLoadAverage.setValue(osBean.getSystemLoadAverage());
-        systemCpuLoad.setValue(osBean.getSystemCpuLoad());
-        freePhisicalMemory.setValue(osBean.getFreePhysicalMemorySize());
-        freeSwapSize.setValue(osBean.getFreeSwapSpaceSize());
-        commitedVirtualMemorySize.setValue(osBean.getCommittedVirtualMemorySize());
-        processCPUTime.setValue(osBean.getProcessCpuTime());
+        setInternalValue(processCpuLoad,osBean.getProcessCpuLoad());
+        setInternalValue(systemLoadAverage,osBean.getSystemLoadAverage());
+        setInternalValue(systemCpuLoad,osBean.getSystemCpuLoad());
+        setInternalValue(freePhisicalMemory,osBean.getFreePhysicalMemorySize());
+        setInternalValue(freeSwapSize,osBean.getFreeSwapSpaceSize());
+        setInternalValue(commitedVirtualMemorySize,osBean.getCommittedVirtualMemorySize());
+        setInternalValue(processCPUTime,osBean.getProcessCpuTime());
+
         Runtime runtime = Runtime.getRuntime();
-        memoryUsed.setValue((runtime.totalMemory() - runtime.freeMemory()) / mb);
-        memoryFree.setValue((runtime.freeMemory()) / mb);
-        memoryTotal.setValue((runtime.totalMemory()) / mb);
-        memoryMax.setValue((runtime.maxMemory()) / mb);
-        upTime.setValue(runtimeMXBean.getUptime());
+        setInternalValue(memoryUsed,(runtime.totalMemory() - runtime.freeMemory()) / mb);
+        setInternalValue(memoryFree,(runtime.freeMemory()) / mb);
+        setInternalValue(memoryTotal,(runtime.totalMemory()) / mb);
+        setInternalValue(memoryMax,(runtime.maxMemory()) / mb);
+        setInternalValue(upTime,runtimeMXBean.getUptime());
+
     }
 
     @Override
     protected void writeProperty(AbstractProperty property, Event sourceEvent){
-
+        setInternalValue(deviceLastTryCommunicateTime, System.currentTimeMillis());
+        boolean res=false;
+        if(property == refreshPeriod){
+            setRefresh(refreshPeriod.getValue());
+            res=true;
+        }
+        if(res) {
+            setInternalValue(lastCommunicationStatus, true);
+            setInternalValue(deviceLastSuccessCommunicateTime, System.currentTimeMillis());
+        } else {
+            setInternalValue(lastCommunicationStatus, false);
+            setInternalValue(errorCommunicationStatus, true);
+        }
     }
 
     @Override

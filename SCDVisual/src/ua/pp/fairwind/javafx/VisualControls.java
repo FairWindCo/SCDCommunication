@@ -13,6 +13,7 @@ import javafx.util.StringConverter;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractLinedDevice;
 import ua.pp.fairwind.communications.devices.abstracts.SerialDeviceInterface;
+import ua.pp.fairwind.communications.lines.abstracts.AbstractLine;
 import ua.pp.fairwind.communications.propertyes.DeviceNamedCommandProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.abstraction.ValueProperty;
@@ -58,6 +59,18 @@ public class VisualControls {
         led.onProperty().bind(new BooleanPropertyFXAdapter(property));
         Tooltip.install(led, new Tooltip(property.getDescription()));
         return led;
+    }
+
+    public static Button createCloseLineButton(AbstractLine line) {
+        Image imageDecline = new Image(MyResourceLoader.class.getResourceAsStream("close2.png"));
+        Button button = new Button();
+        button.setGraphic(new ImageView(imageDecline));
+        button.getStyleClass().add("rich-blue");
+        button.setOnAction(event -> {
+            if (line != null) line.closeLine();
+        });
+        Tooltip.install(button, new Tooltip(I18N_FX.getLocalizedString("CLOSE")));
+        return button;
     }
 
     public static Button createPClosePortButton(AbstractLinedDevice device) {

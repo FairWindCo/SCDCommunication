@@ -85,11 +85,20 @@
     -fx-background-color: rgb(23, 55, 80);
 }
 
-.tree-table-cell:odd {
+
+
+.tree-table-row-cell:selected {
+    -fx-background-color: #083d7a;
+}
+.tree-table-row-cell:selected:odd{
+    -fx-background-color: #083d7a;
+}
+
+.tree-table-row-cell:odd {
     -fx-background-color: #5782D0;
 }
 
-.tree-table-cell:empty {
+.tree-table-row-cell:empty {
     -fx-background-color: lightyellow;
 }
 

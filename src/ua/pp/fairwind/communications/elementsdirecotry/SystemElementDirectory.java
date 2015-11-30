@@ -156,6 +156,10 @@ public class SystemElementDirectory extends SystemEllement {
         centralSystem.destroy();
     }
 
+    public Collection<ElementInterface> getAllEllements() {
+        return elements.values();
+    }
+
     public Collection<LineInterface> getAllLines() {
         return lines.values();
     }

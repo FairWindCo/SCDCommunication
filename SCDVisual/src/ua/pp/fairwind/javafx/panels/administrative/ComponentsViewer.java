@@ -11,6 +11,8 @@ import javafx.scene.control.TreeTableView;
 import ua.pp.fairwind.communications.SCADASystem;
 import ua.pp.fairwind.communications.abstractions.ElementInterface;
 import ua.pp.fairwind.communications.devices.abstracts.DeviceInterface;
+import ua.pp.fairwind.communications.elementsdirecotry.SystemElementDirectory;
+import ua.pp.fairwind.communications.lines.abstracts.LineInterface;
 import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.groups.GroupPropertyInterface;
 import ua.pp.fairwind.javafx.guiElements.menu.MenuExecutor;
@@ -46,7 +48,7 @@ public class ComponentsViewer extends SimpleMenuView {
         //Defining cell content
         column.setCellValueFactory((TreeTableColumn.CellDataFeatures<ElementInterface, String> p) ->
                 new ReadOnlyStringWrapper(p.getValue().getValue().getName()));
-        column2.setPrefWidth(170);
+        column2.setPrefWidth(250);
 
         column2.setCellValueFactory((TreeTableColumn.CellDataFeatures<ElementInterface, String> p) ->
                 new ReadOnlyStringWrapper(p.getValue().getValue().getUUIDString()));
@@ -93,16 +95,49 @@ public class ComponentsViewer extends SimpleMenuView {
         return propertyItem;
     }
 
+
+    private TreeItem getItem(ElementInterface element){
+        if(element instanceof DeviceInterface){
+            TreeItem deviceItem=new TreeItem<>(element);
+            for(AbstractProperty property:((DeviceInterface)element).getPropertys()){
+                deviceItem.getChildren().add(getPropertyItem(property));
+            }
+            return deviceItem;
+        } else if(element instanceof AbstractProperty){
+            return getPropertyItem((AbstractProperty)element);
+        } else if(element instanceof SystemElementDirectory){
+            TreeItem subsystem=new TreeItem<>(element);
+            for(ElementInterface dev:scadaSystem.getAllEllements()){
+                subsystem.getChildren().add(getItem(dev));
+            }
+            return subsystem;
+        } else if(element instanceof LineInterface){
+            TreeItem lineItem=new TreeItem<>(element);
+            for(DeviceInterface dev:((LineInterface)element).getDeivicesForService()){
+                lineItem.getChildren().add(getItem(dev));
+            }
+            return lineItem;
+        } else {
+            return new TreeItem<>(element);
+        }
+    }
+
+
     @Override
     public void onShow(MenuExecutor executor) {
         super.onShow(executor);
         root.getChildren().clear();
-        for(DeviceInterface dev:scadaSystem.getAllDevices()){
-            TreeItem deviceItem=new TreeItem<>(dev);
-            root.getChildren().add(deviceItem);
-            for(AbstractProperty property:dev.getPropertys()){
-                deviceItem.getChildren().add(getPropertyItem(property));
-            }
+
+        for(ElementInterface dev:scadaSystem.getAllEllements()){
+            root.getChildren().add(getItem(dev));
         }
+        /*
+        for(DeviceInterface dev:scadaSystem.getAllDevices()){
+            root.getChildren().add(getItem(dev));
+        }
+
+        for(LineInterface line:scadaSystem.getAllLines()){
+            root.getChildren().add(getItem(line));
+        }*/
     }
 }
