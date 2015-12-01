@@ -5,11 +5,15 @@ import eu.hansolo.enzo.lcd.Lcd;
 import eu.hansolo.enzo.lcd.LcdBuilder;
 import images.MyResourceLoader;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
+import org.controlsfx.control.ToggleSwitch;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractDevice;
 import ua.pp.fairwind.communications.devices.abstracts.AbstractLinedDevice;
 import ua.pp.fairwind.communications.devices.abstracts.SerialDeviceInterface;
@@ -59,6 +63,16 @@ public class VisualControls {
         led.onProperty().bind(new BooleanPropertyFXAdapter(property));
         Tooltip.install(led, new Tooltip(property.getDescription()));
         return led;
+    }
+
+    public static Node createSwitchIndicator(SoftBoolProperty property) {
+
+        ToggleSwitch toggleSwitch = new ToggleSwitch();
+        toggleSwitch.selectedProperty().bindBidirectional(new BooleanPropertyFXAdapter(property));
+        Tooltip.install(toggleSwitch, new Tooltip(property.getDescription()));
+        HBox box=new HBox(toggleSwitch);
+        box.setAlignment(Pos.CENTER);
+        return box;
     }
 
     public static Button createCloseLineButton(AbstractLine line) {

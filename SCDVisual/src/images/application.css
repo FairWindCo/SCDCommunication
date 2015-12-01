@@ -11,6 +11,35 @@
     -fx-text-fill: white;
 }
 
+.toggle-switch .thumb {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -20%), derive(-fx-text-box-border, -30%)),
+    -fx-inner-border,
+    -fx-body-color;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
+    -fx-padding: 1em;
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+}
+
+.toggle-switch .thumb-area{
+    -fx-pref-height: 2em;
+    -fx-pref-width: 7em;
+    -fx-background-radius: 1em;
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -20%), derive(-fx-text-box-border, -30%)),
+    linear-gradient(to bottom, derive(#e62841, 30%), #890f23);
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow(gaussian, #ff3b4c, 10, 0.8, 200, 200);
+}
+
+.toggle-switch:selected .thumb-area{
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -20%), derive(-fx-text-box-border, -30%)),
+    linear-gradient(to bottom, derive(#0b99c9, 30%), #2148c9);
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow(gaussian, blue, 10, 1.0, 100, 100);
+
+}
+
 #globalMenu .menu-item .label {
     -fx-text-fill: black;
 }

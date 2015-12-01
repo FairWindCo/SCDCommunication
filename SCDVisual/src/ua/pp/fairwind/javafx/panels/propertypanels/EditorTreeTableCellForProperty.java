@@ -64,7 +64,11 @@ public class EditorTreeTableCellForProperty<T> extends TreeTableCell<AbstractPro
                             super.setGraphic(new SoftDoubleInputText((ValueProperty<Double>) editedValue));
                         } else if (editedValue instanceof SoftBoolProperty) {
                             super.setText(null);
-                            super.setGraphic(VisualControls.createLedIndicator((SoftBoolProperty) editedValue));
+                            if(((SoftBoolProperty) editedValue).isWriteAccepted()){
+                                super.setGraphic(VisualControls.createSwitchIndicator((SoftBoolProperty) editedValue));
+                            } else {
+                                super.setGraphic(VisualControls.createLedIndicator((SoftBoolProperty) editedValue));
+                            }
                         }
                     } else {
                         if (((ValueProperty) editedValue).getValue() != null) {
