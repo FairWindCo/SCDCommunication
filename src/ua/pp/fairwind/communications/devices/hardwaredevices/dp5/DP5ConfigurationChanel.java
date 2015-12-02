@@ -1,9 +1,14 @@
 package ua.pp.fairwind.communications.devices.hardwaredevices.dp5;
 
+import ua.pp.fairwind.communications.propertyes.abstraction.AbstractProperty;
 import ua.pp.fairwind.communications.propertyes.groups.GroupProperty;
 import ua.pp.fairwind.communications.propertyes.software.stringlike.StringFloatValuedProperty;
 import ua.pp.fairwind.communications.propertyes.software.stringlike.StringIntegerValuedProperty;
 import ua.pp.fairwind.communications.propertyes.software.stringlike.StringLongValuedProperty;
+import ua.pp.fairwind.communications.propertyes.software.stringlike.StringValuedPropertry;
+
+import java.io.*;
+import java.util.stream.Stream;
 
 /**
  * Created by Сергей on 04.10.2015.
@@ -77,6 +82,57 @@ public class DP5ConfigurationChanel extends GroupProperty {
     private StringIntegerValuedProperty rTDE;
     private StringIntegerValuedProperty rTDD;
     private StringIntegerValuedProperty rTDW;
+
+    public void readFile(String fileName)throws IOException {
+        File file = new File(fileName);
+        if (file.exists() && file.canRead()) {
+            BufferedReader br = null;
+            try (FileReader fr = new FileReader(file)) {
+                br = new BufferedReader(fr);
+                String line = br.readLine();
+                int index = 0;
+                while (line != null) {
+                    String[] vals = line.split("=");
+                    if (vals.length == 2) {
+                        StringValuedPropertry ch = (StringValuedPropertry) getPopertyByIndex(index++);
+                        if (ch != null) {
+                            //TODO ch.readValueFromString(line, 10);
+                            ch.checkInternalValue();
+                        }
+                    }
+                    line = br.readLine();
+                }
+
+            } finally {
+                if (br != null) br.close();
+
+            }
+
+        }
+    }
+
+    public void writeConfigToFile(String fileName) throws IOException{
+        File file = new File(fileName);
+        if (file.exists()) {
+            file.delete();
+        }
+        file.createNewFile();
+
+
+        if (file.canWrite()) {
+
+            try (PrintWriter writer = new PrintWriter((file))) {
+                Stream<AbstractProperty> stream = getStream();
+                if (stream != null) {
+                    //stream.collect(Collectors.joining("\n");
+                    //TODO stream.forEach(p -> writer.println(p.formStringValue("%s")));
+                }
+                writer.flush();
+
+            }
+        }
+
+    }
 
     public enum DEVICETYPE{
         DP5,
@@ -210,5 +266,277 @@ public class DP5ConfigurationChanel extends GroupProperty {
                 break;
         }
 
+    }
+
+    public StringIntegerValuedProperty getaCKE() {
+        return aCKE;
+    }
+
+    public StringIntegerValuedProperty getaINP() {
+        return aINP;
+    }
+
+    public StringIntegerValuedProperty getaUO1() {
+        return aUO1;
+    }
+
+    public StringIntegerValuedProperty getaUO2() {
+        return aUO2;
+    }
+
+    public StringIntegerValuedProperty getbLRD() {
+        return bLRD;
+    }
+
+    public StringIntegerValuedProperty getbLRU() {
+        return bLRU;
+    }
+
+    public StringIntegerValuedProperty getbLRM() {
+        return bLRM;
+    }
+
+    public StringIntegerValuedProperty getbOOT() {
+        return bOOT;
+    }
+
+    public StringIntegerValuedProperty getcON1() {
+        return cON1;
+    }
+
+    public StringIntegerValuedProperty getcON2() {
+        return cON2;
+    }
+
+    public StringIntegerValuedProperty getcLKL() {
+        return cLKL;
+    }
+
+    public StringIntegerValuedProperty getcUSP() {
+        return cUSP;
+    }
+
+    public StringIntegerValuedProperty getdACF() {
+        return dACF;
+    }
+
+    public StringIntegerValuedProperty getdACO() {
+        return dACO;
+    }
+
+    public StringIntegerValuedProperty getgAIA() {
+        return gAIA;
+    }
+
+    public StringIntegerValuedProperty getgATE() {
+        return gATE;
+    }
+
+    public StringIntegerValuedProperty getgPED() {
+        return gPED;
+    }
+
+    public StringIntegerValuedProperty getgPGA() {
+        return gPGA;
+    }
+
+    public StringIntegerValuedProperty getgPIN() {
+        return gPIN;
+    }
+
+    public StringIntegerValuedProperty getgPMC() {
+        return gPMC;
+    }
+
+    public StringIntegerValuedProperty getgPME() {
+        return gPME;
+    }
+
+    public StringIntegerValuedProperty gethVSE() {
+        return hVSE;
+    }
+
+    public StringIntegerValuedProperty getiNOF() {
+        return iNOF;
+    }
+
+    public StringIntegerValuedProperty getiNOG() {
+        return iNOG;
+    }
+
+    public StringIntegerValuedProperty getmCAC() {
+        return mCAC;
+    }
+
+    public StringIntegerValuedProperty getmCAE() {
+        return mCAE;
+    }
+
+    public StringIntegerValuedProperty getmCSL() {
+        return mCSL;
+    }
+
+    public StringIntegerValuedProperty getmCSH() {
+        return mCSH;
+    }
+
+    public StringFloatValuedProperty getmCST() {
+        return mCST;
+    }
+
+    public StringIntegerValuedProperty getpAPS() {
+        return pAPS;
+    }
+
+    public StringFloatValuedProperty getpAPZ() {
+        return pAPZ;
+    }
+
+    public StringIntegerValuedProperty getpDMD() {
+        return pDMD;
+    }
+
+    public StringIntegerValuedProperty getpRCL() {
+        return pRCL;
+    }
+
+    public StringIntegerValuedProperty getpRCH() {
+        return pRCH;
+    }
+
+    public StringLongValuedProperty getpREC() {
+        return pREC;
+    }
+
+    public StringLongValuedProperty getpRER() {
+        return pRER;
+    }
+
+    public StringFloatValuedProperty getpRET() {
+        return pRET;
+    }
+
+    public StringIntegerValuedProperty getrESC() {
+        return rESC;
+    }
+
+    public StringIntegerValuedProperty getcLCK() {
+        return cLCK;
+    }
+
+    public StringFloatValuedProperty getgAIF() {
+        return gAIF;
+    }
+
+    public StringFloatValuedProperty getgAIN() {
+        return gAIN;
+    }
+
+    public StringFloatValuedProperty getpURE() {
+        return pURE;
+    }
+
+    public StringIntegerValuedProperty getmCAS() {
+        return mCAS;
+    }
+
+    public StringIntegerValuedProperty getrTDS() {
+        return rTDS;
+    }
+
+    public StringFloatValuedProperty getrTDT() {
+        return rTDT;
+    }
+
+    public StringIntegerValuedProperty getsCAI() {
+        return sCAI;
+    }
+
+    public StringIntegerValuedProperty getsCAH() {
+        return sCAH;
+    }
+
+    public StringIntegerValuedProperty getsCAL() {
+        return sCAL;
+    }
+
+    public StringIntegerValuedProperty getsCAO() {
+        return sCAO;
+    }
+
+    public StringIntegerValuedProperty getsCAW() {
+        return sCAW;
+    }
+
+    public StringIntegerValuedProperty getsCOE() {
+        return sCOE;
+    }
+
+    public StringIntegerValuedProperty getsCOG() {
+        return sCOG;
+    }
+
+    public StringIntegerValuedProperty getsCOT() {
+        return sCOT;
+    }
+
+    public StringFloatValuedProperty getsOFF() {
+        return sOFF;
+    }
+
+    public StringIntegerValuedProperty getsYNC() {
+        return sYNC;
+    }
+
+    public StringIntegerValuedProperty gettECS() {
+        return tECS;
+    }
+
+    public StringFloatValuedProperty gettHFA() {
+        return tHFA;
+    }
+
+    public StringFloatValuedProperty gettHSL() {
+        return tHSL;
+    }
+
+    public StringIntegerValuedProperty gettLLD() {
+        return tLLD;
+    }
+
+    public StringIntegerValuedProperty gettPMO() {
+        return tPMO;
+    }
+
+    public StringIntegerValuedProperty getvOLU() {
+        return vOLU;
+    }
+
+    public StringFloatValuedProperty gettPEA() {
+        return tPEA;
+    }
+
+    public StringIntegerValuedProperty getrESL() {
+        return rESL;
+    }
+
+    public StringFloatValuedProperty gettFLA() {
+        return tFLA;
+    }
+
+    public StringIntegerValuedProperty gettPFA() {
+        return tPFA;
+    }
+
+    public StringIntegerValuedProperty getrTDE() {
+        return rTDE;
+    }
+
+    public StringIntegerValuedProperty getrTDD() {
+        return rTDD;
+    }
+
+    public StringIntegerValuedProperty getrTDW() {
+        return rTDW;
     }
 }

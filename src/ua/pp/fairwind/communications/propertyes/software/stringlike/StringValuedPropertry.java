@@ -39,6 +39,12 @@ public class StringValuedPropertry extends SoftStringProperty {
         this.correctValues = Arrays.asList(correctValues);
     }
 
+    @Override
+    public void setValue(String value) {
+        if(isCorrectValue(value)) {
+            super.setValue(value);
+        }
+    }
 
     protected String readMaskedValue(String val) {
         if (converter == null) {

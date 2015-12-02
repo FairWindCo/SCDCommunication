@@ -18,7 +18,7 @@ public class SimpleView2 extends SimpleView {
         super(title, icon, prefferedSize);
         this.confChanel = confChanel;
         if (confChanel != null) {
-            this.editPanel = new ComboEditPanel(confChanel, getResourceLoader());
+            this.editPanel = new ComboEditPanel(confChanel);
         } else {
             this.editPanel = null;
         }
